@@ -46,6 +46,7 @@ class JobMetricsController extends Controller
     {
         return collect($this->metrics->snapshotsForJob($slug))->map(function ($record) {
             $record->runtime = ceil($record->runtime / 1000);
+            $record->throughput = (int) $record->throughput;
 
             return $record;
         });

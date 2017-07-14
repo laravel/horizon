@@ -35,9 +35,6 @@ export default Vue.extend({
                             beforeBuildTicks: function (scale) {
                                 var max = _.max(scale.chart.data.datasets[0].data);
                                 scale.max = parseInt(max) + parseInt(max * 0.25);
-                                
-                                console.log(max);
-                                console.log(scale.max);
                             },
                         }
                     ],

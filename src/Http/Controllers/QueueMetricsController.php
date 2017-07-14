@@ -46,6 +46,7 @@ class QueueMetricsController extends Controller
     {
         return collect($this->metrics->snapshotsForQueue($slug))->map(function ($record) {
             $record->runtime = ceil($record->runtime / 1000);
+            $record->throughput = (int) $record->throughput;
 
             return $record;
         });
