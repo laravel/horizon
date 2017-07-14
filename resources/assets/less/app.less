@@ -1,0 +1,44 @@
+@import '_settings.colors.less';
+@import '_generic.reset.less';
+@import '_elements.base.less';
+@import '_objects.wraps.less';
+@import '_objects.grid.less';
+@import '_components.buttons.less';
+@import '_components.nav.less';
+@import '_components.modals.less';
+@import '_components.panels.less';
+@import '_components.pagination.less';
+@import '_components.tables.less';
+@import '_components.search.less';
+@import '_components.stats.less';
+@import '_components.tabs.less';
+@import '_helpers.borders.less';
+@import '_helpers.colors.less';
+@import '_helpers.dimensions.less';
+@import '_helpers.display.less';
+@import '_helpers.flex.less';
+@import '_helpers.icons.less';
+@import '_helpers.misc.less';
+@import '_helpers.spacing.less';
+@import '_helpers.typography.less';
+
+.jobDetailsText {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  overflow-y: scroll;
+  max-height: 400px;
+
+  span, pre{
+    margin-bottom: 5px;
+    display:block;
+    background: #efefef;
+    padding: 1px 3px;
+  }
+}

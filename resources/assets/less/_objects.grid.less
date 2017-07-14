@@ -1,0 +1,41 @@
+@grid-gutter: 2rem;
+@grid-block-count: 12;
+
+.frame {
+  margin-left: -@grid-gutter;
+  margin-right: -@grid-gutter;
+  .df;
+  .fdr;
+  .fww;
+}
+
+.frame--xpad [class^='blk'] {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+[class^='blk'] {
+  .ph2;
+}
+
+// The default column width is 100% divided by the column count
+@block-width: 100% / @grid-block-count;
+
+.custom-loop(@base-value: @n; @n; @unit: px; @j: 1; @_s: 0; @step-size: 1; @selector: ~".span-"; @property: width)
+  when not(@n=0)  {
+    @size : @base-value+@_s;
+    @{selector}@{j}{
+      @{property} : ~"@{size}@{unit}";
+    }
+
+  .custom-loop(@base-value, (@n - 1), @unit, (@j + 1), (@_s+@step-size), @step-size, @selector, @property);
+}
+
+.custom-loop(
+  @n: @grid-block-count,
+  @base-value: @block-width,
+  @unit: '',
+  @property: width,
+  @selector: ~".blk",
+  @step-size: @block-width
+);

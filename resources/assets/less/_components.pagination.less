@@ -1,0 +1,73 @@
+.simple-pagination {
+  .df; 
+  .jcsb;
+  .pa2;
+  .brdr1--top;
+  .bcg1;
+}
+
+.pagination {
+  .df;
+  .aic;
+  .acc;
+  .jcc;
+  .tac;
+  position: relative;
+  font-size: 0;
+
+  :first-child a,
+  :last-child a {
+    .xbrdr;
+    position: absolute;
+    top: 0;
+    width: auto;
+
+    > span {
+      .df;
+      .aic;
+      .acc;
+      .jcc;
+    }
+  }
+
+  :first-child a {
+    left: 0;
+  }
+
+  :last-child a {
+    right: 0;
+  }
+
+  .disabled {
+    > a {
+      opacity: 0.3
+    }
+  }
+
+  > li {
+    margin-left: -1px;
+
+    &.active {
+      > a {
+        .bg1;
+        .tcw;
+      }
+    }
+
+    > a {
+      .df;
+      .aic;
+      .acc;
+      .jcc;
+      .ft15;
+      .tcg3;
+      .brdr1--left;
+      .brdr1--right;
+      .bcg1;
+      .pointer;
+
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+}

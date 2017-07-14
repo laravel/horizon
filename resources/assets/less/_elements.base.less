@@ -1,0 +1,64 @@
+// Base Elements
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+}
+
+hr {
+  background: none;
+  border-top: 1px solid rgba(0,0,0,0.2);
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+input, textarea, button {
+  outline: none;
+  .sans;
+}
+
+// Responsive Images
+img {
+  max-width: 100%;
+  font-style: italic;
+  vertical-align: middle;
+}
+
+img[width],
+img[height] {
+  max-width: none;
+}
+
+// Site-specific Base Elements
+body {
+  background: #EBEBEB;
+  font-family: Lato;
+}
+
+// Placeholders
+::-webkit-input-placeholder { color: #BBB; }
+::-moz-placeholder { color: #BBB; }
+:-ms-input-placeholder { color: #BBB; }
+:-moz-placeholder { color: #BBB; }
+

@@ -1,0 +1,23 @@
+<?php
+
+namespace Laravel\Horizon\Listeners;
+
+use Laravel\Horizon\Events\MasterSupervisorLooped;
+
+class MonitorMasterSupervisorMemory
+{
+    /**
+     * Handle the event.
+     *
+     * @param  MasterSupervisorLooped  $event
+     * @return void
+     */
+    public function handle(MasterSupervisorLooped $event)
+    {
+        $master = $event->master;
+
+        if ($master->memoryUsage() > 64) {
+            $master->terminate(12);
+        }
+    }
+}

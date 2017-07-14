@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "prod": "gulp --production",
+    "dev": "gulp watch"
+  },
+  "devDependencies": {
+    "axios": "^0.15.3",
+    "chart.js": "^2.5.0",
+    "es6-promise": "^4.0.5",
+    "gulp": "^3.9.1",
+    "jquery": "^3.1.0",
+    "laravel-elixir": "^6.0.0-14",
+    "laravel-elixir-vue-2": "^0.2.0",
+    "laravel-elixir-webpack-official": "^1.0.2",
+    "phpunserialize": "1.*",
+    "lodash": "^4.16.2",
+    "moment": "^2.10.6",
+    "vue": "^2.2.0",
+    "vue-router": "^2.2.0"
+  }
+}

@@ -1,0 +1,47 @@
+<?php
+
+namespace Laravel\Horizon\Tests\Feature;
+
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\Tests\IntegrationTest;
+use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Contracts\TagRepository;
+
+class FailedJobTest extends IntegrationTest
+{
+    public function test_failed_jobs_are_placed_in_the_failed_job_table()
+    {
+        $id = Queue::push(new Jobs\FailingJob);
+        $this->work();
+        $this->assertEquals(1, $this->failedJobs());
+        $this->assertTrue(Redis::connection('horizon-jobs')->ttl($id) > 0);
+
+        $job = resolve(JobRepository::class)->getJobs([$id])[0];
+
+        $this->assertTrue(isset($job->exception));
+        $this->assertTrue(isset($job->failed_at));
+        $this->assertEquals('failed', $job->status);
+        $this->assertTrue(is_numeric($job->failed_at));
+        $this->assertEquals(Jobs\FailingJob::class, $job->name);
+    }
+
+
+    public function test_tags_for_failed_jobs_are_stored_in_redis()
+    {
+        $id = Queue::push(new Jobs\FailingJob);
+        $this->work();
+        $ids = resolve(TagRepository::class)->jobs('failed:first');
+        $this->assertEquals([$id], $ids);
+    }
+
+
+    public function test_failed_job_tags_have_an_expiration()
+    {
+        $id = Queue::push(new Jobs\FailingJob);
+        $this->work();
+        $ttl = Redis::connection('horizon-tags')->pttl('failed:first');
+        $this->assertNotNull($ttl);
+        $this->assertTrue($ttl > 0);
+    }
+}

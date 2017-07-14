@@ -1,0 +1,62 @@
+@table-bg-white: @brand-white;
+@table-bg-gray: #FAFAFA;
+@table-heading-bg-gray: #EBECEE;
+@table-heading-color: #252D34;
+@table-body-color: #424C55;
+@table-bg-hover: #F5F8FC;
+
+.vab { vertical-align: baseline }
+
+.table {
+  max-width: 100%;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  > thead {
+    > tr {
+      > th {
+        background-color: @table-heading-bg-gray;
+        height: 4.1rem;
+        vertical-align: middle;
+        padding: 5px;
+        .ft15;
+      }
+    }
+  }
+
+  > tbody {
+    > tr:last-child td { border-bottom: none; }
+
+    > tr {
+      &:hover {
+        background-color: @table-bg-hover
+      }
+
+      > td {
+        vertical-align: middle;
+        height: 60px;
+        .ft15;
+        border-bottom: 1px solid @gray-1;
+        color: @table-body-color;
+        font-weight: 300;
+        padding: 5px;
+
+        > a {
+          color: @brand-primary;
+        }
+
+        > i {
+          .ico;
+          .ico20;
+          .mr1\.5;
+
+          svg {
+            bottom: -0.3em;
+            position: absolute;
+          }
+        }
+      }
+    }
+  }
+}
