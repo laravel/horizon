@@ -26,6 +26,44 @@ After publishing Horizon's assets, its primary configuration file will be locate
 
 Horizon exposes a dashboard at `/horizon`. By default, you will only be able to access this dashboard in the `local` environment. To define a more specific access policy for the dashboard, you should use the `Horizon::auth` method. The `auth` method accepts a callback which should return `true` or `false`, indicating whether the user should have access to the Horizon dashboard:
 
-    Horizon::auth(function ($request) {
-        // return true / false;
-    });
+```php
+Horizon::auth(function ($request) {
+    // return true / false;
+});
+```
+
+## Running Horizon
+
+Once you have configured your workers in the `config/horizon.php` configuration file, you may start Horizon using the `horizon` Artisan command. This single command will start all of your configured workers:
+
+    php artisan horizon
+
+You may pause the Horizon process and instruct it to continue processing jobs using the `horizon:pause` and `horizon:continue` Artisan commands:
+
+    php artisan horizon:pause
+
+    php artisan horizon:continue
+
+You may gracefully terminate the master Horizon process on your machine using the `horizon:terminate` Artisan command. Any jobs that Horizon is currently processing will be completed and then Horizon will exit:
+
+    php artisan horizon:terminate
+
+### Deploying Horizon
+
+If you are deploying Horizon to a live server, you should configure a process monitor to monitor the `php artisan horizon` command and restart it if it quits unexpectedly. When deploying fresh code to your server, you will need to instruct the master Horizon process to terminate so it can be restarted by your process monitor and receive your code changes.
+
+You may gracefully terminate the master Horizon process on your machine using the `horizon:terminate` Artisan command. Any jobs that Horizon is currently processing will be completed and then Horizon will exit:
+
+    php artisan horizon:terminate
+
+## Notifications
+
+> **Note:** Before using notifications, add the `guzzlehttp/guzzle` Composer package to your project. When configuring Horizon to send SMS notifications, you should also review the [prerequisites for the Nexmo notification driver](https://laravel.com/docs/5.4/notifications#sms-notifications).
+
+If you would like to be notified when one of your queues has a long wait time, you may use the `Horizon::routeSlackNotificationsTo` and `Horizon::routeSmsNotificationsTo` methods. You may call these methods from your application's `AppServiceProvider`:
+
+```php
+Horizon::routeSlackNotificationsTo('slack-webhook-url');
+
+Horizon::routeSmsNotificationsTo('15556667777');
+```
