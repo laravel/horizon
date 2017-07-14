@@ -70,7 +70,7 @@ Horizon::routeSmsNotificationsTo('15556667777');
 
 ### Configuring Wait Time Thresholds
 
-You may configure how many seconds are considered a "long wait" in your `config/horizon.php` configuration file. The `wait` configuration option within this file allows you to control the long wait threshold for each connection / queue combination:
+You may configure how many seconds are considered a "long wait" within your `config/horizon.php` configuration file. The `wait` configuration option within this file allows you to control the long wait threshold for each connection / queue combination:
 
 ```php
 'waits' => [
