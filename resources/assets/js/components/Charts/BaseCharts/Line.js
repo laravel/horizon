@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import Vue from 'vue';
+import _ from 'lodash';
 import Chart from 'chart.js';
 import {mergeOptions} from '../../../helpers/options';
 
@@ -35,6 +35,9 @@ export default Vue.extend({
                             beforeBuildTicks: function (scale) {
                                 var max = _.max(scale.chart.data.datasets[0].data);
                                 scale.max = parseInt(max) + parseInt(max * 0.25);
+                                
+                                console.log(max);
+                                console.log(scale.max);
                             },
                         }
                     ],
@@ -43,11 +46,11 @@ export default Vue.extend({
                             gridLines: {
                                 display: true
                             },
-                            afterTickToLabelConversion: function(data){
+                            afterTickToLabelConversion: function (data) {
                                 var xLabels = data.ticks;
 
                                 xLabels.forEach(function (labels, i) {
-                                    if (i % 6 != 0 && (i + 1) != xLabels.length){
+                                    if (i % 6 != 0 && (i + 1) != xLabels.length) {
                                         xLabels[i] = '';
                                     }
                                 });
