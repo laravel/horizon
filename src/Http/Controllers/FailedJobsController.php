@@ -113,7 +113,9 @@ class FailedJobsController extends Controller
     protected function decode($job)
     {
         $job->payload = json_decode($job->payload);
-        $job->retried_by = json_decode($job->retried_by);
+
+        $job->retried_by = collect(json_decode($job->retried_by))
+                        ->sortByDesc('retried_at')->values();
 
         return $job;
     }
