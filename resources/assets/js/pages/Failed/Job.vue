@@ -33,6 +33,10 @@
          */
         mounted() {
             this.loadFailedJob(this.jobId)
+
+            setInterval(() => {
+                this.reloadRetries();
+            }, 3000);
         },
 
 
@@ -50,6 +54,18 @@
 
 
             /**
+             * Reload the job retries.
+             */
+            reloadRetries(){
+                axios.get('/horizon/api/jobs/failed/' + this.jobId)
+                        .then(response => {
+                            this.job.retried_by = response.data.retried_by;
+
+                        });
+            },
+
+
+            /**
              * Retry the given failed job.
              */
             retry(id) {
@@ -62,7 +78,7 @@
                 axios.post('/horizon/api/jobs/retry/' + id)
                         .then(() => {
                             setTimeout(() => {
-                                this.loadFailedJob(this.jobId);
+                                this.reloadRetries();
 
                                 this.retryingJob = false;
                             }, 3000);
@@ -85,8 +101,14 @@
             },
 
 
-            prettyPrintData(data){
-                return '<pre>'+JSON.stringify(phpunserialize(data), null, 2)+'</pre>';
+            /**
+             * Pretty print serialized job.
+             *
+             * @param data
+             * @returns {string}
+             */
+            prettyPrintJob(data){
+                return '<pre>' + JSON.stringify(phpunserialize(data), null, 2) + '</pre>';
             }
         }
     }
@@ -136,7 +158,7 @@
                             </div>
                             <div class="blk9">
                                 <p class="basic-text ft14 lh1.5 jobDetailsText"
-                                   v-html="prettyPrintData(job.payload.data.command)"></p>
+                                   v-html="prettyPrintJob(job.payload.data.command)"></p>
                             </div>
                         </div>
                     </div>
