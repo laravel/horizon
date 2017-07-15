@@ -76,15 +76,15 @@ class HorizonServiceProvider extends ServiceProvider
     {
         $this->publishes([
             HORIZON_PATH.'/public/js' => public_path('vendor/horizon/js'),
-        ], 'horizon-js');
+        ], 'horizon-assets');
 
         $this->publishes([
             HORIZON_PATH.'/public/css' => public_path('vendor/horizon/css'),
-        ], 'horizon-css');
+        ], 'horizon-assets');
 
         $this->publishes([
             HORIZON_PATH.'/public/img' => public_path('vendor/horizon/img'),
-        ], 'horizon-css');
+        ], 'horizon-assets');
     }
 
     /**
