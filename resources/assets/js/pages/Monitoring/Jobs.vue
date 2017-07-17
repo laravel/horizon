@@ -126,6 +126,7 @@
                 <th class="pl2">Job</th>
                 <th>On</th>
                 <th>Tags</th>
+                <th v-if="type == 'index'">Queued At</th>
                 <th>Runtime</th>
                 <th v-if="type == 'index'">Status</th>
                 <th v-if="type != 'index'">Failed At</th>
@@ -139,6 +140,9 @@
                 </td>
                 <td>{{ job.queue }}</td>
                 <td>{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</td>
+                <td v-if="type == 'index'">
+                    {{ readableTimestamp(job.payload.pushedAt) }}
+                </td>
                 <td>
                     <span v-if="job.status == 'failed'">{{ job.failed_at ? String(job.failed_at - job.reserved_at)+'s' : '-' }}</span>
                     <span v-else="">{{ job.completed_at ? String(job.completed_at - job.reserved_at)+'s' : '-' }}</span>

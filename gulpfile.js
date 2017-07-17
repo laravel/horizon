@@ -18,6 +18,6 @@ elixir(mix => {
     .less('app.less')
     .webpack('app.js')
     .copy('resources/assets/img', 'public/img')
-    // .copy('public', '../../laravelhorizon/public/vendor/horizon');
-    .copy('public', '../app/public/vendor/horizon');
+    .copy('public', '../../laravelhorizon/public/vendor/horizon');
+    // .copy('public', '../app/public/vendor/horizon');
 });
