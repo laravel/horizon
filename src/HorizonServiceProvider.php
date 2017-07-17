@@ -172,12 +172,12 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\HorizonCommand::class,
                 Console\ListCommand::class,
                 Console\PurgeCommand::class,
-                Console\RestartCommand::class,
                 Console\PauseCommand::class,
                 Console\ContinueCommand::class,
                 Console\SnapshotCommand::class,
                 Console\SupervisorCommand::class,
                 Console\SupervisorsCommand::class,
+                Console\TerminateCommand::class,
                 Console\TimeoutCommand::class,
                 Console\WorkCommand::class,
             ]);

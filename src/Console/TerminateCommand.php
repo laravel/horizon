@@ -7,14 +7,14 @@ use Illuminate\Console\Command;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
-class RestartCommand extends Command
+class TerminateCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'horizon:restart';
+    protected $signature = 'horizon:terminate';
 
     /**
      * The console command description.
