@@ -78,8 +78,8 @@ class LongWaitDetected extends Notification
                     ->attachment(function ($attachment) {
                         $attachment->title('Long Wait Detected')
                                    ->content(sprintf(
-                                        'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-                                        $this->queue, $this->connection, $this->seconds
+                                        '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+                                       config('app.name'), $this->queue, $this->connection, $this->seconds
                                    ));
                     });
     }
@@ -93,8 +93,8 @@ class LongWaitDetected extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)->content(sprintf(
-            'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-            $this->queue, $this->connection, $this->seconds
+            '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+            config('app.name'), $this->queue, $this->connection, $this->seconds
         ));
     }
 
