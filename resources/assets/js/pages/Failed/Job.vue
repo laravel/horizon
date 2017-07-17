@@ -165,7 +165,7 @@
                 </panel-content>
             </panel>
 
-            <panel v-if="!loadingJob">
+            <panel v-if="!loadingJob && job.retried_by.length">
                 <panel-heading>Recent Retries</panel-heading>
 
                 <panel-content>
