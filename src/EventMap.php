@@ -10,60 +10,60 @@ trait EventMap
      * @var array
      */
     protected $events = [
-        'Laravel\Horizon\Events\JobPushed' => [
-            'Laravel\Horizon\Listeners\StoreJob',
-            'Laravel\Horizon\Listeners\StoreMonitoredTags',
+        \Laravel\Horizon\Events\JobPushed::class => [
+            \Laravel\Horizon\Listeners\StoreJob::class,
+            \Laravel\Horizon\Listeners\StoreMonitoredTags::class,
         ],
 
-        'Laravel\Horizon\Events\JobReserved' => [
-            'Laravel\Horizon\Listeners\MarkJobAsReserved',
-            'Laravel\Horizon\Listeners\StartTimingJob',
+        \Laravel\Horizon\Events\JobReserved::class => [
+            \Laravel\Horizon\Listeners\MarkJobAsReserved::class,
+            \Laravel\Horizon\Listeners\StartTimingJob::class,
         ],
 
-        'Laravel\Horizon\Events\JobReleased' => [
-            'Laravel\Horizon\Listeners\MarkJobAsReleased',
+        \Laravel\Horizon\Events\JobReleased::class => [
+            \Laravel\Horizon\Listeners\MarkJobAsReleased::class,
         ],
 
-        'Laravel\Horizon\Events\JobDeleted' => [
-            'Laravel\Horizon\Listeners\MarkJobAsComplete',
-            'Laravel\Horizon\Listeners\UpdateJobMetrics',
+        \Laravel\Horizon\Events\JobDeleted::class => [
+            \Laravel\Horizon\Listeners\MarkJobAsComplete::class,
+            \Laravel\Horizon\Listeners\UpdateJobMetrics::class,
         ],
 
-        'Laravel\Horizon\Events\JobsMigrated' => [
-            'Laravel\Horizon\Listeners\MarkJobsAsMigrated',
+        \Laravel\Horizon\Events\JobsMigrated::class => [
+            \Laravel\Horizon\Listeners\MarkJobsAsMigrated::class,
         ],
 
         'Illuminate\Queue\Events\JobFailed' => [
-            'Laravel\Horizon\Listeners\MarshalFailedEvent',
+            \Laravel\Horizon\Listeners\MarshalFailedEvent::class,
         ],
 
-        'Laravel\Horizon\Events\JobFailed' => [
-            'Laravel\Horizon\Listeners\MarkJobAsFailed',
-            'Laravel\Horizon\Listeners\StoreTagsForFailedJob',
+        \Laravel\Horizon\Events\JobFailed::class => [
+            \Laravel\Horizon\Listeners\MarkJobAsFailed::class,
+            \Laravel\Horizon\Listeners\StoreTagsForFailedJob::class,
         ],
 
-        'Laravel\Horizon\Events\MasterSupervisorLooped' => [
-            'Laravel\Horizon\Listeners\TrimRecentJobs',
-            'Laravel\Horizon\Listeners\TrimFailedJobs',
-            'Laravel\Horizon\Listeners\MonitorMasterSupervisorMemory',
+        \Laravel\Horizon\Events\MasterSupervisorLooped::class => [
+            \Laravel\Horizon\Listeners\TrimRecentJobs::class,
+            \Laravel\Horizon\Listeners\TrimFailedJobs::class,
+            \Laravel\Horizon\Listeners\MonitorMasterSupervisorMemory::class,
         ],
 
-        'Laravel\Horizon\Events\SupervisorLooped' => [
-            'Laravel\Horizon\Listeners\PruneTerminatingProcesses',
-            'Laravel\Horizon\Listeners\MonitorSupervisorMemory',
-            'Laravel\Horizon\Listeners\MonitorWaitTimes',
+        \Laravel\Horizon\Events\SupervisorLooped::class => [
+            \Laravel\Horizon\Listeners\PruneTerminatingProcesses::class,
+            \Laravel\Horizon\Listeners\MonitorSupervisorMemory::class,
+            \Laravel\Horizon\Listeners\MonitorWaitTimes::class,
         ],
 
-        'Laravel\Horizon\Events\WorkerProcessRestarting' => [
+        \Laravel\Horizon\Events\WorkerProcessRestarting::class => [
             //
         ],
 
-        'Laravel\Horizon\Events\SupervisorProcessRestarting' => [
-            'Laravel\Horizon\Listeners\LogProcessRestart',
+        \Laravel\Horizon\Events\SupervisorProcessRestarting::class => [
+            \Laravel\Horizon\Listeners\LogProcessRestart::class,
         ],
 
-        'Laravel\Horizon\Events\LongWaitDetected' => [
-            'Laravel\Horizon\Listeners\SendNotification'
+        \Laravel\Horizon\Events\LongWaitDetected::class => [
+            \Laravel\Horizon\Listeners\SendNotification::class
         ],
     ];
 }
