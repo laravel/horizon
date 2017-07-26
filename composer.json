@@ -1,6 +1,6 @@
 {
     "name": "laravel/horizon",
-    "description": "",
+    "description": "Dashboard and code-driven configuration for Laravel queues.",
     "keywords": [
         "laravel",
         "queue"
