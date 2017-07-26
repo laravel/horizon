@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const webpack = require('webpack');
 
 /*
  |--------------------------------------------------------------------------
@@ -22,3 +23,14 @@ mix
 if (mix.inProduction()) {
     mix.version();
 }
+
+mix.webpackConfig({
+    plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    ],
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.runtime.esm.js'
+        }
+    }
+});
