@@ -17,6 +17,10 @@ Horizon requires Laravel 5.5, which is currently in beta, and PHP 7.1+. You may 
 After installing Horizon, publish its assets using the `vendor:publish` Artisan command:
 
     php artisan vendor:publish
+    
+After publishing vendor assets, add the ServiceProvider to the providers array in config/app.php
+
+    Laravel\Horizon\HorizonServiceProvider::class
 
 ## Configuration
 
