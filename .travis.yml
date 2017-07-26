@@ -1,0 +1,17 @@
+language: php
+
+php:
+  - 7.1
+
+sudo: false
+
+services:
+  - redis-server
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - printf "\n" | pecl install -f redis
+
+install: travis_retry composer install --no-interaction --prefer-dist --no-suggest
+
+script: vendor/bin/phpunit --verbose

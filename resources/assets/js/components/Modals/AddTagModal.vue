@@ -41,6 +41,11 @@
              * Save the tag and hide the modal.
              */
             saveTag() {
+                if (!this.name) {
+                    this.$refs.tag.focus();
+                    return;
+                }
+
                 this.saving = true;
 
                 axios.post('/horizon/api/monitoring', {'tag': this.name})
