@@ -71,12 +71,14 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     {
         $records = $this->connection()->pipeline(function ($pipe) use ($names) {
             foreach ($names as $name) {
-                $pipe->hmget('master:'.$name, 'name', 'pid', 'status', 'supervisors');
+                $pipe->hmget('master:'.$name, ['name', 'pid', 'status', 'supervisors']);
             }
         });
 
         return collect($records)->map(function ($record) {
-            return is_null($record[0]) ? null : (object) [
+            $record = array_values($record);
+
+            return ! $record[0] ? null : (object) [
                 'name' => $record[0],
                 'pid' => $record[1],
                 'status' => $record[2],
@@ -96,11 +98,12 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
         $supervisors = $master->supervisors->map->name->all();
 
         $this->connection()->hmset(
-            'master:'.$master->name,
-            'name', $master->name,
-            'pid', $master->pid(),
-            'status', $master->working ? 'running' : 'paused',
-            'supervisors', json_encode($supervisors)
+            'master:'.$master->name,[
+                'name'=> $master->name,
+                'pid'=> $master->pid(),
+                'status'=> $master->working ? 'running' : 'paused',
+                'supervisors'=> json_encode($supervisors)
+            ]
         );
 
         $this->connection()->expire(

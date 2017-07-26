@@ -70,12 +70,14 @@ class RedisSupervisorRepository implements SupervisorRepository
     {
         $records = $this->connection()->pipeline(function ($pipe) use ($names) {
             foreach ($names as $name) {
-                $pipe->hmget('supervisor:'.$name, 'name', 'master', 'pid', 'status', 'processes', 'options');
+                $pipe->hmget('supervisor:'.$name, ['name', 'master', 'pid', 'status', 'processes', 'options']);
             }
         });
 
         return collect($records)->filter()->map(function ($record) {
-            return is_null($record[0]) ? null : (object) [
+            $record = array_values($record);
+
+            return ! $record[0] ? null : (object) [
                 'name' => $record[0],
                 'master' => $record[1],
                 'pid' => $record[2],
@@ -111,13 +113,14 @@ class RedisSupervisorRepository implements SupervisorRepository
         })->toJson();
 
         $this->connection()->hmset(
-            'supervisor:'.$supervisor->name,
-            'name', $supervisor->name,
-            'master', explode(':', $supervisor->name)[0],
-            'pid', $supervisor->pid(),
-            'status', $supervisor->working ? 'running' : 'paused',
-            'processes', $processes,
-            'options', $supervisor->options->toJson()
+            'supervisor:'.$supervisor->name, [
+                'name' => $supervisor->name,
+                'master' => explode(':', $supervisor->name)[0],
+                'pid' => $supervisor->pid(),
+                'status' => $supervisor->working ? 'running' : 'paused',
+                'processes' => $processes,
+                'options' => $supervisor->options->toJson()
+            ]
         );
 
         $this->connection()->expire(
