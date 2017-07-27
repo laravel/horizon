@@ -15,18 +15,18 @@
     "require": {
         "php": ">=7.1.0",
         "ext-pcntl": "*",
+        "cakephp/chronos": "^1.0",
         "illuminate/contracts": "~5.4",
         "illuminate/queue": "~5.4",
         "illuminate/support": "~5.4",
-        "ramsey/uuid": "^3.5",
-        "symfony/debug": "~3.2",
         "predis/predis": "^1.1",
-        "cakephp/chronos": "^1.0"
+        "ramsey/uuid": "^3.5",
+        "symfony/debug": "~3.2"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.4",
-        "orchestra/database": "~3.4",
         "mockery/mockery": "~0.9",
+        "orchestra/database": "~3.4",
+        "orchestra/testbench": "~3.4",
         "phpunit/phpunit": "~5.0"
     },
     "autoload": {
@@ -48,6 +48,9 @@
                 "Laravel\\Horizon\\HorizonServiceProvider"
             ]
         }
+    },
+    "config": {
+        "sort-packages": true
     },
     "prefer-stable": true,
     "minimum-stability": "dev"
