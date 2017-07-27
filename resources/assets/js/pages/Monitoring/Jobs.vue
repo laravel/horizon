@@ -12,42 +12,41 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
                 loadState: {
-                    index: true, failed: true
+                    index: true,
+                    failed: true,
                 },
                 jobs: {
-                    index: [], failed: []
-                }
-            };
+                    index: [],
+                    failed: [],
+                },
+            }
         },
-
 
         /**
          * Prepare the component.
          */
         mounted() {
-            this.loadJobs(this.$route.params.tag);
+            this.loadJobs(this.$route.params.tag)
 
-            this.refreshJobsPeriodically();
+            this.refreshJobsPeriodically()
         },
-
 
         /**
          * Watch these properties for changes.
          */
         watch: {
-            '$route'(){
-                this.page = 1;
+            '$route'() {
+                this.page = 1
 
-                this.loadJobs(this.$route.params.tag);
+                this.loadJobs(this.$route.params.tag)
             }
         },
-
 
         methods: {
             /**
@@ -55,61 +54,60 @@
              */
             loadJobs(tag, starting = 0, preload = true) {
                 if (preload) {
-                    this.loadState[this.type] = true;
+                    this.loadState[this.type] = true
                 }
 
-                tag = this.type == 'failed' ? 'failed:' + tag : tag;
+                tag = this.type == 'failed' ? 'failed:' + tag : tag
 
                 return axios.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
-                        .then(response => {
-                            this.jobs[this.type] = response.data.jobs;
+                    .then(response => {
+                        this.jobs[this.type] = response.data.jobs
 
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
+                        this.totalPages = Math.ceil(response.data.total / this.perPage)
 
-                            this.loadState[this.type] = false;
+                        this.loadState[this.type] = false
 
-                            return response.data.jobs;
-                        });
+                        return response.data.jobs
+                    })
             },
-
 
             /**
              * Refresh the jobs every period of time.
              */
-            refreshJobsPeriodically(){
+            refreshJobsPeriodically() {
                 setInterval(() => {
                     if (this.page != 1) {
-                        return;
+                        return
                     }
 
-                    this.loadJobs(this.$route.params.tag, 0, false);
-                }, 3000);
+                    this.loadJobs(this.$route.params.tag, 0, false)
+                }, 3000)
             },
-
 
             /**
              * Load the jobs for the previous page.
              */
-            previous(){
-                this.loadJobs(this.$route.params.tag,
-                        (this.page - 2) * this.perPage
-                );
+            previous() {
+                this.loadJobs(
+                    this.$route.params.tag,
+                    (this.page - 2) * this.perPage
+                )
 
-                this.page -= 1;
+                this.page -= 1
             },
-
 
             /**
              * Load the jobs for the next page.
              */
-            next(){
-                this.loadJobs(this.$route.params.tag,
-                        this.page * this.perPage
-                );
+            next() {
+                this.loadJobs(
+                    this.$route.params.tag,
+                    this.page * this.perPage
+                )
 
-                this.page += 1;
-            }
-        }
+                this.page += 1
+            },
+        },
     }
 </script>
 <template>
@@ -164,4 +162,3 @@
         </div>
     </div>
 </template>
-

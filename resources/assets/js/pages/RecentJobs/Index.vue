@@ -6,15 +6,20 @@
     import PanelHeading from '../../components/Panels/PanelHeading.vue'
 
     export default {
-        components: {JobTable, Layout, Panel, PanelContent, PanelHeading},
-
+        components: {
+            JobTable,
+            Layout,
+            Panel,
+            PanelContent,
+            PanelHeading
+        },
 
         /**
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Recent Jobs";
-        }
+            document.title = "Horizon - Recent Jobs"
+        },
     }
 </script>
 
@@ -31,4 +36,3 @@
         </section>
     </layout>
 </template>
-

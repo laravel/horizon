@@ -10,15 +10,14 @@
     export default {
         components: {Message, Layout, Panel, PanelContent, PanelHeading, AddTagModal},
 
-
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingTags: true,
-                tags: []
-            };
+                tags: [],
+            }
         },
 
 
@@ -26,56 +25,53 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Monitoring";
+            document.title = "Horizon - Monitoring"
 
-            this.loadTags();
+            this.loadTags()
 
-            Bus.$on('tagAdded', data => this.startMonitoringTag(data.tag));
+            Bus.$on('tagAdded', data => this.startMonitoringTag(data.tag))
         },
-
 
         methods: {
             /**
              * Load the monitored tags.
              */
             loadTags() {
-                this.loadingTags = true;
+                this.loadingTags = true
 
                 axios.get('/horizon/api/monitoring')
-                        .then(response => {
-                            this.tags = response.data;
+                    .then(response => {
+                        this.tags = response.data
 
-                            this.loadingTags = false;
-                        });
+                        this.loadingTags = false
+                    })
             },
-
 
             /**
              * Open the modal for adding a new tag.
              */
             openTagModal() {
-                this.$root.showModal = true;
+                this.$root.showModal = true
             },
 
 
             /**
              * Start monitoring a new tag.
              */
-            startMonitoringTag(tag){
-                this.tags.push({tag: tag, count: 0});
+            startMonitoringTag(tag) {
+                this.tags.push({tag: tag, count: 0})
             },
-
 
             /**
              * Stop monitoring the given tag.
              */
             stopMonitoring(tag) {
                 axios.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
-                        .then(() => {
-                            this.tags = _.reject(this.tags, existing => existing.tag == tag)
-                        })
-            }
-        }
+                    .then(() => {
+                        this.tags = _.reject(this.tags, existing => existing.tag == tag)
+                    })
+            },
+        },
     }
 </script>
 

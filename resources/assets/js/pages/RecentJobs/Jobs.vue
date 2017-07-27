@@ -5,44 +5,44 @@
     import Message from '../../components/Messages/Message.vue'
 
     export default {
-        components: {Status, Message, Spinner},
-
+        components: {
+            Status,
+            Message,
+            Spinner
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
                 loadState: true,
-                jobs: []
-            };
+                jobs: [],
+            }
         },
-
 
         /**
          * Prepare the component.
          */
         created() {
-            this.loadJobs();
+            this.loadJobs()
 
-            this.refreshJobsPeriodically();
+            this.refreshJobsPeriodically()
         },
-
 
         /**
          * Watch these properties for changes.
          */
         watch: {
-            '$route'(){
-                this.page = 1;
+            '$route'() {
+                this.page = 1
 
-                this.loadJobs();
+                this.loadJobs()
             }
         },
-
 
         methods: {
             /**
@@ -50,58 +50,55 @@
              */
             loadJobs(starting = -1, preload = true) {
                 if (preload) {
-                    this.loadState = true;
+                    this.loadState = true
                 }
 
                 return axios.get('/horizon/api/jobs/recent/' + '?starting_at=' + starting + '&limit=' + this.perPage)
-                        .then(response => {
-                            this.jobs = response.data.jobs;
+                    .then(response => {
+                        this.jobs = response.data.jobs
 
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
+                        this.totalPages = Math.ceil(response.data.total / this.perPage)
 
-                            this.loadState = false;
+                        this.loadState = false
 
-                            return response.data.jobs;
-                        });
+                        return response.data.jobs
+                    })
             },
-
 
             /**
              * Refresh the jobs every period of time.
              */
-            refreshJobsPeriodically(){
+            refreshJobsPeriodically() {
                 setInterval(() => {
                     if (this.page != 1) {
-                        return;
+                        return
                     }
 
-                    this.loadJobs(-1, false);
-                }, 3000);
+                    this.loadJobs(-1, false)
+                }, 3000)
             },
-
 
             /**
              * Load the jobs for the previous page.
              */
-            previous(){
+            previous() {
                 this.loadJobs(
-                        ((this.page - 2) * this.perPage) - 1
-                );
+                    ((this.page - 2) * this.perPage) - 1
+                )
 
-                this.page -= 1;
+                this.page -= 1
             },
-
 
             /**
              * Load the jobs for the next page.
              */
-            next(){
+            next() {
                 this.loadJobs(
-                        (this.page * this.perPage) - 1
-                );
+                    (this.page * this.perPage) - 1
+                )
 
-                this.page += 1;
-            }
+                this.page += 1
+            },
         },
     }
 </script>

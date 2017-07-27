@@ -7,15 +7,21 @@
     import PanelHeading from '../../components/Panels/PanelHeading.vue'
 
     export default {
-        components: {Layout, Panel, PanelContent, PanelHeading, Tab, Tabs},
-
+        components: {
+            Layout,
+            Panel,
+            PanelContent,
+            PanelHeading,
+            Tab,
+            Tabs,
+        },
 
         /**
          * Prepare the component.
          */
         created() {
-            document.title = "Horizon - Metrics";
-        }
+            document.title = "Horizon - Metrics"
+        },
     }
 </script>
 

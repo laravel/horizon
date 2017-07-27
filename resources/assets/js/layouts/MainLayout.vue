@@ -5,7 +5,12 @@
     import MainSidebar from '../partials/MainSidebar.vue'
 
     export default {
-        components: {Status, MainHeader, MainFooter, MainSidebar}
+        components: {
+            Status,
+            MainHeader,
+            MainFooter,
+            MainSidebar,
+        },
     }
 </script>
 
@@ -28,4 +33,3 @@
         <main-footer/>
     </div>
 </template>
-

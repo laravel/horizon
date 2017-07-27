@@ -3,26 +3,24 @@
         props: {
             'icon': {},
             'color': {
-                default: 'fg8'
+                default: 'fg8',
             },
             'size': {
-                default: 'default'
+                default: 'default',
             },
             'spin': {
-                default: false
-            }
+                default: false,
+            },
         },
-
 
         data() {
             return {
                 sizes: {
                     sm: 'ico',
                     default: 'ico20',
-                }
+                },
             }
         },
-
 
         computed: {
             iconSize() {
@@ -33,7 +31,7 @@
             },
             classNames() {
                 return {}
-            }
+            },
         },
     }
 </script>
