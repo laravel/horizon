@@ -25,7 +25,7 @@ class RedisJobRepository implements JobRepository
      */
     public $keys = [
         'id', 'connection', 'queue', 'name', 'status', 'payload',
-        'exception', 'failed_at', 'completed_at', 'retried_by', 'reserved_at'
+        'exception', 'failed_at', 'completed_at', 'retried_by', 'reserved_at',
     ];
 
     /**
@@ -130,7 +130,7 @@ class RedisJobRepository implements JobRepository
      */
     protected function getJobsByType($type, $afterIndex)
     {
-        $afterIndex = is_null($afterIndex) ? -1 : $afterIndex;
+        $afterIndex = $afterIndex === null ? -1 : $afterIndex;
 
         return $this->getJobs($this->connection()->zrange(
             $type, $afterIndex + 1, $afterIndex + 50
@@ -165,7 +165,7 @@ class RedisJobRepository implements JobRepository
         return $this->indexJobs(collect($jobs)->filter(function ($job) {
             $job = is_array($job) ? array_values($job) : null;
 
-            return is_array($job) && ! is_null($job[0]);
+            return is_array($job) && $job[0] !== null;
         }), $indexFrom);
     }
 
@@ -211,7 +211,7 @@ class RedisJobRepository implements JobRepository
                     'status' => 'pending',
                     'payload' => $payload->value,
                     'created_at' => time(),
-                    'updated_at' => time()
+                    'updated_at' => time(),
                 ]
             );
 
@@ -248,7 +248,7 @@ class RedisJobRepository implements JobRepository
                 'status' => 'reserved',
                 'payload' => $payload->value,
                 'updated_at' => time(),
-                'reserved_at' => time()
+                'reserved_at' => time(),
             ]
         );
     }
@@ -267,7 +267,7 @@ class RedisJobRepository implements JobRepository
             $payload->id(), [
                 'status' => 'pending',
                 'payload' => $payload->value,
-                'updated_at' => time()
+                'updated_at' => time(),
             ]
         );
     }
@@ -291,7 +291,7 @@ class RedisJobRepository implements JobRepository
                     'name' => $payload->decoded['displayName'],
                     'status' => 'completed',
                     'payload' => $payload->value,
-                    'completed_at' => time()
+                    'completed_at' => time(),
                 ]
             );
 
@@ -315,7 +315,7 @@ class RedisJobRepository implements JobRepository
                     $payload->id(), [
                         'status' => 'pending',
                         'payload' => $payload->value,
-                        'updated_at' => time()
+                        'updated_at' => time(),
                     ]
                 );
             }
@@ -351,7 +351,7 @@ class RedisJobRepository implements JobRepository
     protected function markJobAsCompleted($pipe, $id, $failed)
     {
         $failed
-            ? $pipe->hmset($id, ['status'=> 'failed'])
+            ? $pipe->hmset($id, ['status' => 'failed'])
             : $pipe->hmset($id, ['status' => 'completed', 'completed_at' => time()]);
 
         $pipe->expireat($id, Chronos::now()->addHours(1)->getTimestamp());
@@ -449,8 +449,7 @@ class RedisJobRepository implements JobRepository
             $id, $this->keys
         );
 
-        return is_array($attributes) && ! is_null($attributes[0])
-                    ? (object) array_combine($this->keys, $attributes) : null;
+        return is_array($attributes) && $attributes[0] !== null ? (object) array_combine($this->keys, $attributes) : null;
     }
 
     /**
@@ -476,7 +475,7 @@ class RedisJobRepository implements JobRepository
                     'status' => 'failed',
                     'payload' => $payload->value,
                     'exception' => (string) $exception,
-                    'failed_at' => time()
+                    'failed_at' => time(),
                 ]
             );
 
@@ -516,7 +515,7 @@ class RedisJobRepository implements JobRepository
         $retries[] = [
             'id' => $retryId,
             'status' => 'pending',
-            'retried_at' => Chronos::now()->getTimestamp()
+            'retried_at' => Chronos::now()->getTimestamp(),
         ];
 
         $this->connection()->hmset($id, ['retried_by' => json_encode($retries)]);

@@ -50,7 +50,7 @@ class HorizonServiceProvider extends ServiceProvider
     {
         Route::group([
             'prefix' => 'horizon',
-            'namespace' => 'Laravel\Horizon\Http\Controllers'
+            'namespace' => 'Laravel\Horizon\Http\Controllers',
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         });
@@ -133,7 +133,7 @@ class HorizonServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/horizon.php' => config_path('horizon.php')
+                __DIR__.'/../config/horizon.php' => config_path('horizon.php'),
             ], 'horizon-config');
         }
     }

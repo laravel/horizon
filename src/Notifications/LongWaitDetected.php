@@ -5,8 +5,8 @@ namespace Laravel\Horizon\Notifications;
 use Laravel\Horizon\Horizon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Messages\NexmoMessage;
+use Illuminate\Notifications\Messages\SlackMessage;
 
 class LongWaitDetected extends Notification
 {

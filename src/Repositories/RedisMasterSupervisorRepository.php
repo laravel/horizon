@@ -5,8 +5,8 @@ namespace Laravel\Horizon\Repositories;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\Contracts\SupervisorRepository;
-use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
 class RedisMasterSupervisorRepository implements MasterSupervisorRepository
 {
@@ -98,11 +98,11 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
         $supervisors = $master->supervisors->map->name->all();
 
         $this->connection()->hmset(
-            'master:'.$master->name,[
-                'name'=> $master->name,
-                'pid'=> $master->pid(),
-                'status'=> $master->working ? 'running' : 'paused',
-                'supervisors'=> json_encode($supervisors)
+            'master:'.$master->name, [
+                'name' => $master->name,
+                'pid' => $master->pid(),
+                'status' => $master->working ? 'running' : 'paused',
+                'supervisors' => json_encode($supervisors),
             ]
         );
 

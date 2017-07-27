@@ -11,8 +11,8 @@ use Laravel\Horizon\Contracts\Pausable;
 use Laravel\Horizon\Contracts\Terminable;
 use Laravel\Horizon\Contracts\Restartable;
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use Laravel\Horizon\Events\MasterSupervisorLooped;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Events\MasterSupervisorLooped;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
@@ -215,8 +215,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
      */
     public function ensureNoOtherMasterSupervisors()
     {
-        if (! is_null(resolve(MasterSupervisorRepository::class)->find($this->name))) {
-            throw new Exception("A master supervisor is already running on this machine.");
+        if (resolve(MasterSupervisorRepository::class)->find($this->name) !== null) {
+            throw new Exception('A master supervisor is already running on this machine.');
         }
     }
 

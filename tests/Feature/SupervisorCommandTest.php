@@ -17,7 +17,6 @@ class SupervisorCommandTest extends IntegrationTest
         $this->assertTrue($factory->supervisor->working);
     }
 
-
     public function test_supervisor_command_can_start_paused_supervisors()
     {
         $this->app->instance(SupervisorFactory::class, $factory = new FakeSupervisorFactory);

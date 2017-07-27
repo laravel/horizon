@@ -11,8 +11,8 @@ use Laravel\Horizon\Contracts\Terminable;
 use Laravel\Horizon\Contracts\Restartable;
 use Laravel\Horizon\Events\SupervisorLooped;
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Contracts\SupervisorRepository;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class Supervisor implements Pausable, Restartable, Terminable
@@ -261,7 +261,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function ensureNoDuplicateSupervisors()
     {
-        if (! is_null(resolve(SupervisorRepository::class)->find($this->name))) {
+        if (resolve(SupervisorRepository::class)->find($this->name) !== null) {
             throw new Exception("A supervisor with the name [{$this->name}] is already running.");
         }
     }

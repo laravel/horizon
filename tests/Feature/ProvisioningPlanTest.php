@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\MasterSupervisor;
 use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\ProvisioningPlan;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
@@ -36,7 +36,6 @@ class ProvisioningPlanTest extends IntegrationTest
         $this->assertEquals(20, $command->options['maxProcesses']);
     }
 
-
     public function test_supervisors_are_added_by_wildcard()
     {
         $plan = [
@@ -62,7 +61,6 @@ class ProvisioningPlanTest extends IntegrationTest
         $this->assertSame('first', $command->options['queue']);
         $this->assertEquals(20, $command->options['maxProcesses']);
     }
-
 
     public function test_plan_is_converted_into_array_of_supervisor_options()
     {

@@ -73,7 +73,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                     'name' => $queueName,
                     'length' => $this->queue->connection($connection)->readyNow($queueName),
                     'wait' => $waitTime,
-                    'processes' => $processes[$queue] ??  0,
+                    'processes' => $processes[$queue] ?? 0,
                 ];
             })->values()->toArray();
     }

@@ -14,7 +14,6 @@ class JobIdTest extends IntegrationTest
         $this->assertSame('3', JobId::generate());
     }
 
-
     public function test_custom_ids_can_be_generated()
     {
         JobId::generateUsing(function () {

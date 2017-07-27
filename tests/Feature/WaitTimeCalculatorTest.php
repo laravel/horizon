@@ -39,7 +39,6 @@ class WaitTimeCalculatorTest extends IntegrationTest
         );
     }
 
-
     public function test_multiple_queues_are_supported()
     {
         $calculator = $this->with_scenario([
@@ -74,7 +73,6 @@ class WaitTimeCalculatorTest extends IntegrationTest
             ['redis:test-queue-2' => 40], collect($calculator->calculate())->take(1)->all()
         );
     }
-
 
     public function test_single_queue_can_be_retrieved_for_multiple_queues()
     {
@@ -111,7 +109,6 @@ class WaitTimeCalculatorTest extends IntegrationTest
         );
     }
 
-
     public function test_time_to_clear_can_be_zero()
     {
         $calculator = $this->with_scenario([
@@ -132,7 +129,6 @@ class WaitTimeCalculatorTest extends IntegrationTest
             $calculator->calculate()
         );
     }
-
 
     public function test_total_processes_can_be_zero()
     {
@@ -155,7 +151,6 @@ class WaitTimeCalculatorTest extends IntegrationTest
         );
     }
 
-
     protected function with_scenario(array $supervisorSettings, array $queues)
     {
         $queue = Mockery::mock(QueueFactory::class);
@@ -172,7 +167,6 @@ class WaitTimeCalculatorTest extends IntegrationTest
 
         return new WaitTimeCalculator($queue, $supervisors, $metrics);
     }
-
 
     protected function options()
     {

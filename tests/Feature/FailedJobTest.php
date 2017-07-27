@@ -26,7 +26,6 @@ class FailedJobTest extends IntegrationTest
         $this->assertEquals(Jobs\FailingJob::class, $job->name);
     }
 
-
     public function test_tags_for_failed_jobs_are_stored_in_redis()
     {
         $id = Queue::push(new Jobs\FailingJob);
@@ -34,7 +33,6 @@ class FailedJobTest extends IntegrationTest
         $ids = resolve(TagRepository::class)->jobs('failed:first');
         $this->assertEquals([$id], $ids);
     }
-
 
     public function test_failed_job_tags_have_an_expiration()
     {

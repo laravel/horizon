@@ -57,7 +57,7 @@ class SupervisorCommand extends Command
         try {
             $supervisor->ensureNoDuplicateSupervisors();
         } catch (Exception $e) {
-            $this->error("A supervisor with this name is already running.");
+            $this->error('A supervisor with this name is already running.');
 
             return 13;
         }

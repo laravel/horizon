@@ -29,10 +29,9 @@ class MasterSupervisorControllerTest extends IntegrationTest
 
         $response->assertJson([
             'risa' => ['name' => 'risa', 'status' => 'running'],
-            'risa-2' => ['name' => 'risa-2', 'status' => 'running']
+            'risa-2' => ['name' => 'risa-2', 'status' => 'running'],
         ]);
     }
-
 
     public function test_master_supervisor_listing_with_supervisors()
     {
@@ -61,7 +60,7 @@ class MasterSupervisorControllerTest extends IntegrationTest
                         'name' => 'risa:name',
                         'master' => 'risa',
                         'status' => 'running',
-                        'processes' => ['redis:default' => 0]
+                        'processes' => ['redis:default' => 0],
                     ],
                 ],
             ],

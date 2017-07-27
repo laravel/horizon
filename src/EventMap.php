@@ -63,7 +63,7 @@ trait EventMap
         ],
 
         'Laravel\Horizon\Events\LongWaitDetected' => [
-            'Laravel\Horizon\Listeners\SendNotification'
+            'Laravel\Horizon\Listeners\SendNotification',
         ],
     ];
 }

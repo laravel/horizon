@@ -6,9 +6,9 @@ use Orchestra\Testbench\TestCase;
 use Illuminate\Queue\WorkerOptions;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\WorkerCommandString;
-use Laravel\Horizon\SupervisorCommandString;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\SupervisorCommandString;
 
 abstract class IntegrationTest extends TestCase
 {

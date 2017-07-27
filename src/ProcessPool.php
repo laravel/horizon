@@ -137,7 +137,7 @@ class ProcessPool implements Countable
     public function markForTermination(WorkerProcess $process)
     {
         $this->terminatingProcesses[] = [
-            'process' => $process, 'terminatedAt' => Chronos::now()
+            'process' => $process, 'terminatedAt' => Chronos::now(),
         ];
     }
 

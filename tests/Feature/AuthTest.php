@@ -21,7 +21,6 @@ class AuthTest extends IntegrationTest
         $this->assertFalse(Horizon::check(null));
     }
 
-
     public function test_authentication_middleware_can_pass()
     {
         Horizon::auth(function () {
@@ -40,7 +39,6 @@ class AuthTest extends IntegrationTest
 
         $this->assertSame('response', $response);
     }
-
 
     /**
      * @expectedException Symfony\Component\HttpKernel\Exception\HttpException

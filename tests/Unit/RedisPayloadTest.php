@@ -6,9 +6,9 @@ use Mockery;
 use StdClass;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\UnitTest;
+use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\SendQueuedMailable;
-use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Notifications\SendQueuedNotifications;
@@ -33,7 +33,6 @@ class RedisPayloadTest extends UnitTest
         $this->assertSame('notification', $JobPayload->decoded['type']);
     }
 
-
     public function test_tags_are_correctly_determined()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
@@ -47,7 +46,6 @@ class RedisPayloadTest extends UnitTest
         $JobPayload->prepare(new FakeJobWithEloquentModel($first, $second));
         $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
-
 
     public function test_tags_are_correctly_gathered_from_collections()
     {
@@ -63,7 +61,6 @@ class RedisPayloadTest extends UnitTest
         $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
 
-
     public function test_tags_are_correctly_extracted_for_internal_special_jobs()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
@@ -78,7 +75,6 @@ class RedisPayloadTest extends UnitTest
         $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
 
-
     public function test_tags_are_correctly_extracted_for_listeners()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
@@ -91,7 +87,6 @@ class RedisPayloadTest extends UnitTest
             'listenerTag1', 'listenerTag2', 'eventTag1', 'eventTag2',
         ], $JobPayload->decoded['tags']);
     }
-
 
     public function test_listener_and_event_tags_can_merge_auto_tag_events()
     {
@@ -106,7 +101,6 @@ class RedisPayloadTest extends UnitTest
         ], $JobPayload->decoded['tags']);
     }
 
-
     public function test_jobs_can_have_tags_method_to_override_auto_tagging()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
@@ -116,7 +110,6 @@ class RedisPayloadTest extends UnitTest
     }
 }
 
-
 class FakeJobWithTagsMethod
 {
     public function tags()
@@ -124,7 +117,6 @@ class FakeJobWithTagsMethod
         return ['first', 'second'];
     }
 }
-
 
 class FakeJobWithEloquentModel
 {
@@ -140,7 +132,6 @@ class FakeJobWithEloquentModel
     }
 }
 
-
 class FakeJobWithEloquentCollection
 {
     public $collection;
@@ -150,7 +141,6 @@ class FakeJobWithEloquentCollection
         $this->collection = $collection;
     }
 }
-
 
 class FakeModel extends Model
 {
