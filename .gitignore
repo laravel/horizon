@@ -1,4 +1,8 @@
 /vendor
 /laravel
 /node_modules
-mix-manifest.json
+composer.phar
+composer.lock
+.DS_Store
+Thumbs.db
+phpunit.xml
