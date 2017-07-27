@@ -31,7 +31,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory
+     * @param  RedisFactory $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
@@ -372,7 +372,7 @@ class RedisJobRepository implements JobRepository
      * @param  JobPayload  $payload
      * @param  array  $retries
      * @param  bool  $failed
-     * @return void
+     * @return array
      */
     protected function updateRetryStatus(JobPayload $payload, $retries, $failed)
     {
@@ -526,7 +526,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the Redis connection instance.
      *
-     * @return \Illuminate\Redis\Connetions\Connection
+     * @return \Illuminate\Redis\Connections\Connection
      */
     protected function connection()
     {

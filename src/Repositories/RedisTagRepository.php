@@ -17,7 +17,7 @@ class RedisTagRepository implements TagRepository
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory
+     * @param  RedisFactory $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
