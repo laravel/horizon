@@ -105,7 +105,7 @@ class SupervisorTest extends IntegrationTest
         });
 
         $this->wait(function () use ($id) {
-            $this->assertTrue(Redis::connection('horizon-jobs')->ttl($id) > 0);
+            $this->assertGreaterThan(0, Redis::connection('horizon-jobs')->ttl($id));
         });
     }
 

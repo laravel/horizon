@@ -15,7 +15,7 @@ class FailedJobTest extends IntegrationTest
         $id = Queue::push(new Jobs\FailingJob);
         $this->work();
         $this->assertEquals(1, $this->failedJobs());
-        $this->assertTrue(Redis::connection('horizon-jobs')->ttl($id) > 0);
+        $this->assertGreaterThan(0, Redis::connection('horizon-jobs')->ttl($id));
 
         $job = resolve(JobRepository::class)->getJobs([$id])[0];
 
@@ -42,6 +42,6 @@ class FailedJobTest extends IntegrationTest
         $this->work();
         $ttl = Redis::connection('horizon-tags')->pttl('failed:first');
         $this->assertNotNull($ttl);
-        $this->assertTrue($ttl > 0);
+        $this->assertGreaterThan(0, $ttl);
     }
 }
