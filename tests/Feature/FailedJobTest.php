@@ -21,7 +21,7 @@ class FailedJobTest extends IntegrationTest
 
         $this->assertTrue(isset($job->exception));
         $this->assertTrue(isset($job->failed_at));
-        $this->assertEquals('failed', $job->status);
+        $this->assertSame('failed', $job->status);
         $this->assertTrue(is_numeric($job->failed_at));
         $this->assertEquals(Jobs\FailingJob::class, $job->name);
     }

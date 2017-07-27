@@ -9,9 +9,9 @@ class JobIdTest extends IntegrationTest
 {
     public function test_ids_can_be_generated()
     {
-        $this->assertEquals('1', JobId::generate());
-        $this->assertEquals('2', JobId::generate());
-        $this->assertEquals('3', JobId::generate());
+        $this->assertSame('1', JobId::generate());
+        $this->assertSame('2', JobId::generate());
+        $this->assertSame('3', JobId::generate());
     }
 
 
@@ -21,7 +21,7 @@ class JobIdTest extends IntegrationTest
             return 'foo';
         });
 
-        $this->assertEquals('foo', JobId::generate());
+        $this->assertSame('foo', JobId::generate());
 
         JobId::generateUsing(null);
     }

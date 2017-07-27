@@ -63,7 +63,7 @@ class MonitoringControllerTest extends IntegrationTest
 
         $results = $response->original['jobs'];
 
-        $this->assertEquals(25, count($results));
+        $this->assertCount(25, $results);
         $this->assertEquals(49, $results[0]->id);
         $this->assertEquals(25, $results[24]->id);
 
@@ -73,7 +73,7 @@ class MonitoringControllerTest extends IntegrationTest
 
         $results = $response->original['jobs'];
 
-        $this->assertEquals(25, count($results));
+        $this->assertCount(25, $results);
         $this->assertEquals(24, $results[0]->id);
         $this->assertEquals(0, $results[24]->id);
         $this->assertEquals(25, $results[0]->index);
@@ -96,7 +96,7 @@ class MonitoringControllerTest extends IntegrationTest
         $response = $this->actingAs(new Fakes\User)
                     ->get('/horizon/api/monitoring/tag?starting_at=1000');
 
-        $this->assertEquals(0, count($response->original['jobs']));
+        $this->assertCount(0, $response->original['jobs']);
     }
 
 
@@ -142,6 +142,6 @@ class MonitoringControllerTest extends IntegrationTest
 
         $results = $response->original['jobs'];
 
-        $this->assertEquals(0, count($results));
+        $this->assertCount(0, $results);
     }
 }

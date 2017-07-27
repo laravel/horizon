@@ -17,13 +17,13 @@ class TagRepositoryTest extends IntegrationTest
 
         $results = $repo->paginate('tag', 0, 25);
 
-        $this->assertEquals(25, count($results));
+        $this->assertCount(25, $results);
         $this->assertEquals(49, $results[0]);
         $this->assertEquals(25, $results[24]);
 
         $results = $repo->paginate('tag', last(array_keys($results)) + 1, 25);
 
-        $this->assertEquals(25, count($results));
+        $this->assertCount(25, $results);
         $this->assertEquals(24, $results[25]);
         $this->assertEquals(0, $results[49]);
     }

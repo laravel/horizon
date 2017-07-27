@@ -22,7 +22,7 @@ class MonitoringTest extends IntegrationTest
         $monitored = $repository->monitoring();
         $this->assertTrue(in_array('first', $monitored));
         $this->assertTrue(in_array('second', $monitored));
-        $this->assertEquals(2, count($monitored));
+        $this->assertCount(2, $monitored);
     }
 
 
