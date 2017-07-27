@@ -67,7 +67,7 @@ class JobRetrievalTest extends IntegrationTest
 
         // Assert job record has a TTL...
         $repository->completed(new JobPayload(json_encode(['id' => $ids[0]])));
-        $this->assertTrue(Redis::connection('horizon-jobs')->ttl($ids[0]) > 0);
+        $this->assertGreaterThan(0, Redis::connection('horizon-jobs')->ttl($ids[0]));
 
         Chronos::setTestNow();
     }
