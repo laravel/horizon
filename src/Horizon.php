@@ -28,6 +28,13 @@ class Horizon
     public static $smsNumber;
 
     /**
+     * The email address for notifications.
+     *
+     * @var string
+     */
+    public static $email;
+
+    /**
      * The database configuration methods.
      *
      * @var array
@@ -100,6 +107,19 @@ class Horizon
     public static function routeSmsNotificationsTo($number)
     {
         static::$smsNumber = $number;
+
+        return new static;
+    }
+
+    /**
+     * Specify the mail to which email notifications should be routed.
+     *
+     * @param  string  $email
+     * @return static
+     */
+    public static function routeMailNotificationsTo($email)
+    {
+        static::$email = $email;
 
         return new static;
     }
