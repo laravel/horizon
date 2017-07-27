@@ -101,6 +101,17 @@
                 );
 
                 this.page += 1;
+            },
+
+            monitorTag(tag){
+              axios.post('/horizon/api/monitoring', {'tag': tag})
+                .then(response => {
+                  Bus.$emit('tagAdded', {
+                    tag: this.name
+                  });
+
+                  this.$router.push({ path: 'monitoring' });
+                })
             }
         },
     }
@@ -133,7 +144,9 @@
                     <span v-else>{{ job.name }}</span>
                 </td>
                 <td>{{ job.queue }}</td>
-                <td>{{ job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</td>
+                <td>
+                    <button v-for="tag in job.payload.tags" class="btn btn-link tc1 fw4 ft13 comma-list" @click="monitorTag(tag)">{{ tag }}</button>
+                </td>
                 <td>{{ readableTimestamp(job.payload.pushedAt) }}</td>
                 <td>
                     <span v-if="job.status == 'failed'">{{ job.failed_at ? String(job.failed_at - job.reserved_at)+'s' : '-' }}</span>
