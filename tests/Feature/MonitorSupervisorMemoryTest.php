@@ -24,7 +24,6 @@ class MonitorSupervisorMemoryTest extends IntegrationTest
         $monitor->handle(new SupervisorLooped($supervisor));
     }
 
-
     public function test_supervisor_is_not_terminated_when_using_low_memory()
     {
         $monitor = new MonitorSupervisorMemory;

@@ -22,7 +22,6 @@ class MetricsTest extends IntegrationTest
         $this->assertEquals(2, resolve(MetricsRepository::class)->throughput());
     }
 
-
     public function test_throughput_is_stored_per_job_class()
     {
         Queue::push(new Jobs\BasicJob);
@@ -40,7 +39,6 @@ class MetricsTest extends IntegrationTest
         $this->assertEquals(1, resolve(MetricsRepository::class)->throughputForJob(Jobs\ConditionallyFailingJob::class));
     }
 
-
     public function test_throughput_is_stored_per_queue()
     {
         Queue::push(new Jobs\BasicJob);
@@ -56,7 +54,6 @@ class MetricsTest extends IntegrationTest
         $this->assertEquals(4, resolve(MetricsRepository::class)->throughput());
         $this->assertEquals(4, resolve(MetricsRepository::class)->throughputForQueue('default'));
     }
-
 
     public function test_average_runtime_is_stored_per_job_class_in_milliseconds()
     {
@@ -74,7 +71,6 @@ class MetricsTest extends IntegrationTest
         $this->assertEquals(1.5, resolve(MetricsRepository::class)->runtimeForJob(Jobs\BasicJob::class));
     }
 
-
     public function test_average_runtime_is_stored_per_queue_in_milliseconds()
     {
         $stopwatch = Mockery::mock(Stopwatch::class);
@@ -91,7 +87,6 @@ class MetricsTest extends IntegrationTest
         $this->assertEquals(1.5, resolve(MetricsRepository::class)->runtimeForQueue('default'));
     }
 
-
     public function test_list_of_all_jobs_with_metric_information_is_maintained()
     {
         Queue::push(new Jobs\BasicJob);
@@ -105,7 +100,6 @@ class MetricsTest extends IntegrationTest
         $this->assertTrue(in_array(Jobs\ConditionallyFailingJob::class, $jobs));
         $this->assertTrue(in_array(Jobs\BasicJob::class, $jobs));
     }
-
 
     public function test_snapshot_of_metrics_performance_can_be_stored()
     {
@@ -165,7 +159,6 @@ class MetricsTest extends IntegrationTest
         ], $snapshots);
     }
 
-
     public function test_jobs_processed_per_minute_since_last_snapshot_is_calculable()
     {
         $stopwatch = Mockery::mock(Stopwatch::class);
@@ -198,7 +191,6 @@ class MetricsTest extends IntegrationTest
             0, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
         );
     }
-
 
     public function test_only_past_24_snapshots_are_retained()
     {

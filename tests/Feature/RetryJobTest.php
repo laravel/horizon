@@ -17,7 +17,6 @@ class RetryJobTest extends IntegrationTest
         unset($_SERVER['horizon.fail']);
     }
 
-
     public function tearDown()
     {
         parent::tearDown();
@@ -25,13 +24,10 @@ class RetryJobTest extends IntegrationTest
         unset($_SERVER['horizon.fail']);
     }
 
-
     public function test_nothing_happens_for_failed_job_that_doesnt_exist()
     {
         dispatch(new RetryFailedJob('12345'));
     }
-
-
 
     public function test_failed_job_can_be_retried_successfully_with_a_fresh_id()
     {
@@ -67,7 +63,6 @@ class RetryJobTest extends IntegrationTest
         // Test status is now completed on the retry...
         $this->assertSame('completed', $retried[0]['status']);
     }
-
 
     public function test_status_is_updated_for_double_failing_jobs()
     {

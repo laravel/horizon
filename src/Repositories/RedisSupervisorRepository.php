@@ -119,7 +119,7 @@ class RedisSupervisorRepository implements SupervisorRepository
                 'pid' => $supervisor->pid(),
                 'status' => $supervisor->working ? 'running' : 'paused',
                 'processes' => $processes,
-                'options' => $supervisor->options->toJson()
+                'options' => $supervisor->options->toJson(),
             ]
         );
 

@@ -4,28 +4,26 @@ namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
 use Cake\Chronos\Chronos;
-use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\AutoScaler;
-use Laravel\Horizon\MasterSupervisor;
+use Laravel\Horizon\Supervisor;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\WorkerCommandString;
 use Laravel\Horizon\SystemProcessCounter;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\SupervisorCommands\Scale;
-use Laravel\Horizon\SupervisorCommands\Balance;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
-use Laravel\Horizon\Events\WorkerProcessRestarting;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\Events\WorkerProcessRestarting;
 
 class SupervisorTest extends IntegrationTest
 {
     public $supervisor;
-
 
     public function tearDown()
     {
@@ -40,7 +38,6 @@ class SupervisorTest extends IntegrationTest
 
         parent::tearDown();
     }
-
 
     public function test_supervisor_can_start_worker_process_with_given_options()
     {
@@ -65,7 +62,6 @@ class SupervisorTest extends IntegrationTest
         );
     }
 
-
     public function test_supervisor_starts_multiple_pools_when_balancing()
     {
         $options = $this->options();
@@ -89,7 +85,6 @@ class SupervisorTest extends IntegrationTest
         );
     }
 
-
     public function test_recent_jobs_are_correctly_maintained()
     {
         $id = Queue::push(new Jobs\BasicJob);
@@ -108,7 +103,6 @@ class SupervisorTest extends IntegrationTest
             $this->assertGreaterThan(0, Redis::connection('horizon-jobs')->ttl($id));
         });
     }
-
 
     public function test_supervisor_monitors_worker_processes()
     {
@@ -136,7 +130,6 @@ class SupervisorTest extends IntegrationTest
         $this->assertTrue($restarted);
     }
 
-
     public function test_exceptions_are_caught_and_handled_during_loop()
     {
         $exceptions = Mockery::mock(ExceptionHandler::class);
@@ -147,7 +140,6 @@ class SupervisorTest extends IntegrationTest
 
         $supervisor->loop();
     }
-
 
     public function test_supervisor_information_is_persisted()
     {
@@ -173,14 +165,12 @@ class SupervisorTest extends IntegrationTest
         $this->assertSame('paused', $record->status);
     }
 
-
     public function test_supervisor_repository_returns_null_if_no_supervisor_exists_with_given_name()
     {
         $repository = resolve(SupervisorRepository::class);
 
         $this->assertNull($repository->find('nothing'));
     }
-
 
     public function test_processes_can_be_scaled_up()
     {
@@ -194,7 +184,6 @@ class SupervisorTest extends IntegrationTest
         $this->assertTrue($supervisor->processes()[0]->isRunning());
         $this->assertTrue($supervisor->processes()[1]->isRunning());
     }
-
 
     public function test_processes_can_be_scaled_down()
     {
@@ -220,7 +209,6 @@ class SupervisorTest extends IntegrationTest
         }, 1000);
     }
 
-
     public function test_supervisor_can_restart_processes()
     {
         $this->supervisor = $supervisor = new Supervisor($options = $this->options());
@@ -236,7 +224,6 @@ class SupervisorTest extends IntegrationTest
 
         $this->assertNotEquals($pid, $supervisor->processes()[0]->getPid());
     }
-
 
     public function test_processes_can_be_paused_and_continued()
     {
@@ -266,7 +253,6 @@ class SupervisorTest extends IntegrationTest
         });
     }
 
-
     public function test_dead_processes_are_not_restarted_when_paused()
     {
         $this->supervisor = $supervisor = new Supervisor($options = $this->options());
@@ -284,7 +270,6 @@ class SupervisorTest extends IntegrationTest
 
         $this->assertFalse($process->isRunning());
     }
-
 
     public function test_supervisor_processes_can_be_terminated()
     {
@@ -304,7 +289,6 @@ class SupervisorTest extends IntegrationTest
         $this->assertFalse($process->isRunning());
     }
 
-
     public function test_supervisor_can_prune_terminating_processes_and_return_total_process_count()
     {
         $this->supervisor = $supervisor = new Supervisor($options = $this->options());
@@ -318,7 +302,6 @@ class SupervisorTest extends IntegrationTest
 
         $this->assertEquals(0, $supervisor->pruneAndGetTotalProcesses());
     }
-
 
     public function test_terminating_processes_that_are_stuck_are_hard_stopped()
     {
@@ -336,7 +319,6 @@ class SupervisorTest extends IntegrationTest
 
         $this->assertFalse($process->isRunning());
     }
-
 
     public function test_supervisor_process_terminates_all_workers_and_exits_on_full_termination()
     {
@@ -356,7 +338,6 @@ class SupervisorTest extends IntegrationTest
         // Assert that the supervisor is removed...
         $this->assertNull(resolve(SupervisorRepository::class)->find($supervisor->name));
     }
-
 
     public function test_supervisor_loop_processes_pending_supervisor_commands()
     {
@@ -381,7 +362,6 @@ class SupervisorTest extends IntegrationTest
         $this->assertEquals($supervisor, $command->supervisor);
         $this->assertEquals(['foo' => 'bar'], $command->options);
     }
-
 
     public function test_supervisor_should_start_paused_workers_when_paused_and_scaling()
     {
@@ -408,7 +388,6 @@ class SupervisorTest extends IntegrationTest
         $this->assertEquals(1, $this->recentJobs());
     }
 
-
     public function test_auto_scaler_is_called_on_loop_when_auto_scaling()
     {
         $options = $this->options();
@@ -430,7 +409,6 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
     }
 
-
     /**
      * @expectedException Exception
      */
@@ -444,7 +422,6 @@ class SupervisorTest extends IntegrationTest
         $anotherSupervisor->monitor();
     }
 
-
     public function test_supervisor_processes_can_be_counted_externally()
     {
         SystemProcessCounter::$command = 'worker.php';
@@ -457,7 +434,6 @@ class SupervisorTest extends IntegrationTest
             $this->assertEquals(3, $supervisor->totalSystemProcessCount());
         });
     }
-
 
     public function test_supervisor_does_not_start_workers_until_looped_and_active()
     {
@@ -484,7 +460,6 @@ class SupervisorTest extends IntegrationTest
             $this->assertEquals(3, $supervisor->totalSystemProcessCount());
         });
     }
-
 
     protected function options()
     {

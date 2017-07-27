@@ -20,7 +20,6 @@ class ProcessRepositoryTest extends IntegrationTest
         $this->assertEquals([1, 2, 3], $orphans);
     }
 
-
     public function test_orphans_can_be_deleted()
     {
         $repo = resolve(ProcessRepository::class);

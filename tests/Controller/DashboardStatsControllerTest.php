@@ -22,7 +22,6 @@ class DashboardStatsControllerTest extends IntegrationTest
         });
     }
 
-
     public function test_all_stats_are_correctly_returned()
     {
         // Setup supervisor data...
@@ -38,7 +37,7 @@ class DashboardStatsControllerTest extends IntegrationTest
                 'processes' => [
                     'redis:first' => 10,
                 ],
-            ]
+            ],
         ]);
         $this->app->instance(SupervisorRepository::class, $supervisors);
 
@@ -77,7 +76,6 @@ class DashboardStatsControllerTest extends IntegrationTest
         ]);
     }
 
-
     public function test_paused_status_is_reflected_if_all_master_supervisors_are_paused()
     {
         $masters = Mockery::mock(MasterSupervisorRepository::class);
@@ -87,7 +85,7 @@ class DashboardStatsControllerTest extends IntegrationTest
             ],
             (object) [
                 'status' => 'paused',
-            ]
+            ],
         ]);
         $this->app->instance(MasterSupervisorRepository::class, $masters);
 

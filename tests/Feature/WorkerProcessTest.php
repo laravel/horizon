@@ -27,7 +27,6 @@ class WorkerProcessTest extends IntegrationTest
         Event::assertDispatched(UnableToLaunchProcess::class);
     }
 
-
     public function test_process_is_not_restarted_during_cooldown_period()
     {
         Event::fake();
@@ -43,7 +42,6 @@ class WorkerProcessTest extends IntegrationTest
         Event::assertDispatched(WorkerProcessRestarting::class);
         $this->assertCount(1, Event::dispatched(WorkerProcessRestarting::class));
     }
-
 
     public function test_process_is_restarted_after_cooldown_period()
     {

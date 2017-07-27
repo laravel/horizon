@@ -3,10 +3,10 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
-use Laravel\Horizon\MasterSupervisor;
 use Illuminate\Support\Facades\Redis;
-use Laravel\Horizon\SupervisorProcess;
+use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\SupervisorOptions;
+use Laravel\Horizon\SupervisorProcess;
 use Laravel\Horizon\WorkerCommandString;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
@@ -32,7 +32,6 @@ class MasterSupervisorTest extends IntegrationTest
         MasterSupervisor::$nameResolver = null;
     }
 
-
     public function test_master_process_marks_clean_exits_as_dead_and_removes_them()
     {
         $master = new MasterSupervisor;
@@ -49,7 +48,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertCount(0, $master->supervisors);
     }
 
-
     public function test_master_process_marks_duplicates_as_dead_and_removes_them()
     {
         $master = new MasterSupervisor;
@@ -65,7 +63,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertTrue($supervisorProcess->dead);
         $this->assertCount(0, $master->supervisors);
     }
-
 
     public function test_master_process_restarts_unexpected_exits()
     {
@@ -92,7 +89,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertSame('default', $command->options['queue']);
     }
 
-
     public function test_master_process_restarts_processes_that_never_started()
     {
         $master = new MasterSupervisor;
@@ -108,7 +104,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertTrue($supervisorProcess->wasRestarted);
     }
 
-
     public function test_master_process_starts_unstarted_processes_when_unpaused()
     {
         $master = new MasterSupervisor;
@@ -123,7 +118,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertCount(1, $master->supervisors);
         $this->assertTrue($supervisorProcess->wasRestarted);
     }
-
 
     public function test_master_process_loop_processes_pending_commands()
     {
@@ -146,7 +140,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertEquals($master, $command->master);
         $this->assertEquals(['foo' => 'bar'], $command->options);
     }
-
 
     public function test_master_process_information_is_persisted()
     {
@@ -172,7 +165,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertSame('paused', $masterRecord->status);
     }
 
-
     /**
      * @expectedException Exception
      */
@@ -187,14 +179,12 @@ class MasterSupervisorTest extends IntegrationTest
         $master->monitor();
     }
 
-
     public function test_supervisor_repository_returns_null_if_no_supervisor_exists_with_given_name()
     {
         $repository = resolve(MasterSupervisorRepository::class);
 
         $this->assertNull($repository->find('nothing'));
     }
-
 
     public function test_supervisor_process_terminates_all_workers_and_exits_on_full_termination()
     {
@@ -213,7 +203,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertNull(resolve(MasterSupervisorRepository::class)->find($master->name));
     }
 
-
     public function test_supervisor_continues_termination_if_supervisors_take_too_long()
     {
         $master = new Fakes\MasterSupervisorWithFakeExit;
@@ -229,7 +218,6 @@ class MasterSupervisorTest extends IntegrationTest
 
         $this->assertTrue($master->exited);
     }
-
 
     protected function options()
     {

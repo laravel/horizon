@@ -46,7 +46,6 @@ class JobRetrievalTest extends IntegrationTest
         $this->assertCount(0, $recent);
     }
 
-
     public function test_recent_jobs_are_correctly_trimmed_and_expired()
     {
         $ids = [];
@@ -71,7 +70,6 @@ class JobRetrievalTest extends IntegrationTest
 
         Chronos::setTestNow();
     }
-
 
     public function test_paginating_large_job_results_gives_correct_amounts()
     {

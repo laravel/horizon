@@ -4,8 +4,8 @@ namespace Laravel\Horizon;
 
 use stdClass;
 use ReflectionClass;
-use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Notifications\SendQueuedNotifications;
@@ -52,7 +52,7 @@ class Tags
     protected static function tagsForListener($job)
     {
         return collect(
-            [static::extractListener($job), static::extractEvent($job)
+            [static::extractListener($job), static::extractEvent($job),
         ])->map(function ($job) {
             return static::for($job);
         })->collapse()->unique()->toArray();

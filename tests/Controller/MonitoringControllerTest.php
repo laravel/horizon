@@ -20,7 +20,6 @@ class MonitoringControllerTest extends IntegrationTest
         });
     }
 
-
     public function test_monitored_tags_and_job_counts_are_returned()
     {
         $tags = Mockery::mock(TagRepository::class);
@@ -41,7 +40,6 @@ class MonitoringControllerTest extends IntegrationTest
             ['tag' => 'second', 'count' => 4],
         ]);
     }
-
 
     public function test_monitored_jobs_can_be_paginated_by_tag()
     {
@@ -80,7 +78,6 @@ class MonitoringControllerTest extends IntegrationTest
         $this->assertEquals(49, $results[24]->index);
     }
 
-
     public function test_can_paginate_where_jobs_dont_exist()
     {
         Horizon::auth(function () {
@@ -99,7 +96,6 @@ class MonitoringControllerTest extends IntegrationTest
         $this->assertCount(0, $response->original['jobs']);
     }
 
-
     public function test_can_start_monitoring_tags()
     {
         Horizon::auth(function () {
@@ -113,7 +109,6 @@ class MonitoringControllerTest extends IntegrationTest
 
         $this->assertEquals(['taylor'], $tags->monitoring());
     }
-
 
     public function test_can_stop_monitoring_tags()
     {
