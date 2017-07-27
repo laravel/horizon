@@ -209,7 +209,11 @@ class RedisMetricsRepository implements MetricsRepository
         $this->connection()->pipeline(function ($pipe) use ($key, $runtime) {
             $pipe->hsetnx($key, 'throughput', 0);
 
-            $pipe->eval(LuaScripts::updateJobMetrics(), 1, $key, $runtime);
+            if (config('database.redis.client') == 'phpredis') {
+                $pipe->eval(LuaScripts::updateJobMetrics(), [$key, $runtime], 1);
+            } else {
+                $pipe->eval(LuaScripts::updateJobMetrics(), 1, $key, $runtime);
+            }
         });
     }
 
@@ -324,14 +328,16 @@ class RedisMetricsRepository implements MetricsRepository
     protected function baseSnapshotData($key)
     {
         $responses = $this->connection()->transaction(function ($trans) use ($key) {
-            $trans->hmget($key, 'throughput', 'runtime');
+            $trans->hmget($key, ['throughput', 'runtime']);
 
             $trans->del($key);
         });
 
+        $snapshot = array_values($responses[0]);
+        
         return [
-            'throughput' => $responses[0][0],
-            'runtime' => $responses[0][1],
+            'throughput' => $snapshot[0],
+            'runtime' => $snapshot[1],
         ];
     }
 

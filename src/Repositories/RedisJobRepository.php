@@ -163,6 +163,8 @@ class RedisJobRepository implements JobRepository
         });
 
         return $this->indexJobs(collect($jobs)->filter(function ($job) {
+            $job = is_array($job) ? array_values($job) : null;
+
             return is_array($job) && ! is_null($job[0]);
         }), $indexFrom);
     }
@@ -201,15 +203,16 @@ class RedisJobRepository implements JobRepository
             $this->storeJobReferences($pipe, $payload->id());
 
             $pipe->hmset(
-                $payload->id(),
-                'id', $payload->id(),
-                'connection', $connection,
-                'queue', $queue,
-                'name', $payload->decoded['displayName'],
-                'status', 'pending',
-                'payload', $payload->value,
-                'created_at', time(),
-                'updated_at', time()
+                $payload->id(), [
+                    'id' => $payload->id(),
+                    'connection' => $connection,
+                    'queue' => $queue,
+                    'name' => $payload->decoded['displayName'],
+                    'status' => 'pending',
+                    'payload' => $payload->value,
+                    'created_at' => time(),
+                    'updated_at' => time()
+                ]
             );
 
             $pipe->expireat(
@@ -241,11 +244,12 @@ class RedisJobRepository implements JobRepository
     public function reserved($connection, $queue, JobPayload $payload)
     {
         $this->connection()->hmset(
-            $payload->id(),
-            'status', 'reserved',
-            'payload', $payload->value,
-            'updated_at', time(),
-            'reserved_at', time()
+            $payload->id(), [
+                'status' => 'reserved',
+                'payload' => $payload->value,
+                'updated_at' => time(),
+                'reserved_at' => time()
+            ]
         );
     }
 
@@ -260,8 +264,11 @@ class RedisJobRepository implements JobRepository
     public function released($connection, $queue, JobPayload $payload)
     {
         $this->connection()->hmset(
-            $payload->id(), 'status', 'pending',
-            'payload', $payload->value, 'updated_at', time()
+            $payload->id(), [
+                'status' => 'pending',
+                'payload' => $payload->value,
+                'updated_at' => time()
+            ]
         );
     }
 
@@ -277,14 +284,15 @@ class RedisJobRepository implements JobRepository
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
             $pipe->hmset(
-                $payload->id(),
-                'id', $payload->id(),
-                'connection', $connection,
-                'queue', $queue,
-                'name', $payload->decoded['displayName'],
-                'status', 'completed',
-                'payload', $payload->value,
-                'completed_at', time()
+                $payload->id(), [
+                    'id' => $payload->id(),
+                    'connection' => $connection,
+                    'queue' => $queue,
+                    'name' => $payload->decoded['displayName'],
+                    'status' => 'completed',
+                    'payload' => $payload->value,
+                    'completed_at' => time()
+                ]
             );
 
             $pipe->persist($payload->id());
@@ -304,8 +312,11 @@ class RedisJobRepository implements JobRepository
         $this->connection()->pipeline(function ($pipe) use ($payloads) {
             foreach ($payloads as $payload) {
                 $pipe->hmset(
-                    $payload->id(), 'status', 'pending',
-                    'payload', $payload->value, 'updated_at', time()
+                    $payload->id(), [
+                        'status' => 'pending',
+                        'payload' => $payload->value,
+                        'updated_at' => time()
+                    ]
                 );
             }
         });
@@ -340,8 +351,8 @@ class RedisJobRepository implements JobRepository
     protected function markJobAsCompleted($pipe, $id, $failed)
     {
         $failed
-            ? $pipe->hmset($id, 'status', 'failed')
-            : $pipe->hmset($id, 'status', 'completed', 'completed_at', time());
+            ? $pipe->hmset($id, ['status'=> 'failed'])
+            : $pipe->hmset($id, ['status' => 'completed', 'completed_at' => time()]);
 
         $pipe->expireat($id, Chronos::now()->addHours(1)->getTimestamp());
     }
@@ -435,7 +446,7 @@ class RedisJobRepository implements JobRepository
     public function findFailed($id)
     {
         $attributes = $this->connection()->hmget(
-            $id, ...$this->keys
+            $id, $this->keys
         );
 
         return is_array($attributes) && ! is_null($attributes[0])
@@ -457,15 +468,16 @@ class RedisJobRepository implements JobRepository
             $this->storeFailedJobReferences($pipe, $payload->id());
 
             $pipe->hmset(
-                $payload->id(),
-                'id', $payload->id(),
-                'connection', $connection,
-                'queue', $queue,
-                'name', $payload->decoded['displayName'],
-                'status', 'failed',
-                'payload', $payload->value,
-                'exception', (string) $exception,
-                'failed_at', time()
+                $payload->id(), [
+                    'id' => $payload->id(),
+                    'connection' => $connection,
+                    'queue' => $queue,
+                    'name' => $payload->decoded['displayName'],
+                    'status' => 'failed',
+                    'payload' => $payload->value,
+                    'exception' => (string) $exception,
+                    'failed_at' => time()
+                ]
             );
 
             $pipe->expireat(
@@ -507,7 +519,7 @@ class RedisJobRepository implements JobRepository
             'retried_at' => Chronos::now()->getTimestamp()
         ];
 
-        $this->connection()->hmset($id, 'retried_by', json_encode($retries));
+        $this->connection()->hmset($id, ['retried_by' => json_encode($retries)]);
     }
 
     /**
