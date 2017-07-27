@@ -23,7 +23,6 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerResources();
         $this->defineAssetPublishing();
-        $this->registerQueueConnectors();
     }
 
     /**
@@ -108,6 +107,7 @@ class HorizonServiceProvider extends ServiceProvider
         $this->offerPublishing();
         $this->registerServices();
         $this->registerCommands();
+        $this->registerQueueConnectors();
     }
 
     /**
