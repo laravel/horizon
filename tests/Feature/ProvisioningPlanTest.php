@@ -26,7 +26,7 @@ class ProvisioningPlanTest extends IntegrationTest
         $plan->deploy('production');
 
         $commands = Redis::connection('horizon-command-queue')->lrange(
-            MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
+            'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
         );
 
         $this->assertCount(1, $commands);
@@ -52,7 +52,7 @@ class ProvisioningPlanTest extends IntegrationTest
         $plan->deploy('production');
 
         $commands = Redis::connection('horizon-command-queue')->lrange(
-            MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
+            'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
         );
 
         $this->assertCount(1, $commands);
