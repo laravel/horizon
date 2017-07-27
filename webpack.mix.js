@@ -18,11 +18,10 @@ mix
     .less('resources/assets/less/app.less', 'public/css')
     .copy('resources/assets/img', 'public/img')
     .sourceMaps()
-    // .copy('public', '../../laravelhorizon/public/vendor/horizon');
+    .copy('public', '../../laravelhorizon/public/vendor/horizon')
+    // .copy('public', '../app/public/vendor/horizon')
+    .version();
 
-if (mix.inProduction()) {
-    mix.version();
-}
 
 mix.webpackConfig({
     plugins: [
