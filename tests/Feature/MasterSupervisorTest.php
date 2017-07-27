@@ -12,6 +12,8 @@ use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
+use Laravel\Horizon\Tests\Feature\Fixtures\EternalSupervisor;
+use Laravel\Horizon\Tests\Feature\Fixtures\SupervisorProcessWithFakeRestart;
 
 class MasterSupervisorTest extends IntegrationTest
 {
@@ -235,32 +237,5 @@ class MasterSupervisorTest extends IntegrationTest
             $options->directory = realpath(__DIR__.'/../');
             WorkerCommandString::$command = 'exec php worker.php';
         });
-    }
-}
-
-
-class SupervisorProcessWithFakeRestart extends SupervisorProcess
-{
-    public $wasRestarted = false;
-
-    public function restart()
-    {
-        $this->wasRestarted = true;
-    }
-}
-
-
-class EternalSupervisor
-{
-    public $name = 'eternal';
-
-    public function terminate()
-    {
-        //
-    }
-
-    public function isRunning()
-    {
-        return true;
     }
 }
