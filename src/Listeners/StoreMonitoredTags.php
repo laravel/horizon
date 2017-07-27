@@ -8,13 +8,6 @@ use Laravel\Horizon\Contracts\TagRepository;
 class StoreMonitoredTags
 {
     /**
-     * The monitored tag repository.
-     *
-     * @var MonitoredTagRepository
-     */
-    public $monitored;
-
-    /**
      * The tag repository implementation.
      *
      * @var TagRepository

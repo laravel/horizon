@@ -16,7 +16,7 @@ class MasterSupervisorLooped
     /**
      * Create a new event instance.
      *
-     * @param  Supervisor  $master
+     * @param  MasterSupervisor  $master
      * @return void
      */
     public function __construct(MasterSupervisor $master)

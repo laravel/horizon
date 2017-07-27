@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use Throwable;
 use Cake\Chronos\Chronos;
-use Symfony\Component\Process\Process;
 use Laravel\Horizon\Contracts\Pausable;
 use Laravel\Horizon\Contracts\Terminable;
 use Laravel\Horizon\Contracts\Restartable;

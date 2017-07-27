@@ -4,7 +4,6 @@ namespace Laravel\Horizon\Console;
 
 use Exception;
 use Illuminate\Console\Command;
-use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\SupervisorFactory;
 use Laravel\Horizon\SupervisorOptions;
 
