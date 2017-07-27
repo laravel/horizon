@@ -8,33 +8,35 @@
     import ModalHeading from '../Modals/ModalHeading.vue'
 
     export default {
-        components: {Modal, ModalHeading, ModalBody, Spinner},
-
+        components: {
+            Modal,
+            ModalHeading,
+            ModalBody,
+            Spinner
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 name: '',
-                saving: false
-            };
+                saving: false,
+            }
         },
-
 
         /**
          * Watch these properties for changes.
          */
         watch: {
-            '$root.showModal'(){
-                this.name = '';
+            '$root.showModal'() {
+                this.name = ''
 
                 this.$nextTick(_ => {
-                    this.$refs.tag.focus();
+                    this.$refs.tag.focus()
                 })
-            }
+            },
         },
-
 
         methods: {
             /**
@@ -42,25 +44,24 @@
              */
             saveTag() {
                 if (!this.name) {
-                    this.$refs.tag.focus();
-                    return;
+                    this.$refs.tag.focus()
+                    return
                 }
 
-                this.saving = true;
+                this.saving = true
 
                 axios.post('/horizon/api/monitoring', {'tag': this.name})
-                        .then(response => {
-                            this.$root.showModal = false;
+                    .then(response => {
+                        this.$root.showModal = false
 
-                            Bus.$emit('tagAdded', {
-                                tag: this.name
-                            });
-
-                            this.saving = false;
+                        Bus.$emit('tagAdded', {
+                            tag: this.name
                         })
 
-            }
-        }
+                        this.saving = false
+                    })
+            },
+        },
     }
 </script>
 
@@ -102,4 +103,3 @@
         </modal-body>
     </modal>
 </template>
-

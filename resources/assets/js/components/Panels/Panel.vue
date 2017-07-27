@@ -4,8 +4,9 @@
     export default {
         props: ['loading'],
 
-
-        components: {Spinner}
+        components: {
+            Spinner,
+        },
     }
 </script>
 
@@ -13,9 +14,8 @@
     <div v-if="!loading" class="panel panel-default mb3">
         <slot/>
     </div>
-    
+
     <div v-else class="panel panel-default mb3 pa8 df aic acc jcc w100%">
         <spinner/>
     </div>
 </template>
-

@@ -1,6 +1,6 @@
 <script type="text/ecmascript-6">
     import axios from 'axios'
-    import moment from 'moment';
+    import moment from 'moment'
     import Layout from '../../layouts/MainLayout.vue'
     import Icon from '../../components/Icons/Icon.vue'
     import Panel from '../../components/Panels/Panel.vue'
@@ -10,13 +10,20 @@
     import PanelHeading from '../../components/Panels/PanelHeading.vue'
 
     export default {
-        components: {Layout, Panel, PanelContent, PanelHeading, Message, Icon, Spinner},
-
+        components: {
+            Layout,
+            Panel,
+            PanelContent,
+            PanelHeading,
+            Message,
+            Icon,
+            Spinner,
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 tagSearchPhrase: '',
                 searchTimeout: null,
@@ -25,36 +32,33 @@
                 totalPages: 1,
                 loadingJobs: true,
                 retryingJobs: [],
-                jobs: []
-            };
+                jobs: [],
+            }
         },
-
 
         /**
          * Watch these properties for changes.
          */
         watch: {
-            tagSearchPhrase(){
-                clearTimeout(this.searchTimeout);
+            tagSearchPhrase() {
+                clearTimeout(this.searchTimeout)
 
                 this.searchTimeout = setTimeout(() => {
-                    this.loadJobs();
-                }, 500);
-            }
+                    this.loadJobs()
+                }, 500)
+            },
         },
-
 
         /**
          * Prepare the component.
          */
         created() {
-            document.title = "Horizon - Failed Jobs";
+            document.title = "Horizon - Failed Jobs"
 
-            this.loadJobs();
+            this.loadJobs()
 
-            this.refreshJobsPeriodically();
+            this.refreshJobsPeriodically()
         },
-
 
         methods: {
             /**
@@ -62,90 +66,84 @@
              */
             loadJobs(starting = -1, preload = true) {
                 if (preload) {
-                    this.loadingJobs = true;
+                    this.loadingJobs = true
                 }
 
-                var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
+                var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : ''
 
                 axios.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
-                        .then(response => {
-                            this.jobs = response.data.jobs;
+                    .then(response => {
+                        this.jobs = response.data.jobs
 
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
+                        this.totalPages = Math.ceil(response.data.total / this.perPage)
 
-                            this.loadingJobs = false;
-                        });
+                        this.loadingJobs = false
+                    })
             },
-
 
             /**
              * Retry the given failed job.
              */
             retry(id) {
                 if (this.isRetrying(id)) {
-                    return;
+                    return
                 }
 
-                this.retryingJobs.push(id);
+                this.retryingJobs.push(id)
 
                 axios.post('/horizon/api/jobs/retry/' + id)
-                        .then(() => {
-                            setTimeout(() => {
-                                this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
-                            }, 3000);
-                        });
+                    .then(() => {
+                        setTimeout(() => {
+                            this.retryingJobs = _.reject(this.retryingJobs, job => job == id)
+                        }, 3000)
+                    })
             },
-
 
             /**
              * Determine if the given job is currently retrying.
              */
             isRetrying(id) {
-                return _.includes(this.retryingJobs, id);
+                return _.includes(this.retryingJobs, id)
             },
-
 
             /**
              * Determine if the given job has completed.
              */
-            hasCompleted(job){
-                return _.find(job.retried_by, retry => retry.status == 'completed');
+            hasCompleted(job) {
+                return _.find(job.retried_by, retry => retry.status == 'completed')
             },
-
 
             /**
              * Refresh the jobs every period of time.
              */
-            refreshJobsPeriodically(){
+            refreshJobsPeriodically() {
                 setInterval(() => {
                     if (this.page != 1) {
-                        return;
+                        return
                     }
 
-                    this.loadJobs(-1, false);
-                }, 3000);
+                    this.loadJobs(-1, false)
+                }, 3000)
             },
-
 
             /**
              * Load the jobs for the previous page.
              */
-            previous(){
-                this.loadJobs(((this.page - 2) * this.perPage) - 1);
+            previous() {
+                this.loadJobs(((this.page - 2) * this.perPage) - 1)
 
-                this.page -= 1;
+                this.page -= 1
             },
-
 
             /**
              * Load the jobs for the next page.
              */
-            next(){
-                this.loadJobs((this.page * this.perPage) - 1);
+            next() {
+                this.loadJobs((this.page * this.perPage) - 1)
 
-                this.page += 1;
-            }
-        }
+                this.page += 1
+            },
+        },
     }
 </script>
 
@@ -212,4 +210,3 @@
         </section>
     </layout>
 </template>
-

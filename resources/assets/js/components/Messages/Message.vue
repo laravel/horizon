@@ -2,15 +2,14 @@
     export default {
         props: ['type', 'text'],
 
-
         computed: {
             messageStyles() {
                 return {
                     'basic-text': this.type == '',
-                    'bgdanger tcw': this.type == 'error'
+                    'bgdanger tcw': this.type == 'error',
                 }
-            }
-        }
+            },
+        },
     }
 </script>
 
@@ -21,4 +20,3 @@
         </p>
     </div>
 </template>
-

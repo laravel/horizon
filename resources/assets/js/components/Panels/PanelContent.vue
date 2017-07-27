@@ -4,8 +4,9 @@
     export default {
         props: ['loading'],
 
-
-        components: {Spinner}
+        components: {
+            Spinner,
+        },
     }
 </script>
 
@@ -19,4 +20,3 @@
         <slot/>
     </div>
 </template>
-

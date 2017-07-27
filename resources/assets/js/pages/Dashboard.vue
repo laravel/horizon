@@ -1,22 +1,28 @@
 <script type="text/ecmascript-6">
-    import _ from 'lodash';
-    import axios from 'axios';
-    import moment from 'moment';
-    import Layout from '../layouts/MainLayout.vue';
-    import Panel from '../components/Panels/Panel.vue';
-    import Status from '../components/Status/Status.vue';
-    import Spinner from '../components/Loaders/Spinner.vue';
-    import PanelHeading from '../components/Panels/PanelHeading.vue';
-    import PanelContent from '../components/Panels/PanelContent.vue';
+    import _ from 'lodash'
+    import axios from 'axios'
+    import moment from 'moment'
+    import Layout from '../layouts/MainLayout.vue'
+    import Panel from '../components/Panels/Panel.vue'
+    import Status from '../components/Status/Status.vue'
+    import Spinner from '../components/Loaders/Spinner.vue'
+    import PanelHeading from '../components/Panels/PanelHeading.vue'
+    import PanelContent from '../components/Panels/PanelContent.vue'
 
     export default {
-        components: {Layout, Spinner, Status, Panel, PanelContent, PanelHeading},
-
+        components: {
+            Layout,
+            Spinner,
+            Status,
+            Panel,
+            PanelContent,
+            PanelHeading,
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingStats: true,
                 loadingWorkers: true,
@@ -24,23 +30,22 @@
                 stats: {},
                 workers: [],
                 workload: [],
-            };
+            }
         },
-
 
         /**
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Dashboard";
+            document.title = "Horizon - Dashboard"
 
-            this.loadStats();
+            this.loadStats()
 
-            this.loadWorkers();
+            this.loadWorkers()
 
-            this.loadWorkload();
+            this.loadWorkload()
 
-            this.refreshStatsPeriodically();
+            this.refreshStatsPeriodically()
         },
 
         methods: {
@@ -49,97 +54,90 @@
              */
             loadStats(reload = true) {
                 if (reload) {
-                    this.loadingStats = true;
+                    this.loadingStats = true
                 }
 
                 axios.get('/horizon/api/stats')
-                        .then(response => {
-                            this.stats = response.data;
+                    .then(response => {
+                        this.stats = response.data
 
-                            if (_.values(response.data.wait)[0]) {
-                                this.stats.max_wait_time = _.values(response.data.wait)[0];
-                                this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1];
-                            }
+                        if (_.values(response.data.wait)[0]) {
+                            this.stats.max_wait_time = _.values(response.data.wait)[0]
+                            this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1]
+                        }
 
-                            this.loadingStats = false;
-                        });
+                        this.loadingStats = false
+                    })
             },
-
 
             /**
              * Load the workers stats.
              */
             loadWorkers(reload = true) {
                 if (reload) {
-                    this.loadingWorkers = true;
+                    this.loadingWorkers = true
                 }
 
                 axios.get('/horizon/api/masters')
-                        .then(response => {
-                            this.workers = response.data;
+                    .then(response => {
+                        this.workers = response.data
 
-                            this.loadingWorkers = false;
-                        });
+                        this.loadingWorkers = false
+                    })
             },
-
 
             /**
              * Load the workload stats.
              */
             loadWorkload(reload = true) {
                 if (reload) {
-                    this.loadingWorkload = true;
+                    this.loadingWorkload = true
                 }
 
                 axios.get('/horizon/api/workload')
-                        .then(response => {
-                            this.workload = response.data;
+                    .then(response => {
+                        this.workload = response.data
 
-                            this.loadingWorkload = false;
-                        });
+                        this.loadingWorkload = false
+                    })
             },
-
 
             /**
              * Refresh the stats every period of time.
              */
-            refreshStatsPeriodically(){
+            refreshStatsPeriodically() {
                 setInterval(() => {
-                    this.loadStats(false);
+                    this.loadStats(false)
 
-                    this.loadWorkers(false);
+                    this.loadWorkers(false)
 
-                    this.loadWorkload(false);
-                }, 5000);
+                    this.loadWorkload(false)
+                }, 5000)
             },
-
 
             /**
              *  Count processes for the given supervisor.
              */
-            countProcesses(processes){
+            countProcesses(processes) {
                 return _.chain(processes).values().sum().value()
             },
-
 
             /**
              *  Format the Supervisor display name.
              */
-            superVisorDisplayName(supervisor, worker){
-                return _.replace(supervisor, worker + ':', '');
+            superVisorDisplayName(supervisor, worker) {
+                return _.replace(supervisor, worker + ':', '')
             },
 
-
             /**
-             *
-             * @returns {string}
+             * Transform time to human readable
              */
-            humanTime(time){
+            humanTime(time) {
                 return moment.duration(time, "seconds").humanize().replace(/^(.)|\s+(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
-            }
-        }
+                    return $1.toUpperCase()
+                })
+            },
+        },
     }
 </script>
 

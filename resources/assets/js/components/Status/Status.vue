@@ -4,17 +4,16 @@
             active: {},
             pending: {},
             activeClass: {
-                default: 'fsuccess'
+                default: 'fsuccess',
             },
         },
-
 
         /**
          * The component's data.
          */
         data() {
             return {
-                theActiveClass: this.activeClass
+                theActiveClass: this.activeClass,
             }
         },
     }
@@ -34,4 +33,3 @@
         </svg>
     </i>
 </template>
-

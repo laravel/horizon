@@ -12,21 +12,26 @@
     export default {
         props: ['jobId'],
 
-
-        components: {Icon, Layout, Message, Panel, PanelContent, PanelHeading, Status},
-
+        components: {
+            Icon,
+            Layout,
+            Message,
+            Panel,
+            PanelContent,
+            PanelHeading,
+            Status,
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingJob: true,
                 retryingJob: false,
-                job: {}
-            };
+                job: {},
+            }
         },
-
 
         /**
          * Prepare the component.
@@ -35,71 +40,65 @@
             this.loadFailedJob(this.jobId)
 
             setInterval(() => {
-                this.reloadRetries();
-            }, 3000);
+                this.reloadRetries()
+            }, 3000)
         },
-
 
         methods: {
             loadFailedJob(id) {
-                this.loadingJob = true;
+                this.loadingJob = true
 
                 axios.get('/horizon/api/jobs/failed/' + id)
-                        .then(response => {
-                            this.job = response.data;
+                    .then(response => {
+                        this.job = response.data
 
-                            this.loadingJob = false;
-                        });
+                        this.loadingJob = false
+                    })
             },
-
 
             /**
              * Reload the job retries.
              */
-            reloadRetries(){
+            reloadRetries() {
                 axios.get('/horizon/api/jobs/failed/' + this.jobId)
-                        .then(response => {
-                            this.job.retried_by = response.data.retried_by;
-
-                        });
+                    .then(response => {
+                        this.job.retried_by = response.data.retried_by
+                    })
             },
-
 
             /**
              * Retry the given failed job.
              */
             retry(id) {
                 if (this.retryingJob) {
-                    return;
+                    return
                 }
 
-                this.retryingJob = true;
+                this.retryingJob = true
 
                 axios.post('/horizon/api/jobs/retry/' + id)
-                        .then(() => {
-                            setTimeout(() => {
-                                this.reloadRetries();
+                    .then(() => {
+                        setTimeout(() => {
+                            this.reloadRetries()
 
-                                this.retryingJob = false;
-                            }, 3000);
-                        });
+                            this.retryingJob = false
+                        }, 3000)
+                    })
             },
-
 
             /**
              * Convert exception to a more readable format.
              */
-            prettyPrintException(exception){
-                var lines = _.split(exception, "\n"),
-                        output = '';
+            prettyPrintException(exception) {
+                let lines = _.split(exception, "\n"),
+                        output = ''
 
                 lines.forEach(line => {
-                    output += '<span>' + line + '</span>';
+                    output += '<span>' + line + '</span>'
                 });
 
-                return output;
+                return output
             },
-
 
             /**
              * Pretty print serialized job.
@@ -107,10 +106,10 @@
              * @param data
              * @returns {string}
              */
-            prettyPrintJob(data){
-                return '<pre>' + JSON.stringify(phpunserialize(data), null, 2) + '</pre>';
-            }
-        }
+            prettyPrintJob(data) {
+                return '<pre>' + JSON.stringify(phpunserialize(data), null, 2) + '</pre>'
+            },
+        },
     }
 </script>
 

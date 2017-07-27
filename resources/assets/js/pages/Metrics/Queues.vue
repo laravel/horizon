@@ -3,43 +3,42 @@
     import Message from '../../components/Messages/Message.vue'
 
     export default {
-        components: {Message},
-
+        components: {
+            Message,
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingQueues: true,
-                queues: []
-            };
+                queues: [],
+            }
         },
-
 
         /**
          * Prepare the component.
          */
         mounted() {
-            this.loadQueues();
+            this.loadQueues()
         },
-
 
         methods: {
             /**
              * Load the queues.
              */
             loadQueues() {
-                this.loadingQueues = true;
+                this.loadingQueues = true
 
                 axios.get('/horizon/api/metrics/queues')
-                        .then(response => {
-                            this.queues = response.data;
+                    .then(response => {
+                        this.queues = response.data
 
-                            this.loadingQueues = false;
-                        });
-            }
-        }
+                        this.loadingQueues = false
+                    })
+            },
+        },
     }
 </script>
 
@@ -61,4 +60,3 @@
         </tbody>
     </table>
 </template>
-

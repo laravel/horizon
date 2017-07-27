@@ -4,21 +4,18 @@
     export default {
         props: ['width'],
 
-
         components: {
             ModalContent,
         },
-
 
         /**
          * The component's data.
          */
         data() {
             return {
-                modalWidth: `${this.width}px`
+                modalWidth: `${this.width}px`,
             }
         },
-
 
         /**
          * Prepare the component.
@@ -26,19 +23,18 @@
         mounted() {
             document.addEventListener("keydown", (e) => {
                 if (e.keyCode == 27) {
-                    this.$root.showModal = false;
+                    this.$root.showModal = false
                 }
             })
         },
-
 
         methods: {
             /**
              * Close the modal
              */
             close() {
-                this.$root.showModal = false;
-            }
+                this.$root.showModal = false
+            },
         },
     }
 </script>

@@ -3,43 +3,42 @@
     import Message from '../../components/Messages/Message.vue'
 
     export default {
-        components: {Message},
-
+        components: {
+            Message,
+        },
 
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingJobs: true,
-                jobs: []
-            };
+                jobs: [],
+            }
         },
-
 
         /**
          * Prepare the component.
          */
         mounted() {
-            this.loadJobs();
+            this.loadJobs()
         },
-
 
         methods: {
             /**
              * Load the jobs.
              */
             loadJobs() {
-                this.loadingJobs = true;
+                this.loadingJobs = true
 
                 axios.get('/horizon/api/metrics/jobs')
-                        .then(response => {
-                            this.jobs = response.data;
+                    .then(response => {
+                        this.jobs = response.data
 
-                            this.loadingJobs = false;
-                        });
-            }
-        }
+                        this.loadingJobs = false
+                    })
+            },
+        },
     }
 </script>
 
@@ -61,4 +60,3 @@
         </tbody>
     </table>
 </template>
-
