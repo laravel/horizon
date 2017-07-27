@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Tests\Feature;
 
 use Laravel\Horizon\SupervisorFactory;
 use Laravel\Horizon\Tests\IntegrationTest;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeSupervisorFactory;
 
 class SupervisorCommandTest extends IntegrationTest
 {
@@ -23,17 +24,5 @@ class SupervisorCommandTest extends IntegrationTest
         $this->artisan('horizon:supervisor', ['name' => 'foo', 'connection' => 'redis', '--paused' => true]);
 
         $this->assertFalse($factory->supervisor->working);
-    }
-}
-
-
-
-class FakeSupervisorFactory
-{
-    public $supervisor;
-
-    public function make($options)
-    {
-        return $this->supervisor = new Fakes\SupervisorWithFakeMonitor($options);
     }
 }
