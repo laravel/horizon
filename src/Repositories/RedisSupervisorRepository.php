@@ -19,7 +19,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory $redis
+     * @param  RedisFactory  $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
