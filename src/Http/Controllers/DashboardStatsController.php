@@ -13,7 +13,7 @@ class DashboardStatsController extends Controller
     /**
      * Get the key performance stats for the dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function index()
     {

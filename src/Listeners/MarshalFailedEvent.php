@@ -12,14 +12,14 @@ class MarshalFailedEvent
     /**
      * The event dispatcher implementation.
      *
-     * @var Dispatcher
+     * @var \Illuminate\Contracts\Events\Dispatcher
      */
     public $events;
 
     /**
      * Create a new listener instance.
      *
-     * @param  Dispatcher  $events
+     * @param \Illuminate\Contracts\Events\Dispatcher $events
      * @return void
      */
     public function __construct(Dispatcher $events)
@@ -30,7 +30,7 @@ class MarshalFailedEvent
     /**
      * Handle the event.
      *
-     * @param  LaravelJobFailed  $event
+     * @param \Illuminate\Queue\Events\JobFailed $event
      * @return void
      */
     public function handle(LaravelJobFailed $event)

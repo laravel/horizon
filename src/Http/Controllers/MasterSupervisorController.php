@@ -10,9 +10,9 @@ class MasterSupervisorController extends Controller
     /**
      * Get all of the master supervisors and their underlying supervisors.
      *
-     * @param  MasterSupervisorRepository  $masters
-     * @param  SupervisorRepository  $supervisors
-     * @return \Illuminate\Http\Response
+     * @param \Laravel\Horizon\Contracts\MasterSupervisorRepository $masters
+     * @param \Laravel\Horizon\Contracts\SupervisorRepository $supervisors
+     * @return \Illuminate\Support\Collection
      */
     public function index(MasterSupervisorRepository $masters,
                           SupervisorRepository $supervisors)

@@ -66,7 +66,7 @@ class LongWaitDetected extends Notification
      * Get the Slack representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return SlackMessage
+     * @return \Illuminate\Notifications\Messages\SlackMessage
      */
     public function toSlack($notifiable)
     {
@@ -88,7 +88,7 @@ class LongWaitDetected extends Notification
      * Get the Nexmo / SMS representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return NexmoMessage
+     * @return \Illuminate\Notifications\Messages\NexmoMessage
      */
     public function toNexmo($notifiable)
     {

@@ -9,14 +9,14 @@ class SupervisorLooped
     /**
      * The supervisor instance.
      *
-     * @var Supervisor
+     * @var \Laravel\Horizon\Supervisor
      */
     public $supervisor;
 
     /**
      * Create a new event instance.
      *
-     * @param  Supervisor  $supervisor
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
      * @return void
      */
     public function __construct(Supervisor $supervisor)

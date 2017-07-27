@@ -27,7 +27,7 @@ class MonitorTag
     /**
      * Execute the job.
      *
-     * @param  TagRepository  $tags
+     * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
      * @return void
      */
     public function handle(TagRepository $tags)

@@ -14,14 +14,14 @@ class RedisMetricsRepository implements MetricsRepository
     /**
      * The Redis connection instance.
      *
-     * @var RedisFactory
+     * @var \Illuminate\Contracts\Redis\Factory
      */
     public $redis;
 
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory  $redis
+     * @param \Illuminate\Contracts\Redis\Factory $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
@@ -60,7 +60,7 @@ class RedisMetricsRepository implements MetricsRepository
     /**
      * Get the jobs processed per minute since the last snapshot.
      *
-     * @return int
+     * @return float
      */
     public function jobsProcessedPerMinute()
     {
@@ -344,7 +344,7 @@ class RedisMetricsRepository implements MetricsRepository
     /**
      * Get the number of minutes passed since the last snapshot.
      *
-     * @return int
+     * @return float
      */
     protected function minutesSinceLastSnapshot()
     {

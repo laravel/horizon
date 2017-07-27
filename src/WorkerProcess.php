@@ -13,28 +13,28 @@ class WorkerProcess
     /**
      * The underlying Symfony process.
      *
-     * @var Process
+     * @var \Symfony\Component\Process\Process
      */
     public $process;
 
     /**
      * The output handler callback.
      *
-     * @var Closure
+     * @var \Closure
      */
     public $output;
 
     /**
      * The time at which the cooldown period will be over.
      *
-     * @var Chronos
+     * @var \Cake\Chronos\Chronos
      */
     public $restartAgainAt;
 
     /**
      * Create a new worker process instance.
      *
-     * @param  Process  $process
+     * @param  \Symfony\Component\Process\Process  $process
      * @return void
      */
     public function __construct($process)
@@ -45,7 +45,7 @@ class WorkerProcess
     /**
      * Start the process.
      *
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return $this
      */
     public function start(Closure $callback)
@@ -148,7 +148,7 @@ class WorkerProcess
     }
 
     /**
-     * Begin the cooldown period for the process.
+     * Begin the cool-down period for the process.
      *
      * @return void
      */

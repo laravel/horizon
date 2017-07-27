@@ -19,7 +19,7 @@ class SupervisorProcess extends WorkerProcess
     /**
      * The supervisor process options.
      *
-     * @var SupervisorOptions
+     * @var \Laravel\Horizon\SupervisorOptions
      */
     public $options;
 
@@ -44,9 +44,9 @@ class SupervisorProcess extends WorkerProcess
     /**
      * Create a new supervisor process instance.
      *
-     * @param  SupervisorOptions  $options
+     * @param \Laravel\Horizon\SupervisorOptions $options
      * @param  \Symfony\Component\Process\Process  $process
-     * @param  \Closure  $output
+     * @param  \Closure|null  $output
      * @return void
      */
     public function __construct(SupervisorOptions $options, $process, Closure $output = null)
@@ -106,7 +106,7 @@ class SupervisorProcess extends WorkerProcess
     }
 
     /**
-     * Reprovision this supervisor process based on the provisioning plan.
+     * Re-provision this supervisor process based on the provisioning plan.
      *
      * @return void
      */

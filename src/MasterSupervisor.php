@@ -50,7 +50,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     /**
      * The callback to use to resolve master supervisor names.
      *
-     * @var Closure|null
+     * @var \Closure|null
      */
     public static $nameResolver;
 
@@ -102,7 +102,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     /**
      * Use the given callback to resolve master supervisor names.
      *
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public static function determineNameUsing(Closure $callback)
@@ -211,7 +211,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
      * Ensure that this is the only master supervisor running for this machine.
      *
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
     public function ensureNoOtherMasterSupervisors()
     {

@@ -101,7 +101,7 @@ class ProvisioningPlan
     /**
      * Add a supervisor with the given options.
      *
-     * @param  SupervisorOptions  $options
+     * @param \Laravel\Horizon\SupervisorOptions $options
      * @return void
      */
     protected function add(SupervisorOptions $options)
@@ -118,7 +118,7 @@ class ProvisioningPlan
      *
      * @param  string  $environment
      * @param  string  $supervisor
-     * @return SupervisorOptions
+     * @return mixed
      */
     public function optionsFor($environment, $supervisor)
     {
@@ -146,7 +146,7 @@ class ProvisioningPlan
      *
      * @param  string  $supervisor
      * @param  array  $options
-     * @return SupervisorOptions
+     * @return \Laravel\Horizon\SupervisorOptions
      */
     protected function convert($supervisor, $options)
     {

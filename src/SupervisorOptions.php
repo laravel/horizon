@@ -89,7 +89,7 @@ class SupervisorOptions extends WorkerOptions
      * Create a fresh options instance with the given queue.
      *
      * @param  string  $queue
-     * @return SupervisorOptions
+     * @return static
      */
     public function withQueue($queue)
     {

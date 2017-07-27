@@ -10,14 +10,14 @@ class RecentJobsController extends Controller
     /**
      * The job repository implementation.
      *
-     * @var JobRepository
+     * @var \Laravel\Horizon\Contracts\JobRepository
      */
     public $jobs;
 
     /**
      * Create a new controller instance.
      *
-     * @param  JobRepository $jobs
+     * @param  \Laravel\Horizon\Contracts\JobRepository $jobs
      * @return void
      */
     public function __construct(JobRepository $jobs)
@@ -31,7 +31,7 @@ class RecentJobsController extends Controller
      * Get all of the recent jobs.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function index(Request $request)
     {

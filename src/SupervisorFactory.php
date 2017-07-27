@@ -7,8 +7,8 @@ class SupervisorFactory
     /**
      * Create a new supervisor instance.
      *
-     * @param  SupervisorOptions  $options
-     * @return void
+     * @param \Laravel\Horizon\SupervisorOptions $options
+     * @return \Laravel\Horizon\Supervisor
      */
     public function make(SupervisorOptions $options)
     {

@@ -39,7 +39,7 @@ interface MasterSupervisorRepository
     /**
      * Update the information about the given master supervisor.
      *
-     * @param  MasterSupervisor  $master
+     * @param  \Laravel\Horizon\MasterSupervisor  $master
      * @return void
      */
     public function update(MasterSupervisor $master);

@@ -14,7 +14,7 @@ class RedisJobRepository implements JobRepository
     /**
      * The Redis connection instance.
      *
-     * @var RedisFactory
+     * @var \Illuminate\Contracts\Redis\Factory
      */
     public $redis;
 
@@ -31,7 +31,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory  $redis
+     * @param \Illuminate\Contracts\Redis\Factory $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
@@ -72,7 +72,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get a chunk of recent jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getRecent($afterIndex = null)
@@ -83,7 +83,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get a chunk of failed jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getFailed($afterIndex = null)
@@ -94,7 +94,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the count of recent jobs.
      *
-     * @return \Illuminate\Support\Collection
+     * @return int
      */
     public function countRecent()
     {
@@ -104,7 +104,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the count of failed jobs.
      *
-     * @return \Illuminate\Support\Collection
+     * @return int
      */
     public function countFailed()
     {
@@ -114,7 +114,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the count of the recently failed jobs.
      *
-     * @return \Illuminate\Support\Collection
+     * @return int
      */
     public function countRecentlyFailed()
     {
@@ -151,7 +151,7 @@ class RedisJobRepository implements JobRepository
      * Retrieve the jobs with the given IDs.
      *
      * @param  array  $ids
-     * @param  string  $indexFrom
+     * @param  mixed  $indexFrom
      * @return \Illuminate\Support\Collection
      */
     public function getJobs(array $ids, $indexFrom = 0)
@@ -194,7 +194,7 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function pushed($connection, $queue, JobPayload $payload)
@@ -238,7 +238,7 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function reserved($connection, $queue, JobPayload $payload)
@@ -258,7 +258,7 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function released($connection, $queue, JobPayload $payload)
@@ -277,7 +277,7 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function remember($connection, $queue, JobPayload $payload)
@@ -304,7 +304,7 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  Collection  $payloads
+     * @param  \Illuminate\Support\Collection  $payloads
      * @return void
      */
     public function migrated($connection, $queue, Collection $payloads)
@@ -325,7 +325,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Handle the storage of a completed job.
      *
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @param  bool  $failed
      * @return void
      */
@@ -360,7 +360,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Update the retry status of a job's parent.
      *
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @param  bool  $failed
      * @return void
      */
@@ -380,7 +380,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Update the retry status of a job in a retry array.
      *
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @param  array  $retries
      * @param  bool  $failed
      * @return array
@@ -441,7 +441,7 @@ class RedisJobRepository implements JobRepository
      * Find a failed job by ID.
      *
      * @param  string  $id
-     * @return \StdClass|null
+     * @return \stdClass|null
      */
     public function findFailed($id)
     {
@@ -458,7 +458,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $exception
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function failed($exception, $connection, $queue, JobPayload $payload)

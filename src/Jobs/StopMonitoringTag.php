@@ -28,8 +28,8 @@ class StopMonitoringTag
     /**
      * Execute the job.
      *
-     * @param  JobRepository  $jobs
-     * @param  TagRepository  $tags
+     * @param \Laravel\Horizon\Contracts\JobRepository $jobs
+     * @param \Laravel\Horizon\Contracts\TagRepository $tags
      * @return void
      */
     public function handle(JobRepository $jobs, TagRepository $tags)

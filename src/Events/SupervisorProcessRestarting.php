@@ -9,14 +9,14 @@ class SupervisorProcessRestarting
     /**
      * The supervisor process instance.
      *
-     * @var SupervisorProcess
+     * @var \Laravel\Horizon\SupervisorProcess
      */
     public $process;
 
     /**
      * Create a new event instance.
      *
-     * @param  SupervisorProcess  $process
+     * @param  \Laravel\Horizon\SupervisorProcess  $process
      * @return void
      */
     public function __construct(SupervisorProcess $process)

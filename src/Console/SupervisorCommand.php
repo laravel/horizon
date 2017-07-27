@@ -46,7 +46,7 @@ class SupervisorCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -89,7 +89,7 @@ class SupervisorCommand extends Command
     /**
      * Get the supervisor options.
      *
-     * @return SupervisorOptions
+     * @return \Laravel\Horizon\SupervisorOptions
      */
     protected function supervisorOptions()
     {
