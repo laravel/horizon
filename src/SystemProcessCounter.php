@@ -16,7 +16,6 @@ class SystemProcessCounter
     /**
      * Get the number of Horizon workers for a given supervisor.
      *
-     * @param  string  $master
      * @param  string  $name
      * @return int
      */

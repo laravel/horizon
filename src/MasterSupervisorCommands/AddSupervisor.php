@@ -12,7 +12,7 @@ class AddSupervisor
     /**
      * Process the command.
      *
-     * @param  MasterSupervisor  $supervisor
+     * @param  MasterSupervisor  $master
      * @param  array  $options
      * @return void
      */
@@ -30,7 +30,7 @@ class AddSupervisor
     /**
      * Create the Symfony process instance.
      *
-     * @param  MasterSupervisor  $supervisor
+     * @param  MasterSupervisor  $master
      * @param  SupervisorOptions  $options
      * @return Process
      */

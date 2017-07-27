@@ -54,7 +54,7 @@ interface SupervisorRepository
     /**
      * Remove the supervisor information from storage.
      *
-     * @param  array|string  $name
+     * @param  array|string  $names
      * @return void
      */
     public function forget($names);

@@ -142,7 +142,7 @@ class RedisQueue extends BaseQueue
     /**
      * Fire the given event if a dispatcher is bound.
      *
-     * @param  string  $event
+     * @param  string  $queue
      * @param  mixed  $event
      * @return void
      */

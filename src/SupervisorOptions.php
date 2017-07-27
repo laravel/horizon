@@ -61,7 +61,7 @@ class SupervisorOptions extends WorkerOptions
      * @param  string  $name
      * @param  string  $connection
      * @param  string  $queue
-     * @param  bool  $balance
+     * @param  string  $balance
      * @param  int  $delay
      * @param  int  $maxProcesses
      * @param  int  $minProcesses

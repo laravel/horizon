@@ -123,7 +123,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * Create a new process pool with the given options.
      *
-     * @param  array  $options
+     * @param  SupervisorOptions  $options
      * @return ProcessPool
      */
     protected function createProcessPool(SupervisorOptions $options)
@@ -258,6 +258,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      * Ensure no other supervisors are running with the same name.
      *
      * @return void
+     * @throws Exception
      */
     public function ensureNoDuplicateSupervisors()
     {

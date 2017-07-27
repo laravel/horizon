@@ -24,7 +24,7 @@ class StoreMonitoredTags
     /**
      * Create a new listener instance.
      *
-     * @param  TagRepository  $jobs
+     * @param  TagRepository  $tags
      * @return void
      */
     public function __construct(TagRepository $tags)

@@ -16,7 +16,7 @@ class QueueMetricsController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param  MetricsRepository  $jobs
+     * @param  MetricsRepository  $metrics
      * @return void
      */
     public function __construct(MetricsRepository $metrics)

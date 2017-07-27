@@ -144,7 +144,6 @@ class ProvisioningPlan
     /**
      * Convert the given array of options into a SupervisorOptions instance.
      *
-     * @param  string  $environment
      * @param  string  $supervisor
      * @param  array  $options
      * @return SupervisorOptions

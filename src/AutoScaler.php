@@ -88,6 +88,7 @@ class AutoScaler
      *
      * @param  Supervisor  $supervisor
      * @param  Collection  $timeToClear
+     * @return Collection
      */
     protected function numberOfWorkersPerQueue(Supervisor $supervisor, Collection $timeToClear)
     {

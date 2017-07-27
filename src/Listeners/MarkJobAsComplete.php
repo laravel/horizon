@@ -26,7 +26,7 @@ class MarkJobAsComplete
      * Create a new listener instance.
      *
      * @param  JobRepository  $jobs
-     * @param  MonitoredTagRepository  $tags
+     * @param  TagRepository  $tags
      * @return void
      */
     public function __construct(JobRepository $jobs, TagRepository $tags)
