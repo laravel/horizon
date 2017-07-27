@@ -16,18 +16,18 @@
         "php": ">=7.1.0",
         "ext-pcntl": "*",
         "cakephp/chronos": "^1.0",
-        "illuminate/contracts": "~5.4",
-        "illuminate/queue": "~5.4",
-        "illuminate/support": "~5.4",
+        "illuminate/contracts": "~5.5",
+        "illuminate/queue": "~5.5",
+        "illuminate/support": "~5.5",
         "predis/predis": "^1.1",
         "ramsey/uuid": "^3.5",
-        "symfony/debug": "~3.2"
+        "symfony/debug": "~3.3"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
-        "orchestra/database": "~3.4",
-        "orchestra/testbench": "~3.4",
-        "phpunit/phpunit": "~5.0"
+        "orchestra/database": "~3.5",
+        "orchestra/testbench": "~3.5",
+        "phpunit/phpunit": "~6.0"
     },
     "autoload": {
         "psr-4": {
