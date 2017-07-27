@@ -77,7 +77,7 @@ class MasterSupervisorTest extends IntegrationTest
         $master->loop();
 
         $this->assertTrue($supervisorProcess->dead);
-        $commands = Redis::connection('horizon-command-queue')->lrange(
+        $commands = Redis::connection('horizon')->lrange(
             'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
         );
 

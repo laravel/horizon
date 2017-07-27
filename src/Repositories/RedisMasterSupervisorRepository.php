@@ -137,6 +137,6 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
      */
     protected function connection()
     {
-        return $this->redis->connection('horizon-supervisors');
+        return $this->redis->connection('horizon');
     }
 }

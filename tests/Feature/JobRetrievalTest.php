@@ -59,14 +59,14 @@ class JobRetrievalTest extends IntegrationTest
         $repository = resolve(JobRepository::class);
         Chronos::setTestNow(Chronos::now()->addHours(3));
 
-        $this->assertEquals(5, Redis::connection('horizon-jobs')->zcard('recent_jobs'));
+        $this->assertEquals(5, Redis::connection('horizon')->zcard('recent_jobs'));
 
         $repository->trimRecentJobs();
-        $this->assertEquals(0, Redis::connection('horizon-jobs')->zcard('recent_jobs'));
+        $this->assertEquals(0, Redis::connection('horizon')->zcard('recent_jobs'));
 
         // Assert job record has a TTL...
         $repository->completed(new JobPayload(json_encode(['id' => $ids[0]])));
-        $this->assertGreaterThan(0, Redis::connection('horizon-jobs')->ttl($ids[0]));
+        $this->assertGreaterThan(0, Redis::connection('horizon')->ttl($ids[0]));
 
         Chronos::setTestNow();
     }

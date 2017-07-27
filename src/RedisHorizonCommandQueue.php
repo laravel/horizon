@@ -83,6 +83,6 @@ class RedisHorizonCommandQueue implements HorizonCommandQueue
      */
     protected function connection()
     {
-        return $this->redis->connection('horizon-command-queue');
+        return $this->redis->connection('horizon');
     }
 }

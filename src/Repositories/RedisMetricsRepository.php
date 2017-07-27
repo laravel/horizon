@@ -394,6 +394,6 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function connection()
     {
-        return $this->redis->connection('horizon-metrics');
+        return $this->redis->connection('horizon');
     }
 }

@@ -180,6 +180,6 @@ class RedisTagRepository implements TagRepository
      */
     protected function connection()
     {
-        return $this->redis->connection('horizon-tags');
+        return $this->redis->connection('horizon');
     }
 }

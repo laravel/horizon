@@ -43,7 +43,7 @@ class RetryJobTest extends IntegrationTest
         dispatch(new RetryFailedJob($id));
 
         // Test status is set to pending...
-        $retried = Redis::connection('horizon-jobs')->hget($id, 'retried_by');
+        $retried = Redis::connection('horizon')->hget($id, 'retried_by');
         $retried = json_decode($retried, true);
         $this->assertSame('pending', $retried[0]['status']);
 
@@ -54,7 +54,7 @@ class RetryJobTest extends IntegrationTest
         $this->assertEquals(1, $this->monitoredJobs('first'));
 
         // Test that retry job ID reference is stored on original failed job...
-        $retried = Redis::connection('horizon-jobs')->hget($id, 'retried_by');
+        $retried = Redis::connection('horizon')->hget($id, 'retried_by');
         $retried = json_decode($retried, true);
         $this->assertCount(1, $retried);
         $this->assertNotNull($retried[0]['id']);
@@ -73,7 +73,7 @@ class RetryJobTest extends IntegrationTest
         $this->work();
 
         // Test that retry job ID reference is stored on original failed job...
-        $retried = Redis::connection('horizon-jobs')->hget($id, 'retried_by');
+        $retried = Redis::connection('horizon')->hget($id, 'retried_by');
         $retried = json_decode($retried, true);
 
         // Test status is now failed on the retry...

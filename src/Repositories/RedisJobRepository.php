@@ -541,6 +541,6 @@ class RedisJobRepository implements JobRepository
      */
     protected function connection()
     {
-        return $this->redis->connection('horizon-jobs');
+        return $this->redis->connection('horizon');
     }
 }

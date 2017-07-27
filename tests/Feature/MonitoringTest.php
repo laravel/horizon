@@ -44,7 +44,7 @@ class MonitoringTest extends IntegrationTest
     {
         dispatch(new MonitorTag('first'));
         dispatch(new StopMonitoringTag('first'));
-        $this->assertNull(Redis::connection('horizon-tags')->get('first'));
+        $this->assertNull(Redis::connection('horizon')->get('first'));
     }
 
     public function test_completed_jobs_are_stored_in_database_when_one_of_their_tags_is_being_monitored()
@@ -53,7 +53,7 @@ class MonitoringTest extends IntegrationTest
         $id = Queue::push(new Jobs\BasicJob);
         $this->work();
         $this->assertEquals(1, $this->monitoredJobs('first'));
-        $this->assertEquals(-1, Redis::connection('horizon-jobs')->ttl($id));
+        $this->assertEquals(-1, Redis::connection('horizon')->ttl($id));
     }
 
     public function test_completed_jobs_are_removed_from_database_when_their_tag_is_no_longer_monitored()

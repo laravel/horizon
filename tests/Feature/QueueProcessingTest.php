@@ -31,20 +31,20 @@ class QueueProcessingTest extends IntegrationTest
     {
         $id = Queue::push(new Jobs\BasicJob);
         $this->assertEquals(1, $this->recentJobs());
-        $this->assertSame('pending', Redis::connection('horizon-jobs')->hget($id, 'status'));
+        $this->assertSame('pending', Redis::connection('horizon')->hget($id, 'status'));
     }
 
     public function test_pending_jobs_are_stored_with_their_tags()
     {
         $id = Queue::push(new Jobs\BasicJob);
-        $payload = json_decode(Redis::connection('horizon-jobs')->hget($id, 'payload'), true);
+        $payload = json_decode(Redis::connection('horizon')->hget($id, 'payload'), true);
         $this->assertEquals(['first', 'second'], $payload['tags']);
     }
 
     public function test_pending_jobs_are_stored_with_their_type()
     {
         $id = Queue::push(new Jobs\BasicJob);
-        $payload = json_decode(Redis::connection('horizon-jobs')->hget($id, 'payload'), true);
+        $payload = json_decode(Redis::connection('horizon')->hget($id, 'payload'), true);
         $this->assertSame('job', $payload['type']);
     }
 
@@ -63,7 +63,7 @@ class QueueProcessingTest extends IntegrationTest
 
         $status = null;
         Event::listen(JobReserved::class, function ($event) use ($id, &$status) {
-            $status = Redis::connection('horizon-jobs')->hget($id, 'status');
+            $status = Redis::connection('horizon')->hget($id, 'status');
         });
 
         $this->work();
@@ -75,11 +75,11 @@ class QueueProcessingTest extends IntegrationTest
     {
         $id = Queue::later(Chronos::now()->addSeconds(0), new Jobs\BasicJob);
 
-        Redis::connection('horizon-jobs')->hset($id, 'status', 'reserved');
+        Redis::connection('horizon')->hset($id, 'status', 'reserved');
 
         $status = null;
         Event::listen(JobsMigrated::class, function ($event) use ($id, &$status) {
-            $status = Redis::connection('horizon-jobs')->hget($id, 'status');
+            $status = Redis::connection('horizon')->hget($id, 'status');
         });
 
         $this->work();
