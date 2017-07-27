@@ -4,7 +4,7 @@ import moment from 'moment';
 import router from './router/';
 import App from './components/App.vue';
 
-Vue.prototype.$http = axios.create()
+Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
 
