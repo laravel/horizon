@@ -9,7 +9,7 @@ class Balance
     /**
      * Process the command.
      *
-     * @param  Supervisor  $supervisor
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
      * @param  array  $options
      * @return void
      */
