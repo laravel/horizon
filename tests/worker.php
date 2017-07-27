@@ -4,10 +4,10 @@ require __DIR__.'/../vendor/autoload.php';
 
 use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
-use Orchestra\Testbench\Traits\ApplicationTrait;
+use Orchestra\Testbench\Traits\CreatesApplication;
 
 $appLoader = new class {
-    use ApplicationTrait;
+    use CreatesApplication;
 
     /**
      * Define environment setup.
