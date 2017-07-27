@@ -15,7 +15,7 @@ interface ProcessRepository
     /**
      * Record the given process IDs as orphaned.
      *
-     * @param  string $master
+     * @param  string  $master
      * @param  array  $processIds
      * @return array
      */
