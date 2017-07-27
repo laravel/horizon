@@ -126,7 +126,7 @@ abstract class IntegrationTest extends TestCase
      */
     protected function getPackageProviders($app)
     {
-        return ['Laravel\Horizon\HorizonServiceProvider'];
+        return [\Laravel\Horizon\HorizonServiceProvider::class];
     }
 
     /**

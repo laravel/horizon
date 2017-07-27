@@ -15,7 +15,7 @@ class QueueProcessingTest extends IntegrationTest
 {
     public function test_legacy_jobs_can_be_processed_without_errors()
     {
-        Queue::push('Laravel\Horizon\Tests\Feature\Jobs\LegacyJob');
+        Queue::push(\Laravel\Horizon\Tests\Feature\Jobs\LegacyJob::class);
         $this->work();
     }
 
