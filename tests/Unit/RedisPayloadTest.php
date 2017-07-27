@@ -21,16 +21,16 @@ class RedisPayloadTest extends UnitTest
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
 
         $JobPayload->prepare(new BroadcastEvent(new StdClass));
-        $this->assertEquals('broadcast', $JobPayload->decoded['type']);
+        $this->assertSame('broadcast', $JobPayload->decoded['type']);
 
         $JobPayload->prepare(new CallQueuedListener('Class', 'method', [new StdClass]));
-        $this->assertEquals('event', $JobPayload->decoded['type']);
+        $this->assertSame('event', $JobPayload->decoded['type']);
 
         $JobPayload->prepare(new SendQueuedMailable(Mockery::mock(Mailable::class)));
-        $this->assertEquals('mail', $JobPayload->decoded['type']);
+        $this->assertSame('mail', $JobPayload->decoded['type']);
 
         $JobPayload->prepare(new SendQueuedNotifications([], new StdClass, ['mail']));
-        $this->assertEquals('notification', $JobPayload->decoded['type']);
+        $this->assertSame('notification', $JobPayload->decoded['type']);
     }
 
 

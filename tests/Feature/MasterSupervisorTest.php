@@ -44,7 +44,7 @@ class MasterSupervisorTest extends IntegrationTest
         $master->loop();
 
         $this->assertTrue($supervisorProcess->dead);
-        $this->assertEquals(0, count($master->supervisors));
+        $this->assertCount(0, $master->supervisors);
     }
 
 
@@ -61,7 +61,7 @@ class MasterSupervisorTest extends IntegrationTest
         $master->loop();
 
         $this->assertTrue($supervisorProcess->dead);
-        $this->assertEquals(0, count($master->supervisors));
+        $this->assertCount(0, $master->supervisors);
     }
 
 
@@ -82,12 +82,12 @@ class MasterSupervisorTest extends IntegrationTest
             MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
         );
 
-        $this->assertEquals(1, count($commands));
+        $this->assertCount(1, $commands);
         $command = (object) json_decode($commands[0], true);
 
-        $this->assertEquals(0, count($master->supervisors));
+        $this->assertCount(0, $master->supervisors);
         $this->assertEquals(AddSupervisor::class, $command->command);
-        $this->assertEquals('default', $command->options['queue']);
+        $this->assertSame('default', $command->options['queue']);
     }
 
 
@@ -102,7 +102,7 @@ class MasterSupervisorTest extends IntegrationTest
         $master->loop();
 
         $this->assertFalse($supervisorProcess->dead);
-        $this->assertEquals(1, count($master->supervisors));
+        $this->assertCount(1, $master->supervisors);
         $this->assertTrue($supervisorProcess->wasRestarted);
     }
 
@@ -118,7 +118,7 @@ class MasterSupervisorTest extends IntegrationTest
         $master->loop();
 
         $this->assertFalse($supervisorProcess->dead);
-        $this->assertEquals(1, count($master->supervisors));
+        $this->assertCount(1, $master->supervisors);
         $this->assertTrue($supervisorProcess->wasRestarted);
     }
 
@@ -161,13 +161,13 @@ class MasterSupervisorTest extends IntegrationTest
 
         $this->assertNotNull($masterRecord->pid);
         $this->assertEquals([MasterSupervisor::name().':name'], $masterRecord->supervisors);
-        $this->assertEquals('running', $masterRecord->status);
+        $this->assertSame('running', $masterRecord->status);
 
         $master->pause();
         $master->loop();
 
         $masterRecord = resolve(MasterSupervisorRepository::class)->find($master->name);
-        $this->assertEquals('paused', $masterRecord->status);
+        $this->assertSame('paused', $masterRecord->status);
     }
 
 

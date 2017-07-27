@@ -95,6 +95,7 @@ class FailedJobsController extends Controller
     /**
      * Get a failed job instance.
      *
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)

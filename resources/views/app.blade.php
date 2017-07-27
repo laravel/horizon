@@ -3,7 +3,7 @@
     <head>
         <title>Horizon</title>
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/horizon/css/app.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/horizon') }}">
     </head>
 
     <body>
@@ -13,6 +13,6 @@
             {!! file_get_contents(public_path('/vendor/horizon/img/sprite.svg')) !!}
         </div>
 
-        <script src="{{ asset('/vendor/horizon/js/app.js') }}"></script>
+        <script src="{{ mix('js/app.js', 'vendor/horizon') }}"></script>
     </body>
 </html>

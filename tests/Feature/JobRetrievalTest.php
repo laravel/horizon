@@ -26,7 +26,7 @@ class JobRetrievalTest extends IntegrationTest
         $recent = $repository->getRecent();
 
         // Test getting all jobs...
-        $this->assertEquals(5, count($recent));
+        $this->assertCount(5, $recent);
         $this->assertEquals($ids[4], $recent->first()->id);
         $this->assertEquals(Jobs\BasicJob::class, $recent->first()->name);
         $this->assertEquals(0, $recent->first()->index);
@@ -35,7 +35,7 @@ class JobRetrievalTest extends IntegrationTest
 
         // Test pagination...
         $recent = $repository->getRecent(1);
-        $this->assertEquals(3, count($recent));
+        $this->assertCount(3, $recent);
         $this->assertEquals($ids[2], $recent->first()->id);
         $this->assertEquals(2, $recent->first()->index);
         $this->assertEquals($ids[0], $recent->last()->id);
@@ -43,7 +43,7 @@ class JobRetrievalTest extends IntegrationTest
 
         // Test no results...
         $recent = $repository->getRecent(4);
-        $this->assertEquals(0, count($recent));
+        $this->assertCount(0, $recent);
     }
 
 
@@ -84,9 +84,9 @@ class JobRetrievalTest extends IntegrationTest
         $repository = resolve(JobRepository::class);
 
         $pending = $repository->getRecent();
-        $this->assertEquals(50, count($pending));
+        $this->assertCount(50, $pending);
 
         $pending = $repository->getRecent($pending->last()->index);
-        $this->assertEquals(25, count($pending));
+        $this->assertCount(25, $pending);
     }
 }

@@ -75,15 +75,7 @@ class HorizonServiceProvider extends ServiceProvider
     public function defineAssetPublishing()
     {
         $this->publishes([
-            HORIZON_PATH.'/public/js' => public_path('vendor/horizon/js'),
-        ], 'horizon-assets');
-
-        $this->publishes([
-            HORIZON_PATH.'/public/css' => public_path('vendor/horizon/css'),
-        ], 'horizon-assets');
-
-        $this->publishes([
-            HORIZON_PATH.'/public/img' => public_path('vendor/horizon/img'),
+            HORIZON_PATH.'/public' => public_path('vendor/horizon'),
         ], 'horizon-assets');
     }
 

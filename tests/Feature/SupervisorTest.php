@@ -53,10 +53,10 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
 
         $this->wait(function () {
-            $this->assertEquals('completed', resolve(JobRepository::class)->getRecent()[0]->status);
+            $this->assertSame('completed', resolve(JobRepository::class)->getRecent()[0]->status);
         });
 
-        $this->assertEquals(1, count($supervisor->processes()));
+        $this->assertCount(1, $supervisor->processes());
 
         $host = MasterSupervisor::name();
         $this->assertEquals(
@@ -74,7 +74,7 @@ class SupervisorTest extends IntegrationTest
         $this->supervisor = $supervisor = new Supervisor($options);
 
         $supervisor->scale(2);
-        $this->assertEquals(2, count($supervisor->processes()));
+        $this->assertCount(2, $supervisor->processes());
 
         $host = MasterSupervisor::name();
 
@@ -160,17 +160,17 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
 
         $record = resolve(SupervisorRepository::class)->find($supervisor->name);
-        $this->assertEquals('running', $record->status);
+        $this->assertSame('running', $record->status);
         $this->assertEquals(2, collect($record->processes)->sum());
         $this->assertEquals(2, $record->processes['redis:default,another']);
         $this->assertTrue(isset($record->pid));
-        $this->assertEquals('redis', $record->options['connection']);
+        $this->assertSame('redis', $record->options['connection']);
 
         $supervisor->pause();
         $supervisor->loop();
 
         $record = resolve(SupervisorRepository::class)->find($supervisor->name);
-        $this->assertEquals('paused', $record->status);
+        $this->assertSame('paused', $record->status);
     }
 
 
@@ -190,7 +190,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
         usleep(100 * 1000);
 
-        $this->assertEquals(2, count($supervisor->processes()));
+        $this->assertCount(2, $supervisor->processes());
         $this->assertTrue($supervisor->processes()[0]->isRunning());
         $this->assertTrue($supervisor->processes()[1]->isRunning());
     }
@@ -205,18 +205,18 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
         usleep(100 * 1000);
 
-        $this->assertEquals(3, count($supervisor->processes()));
+        $this->assertCount(3, $supervisor->processes());
 
         $supervisor->scale(1);
         $supervisor->loop();
         usleep(100 * 1000);
 
-        $this->assertEquals(1, count($supervisor->processes()));
+        $this->assertCount(1, $supervisor->processes());
         $this->assertTrue($supervisor->processes()[0]->isRunning());
 
         // Give processes time to terminate...
         retry(10, function () use ($supervisor) {
-            $this->assertEquals(0, count($supervisor->terminatingProcesses()));
+            $this->assertCount(0, $supervisor->terminatingProcesses());
         }, 1000);
     }
 
@@ -262,7 +262,7 @@ class SupervisorTest extends IntegrationTest
         $this->assertTrue($supervisor->processPools[0]->working);
 
         $this->wait(function () {
-            $this->assertEquals('completed', resolve(JobRepository::class)->getRecent()[0]->status);
+            $this->assertSame('completed', resolve(JobRepository::class)->getRecent()[0]->status);
         });
     }
 
