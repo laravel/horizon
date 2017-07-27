@@ -9,7 +9,7 @@ class Restart
     /**
      * Process the command.
      *
-     * @param  Restartable  $restartable
+     * @param  \Laravel\Horizon\Contracts\Restartable  $restartable
      * @return void
      */
     public function process(Restartable $restartable)

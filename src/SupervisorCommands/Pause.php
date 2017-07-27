@@ -9,7 +9,7 @@ class Pause
     /**
      * Process the command.
      *
-     * @param  Pausable  $pausable
+     * @param  \Laravel\Horizon\Contracts\Pausable  $pausable
      * @return void
      */
     public function process(Pausable $pausable)

@@ -151,7 +151,7 @@ class RedisJobRepository implements JobRepository
      * Retrieve the jobs with the given IDs.
      *
      * @param  array  $ids
-     * @param  string  $indexFrom
+     * @param  int  $indexFrom
      * @return \Illuminate\Support\Collection
      */
     public function getJobs(array $ids, $indexFrom = 0)

@@ -11,14 +11,14 @@ class RedisProcessRepository implements ProcessRepository
     /**
      * The Redis connection instance.
      *
-     * @var RedisFactory
+     * @var \Illuminate\Contracts\Redis\Factory
      */
     public $redis;
 
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory  $redis
+     * @param  \Illuminate\Contracts\Redis\Factory  $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
@@ -98,7 +98,7 @@ class RedisProcessRepository implements ProcessRepository
     /**
      * Get the Redis connection instance.
      *
-     * @return \Illuminate\Redis\Connetions\Connection
+     * @return \Illuminate\Redis\Connections\Connection
      */
     protected function connection()
     {

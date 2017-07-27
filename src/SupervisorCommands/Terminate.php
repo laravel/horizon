@@ -9,7 +9,7 @@ class Terminate
     /**
      * Process the command.
      *
-     * @param  Terminable  $terminable
+     * @param  \Laravel\Horizon\Contracts\Terminable  $terminable
      * @param  array  $options
      * @return void
      */

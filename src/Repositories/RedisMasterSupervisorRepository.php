@@ -88,7 +88,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     /**
      * Update the information about the given master supervisor.
      *
-     * @param  MasterSupervisor  $master
+     * @param \Laravel\Horizon\MasterSupervisor $master
      * @return void
      */
     public function update(MasterSupervisor $master)
@@ -130,7 +130,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     /**
      * Get the Redis connection instance.
      *
-     * @return \Illuminate\Redis\Connetions\Connection
+     * @return \Illuminate\Redis\Connections\Connection
      */
     protected function connection()
     {
