@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import moment from 'moment';
     import Layout from '../../layouts/MainLayout.vue'
     import Icon from '../../components/Icons/Icon.vue'
@@ -67,7 +66,7 @@
 
                 var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
 
-                axios.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+                this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
                         .then(response => {
                             this.jobs = response.data.jobs;
 
@@ -88,7 +87,7 @@
 
                 this.retryingJobs.push(id);
 
-                axios.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post('/horizon/api/jobs/retry/' + id)
                         .then(() => {
                             setTimeout(() => {
                                 this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
@@ -212,4 +211,3 @@
         </section>
     </layout>
 </template>
-

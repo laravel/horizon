@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import Status from '../../components/Status/Status.vue'
     import Spinner from '../../components/Loaders/Spinner.vue'
     import Message from '../../components/Messages/Message.vue'
@@ -53,7 +52,7 @@
                     this.loadState = true;
                 }
 
-                return axios.get('/horizon/api/jobs/recent/' + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/horizon/api/jobs/recent/' + '?starting_at=' + starting + '&limit=' + this.perPage)
                         .then(response => {
                             this.jobs = response.data.jobs;
 

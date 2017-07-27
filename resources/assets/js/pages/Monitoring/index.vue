@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import Layout from '../../layouts/MainLayout.vue'
     import Panel from '../../components/Panels/Panel.vue'
     import Message from '../../components/Messages/Message.vue'
@@ -41,7 +40,7 @@
             loadTags() {
                 this.loadingTags = true;
 
-                axios.get('/horizon/api/monitoring')
+                this.$http.get('/horizon/api/monitoring')
                         .then(response => {
                             this.tags = response.data;
 
@@ -70,7 +69,7 @@
              * Stop monitoring the given tag.
              */
             stopMonitoring(tag) {
-                axios.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
+                this.$http.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
                         .then(() => {
                             this.tags = _.reject(this.tags, existing => existing.tag == tag)
                         })

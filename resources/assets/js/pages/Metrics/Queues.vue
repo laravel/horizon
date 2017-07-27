@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import Message from '../../components/Messages/Message.vue'
 
     export default {
@@ -32,7 +31,7 @@
             loadQueues() {
                 this.loadingQueues = true;
 
-                axios.get('/horizon/api/metrics/queues')
+                this.$http.get('/horizon/api/metrics/queues')
                         .then(response => {
                             this.queues = response.data;
 
@@ -61,4 +60,3 @@
         </tbody>
     </table>
 </template>
-

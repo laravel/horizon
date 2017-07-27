@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import Message from '../../components/Messages/Message.vue'
 
     export default {
@@ -32,7 +31,7 @@
             loadJobs() {
                 this.loadingJobs = true;
 
-                axios.get('/horizon/api/metrics/jobs')
+                this.$http.get('/horizon/api/metrics/jobs')
                         .then(response => {
                             this.jobs = response.data;
 
@@ -61,4 +60,3 @@
         </tbody>
     </table>
 </template>
-

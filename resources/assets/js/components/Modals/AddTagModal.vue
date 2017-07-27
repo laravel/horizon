@@ -1,6 +1,5 @@
 <script type="text/ecmascript-6">
     import $ from 'jQuery'
-    import axios from 'axios'
     import Modal from './Modal.vue'
     import Panel from '../Panels/Panel.vue'
     import Spinner from '../Loaders/Spinner.vue'
@@ -48,7 +47,7 @@
 
                 this.saving = true;
 
-                axios.post('/horizon/api/monitoring', {'tag': this.name})
+                this.$http.post('/horizon/api/monitoring', {'tag': this.name})
                         .then(response => {
                             this.$root.showModal = false;
 
@@ -102,4 +101,3 @@
         </modal-body>
     </modal>
 </template>
-

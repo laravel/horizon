@@ -1,6 +1,5 @@
 <script type="text/ecmascript-6">
     import _ from 'lodash';
-    import axios from 'axios';
     import moment from 'moment';
     import Layout from '../../layouts/MainLayout.vue';
     import Panel from '../../components/Panels/Panel.vue';
@@ -43,7 +42,7 @@
             loadMetric() {
                 this.loading = true;
 
-                axios.get('/horizon/api/metrics/' + this.type + '/' + encodeURIComponent(this.slug))
+                this.$http.get('/horizon/api/metrics/' + this.type + '/' + encodeURIComponent(this.slug))
                         .then(response => {
                             let data = this.prepareData(response.data);
 

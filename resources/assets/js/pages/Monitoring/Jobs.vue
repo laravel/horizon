@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import Status from '../../components/Status/Status.vue'
     import Spinner from '../../components/Loaders/Spinner.vue'
     import Message from '../../components/Messages/Message.vue'
@@ -60,7 +59,7 @@
 
                 tag = this.type == 'failed' ? 'failed:' + tag : tag;
 
-                return axios.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
                         .then(response => {
                             this.jobs[this.type] = response.data.jobs;
 
@@ -164,4 +163,3 @@
         </div>
     </div>
 </template>
-

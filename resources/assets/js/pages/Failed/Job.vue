@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import axios from 'axios'
     import phpunserialize from 'phpunserialize'
     import Layout from '../../layouts/MainLayout.vue'
     import Icon from '../../components/Icons/Icon.vue'
@@ -44,7 +43,7 @@
             loadFailedJob(id) {
                 this.loadingJob = true;
 
-                axios.get('/horizon/api/jobs/failed/' + id)
+                this.$http.get('/horizon/api/jobs/failed/' + id)
                         .then(response => {
                             this.job = response.data;
 
@@ -57,7 +56,7 @@
              * Reload the job retries.
              */
             reloadRetries(){
-                axios.get('/horizon/api/jobs/failed/' + this.jobId)
+                this.$http.get('/horizon/api/jobs/failed/' + this.jobId)
                         .then(response => {
                             this.job.retried_by = response.data.retried_by;
 
@@ -75,7 +74,7 @@
 
                 this.retryingJob = true;
 
-                axios.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post('/horizon/api/jobs/retry/' + id)
                         .then(() => {
                             setTimeout(() => {
                                 this.reloadRetries();
