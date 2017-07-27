@@ -381,7 +381,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     }
 
     /**
-     * Get the total active process count, including processees pending termination.
+     * Get the total active process count, including processes pending termination.
      *
      * @return int
      */

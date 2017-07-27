@@ -93,7 +93,7 @@ class MonitorWaitTimes
     }
 
     /**
-     * Detemrine if enough time has elapsed to attempt to monitor.
+     * Determine if enough time has elapsed to attempt to monitor.
      *
      * @return bool
      */

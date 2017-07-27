@@ -363,7 +363,7 @@ class RedisMetricsRepository implements MetricsRepository
     }
 
     /**
-     * Attempt to aquire a lock to monitor the queue wait times.
+     * Attempt to acquire a lock to monitor the queue wait times.
      *
      * @return bool
      */
@@ -386,7 +386,7 @@ class RedisMetricsRepository implements MetricsRepository
     /**
      * Get the Redis connection instance.
      *
-     * @return \Illuminate\Redis\Connetions\Connection
+     * @return \Illuminate\Redis\Connections\Connection
      */
     public function connection()
     {

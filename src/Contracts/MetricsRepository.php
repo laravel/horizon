@@ -120,7 +120,7 @@ interface MetricsRepository
     public function snapshot();
 
     /**
-     * Attempt to aquire a lock to monitor the queue wait times.
+     * Attempt to acquire a lock to monitor the queue wait times.
      *
      * @return bool
      */
