@@ -36,7 +36,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     public function names()
     {
         return collect($this->connection()->keys('master:*'))->map(function ($name) {
-            return substr($name, 7);
+            return substr($name, 15);
         })->all();
     }
 

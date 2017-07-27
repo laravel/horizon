@@ -113,7 +113,7 @@ class Horizon
     protected static function configureJobsDatabase(array $config)
     {
         config(['database.redis.horizon-jobs' => array_merge($config, [
-            'database' => 9,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 
@@ -126,7 +126,7 @@ class Horizon
     protected static function configureSupervisorsDatabase(array $config)
     {
         config(['database.redis.horizon-supervisors' => array_merge($config, [
-            'database' => 10,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 
@@ -139,7 +139,7 @@ class Horizon
     protected static function configureCommandQueueDatabase(array $config)
     {
         config(['database.redis.horizon-command-queue' => array_merge($config, [
-            'database' => 11,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 
@@ -152,7 +152,7 @@ class Horizon
     protected static function configureTagsDatabase(array $config)
     {
         config(['database.redis.horizon-tags' => array_merge($config, [
-            'database' => 12,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 
@@ -165,7 +165,7 @@ class Horizon
     protected static function configureMetricsDatabase(array $config)
     {
         config(['database.redis.horizon-metrics' => array_merge($config, [
-            'database' => 13,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 
@@ -178,7 +178,7 @@ class Horizon
     protected static function configureLocksDatabase(array $config)
     {
         config(['database.redis.horizon-locks' => array_merge($config, [
-            'database' => 14,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 
@@ -191,7 +191,7 @@ class Horizon
     protected static function configureProcessesDatabase(array $config)
     {
         config(['database.redis.horizon-processes' => array_merge($config, [
-            'database' => 15,
+            'options' => ['prefix' => 'horizon:']
         ])]);
     }
 }

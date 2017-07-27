@@ -15,6 +15,8 @@ class LuaScripts
     public static function updateJobMetrics()
     {
         return <<<'LUA'
+            redis.call('hsetnx', KEYS[1], 'throughput', 0)
+            
             local hash = redis.call('hmget', KEYS[1], 'throughput', 'runtime')
 
             local throughput = hash[1] + 1
