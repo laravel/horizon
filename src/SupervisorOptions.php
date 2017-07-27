@@ -115,7 +115,7 @@ class SupervisorOptions extends WorkerOptions
      */
     public function autoScaling()
     {
-        return $this->balance == 'auto';
+        return $this->balance === 'auto';
     }
 
     /**

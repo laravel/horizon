@@ -55,7 +55,7 @@ class DashboardStatsController extends Controller
         }
 
         return collect($masters)->contains(function ($master) {
-            return $master->status == 'paused';
+            return $master->status === 'paused';
         }) ? 'paused' : 'running';
     }
 }
