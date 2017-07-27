@@ -5,5 +5,6 @@
 .gitignore export-ignore
 
 .editorconfig export-ignore
+.styleci.yml export-ignore
 .travis.yml export-ignore
 phpunit.xml.dist export-ignore
