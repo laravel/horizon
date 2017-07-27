@@ -19,11 +19,11 @@ class AddSupervisorTest extends IntegrationTest
         $command = new AddSupervisor;
         resolve(HorizonCommandQueue::class)->push($master->commandQueue(), AddSupervisor::class, (new SupervisorOptions('my-supervisor', 'redis'))->toArray());
 
-        $this->assertEquals(0, count($master->supervisors));
+        $this->assertCount(0, $master->supervisors);
 
         $master->loop();
 
-        $this->assertEquals(1, count($master->supervisors));
+        $this->assertCount(1, $master->supervisors);
         $this->assertEquals(
             'exec php artisan horizon:supervisor my-supervisor redis --delay=0 --memory=128 --queue=default --sleep=3 --timeout=60 --tries=0 --balance=off --max-processes=1 --min-processes=1',
             $master->supervisors->first()->process->getCommandLine()

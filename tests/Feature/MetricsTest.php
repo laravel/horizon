@@ -101,7 +101,7 @@ class MetricsTest extends IntegrationTest
         $this->work();
 
         $jobs = resolve(MetricsRepository::class)->measuredJobs();
-        $this->assertEquals(2, count($jobs));
+        $this->assertCount(2, $jobs);
         $this->assertTrue(in_array(Jobs\ConditionallyFailingJob::class, $jobs));
         $this->assertTrue(in_array(Jobs\BasicJob::class, $jobs));
     }
@@ -219,12 +219,12 @@ class MetricsTest extends IntegrationTest
 
         // Check the job snapshots...
         $snapshots = resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class);
-        $this->assertEquals(24, count($snapshots));
+        $this->assertCount(24, $snapshots);
         $this->assertEquals(Chronos::now()->getTimestamp() - 1, $snapshots[23]->time);
 
         // Check the queue snapshots...
         $snapshots = resolve(MetricsRepository::class)->snapshotsForQueue('default');
-        $this->assertEquals(24, count($snapshots));
+        $this->assertCount(24, $snapshots);
         $this->assertEquals(Chronos::now()->getTimestamp() - 1, $snapshots[23]->time);
 
         Chronos::setTestNow();

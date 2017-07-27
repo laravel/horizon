@@ -38,7 +38,7 @@ class AuthTest extends IntegrationTest
             }
         );
 
-        $this->assertEquals('response', $response);
+        $this->assertSame('response', $response);
     }
 
 

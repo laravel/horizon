@@ -33,7 +33,7 @@ class QueueProcessingTest extends IntegrationTest
     {
         $id = Queue::push(new Jobs\BasicJob);
         $this->assertEquals(1, $this->recentJobs());
-        $this->assertEquals('pending', Redis::connection('horizon-jobs')->hget($id, 'status'));
+        $this->assertSame('pending', Redis::connection('horizon-jobs')->hget($id, 'status'));
     }
 
 
@@ -49,7 +49,7 @@ class QueueProcessingTest extends IntegrationTest
     {
         $id = Queue::push(new Jobs\BasicJob);
         $payload = json_decode(Redis::connection('horizon-jobs')->hget($id, 'payload'), true);
-        $this->assertEquals('job', $payload['type']);
+        $this->assertSame('job', $payload['type']);
     }
 
 
@@ -59,7 +59,7 @@ class QueueProcessingTest extends IntegrationTest
         $this->work();
 
         $recent = resolve(JobRepository::class)->getRecent();
-        $this->assertEquals('completed', $recent[0]->status);
+        $this->assertSame('completed', $recent[0]->status);
     }
 
 
@@ -74,7 +74,7 @@ class QueueProcessingTest extends IntegrationTest
 
         $this->work();
 
-        $this->assertEquals('reserved', $status);
+        $this->assertSame('reserved', $status);
     }
 
 
@@ -91,6 +91,6 @@ class QueueProcessingTest extends IntegrationTest
 
         $this->work();
 
-        $this->assertEquals('pending', $status);
+        $this->assertSame('pending', $status);
     }
 }

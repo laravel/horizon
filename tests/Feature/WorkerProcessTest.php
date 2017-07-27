@@ -69,7 +69,7 @@ class WorkerProcessTest extends IntegrationTest
         $workerProcess->monitor();
 
         Event::assertDispatched(WorkerProcessRestarting::class);
-        $this->assertEquals(2, count(Event::dispatched(WorkerProcessRestarting::class)));
+        $this->assertCount(2, Event::dispatched(WorkerProcessRestarting::class));
 
         Chronos::setTestNow();
     }
