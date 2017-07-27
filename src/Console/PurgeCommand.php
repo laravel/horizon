@@ -29,10 +29,10 @@ class PurgeCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
-     * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
-     * @param  \Laravel\Horizon\Contracts\ProcessRepository  $processes
-     * @return mixed
+     * @param \Laravel\Horizon\Contracts\MasterSupervisorRepository $masters
+     * @param \Laravel\Horizon\Contracts\SupervisorRepository $supervisors
+     * @param \Laravel\Horizon\Contracts\ProcessRepository $processes
+     * @return void
      */
     public function handle(MasterSupervisorRepository $masters,
                            SupervisorRepository $supervisors,
@@ -48,10 +48,10 @@ class PurgeCommand extends Command
     /**
      * Purge any orphan processes.
      *
-     * @param  string  $master
-     * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
-     * @param  \Laravel\Horizon\Contracts\ProcessRepository  $processes
-     * @return mixed
+     * @param string $master
+     * @param \Laravel\Horizon\Contracts\SupervisorRepository $supervisors
+     * @param \Laravel\Horizon\Contracts\ProcessRepository $processes
+     * @return void
      */
     public function purge($master,
                           SupervisorRepository $supervisors,
@@ -75,8 +75,8 @@ class PurgeCommand extends Command
     /**
      * Record the orphaned Horizon processes.
      *
-     * @param  string  $master
-     * @param  \Laravel\Horizon\Contracts\ProcessRepository  $processes
+     * @param string $master
+     * @param \Laravel\Horizon\Contracts\ProcessRepository $processes
      * @return void
      */
     protected function recordOrphans($master, ProcessRepository $processes)

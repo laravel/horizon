@@ -69,7 +69,7 @@ interface JobRepository
      * Retrieve the jobs with the given IDs.
      *
      * @param  array  $ids
-     * @param  string  $indexFrom
+     * @param  mixed  $indexFrom
      * @return \Illuminate\Support\Collection
      */
     public function getJobs(array $ids, $indexFrom = 0);
@@ -79,7 +79,7 @@ interface JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function pushed($connection, $queue, JobPayload $payload);
@@ -89,7 +89,7 @@ interface JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function reserved($connection, $queue, JobPayload $payload);
@@ -99,7 +99,7 @@ interface JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function released($connection, $queue, JobPayload $payload);
@@ -109,7 +109,7 @@ interface JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function remember($connection, $queue, JobPayload $payload);
@@ -119,7 +119,7 @@ interface JobRepository
      *
      * @param  string  $connection
      * @param  string  $queue
-     * @param  Collection  $payloads
+     * @param  \Illuminate\Support\Collection  $payloads
      * @return void
      */
     public function migrated($connection, $queue, Collection $payloads);
@@ -127,7 +127,7 @@ interface JobRepository
     /**
      * Handle the storage of a completed job.
      *
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @param  bool  $failed
      * @return void
      */
@@ -159,7 +159,7 @@ interface JobRepository
      * Find a failed job by ID.
      *
      * @param  string  $id
-     * @return \StdClass|null
+     * @return \stdClass|null
      */
     public function findFailed($id);
 
@@ -169,7 +169,7 @@ interface JobRepository
      * @param  \Exception  $exception
      * @param  string  $connection
      * @param  string  $queue
-     * @param  JobPayload  $payload
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
     public function failed($exception, $connection, $queue, JobPayload $payload);

@@ -10,14 +10,14 @@ class StartTimingJob
     /**
      * The stopwatch instance.
      *
-     * @var Stopwatch
+     * @var \Laravel\Horizon\Stopwatch
      */
     public $watch;
 
     /**
      * Create a new listener instance.
      *
-     * @param  Stopwatch  $watch
+     * @param \Laravel\Horizon\Stopwatch $watch
      * @return void
      */
     public function __construct(Stopwatch $watch)
@@ -28,7 +28,7 @@ class StartTimingJob
     /**
      * Handle the event.
      *
-     * @param  JobReserved  $event
+     * @param \Laravel\Horizon\Events\JobReserved $event
      * @return void
      */
     public function handle(JobReserved $event)

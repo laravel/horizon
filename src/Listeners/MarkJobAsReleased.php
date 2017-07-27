@@ -10,14 +10,14 @@ class MarkJobAsReleased
     /**
      * The job repository implementation.
      *
-     * @var JobRepository
+     * @var \Laravel\Horizon\Contracts\JobRepository
      */
     public $jobs;
 
     /**
      * Create a new listener instance.
      *
-     * @param  JobRepository  $jobs
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
      * @return void
      */
     public function __construct(JobRepository $jobs)
@@ -28,7 +28,7 @@ class MarkJobAsReleased
     /**
      * Handle the event.
      *
-     * @param  JobReleased  $event
+     * @param  \Laravel\Horizon\Events\JobReleased  $event
      * @return void
      */
     public function handle(JobReleased $event)

@@ -9,7 +9,7 @@ class MonitorMasterSupervisorMemory
     /**
      * Handle the event.
      *
-     * @param  MasterSupervisorLooped  $event
+     * @param \Laravel\Horizon\Events\MasterSupervisorLooped $event
      * @return void
      */
     public function handle(MasterSupervisorLooped $event)

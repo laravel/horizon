@@ -9,14 +9,14 @@ class Lock
     /**
      * The Redis factory implementation.
      *
-     * @var RedisFactory
+     * @var \Illuminate\Contracts\Redis\Factory
      */
     public $redis;
 
     /**
      * Create a Horizon lock manager.
      *
-     * @param  RedisFactory  $redis
+     * @param  \Illuminate\Contracts\Redis\Factory  $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)

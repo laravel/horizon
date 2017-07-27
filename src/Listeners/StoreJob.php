@@ -10,14 +10,14 @@ class StoreJob
     /**
      * The job repository implementation.
      *
-     * @var JobRepository
+     * @var \Laravel\Horizon\Contracts\JobRepository
      */
     public $jobs;
 
     /**
      * Create a new listener instance.
      *
-     * @param  JobRepository  $jobs
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
      * @return void
      */
     public function __construct(JobRepository $jobs)
@@ -28,7 +28,7 @@ class StoreJob
     /**
      * Handle the event.
      *
-     * @param  JobPushed  $event
+     * @param \Laravel\Horizon\Events\JobPushed $event
      * @return void
      */
     public function handle(JobPushed $event)

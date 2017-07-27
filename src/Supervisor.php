@@ -27,7 +27,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * The SupervisorOptions that should be utilized.
      *
-     * @var SupervisorOptions
+     * @var \Laravel\Horizon\SupervisorOptions
      */
     public $options;
 
@@ -48,7 +48,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * The time at which auto-scaling last ran for this supervisor.
      *
-     * @var Chronos
+     * @var \Cake\Chronos\Chronos
      */
     public $lastAutoScaled;
 
@@ -69,7 +69,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * Create a new supervisor instance.
      *
-     * @param  SupervisorOptions  $options
+     * @param \Laravel\Horizon\SupervisorOptions $options
      * @return void
      */
     public function __construct(SupervisorOptions $options)
@@ -122,8 +122,8 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * Create a new process pool with the given options.
      *
-     * @param  SupervisorOptions  $options
-     * @return ProcessPool
+     * @param \Laravel\Horizon\SupervisorOptions $options
+     * @return \Laravel\Horizon\ProcessPool
      */
     protected function createProcessPool(SupervisorOptions $options)
     {
@@ -257,7 +257,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      * Ensure no other supervisors are running with the same name.
      *
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
     public function ensureNoDuplicateSupervisors()
     {

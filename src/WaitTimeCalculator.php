@@ -11,30 +11,30 @@ class WaitTimeCalculator
     /**
      * The queue factory implementation.
      *
-     * @var QueueFactory
+     * @var \Illuminate\Contracts\Queue\Factory
      */
     public $queue;
 
     /**
      * The supervisor repository implementation.
      *
-     * @var SupervisorRepository
+     * @var \Laravel\Horizon\Contracts\SupervisorRepository
      */
     public $supervisors;
 
     /**
      * The metrics repository implementation.
      *
-     * @var MetricsRepository
+     * @var \Laravel\Horizon\Contracts\MetricsRepository
      */
     public $metrics;
 
     /**
      * Create a new calculator instance.
      *
-     * @param  QueueFactory  $queue
-     * @param  SupervisorRepository  $supervisors
-     * @param  MetricsRepository  $metrics
+     * @param \Illuminate\Contracts\Queue\Factory $queue
+     * @param \Laravel\Horizon\Contracts\SupervisorRepository $supervisors
+     * @param \Laravel\Horizon\Contracts\MetricsRepository $metrics
      * @return void
      */
     public function __construct(QueueFactory $queue,

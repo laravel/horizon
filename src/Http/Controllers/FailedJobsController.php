@@ -11,22 +11,22 @@ class FailedJobsController extends Controller
     /**
      * The job repository implementation.
      *
-     * @var JobRepository
+     * @var \Laravel\Horizon\Contracts\JobRepository
      */
     public $jobs;
 
     /**
      * The tag repository implementation.
      *
-     * @var TagRepository
+     * @var \Laravel\Horizon\Contracts\TagRepository
      */
     public $tags;
 
     /**
      * Create a new controller instance.
      *
-     * @param  JobRepository $jobs
-     * @param  TagRepository $tags
+     * @param  \Laravel\Horizon\Contracts\JobRepository $jobs
+     * @param  \Laravel\Horizon\Contracts\TagRepository $tags
      * @return void
      */
     public function __construct(JobRepository $jobs, TagRepository $tags)
@@ -41,7 +41,7 @@ class FailedJobsController extends Controller
      * Get all of the failed jobs.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function index(Request $request)
     {
@@ -96,7 +96,7 @@ class FailedJobsController extends Controller
      * Get a failed job instance.
      *
      * @param  string  $id
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function show($id)
     {

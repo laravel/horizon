@@ -13,22 +13,22 @@ class MonitoringController extends Controller
     /**
      * The job repository implementation.
      *
-     * @var JobRepository
+     * @var \Laravel\Horizon\Contracts\JobRepository
      */
     public $jobs;
 
     /**
      * The tag repository implementation.
      *
-     * @var TagRepository
+     * @var \Laravel\Horizon\Contracts\TagRepository
      */
     public $tags;
 
     /**
      * Create a new controller instance.
      *
-     * @param  JobRepository  $jobs
-     * @param  TagRepository  $tags
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
+     * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
      * @return void
      */
     public function __construct(JobRepository $jobs, TagRepository $tags)
@@ -42,7 +42,7 @@ class MonitoringController extends Controller
     /**
      * Get all of the monitored tags and their job counts.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Support\Collection
      */
     public function index()
     {
@@ -57,9 +57,9 @@ class MonitoringController extends Controller
     /**
      * Paginate the jobs for a given tag.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  string  $tag
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function paginate(Request $request, $tag)
     {
@@ -93,8 +93,8 @@ class MonitoringController extends Controller
     /**
      * Start monitoring the given tag.
      *
-     * @param  Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
      */
     public function store(Request $request)
     {
@@ -105,7 +105,7 @@ class MonitoringController extends Controller
      * Stop monitoring the given tag.
      *
      * @param  string  $tag
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function destroy($tag)
     {

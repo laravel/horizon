@@ -11,7 +11,7 @@ class TrimRecentJobs
     /**
      * The last time the recent jobs were trimmed.
      *
-     * @var Chronos
+     * @var \Cake\Chronos\Chronos
      */
     public $lastTrimmed;
 
@@ -25,7 +25,7 @@ class TrimRecentJobs
     /**
      * Handle the event.
      *
-     * @param  MasterSupervisorLooped  $event
+     * @param \Laravel\Horizon\Events\MasterSupervisorLooped $event
      * @return void
      */
     public function handle(MasterSupervisorLooped $event)

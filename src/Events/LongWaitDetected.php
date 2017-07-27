@@ -45,7 +45,7 @@ class LongWaitDetected
     /**
      * Get a notification representation of the event.
      *
-     * @return \Illuminate\Notifications\Notification
+     * @return \Laravel\Horizon\Notifications\LongWaitDetected
      */
     public function toNotification()
     {

@@ -13,21 +13,21 @@ class MonitorWaitTimes
     /**
      * The metrics repository implementation.
      *
-     * @var MetricsRepository
+     * @var \Laravel\Horizon\Contracts\MetricsRepository
      */
     public $metrics;
 
     /**
      * The time at which we last checked if monitoring was due.
      *
-     * @var Chronos
+     * @var \Cake\Chronos\Chronos
      */
     public $lastMonitored;
 
     /**
      * Create a new listener instance.
      *
-     * @param  MetricsRepository  $metrics
+     * @param \Laravel\Horizon\Contracts\MetricsRepository $metrics
      * @return void
      */
     public function __construct(MetricsRepository $metrics)
@@ -38,7 +38,7 @@ class MonitorWaitTimes
     /**
      * Handle the event.
      *
-     * @param  SupervisorLooped  $event
+     * @param \Laravel\Horizon\Events\SupervisorLooped $event
      * @return void
      */
     public function handle(SupervisorLooped $event)

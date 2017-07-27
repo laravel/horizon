@@ -30,7 +30,7 @@ class RetryFailedJob
      * Execute the job.
      *
      * @param  \Illuminate\Contracts\Queue\Factory  $queue
-     * @param  JobRepository  $jobs
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
      * @return void
      */
     public function handle(Queue $queue, JobRepository $jobs)

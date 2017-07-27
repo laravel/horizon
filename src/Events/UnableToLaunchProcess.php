@@ -9,14 +9,14 @@ class UnableToLaunchProcess
     /**
      * The worker process instance.
      *
-     * @var WorkerProcess
+     * @var \Laravel\Horizon\WorkerProcess
      */
     public $process;
 
     /**
      * Create a new event instance.
      *
-     * @param  WorkerProcess  $process
+     * @param  \Laravel\Horizon\WorkerProcess  $process
      * @return void
      */
     public function __construct(WorkerProcess $process)

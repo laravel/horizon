@@ -23,7 +23,7 @@ class RedisQueue extends BaseQueue
     /**
      * Get the number of queue jobs that are ready to process.
      *
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @return int
      */
     public function readyNow($queue = null)
@@ -36,7 +36,7 @@ class RedisQueue extends BaseQueue
      *
      * @param  object|string  $job
      * @param  mixed   $data
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @return mixed
      */
     public function push($job, $data = '', $queue = null)
@@ -66,7 +66,7 @@ class RedisQueue extends BaseQueue
     /**
      * Push a new job onto the queue after a delay.
      *
-     * @param  \DateTime|int  $delay
+     * @param  \DateTimeInterface|\DateInterval|int  $delay
      * @param  string  $job
      * @param  mixed   $data
      * @param  string  $queue

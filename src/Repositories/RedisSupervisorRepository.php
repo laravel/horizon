@@ -12,14 +12,14 @@ class RedisSupervisorRepository implements SupervisorRepository
     /**
      * The Redis connection instance.
      *
-     * @var RedisFactory
+     * @var \Illuminate\Contracts\Redis\Factory
      */
     public $redis;
 
     /**
      * Create a new repository instance.
      *
-     * @param  RedisFactory  $redis
+     * @param  \Illuminate\Contracts\Redis\Factory  $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
@@ -53,7 +53,7 @@ class RedisSupervisorRepository implements SupervisorRepository
      * Get information on a supervisor by name.
      *
      * @param  string  $name
-     * @return \StdClass|null
+     * @return \stdClass|null
      */
     public function find($name)
     {
@@ -103,7 +103,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     /**
      * Update the information about the given supervisor process.
      *
-     * @param  Supervisor  $supervisor
+     * @param \Laravel\Horizon\Supervisor $supervisor
      * @return void
      */
     public function update(Supervisor $supervisor)
