@@ -91,7 +91,7 @@ export default Vue.extend({
     },
 
 
-    beforeDestory() {
+    beforeDestroy() {
         this._chart.destroy();
     },
 });
