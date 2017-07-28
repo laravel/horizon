@@ -65,6 +65,24 @@ class LongWaitDetected extends Notification
     }
 
     /**
+     * Get the mail representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->error()
+            ->subject(config('app.name').': Long Queue Wait Detected')
+            ->greeting('Oh no! Something needs your attention.')
+            ->line(sprintf(
+                 'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+                $this->queue, $this->connection, $this->seconds
+            ));
+    }
+
+    /**
      * Get the Slack representation of the notification.
      *
      * @param  mixed  $notifiable
@@ -98,24 +116,6 @@ class LongWaitDetected extends Notification
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
             config('app.name'), $this->queue, $this->connection, $this->seconds
         ));
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-            ->error()
-            ->subject('Long Wait Detected')
-            ->greeting('Oh no! Something needs your attention.')
-            ->line(sprintf(
-                 '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-                config('app.name'), $this->queue, $this->connection, $this->seconds
-            ));
     }
 
     /**
