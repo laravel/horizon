@@ -3,23 +3,12 @@
 namespace Laravel\Horizon\Tests\Controller;
 
 use Mockery;
-use Laravel\Horizon\Horizon;
 use Laravel\Horizon\JobPayload;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
 
-class MonitoringControllerTest extends IntegrationTest
+class MonitoringControllerTest extends AbstractControllerTest
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        Horizon::auth(function () {
-            return true;
-        });
-    }
-
     public function test_monitored_tags_and_job_counts_are_returned()
     {
         $tags = Mockery::mock(TagRepository::class);
@@ -80,10 +69,6 @@ class MonitoringControllerTest extends IntegrationTest
 
     public function test_can_paginate_where_jobs_dont_exist()
     {
-        Horizon::auth(function () {
-            return true;
-        });
-
         $tags = resolve(TagRepository::class);
 
         for ($i = 0; $i < 50; $i++) {
@@ -98,10 +83,6 @@ class MonitoringControllerTest extends IntegrationTest
 
     public function test_can_start_monitoring_tags()
     {
-        Horizon::auth(function () {
-            return true;
-        });
-
         $tags = resolve(TagRepository::class);
 
         $this->actingAs(new Fakes\User)
@@ -112,10 +93,6 @@ class MonitoringControllerTest extends IntegrationTest
 
     public function test_can_stop_monitoring_tags()
     {
-        Horizon::auth(function () {
-            return true;
-        });
-
         $tags = resolve(TagRepository::class);
         $jobs = resolve(JobRepository::class);
 

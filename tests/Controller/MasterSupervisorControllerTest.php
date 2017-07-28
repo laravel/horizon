@@ -2,21 +2,16 @@
 
 namespace Laravel\Horizon\Tests\Controller;
 
-use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\SupervisorOptions;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
-class MasterSupervisorControllerTest extends IntegrationTest
+class MasterSupervisorControllerTest extends AbstractControllerTest
 {
     public function test_master_supervisor_listing_without_supervisors()
     {
-        Horizon::auth(function () {
-            return true;
-        });
         $master = new MasterSupervisor;
         $master->name = 'risa';
         resolve(MasterSupervisorRepository::class)->update($master);
@@ -35,9 +30,6 @@ class MasterSupervisorControllerTest extends IntegrationTest
 
     public function test_master_supervisor_listing_with_supervisors()
     {
-        Horizon::auth(function () {
-            return true;
-        });
         $master = new MasterSupervisor;
         $master->name = 'risa';
         resolve(MasterSupervisorRepository::class)->update($master);
