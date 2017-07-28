@@ -41,7 +41,7 @@ class AuthTest extends IntegrationTest
     }
 
     /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function test_authentication_middleware_responds_with_403_on_failure()
     {

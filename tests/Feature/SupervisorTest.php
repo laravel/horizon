@@ -410,7 +410,7 @@ class SupervisorTest extends IntegrationTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function test_supervisor_with_duplicate_name_cant_be_started()
     {
