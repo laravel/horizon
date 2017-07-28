@@ -28,7 +28,7 @@ class StoreJob
     /**
      * Handle the event.
      *
-     * @param \Laravel\Horizon\Events\JobPushed $event
+     * @param  \Laravel\Horizon\Events\JobPushed  $event
      * @return void
      */
     public function handle(JobPushed $event)

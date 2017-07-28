@@ -32,9 +32,9 @@ class WaitTimeCalculator
     /**
      * Create a new calculator instance.
      *
-     * @param \Illuminate\Contracts\Queue\Factory $queue
-     * @param \Laravel\Horizon\Contracts\SupervisorRepository $supervisors
-     * @param \Laravel\Horizon\Contracts\MetricsRepository $metrics
+     * @param  \Illuminate\Contracts\Queue\Factory  $queue
+     * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
      * @return void
      */
     public function __construct(QueueFactory $queue,

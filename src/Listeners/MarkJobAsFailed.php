@@ -17,7 +17,7 @@ class MarkJobAsFailed
     /**
      * Create a new listener instance.
      *
-     * @param \Laravel\Horizon\Contracts\JobRepository $jobs
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
      * @return void
      */
     public function __construct(JobRepository $jobs)
@@ -28,7 +28,7 @@ class MarkJobAsFailed
     /**
      * Handle the event.
      *
-     * @param \Laravel\Horizon\Events\JobFailed $event
+     * @param  \Laravel\Horizon\Events\JobFailed  $event
      * @return void
      */
     public function handle(JobFailed $event)

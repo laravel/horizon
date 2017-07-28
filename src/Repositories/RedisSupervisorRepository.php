@@ -103,7 +103,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     /**
      * Update the information about the given supervisor process.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
      * @return void
      */
     public function update(Supervisor $supervisor)

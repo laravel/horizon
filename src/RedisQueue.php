@@ -35,7 +35,7 @@ class RedisQueue extends BaseQueue
      * Push a new job onto the queue.
      *
      * @param  object|string  $job
-     * @param  mixed   $data
+     * @param  mixed  $data
      * @param  string|null  $queue
      * @return mixed
      */
@@ -51,7 +51,7 @@ class RedisQueue extends BaseQueue
      *
      * @param  string  $payload
      * @param  string  $queue
-     * @param  array   $options
+     * @param  array  $options
      * @return mixed
      */
     public function pushRaw($payload, $queue = null, array $options = [])
@@ -68,7 +68,7 @@ class RedisQueue extends BaseQueue
      *
      * @param  \DateTimeInterface|\DateInterval|int  $delay
      * @param  string  $job
-     * @param  mixed   $data
+     * @param  mixed  $data
      * @param  string  $queue
      * @return mixed
      */

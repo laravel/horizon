@@ -41,10 +41,10 @@ class RedisWorkloadRepository implements WorkloadRepository
     /**
      * Create a new repository instance.
      *
-     * @param \Illuminate\Contracts\Queue\Factory $queue
-     * @param \Laravel\Horizon\WaitTimeCalculator $waitTime
-     * @param \Laravel\Horizon\Contracts\MasterSupervisorRepository $masters
-     * @param \Laravel\Horizon\Contracts\SupervisorRepository $supervisors
+     * @param  \Illuminate\Contracts\Queue\Factory  $queue
+     * @param  \Laravel\Horizon\WaitTimeCalculator  $waitTime
+     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
+     * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
      * @return void
      */
     public function __construct(QueueFactory $queue, WaitTimeCalculator $waitTime,

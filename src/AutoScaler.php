@@ -25,8 +25,8 @@ class AutoScaler
     /**
      * Create a new auto-scaler instance.
      *
-     * @param \Illuminate\Contracts\Queue\Factory $queue
-     * @param \Laravel\Horizon\Contracts\MetricsRepository $metrics
+     * @param  \Illuminate\Contracts\Queue\Factory  $queue
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
      * @return void
      */
     public function __construct(QueueFactory $queue, MetricsRepository $metrics)
@@ -38,7 +38,7 @@ class AutoScaler
     /**
      * Balance the workers on the given supervisor.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
      * @return void
      */
     public function scale(Supervisor $supervisor)
@@ -57,7 +57,7 @@ class AutoScaler
     /**
      * Get the process pools keyed by their queue name.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
      * @return \Illuminate\Support\Collection
      */
     protected function poolsByQueue(Supervisor $supervisor)
@@ -70,8 +70,8 @@ class AutoScaler
     /**
      * Get the times in milliseconds needed to clear the queues.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
-     * @param \Illuminate\Support\Collection $pools
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @param  \Illuminate\Support\Collection  $pools
      * @return \Illuminate\Support\Collection
      */
     protected function timeToClearPerQueue(Supervisor $supervisor, Collection $pools)
@@ -86,8 +86,8 @@ class AutoScaler
     /**
      * Get the number of workers needed per queue for proper balance.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
-     * @param \Illuminate\Support\Collection $timeToClear
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @param  \Illuminate\Support\Collection  $timeToClear
      * @return \Illuminate\Support\Collection
      */
     protected function numberOfWorkersPerQueue(Supervisor $supervisor, Collection $timeToClear)
@@ -104,8 +104,8 @@ class AutoScaler
     /**
      * Scale the given pool to the recommended number of workers.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
-     * @param \Laravel\Horizon\ProcessPool $pool
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @param  \Laravel\Horizon\ProcessPool  $pool
      * @param  float  $workers
      * @return void
      */
@@ -129,7 +129,7 @@ class AutoScaler
     /**
      * Determine if adding another process would exceed max process limit.
      *
-     * @param \Laravel\Horizon\Supervisor $supervisor
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
      * @param  int  $totalProcesses
      * @return bool
      */

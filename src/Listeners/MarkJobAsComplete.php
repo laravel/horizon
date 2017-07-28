@@ -25,8 +25,8 @@ class MarkJobAsComplete
     /**
      * Create a new listener instance.
      *
-     * @param \Laravel\Horizon\Contracts\JobRepository $jobs
-     * @param \Laravel\Horizon\Contracts\TagRepository $tags
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
+     * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
      * @return void
      */
     public function __construct(JobRepository $jobs, TagRepository $tags)
@@ -38,7 +38,7 @@ class MarkJobAsComplete
     /**
      * Handle the event.
      *
-     * @param \Laravel\Horizon\Events\JobDeleted $event
+     * @param  \Laravel\Horizon\Events\JobDeleted  $event
      * @return void
      */
     public function handle(JobDeleted $event)

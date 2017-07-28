@@ -47,8 +47,8 @@ class ProcessPool implements Countable
     /**
      * Create a new process pool instance.
      *
-     * @param \Laravel\Horizon\SupervisorOptions $options
-     * @param \Closure|null $output
+     * @param  \Laravel\Horizon\SupervisorOptions  $options
+     * @param  \Closure|null  $output
      * @return void
      */
     public function __construct(SupervisorOptions $options, Closure $output = null)
@@ -131,7 +131,7 @@ class ProcessPool implements Countable
     /**
      * Mark the given worker process for termination.
      *
-     * @param \Laravel\Horizon\WorkerProcess $process
+     * @param  \Laravel\Horizon\WorkerProcess  $process
      * @return void
      */
     public function markForTermination(WorkerProcess $process)

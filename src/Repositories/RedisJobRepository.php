@@ -31,7 +31,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Create a new repository instance.
      *
-     * @param \Illuminate\Contracts\Redis\Factory $redis
+     * @param  \Illuminate\Contracts\Redis\Factory  $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)

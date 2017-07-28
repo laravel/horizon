@@ -17,7 +17,7 @@ class StoreTagsForFailedJob
     /**
      * Create a new listener instance.
      *
-     * @param \Laravel\Horizon\Contracts\TagRepository $tags
+     * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
      * @return void
      */
     public function __construct(TagRepository $tags)
@@ -28,7 +28,7 @@ class StoreTagsForFailedJob
     /**
      * Handle the event.
      *
-     * @param \Laravel\Horizon\Events\JobFailed $event
+     * @param  \Laravel\Horizon\Events\JobFailed  $event
      * @return void
      */
     public function handle(JobFailed $event)

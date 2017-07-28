@@ -25,7 +25,7 @@ class TrimRecentJobs
     /**
      * Handle the event.
      *
-     * @param \Laravel\Horizon\Events\MasterSupervisorLooped $event
+     * @param  \Laravel\Horizon\Events\MasterSupervisorLooped  $event
      * @return void
      */
     public function handle(MasterSupervisorLooped $event)
