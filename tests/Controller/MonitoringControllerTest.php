@@ -104,8 +104,8 @@ class MonitoringControllerTest extends IntegrationTest
 
         $tags = resolve(TagRepository::class);
 
-        $response = $this->actingAs(new Fakes\User)
-                    ->post('/horizon/api/monitoring', ['tag' => 'taylor']);
+        $this->actingAs(new Fakes\User)
+             ->post('/horizon/api/monitoring', ['tag' => 'taylor']);
 
         $this->assertEquals(['taylor'], $tags->monitoring());
     }
@@ -128,8 +128,8 @@ class MonitoringControllerTest extends IntegrationTest
             ));
         }
 
-        $response = $this->actingAs(new Fakes\User)
-                    ->delete('/horizon/api/monitoring/tag');
+        $this->actingAs(new Fakes\User)
+             ->delete('/horizon/api/monitoring/tag');
 
         // Ensure monitored jobs were deleted...
         $response = $this->actingAs(new Fakes\User)

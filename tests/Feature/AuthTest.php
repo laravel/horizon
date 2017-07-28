@@ -51,7 +51,7 @@ class AuthTest extends IntegrationTest
 
         $middleware = new Authenticate;
 
-        $response = $middleware->handle(
+        $middleware->handle(
             new class {
             },
             function ($value) {
