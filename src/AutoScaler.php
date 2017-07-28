@@ -113,12 +113,10 @@ class AutoScaler
     {
         $supervisor->pruneTerminatingProcesses();
 
-        $totalProcesses = $supervisor->totalSystemProcessCount();
-
         $poolProcesses = $pool->totalProcessCount();
 
         if (round($workers) > $poolProcesses &&
-            $this->wouldNotExceedMaxProcesses($supervisor, $totalProcesses)) {
+            $this->wouldNotExceedMaxProcesses($supervisor)) {
             $pool->scale($poolProcesses + 1);
         } elseif (round($workers) < $poolProcesses &&
                   $poolProcesses > $supervisor->options->minProcesses) {
@@ -130,11 +128,10 @@ class AutoScaler
      * Determine if adding another process would exceed max process limit.
      *
      * @param  \Laravel\Horizon\Supervisor  $supervisor
-     * @param  int  $totalProcesses
      * @return bool
      */
-    protected function wouldNotExceedMaxProcesses(Supervisor $supervisor, $totalProcesses)
+    protected function wouldNotExceedMaxProcesses(Supervisor $supervisor)
     {
-        return ($totalProcesses + 1) <= $supervisor->options->maxProcesses;
+        return ($supervisor->totalProcessCount() + 1) <= $supervisor->options->maxProcesses;
     }
 }
