@@ -7,12 +7,18 @@ use StdClass;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\UnitTest;
 use Illuminate\Contracts\Mail\Mailable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Broadcasting\BroadcastEvent;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeEvent;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeModel;
 use Illuminate\Notifications\SendQueuedNotifications;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeListener;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeEventWithModel;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithTagsMethod;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentModel;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentCollection;
 
 class RedisPayloadTest extends UnitTest
 {
@@ -107,69 +113,5 @@ class RedisPayloadTest extends UnitTest
 
         $JobPayload->prepare(new FakeJobWithTagsMethod);
         $this->assertEquals(['first', 'second'], $JobPayload->decoded['tags']);
-    }
-}
-
-class FakeJobWithTagsMethod
-{
-    public function tags()
-    {
-        return ['first', 'second'];
-    }
-}
-
-class FakeJobWithEloquentModel
-{
-    public $nonModel;
-    public $first;
-    public $second;
-
-    public function __construct($first, $second)
-    {
-        $this->nonModel = 1;
-        $this->first = $first;
-        $this->second = $second;
-    }
-}
-
-class FakeJobWithEloquentCollection
-{
-    public $collection;
-
-    public function __construct($collection)
-    {
-        $this->collection = $collection;
-    }
-}
-
-class FakeModel extends Model
-{
-    //
-}
-
-class FakeEvent
-{
-    public function tags()
-    {
-        return ['eventTag1', 'eventTag2'];
-    }
-}
-
-class FakeListener
-{
-    public function tags()
-    {
-        return ['listenerTag1', 'listenerTag2'];
-    }
-}
-
-class FakeEventWithModel
-{
-    public $model;
-
-    public function __construct($id)
-    {
-        $this->model = new FakeModel;
-        $this->model->id = $id;
     }
 }
