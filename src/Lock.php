@@ -90,6 +90,6 @@ class Lock
      */
     public function connection()
     {
-        return $this->redis->connection('horizon-locks');
+        return $this->redis->connection('horizon');
     }
 }

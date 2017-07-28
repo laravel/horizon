@@ -102,6 +102,6 @@ class RedisProcessRepository implements ProcessRepository
      */
     protected function connection()
     {
-        return $this->redis->connection('horizon-processes');
+        return $this->redis->connection('horizon');
     }
 }

@@ -35,7 +35,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     public function names()
     {
         return collect($this->connection()->keys('supervisor:*'))->map(function ($name) {
-            return substr($name, 11);
+            return substr($name, 19);
         })->all();
     }
 
@@ -154,6 +154,6 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     protected function connection()
     {
-        return $this->redis->connection('horizon-supervisors');
+        return $this->redis->connection('horizon');
     }
 }

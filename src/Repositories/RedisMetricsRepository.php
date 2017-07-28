@@ -39,7 +39,7 @@ class RedisMetricsRepository implements MetricsRepository
         $classes = (array) $this->connection()->keys('job:*');
 
         return collect($classes)->map(function ($class) {
-            return substr($class, 4);
+            return substr($class, 12);
         })->all();
     }
 
@@ -53,7 +53,7 @@ class RedisMetricsRepository implements MetricsRepository
         $queues = (array) $this->connection()->keys('queue:*');
 
         return collect($queues)->map(function ($class) {
-            return substr($class, 6);
+            return substr($class, 14);
         })->all();
     }
 
@@ -207,8 +207,6 @@ class RedisMetricsRepository implements MetricsRepository
     protected function increment($key, $runtime)
     {
         $this->connection()->pipeline(function ($pipe) use ($key, $runtime) {
-            $pipe->hsetnx($key, 'throughput', 0);
-
             if (config('database.redis.client') == 'phpredis') {
                 $pipe->eval(LuaScripts::updateJobMetrics(), [$key, $runtime], 1);
             } else {
@@ -396,6 +394,6 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function connection()
     {
-        return $this->redis->connection('horizon-metrics');
+        return $this->redis->connection('horizon');
     }
 }
