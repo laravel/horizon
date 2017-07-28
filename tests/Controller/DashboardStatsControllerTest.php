@@ -3,25 +3,14 @@
 namespace Laravel\Horizon\Tests\Controller;
 
 use Mockery;
-use Laravel\Horizon\Horizon;
 use Laravel\Horizon\WaitTimeCalculator;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
-class DashboardStatsControllerTest extends IntegrationTest
+class DashboardStatsControllerTest extends AbstractControllerTest
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        Horizon::auth(function () {
-            return true;
-        });
-    }
-
     public function test_all_stats_are_correctly_returned()
     {
         // Setup supervisor data...

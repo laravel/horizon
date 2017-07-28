@@ -166,7 +166,7 @@ class MasterSupervisorTest extends IntegrationTest
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function test_master_process_should_not_allow_duplicate_master_process_on_same_machine()
     {

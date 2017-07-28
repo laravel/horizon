@@ -16,7 +16,7 @@ class AddSupervisorTest extends IntegrationTest
 
         $master->loop();
 
-        $command = new AddSupervisor;
+        new AddSupervisor;
         resolve(HorizonCommandQueue::class)->push($master->commandQueue(), AddSupervisor::class, (new SupervisorOptions('my-supervisor', 'redis'))->toArray());
 
         $this->assertCount(0, $master->supervisors);

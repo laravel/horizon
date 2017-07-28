@@ -36,7 +36,7 @@ class FailedJobTest extends IntegrationTest
 
     public function test_failed_job_tags_have_an_expiration()
     {
-        $id = Queue::push(new Jobs\FailingJob);
+        Queue::push(new Jobs\FailingJob);
         $this->work();
         $ttl = Redis::connection('horizon-tags')->pttl('failed:first');
         $this->assertNotNull($ttl);
