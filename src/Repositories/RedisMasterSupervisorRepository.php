@@ -20,7 +20,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     /**
      * Create a new repository instance.
      *
-     * @param \Illuminate\Contracts\Redis\Factory $redis
+     * @param  \Illuminate\Contracts\Redis\Factory  $redis
      * @return void
      */
     public function __construct(RedisFactory $redis)
@@ -90,7 +90,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     /**
      * Update the information about the given master supervisor.
      *
-     * @param \Laravel\Horizon\MasterSupervisor $master
+     * @param  \Laravel\Horizon\MasterSupervisor  $master
      * @return void
      */
     public function update(MasterSupervisor $master)

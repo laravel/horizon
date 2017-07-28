@@ -25,8 +25,8 @@ class UpdateJobMetrics
     /**
      * Create a new listener instance.
      *
-     * @param \Laravel\Horizon\Contracts\MetricsRepository $metrics
-     * @param \Laravel\Horizon\Stopwatch $watch
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
+     * @param  \Laravel\Horizon\Stopwatch  $watch
      * @return void
      */
     public function __construct(MetricsRepository $metrics, Stopwatch $watch)

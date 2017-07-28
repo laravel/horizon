@@ -9,7 +9,7 @@ class ContinueWorking
     /**
      * Process the command.
      *
-     * @param \Laravel\Horizon\Contracts\Pausable $pausable
+     * @param  \Laravel\Horizon\Contracts\Pausable  $pausable
      * @return void
      */
     public function process(Pausable $pausable)

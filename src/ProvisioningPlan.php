@@ -101,7 +101,7 @@ class ProvisioningPlan
     /**
      * Add a supervisor with the given options.
      *
-     * @param \Laravel\Horizon\SupervisorOptions $options
+     * @param  \Laravel\Horizon\SupervisorOptions  $options
      * @return void
      */
     protected function add(SupervisorOptions $options)
