@@ -155,6 +155,18 @@ class RedisSupervisorRepository implements SupervisorRepository
     }
 
     /**
+     * Remove expired supervisors from storage.
+     *
+     * @return void
+     */
+    public function flushExpired()
+    {
+        $this->connection()->zremrangebyscore('supervisors', '-inf',
+            Chronos::now()->subSeconds(14)->getTimestamp()
+        );
+    }
+
+    /**
      * Get the Redis connection instance.
      *
      * @return \Illuminate\Redis\Connections\Connection

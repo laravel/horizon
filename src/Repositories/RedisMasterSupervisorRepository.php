@@ -138,6 +138,18 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     }
 
     /**
+     * Remove expired master supervisors from storage.
+     *
+     * @return void
+     */
+    public function flushExpired()
+    {
+        $this->connection()->zremrangebyscore('masters', '-inf',
+            Chronos::now()->subSeconds(14)->getTimestamp()
+        );
+    }
+
+    /**
      * Get the Redis connection instance.
      *
      * @return \Illuminate\Redis\Connections\Connection
