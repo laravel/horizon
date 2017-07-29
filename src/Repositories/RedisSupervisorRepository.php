@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\Contracts\SupervisorRepository;
@@ -34,9 +35,9 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     public function names()
     {
-        return collect($this->connection()->keys('supervisor:*'))->map(function ($name) {
-            return substr($name, 19);
-        })->all();
+        return $this->connection()->zrevrangebyscore('supervisors', '+inf',
+            Chronos::now()->subSeconds(29)->getTimestamp()
+        );
     }
 
     /**
@@ -123,6 +124,10 @@ class RedisSupervisorRepository implements SupervisorRepository
             ]
         );
 
+        $this->connection()->zadd('supervisors',
+            Chronos::now()->getTimestamp(), $supervisor->name
+        );
+
         $this->connection()->expire(
             'supervisor:'.$supervisor->name, 30
         );
@@ -145,6 +150,20 @@ class RedisSupervisorRepository implements SupervisorRepository
         $this->connection()->del(...collect($names)->map(function ($name) {
             return 'supervisor:'.$name;
         })->all());
+
+        $this->connection()->zrem('supervisors', ...$names);
+    }
+
+    /**
+     * Remove expired supervisors from storage.
+     *
+     * @return void
+     */
+    public function flushExpired()
+    {
+        $this->connection()->zremrangebyscore('supervisors', '-inf',
+            Chronos::now()->subSeconds(14)->getTimestamp()
+        );
     }
 
     /**

@@ -8,14 +8,17 @@ class LuaScripts
      * Update the metrics for a job.
      *
      * KEYS[1] - The name of the key being updated
+     * KEYS[2] - The name of the key of the metrics group
      * ARGV[1] - The runtime in milliseconds of the current job
      *
      * @return string
      */
-    public static function updateJobMetrics()
+    public static function updateMetrics()
     {
         return <<<'LUA'
             redis.call('hsetnx', KEYS[1], 'throughput', 0)
+            
+            redis.call('sadd', KEYS[2], KEYS[1])
             
             local hash = redis.call('hmget', KEYS[1], 'throughput', 'runtime')
 

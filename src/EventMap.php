@@ -45,6 +45,7 @@ trait EventMap
         'Laravel\Horizon\Events\MasterSupervisorLooped' => [
             'Laravel\Horizon\Listeners\TrimRecentJobs',
             'Laravel\Horizon\Listeners\TrimFailedJobs',
+            'Laravel\Horizon\Listeners\ExpireSupervisors',
             'Laravel\Horizon\Listeners\MonitorMasterSupervisorMemory',
         ],
 

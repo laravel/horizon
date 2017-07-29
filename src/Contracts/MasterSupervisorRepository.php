@@ -51,4 +51,11 @@ interface MasterSupervisorRepository
      * @return void
      */
     public function forget($name);
+
+    /**
+     * Remove expired master supervisors from storage.
+     *
+     * @return void
+     */
+    public function flushExpired();
 }
