@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\Contracts\SupervisorRepository;
@@ -35,9 +36,9 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
      */
     public function names()
     {
-        return collect($this->connection()->keys('master:*'))->map(function ($name) {
-            return substr($name, 15);
-        })->all();
+        return $this->connection()->zrevrangebyscore('masters', '+inf',
+            Chronos::now()->subSeconds(15)->getTimestamp()
+        );
     }
 
     /**
@@ -106,6 +107,10 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
             ]
         );
 
+        $this->connection()->zadd('masters',
+            Chronos::now()->getTimestamp(), $master->name
+        );
+
         $this->connection()->expire(
             'master:'.$master->name, 15
         );
@@ -128,6 +133,8 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
         );
 
         $this->connection()->del('master:'.$name);
+
+        $this->connection()->zrem('masters', $name);
     }
 
     /**
