@@ -29,7 +29,7 @@ class SnapshotCommand extends Command
      */
     public function handle()
     {
-        if (resolve(Lock::class)->get('metrics:snapshot', 10)) {
+        if (resolve(Lock::class)->get('metrics:snapshot', 300)) {
             resolve(MetricsRepository::class)->snapshot();
 
             $this->info('Metrics snapshot stored successfully.');
