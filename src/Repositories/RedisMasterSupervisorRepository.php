@@ -98,22 +98,22 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     {
         $supervisors = $master->supervisors->map->name->all();
 
-        $this->connection()->hmset(
-            'master:'.$master->name, [
-                'name' => $master->name,
-                'pid' => $master->pid(),
-                'status' => $master->working ? 'running' : 'paused',
-                'supervisors' => json_encode($supervisors),
-            ]
-        );
+        $this->connection()->pipeline(function ($pipe) use ($master, $supervisors) {
+            $pipe->hmset(
+                'master:'.$master->name, [
+                    'name' => $master->name,
+                    'pid' => $master->pid(),
+                    'status' => $master->working ? 'running' : 'paused',
+                    'supervisors' => json_encode($supervisors),
+                ]
+            );
 
-        $this->connection()->zadd('masters',
-            Chronos::now()->getTimestamp(), $master->name
-        );
+            $pipe->zadd('masters',
+                Chronos::now()->getTimestamp(), $master->name
+            );
 
-        $this->connection()->expire(
-            'master:'.$master->name, 15
-        );
+            $pipe->expire('master:'.$master->name, 15);
+        });
     }
 
     /**

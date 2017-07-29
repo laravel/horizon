@@ -113,24 +113,24 @@ class RedisSupervisorRepository implements SupervisorRepository
             return [$supervisor->options->connection.':'.$pool->queue() => count($pool->processes())];
         })->toJson();
 
-        $this->connection()->hmset(
-            'supervisor:'.$supervisor->name, [
-                'name' => $supervisor->name,
-                'master' => explode(':', $supervisor->name)[0],
-                'pid' => $supervisor->pid(),
-                'status' => $supervisor->working ? 'running' : 'paused',
-                'processes' => $processes,
-                'options' => $supervisor->options->toJson(),
-            ]
-        );
+        $this->connection()->pipeline(function ($pipe) use ($supervisor, $processes) {
+            $pipe->hmset(
+                'supervisor:'.$supervisor->name, [
+                    'name' => $supervisor->name,
+                    'master' => explode(':', $supervisor->name)[0],
+                    'pid' => $supervisor->pid(),
+                    'status' => $supervisor->working ? 'running' : 'paused',
+                    'processes' => $processes,
+                    'options' => $supervisor->options->toJson(),
+                ]
+            );
 
-        $this->connection()->zadd('supervisors',
-            Chronos::now()->getTimestamp(), $supervisor->name
-        );
+            $pipe->zadd('supervisors',
+                Chronos::now()->getTimestamp(), $supervisor->name
+            );
 
-        $this->connection()->expire(
-            'supervisor:'.$supervisor->name, 30
-        );
+            $pipe->expire('supervisor:'.$supervisor->name, 30);
+        });
     }
 
     /**
