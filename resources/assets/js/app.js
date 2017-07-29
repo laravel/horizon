@@ -36,7 +36,7 @@ new Vue({
     /**
      * The component's data.
      */
-    data(){
+    data() {
         return {
             showModal: false
         }

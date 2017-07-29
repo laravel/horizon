@@ -8,7 +8,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingQueues: true,
                 queues: []

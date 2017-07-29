@@ -11,7 +11,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 page: 1,
                 perPage: 50,
@@ -40,7 +40,7 @@
          * Watch these properties for changes.
          */
         watch: {
-            '$route'(){
+            '$route'() {
                 this.page = 1;
 
                 this.loadJobs(this.$route.params.tag);
@@ -75,7 +75,7 @@
             /**
              * Refresh the jobs every period of time.
              */
-            refreshJobsPeriodically(){
+            refreshJobsPeriodically() {
                 setInterval(() => {
                     if (this.page != 1) {
                         return;
@@ -89,7 +89,7 @@
             /**
              * Load the jobs for the previous page.
              */
-            previous(){
+            previous() {
                 this.loadJobs(this.$route.params.tag,
                         (this.page - 2) * this.perPage
                 );
@@ -101,7 +101,7 @@
             /**
              * Load the jobs for the next page.
              */
-            next(){
+            next() {
                 this.loadJobs(this.$route.params.tag,
                         this.page * this.perPage
                 );

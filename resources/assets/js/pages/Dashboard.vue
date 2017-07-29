@@ -15,7 +15,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingStats: true,
                 loadingWorkers: true,
@@ -102,7 +102,7 @@
             /**
              * Refresh the stats every period of time.
              */
-            refreshStatsPeriodically(){
+            refreshStatsPeriodically() {
                 setInterval(() => {
                     this.loadStats(false);
 

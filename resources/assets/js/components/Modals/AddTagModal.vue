@@ -13,7 +13,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 name: '',
                 saving: false
@@ -25,7 +25,7 @@
          * Watch these properties for changes.
          */
         watch: {
-            '$root.showModal'(){
+            '$root.showModal'() {
                 this.name = '';
 
                 this.$nextTick(_ => {
