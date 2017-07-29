@@ -18,7 +18,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingJob: true,
                 retryingJob: false,
@@ -55,7 +55,7 @@
             /**
              * Reload the job retries.
              */
-            reloadRetries(){
+            reloadRetries() {
                 this.$http.get('/horizon/api/jobs/failed/' + this.jobId)
                         .then(response => {
                             this.job.retried_by = response.data.retried_by;

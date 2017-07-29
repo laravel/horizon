@@ -13,7 +13,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 loadingTags: true,
                 tags: []

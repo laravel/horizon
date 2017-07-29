@@ -15,7 +15,7 @@
         /**
          * The component's data.
          */
-        data(){
+        data() {
             return {
                 tagSearchPhrase: '',
                 searchTimeout: null,
@@ -33,7 +33,7 @@
          * Watch these properties for changes.
          */
         watch: {
-            tagSearchPhrase(){
+            tagSearchPhrase() {
                 clearTimeout(this.searchTimeout);
 
                 this.searchTimeout = setTimeout(() => {
@@ -115,7 +115,7 @@
             /**
              * Refresh the jobs every period of time.
              */
-            refreshJobsPeriodically(){
+            refreshJobsPeriodically() {
                 setInterval(() => {
                     if (this.page != 1) {
                         return;
@@ -129,7 +129,7 @@
             /**
              * Load the jobs for the previous page.
              */
-            previous(){
+            previous() {
                 this.loadJobs(((this.page - 2) * this.perPage) - 1);
 
                 this.page -= 1;
@@ -139,7 +139,7 @@
             /**
              * Load the jobs for the next page.
              */
-            next(){
+            next() {
                 this.loadJobs((this.page * this.perPage) - 1);
 
                 this.page += 1;
