@@ -36,7 +36,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     public function names()
     {
         return $this->connection()->zrevrangebyscore('supervisors', '+inf',
-            Chronos::now()->subSeconds(15)->getTimestamp()
+            Chronos::now()->subSeconds(29)->getTimestamp()
         );
     }
 

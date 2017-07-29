@@ -37,7 +37,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     public function names()
     {
         return $this->connection()->zrevrangebyscore('masters', '+inf',
-            Chronos::now()->subSeconds(15)->getTimestamp()
+            Chronos::now()->subSeconds(14)->getTimestamp()
         );
     }
 
