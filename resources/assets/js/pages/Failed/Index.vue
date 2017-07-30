@@ -202,7 +202,7 @@
                         </tbody>
                     </table>
 
-                    <div v-if="! loadingJobs" class="simple-pagination">
+                    <div v-if="! loadingJobs && jobs.length" class="simple-pagination">
                         <button @click="previous" class="btn btn-primary btn-md" :disabled="page==1">Previous</button>
                         <button @click="next" class="btn btn-primary btn-md" :disabled="page>=totalPages">Next</button>
                     </div>
