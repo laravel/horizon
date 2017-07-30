@@ -94,11 +94,17 @@ class MonitoringController extends Controller
      * Start monitoring the given tag.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
+        if (null === $request->tag) {
+            return response()->json(['success' => false], 422);
+        }
+
         dispatch(new MonitorTag($request->tag));
+
+        return response()->json([], 201);
     }
 
     /**

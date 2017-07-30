@@ -57,6 +57,10 @@
 
                             this.saving = false;
                         })
+                        .catch(function (error) {
+                            this.saving = false;
+                            this.$refs.tag.focus();
+                        });
 
             }
         }
