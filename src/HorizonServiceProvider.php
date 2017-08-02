@@ -51,6 +51,7 @@ class HorizonServiceProvider extends ServiceProvider
         Route::group([
             'prefix' => 'horizon',
             'namespace' => 'Laravel\Horizon\Http\Controllers',
+            'middleware' => 'web',
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         });
