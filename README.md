@@ -34,7 +34,7 @@ Horizon::auth(function ($request) {
 
 ### Balance Options
 
-Horizon allows you to choose from three balancing options. THe default is 'simple' which splits the jobs between the processes evenly:
+Horizon allows you to choose from three balancing options. The default is 'simple' which splits the jobs between the processes evenly:
 ```php
  'balance' => 'simple',
 ```
