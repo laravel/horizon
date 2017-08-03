@@ -22,6 +22,14 @@ After installing Horizon, publish its assets using the `vendor:publish` Artisan 
 
 After publishing Horizon's assets, its primary configuration file will be located at `config/horizon.php`. This configuration file allows you to configure your worker options and each configuration option includes a description of its purpose, so be sure to thoroughly explore this file.
 
+### Balance Options
+
+Horizon allows you to choose from three balancing strategies: `simple`, `auto`, and `false`. The 'simple' strategy, which is the default, splits the jobs between processes evenly:
+
+    'balance' => 'simple',
+
+The `auto` strategy adjusts the number of worker processes per queue based on the current workload of the queue. When the `balance` option is set to `false`, the default Laravel behavior will be used, which processes queues in the order they are listed in your configuration.
+
 ### Web Dashboard Authentication
 
 Horizon exposes a dashboard at `/horizon`. By default, you will only be able to access this dashboard in the `local` environment. To define a more specific access policy for the dashboard, you should use the `Horizon::auth` method. The `auth` method accepts a callback which should return `true` or `false`, indicating whether the user should have access to the Horizon dashboard:
@@ -30,29 +38,6 @@ Horizon exposes a dashboard at `/horizon`. By default, you will only be able to 
 Horizon::auth(function ($request) {
     // return true / false;
 });
-```
-
-### Balance Options
-
-Horizon allows you to choose from three balancing options. The default is 'simple' which splits the jobs between the processes evenly:
-```php
- 'balance' => 'simple',
-```
-The alternative options are **'auto'** which assigns jobs to processes based on the number of remaining jobs and avaerage wait time, and **'null'** which provides no balancing across worker processes.
-
-### Tags
-
-Horizon allows you to assign “tags” to jobs, including mailables, broadcasts, notifications, and queued listeners. In fact, Horizon will intelligently and automatically tag most jobs depending on the Eloquent models that are attached to the job.
-
-```php
-class SomeFooJob
-{
-    // ...
-    public function tags()
-    {
-        return ['foo', 'bar:' . $this->id];
-    }
-}
 ```
 
 ## Running Horizon
@@ -78,6 +63,23 @@ If you are deploying Horizon to a live server, you should configure a process mo
 You may gracefully terminate the master Horizon process on your machine using the `horizon:terminate` Artisan command. Any jobs that Horizon is currently processing will be completed and then Horizon will exit:
 
     php artisan horizon:terminate
+
+## Tags
+
+Horizon allows you to assign “tags” to jobs, including mailables, event broadcasts, notifications, and queued event listeners. In fact, Horizon will intelligently and automatically tag most jobs depending on the Eloquent models that are attached to the job. However, if you would like to manually define the tags for one of these object types, you may define a `tags` method on the class:
+
+    class RenderVideo implements ShouldQueue
+    {
+        /**
+         * Get the tags that should be assigned to the job.
+         *
+         * @return array
+         */
+        public function tags()
+        {
+            return ['render', 'video:'.$this->id];
+        }
+    }
 
 ## Notifications
 
