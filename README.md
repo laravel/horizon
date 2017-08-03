@@ -32,6 +32,29 @@ Horizon::auth(function ($request) {
 });
 ```
 
+### Balance Options
+
+Horizon allows you to choose from three balancing options. The default is 'simple' which splits the jobs between the processes evenly:
+```php
+ 'balance' => 'simple',
+```
+The alternative options are **'auto'** which assigns jobs to processes based on the number of remaining jobs and avaerage wait time, and **'null'** which provides no balancing across worker processes.
+
+### Tags
+
+Horizon allows you to assign “tags” to jobs, including mailables, broadcasts, notifications, and queued listeners. In fact, Horizon will intelligently and automatically tag most jobs depending on the Eloquent models that are attached to the job.
+
+```php
+class SomeFooJob
+{
+    // ...
+    public function tags()
+    {
+        return ['foo', 'bar:' . $this->id];
+    }
+}
+```
+
 ## Running Horizon
 
 Once you have configured your workers in the `config/horizon.php` configuration file, you may start Horizon using the `horizon` Artisan command. This single command will start all of your configured workers:
