@@ -30,6 +30,13 @@
             this.refreshJobsPeriodically();
         },
 
+        /**
+         * Clean after the component is destroyed.
+         */
+        destroyed(){
+            clearInterval(this.interval);
+        },
+
 
         /**
          * Watch these properties for changes.
@@ -69,7 +76,7 @@
              * Refresh the jobs every period of time.
              */
             refreshJobsPeriodically() {
-                setInterval(() => {
+                this.interval = setInterval(() => {
                     if (this.page != 1) {
                         return;
                     }

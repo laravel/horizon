@@ -33,9 +33,17 @@
         mounted() {
             this.loadFailedJob(this.jobId)
 
-            setInterval(() => {
+            this.interval = setInterval(() => {
                 this.reloadRetries();
             }, 3000);
+        },
+
+
+        /**
+         * Clean after the component is destroyed.
+         */
+        destroyed(){
+            clearInterval(this.interval);
         },
 
 

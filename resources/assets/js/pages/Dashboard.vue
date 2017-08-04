@@ -42,6 +42,14 @@
             this.refreshStatsPeriodically();
         },
 
+        /**
+         * Clean after the component is destroyed.
+         */
+        destroyed(){
+            clearInterval(this.interval);
+        },
+
+
         methods: {
             /**
              * Load the general stats.
@@ -103,7 +111,7 @@
              * Refresh the stats every period of time.
              */
             refreshStatsPeriodically() {
-                setInterval(() => {
+                this.interval = setInterval(() => {
                     this.loadStats(false);
 
                     this.loadWorkers(false);

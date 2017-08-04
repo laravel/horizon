@@ -55,6 +55,14 @@
         },
 
 
+        /**
+         * Clean after the component is destroyed.
+         */
+        destroyed(){
+            clearInterval(this.interval);
+        },
+
+
         methods: {
             /**
              * Load the failed jobs.
@@ -116,7 +124,7 @@
              * Refresh the jobs every period of time.
              */
             refreshJobsPeriodically() {
-                setInterval(() => {
+                this.interval = setInterval(() => {
                     if (this.page != 1) {
                         return;
                     }
