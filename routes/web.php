@@ -2,34 +2,36 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Dashboard Routes...
-Route::get('/api/stats', 'DashboardStatsController@index');
+Route::prefix('api')->group(function () {
+    // Dashboard Routes...
+    Route::get('/stats', 'DashboardStatsController@index');
 
-// Workload Routes...
-Route::get('/api/workload', 'WorkloadController@index');
+    // Workload Routes...
+    Route::get('/workload', 'WorkloadController@index');
 
-// Master Supervisor Routes...
-Route::get('/api/masters', 'MasterSupervisorController@index');
+    // Master Supervisor Routes...
+    Route::get('/masters', 'MasterSupervisorController@index');
 
-// Monitoring Routes...
-Route::get('/api/monitoring', 'MonitoringController@index');
-Route::post('/api/monitoring', 'MonitoringController@store');
-Route::get('/api/monitoring/{tag}', 'MonitoringController@paginate');
-Route::delete('/api/monitoring/{tag}', 'MonitoringController@destroy');
+    // Monitoring Routes...
+    Route::get('/monitoring', 'MonitoringController@index');
+    Route::post('/monitoring', 'MonitoringController@store');
+    Route::get('/monitoring/{tag}', 'MonitoringController@paginate');
+    Route::delete('/monitoring/{tag}', 'MonitoringController@destroy');
 
-// Job Metric Routes...
-Route::get('/api/metrics/jobs', 'JobMetricsController@index');
-Route::get('/api/metrics/jobs/{id}', 'JobMetricsController@show');
+    // Job Metric Routes...
+    Route::get('/metrics/jobs', 'JobMetricsController@index');
+    Route::get('/metrics/jobs/{id}', 'JobMetricsController@show');
 
-// Queue Metric Routes...
-Route::get('/api/metrics/queues', 'QueueMetricsController@index');
-Route::get('/api/metrics/queues/{id}', 'QueueMetricsController@show');
+    // Queue Metric Routes...
+    Route::get('/metrics/queues', 'QueueMetricsController@index');
+    Route::get('/metrics/queues/{id}', 'QueueMetricsController@show');
 
-// Job Routes...
-Route::get('/api/jobs/recent', 'RecentJobsController@index');
-Route::get('/api/jobs/failed', 'FailedJobsController@index');
-Route::get('/api/jobs/failed/{id}', 'FailedJobsController@show');
-Route::post('/api/jobs/retry/{id}', 'RetryController@store');
+    // Job Routes...
+    Route::get('/jobs/recent', 'RecentJobsController@index');
+    Route::get('/jobs/failed', 'FailedJobsController@index');
+    Route::get('/jobs/failed/{id}', 'FailedJobsController@show');
+    Route::post('/jobs/retry/{id}', 'RetryController@store');
+});
 
 // Catch-all Routes...
 Route::get('/', 'HomeController@index');
