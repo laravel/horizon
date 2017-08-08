@@ -24,11 +24,11 @@ After publishing Horizon's assets, its primary configuration file will be locate
 
 ### Balance Options
 
-Horizon allows you to choose from three balancing strategies: `simple`, `auto`, and `false`. The 'simple' strategy, which is the default, splits the jobs between processes evenly:
+Horizon allows you to choose from three balancing strategies: `simple`, `auto`, and `off`. The 'simple' strategy, which is the default, splits the jobs between processes evenly:
 
     'balance' => 'simple',
 
-The `auto` strategy adjusts the number of worker processes per queue based on the current workload of the queue. When the `balance` option is set to `false`, the default Laravel behavior will be used, which processes queues in the order they are listed in your configuration.
+The `auto` strategy adjusts the number of worker processes per queue based on the current workload of the queue. When the `balance` option is set to `off`, the default Laravel behavior will be used, which processes queues in the order they are listed in your configuration.
 
 ### Web Dashboard Authentication
 
