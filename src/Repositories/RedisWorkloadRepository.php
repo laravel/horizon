@@ -69,9 +69,15 @@ class RedisWorkloadRepository implements WorkloadRepository
             ->map(function ($waitTime, $queue) use ($processes) {
                 [$connection, $queueName] = explode(':', $queue, 2);
 
+                $length = ! str_contains($queue, ',')
+                    ? $this->queue->connection($connection)->readyNow($queueName)
+                    : collect(explode(',', $queueName))->sum(function ($queueName) use ($connection) {
+                        return $this->queue->connection($connection)->readyNow($queueName);
+                    });
+                
                 return [
                     'name' => $queueName,
-                    'length' => $this->queue->connection($connection)->readyNow($queueName),
+                    'length' => $length,
                     'wait' => $waitTime,
                     'processes' => $processes[$queue] ?? 0,
                 ];

@@ -72,11 +72,17 @@ class WaitTimeCalculator
         return $queues->mapWithKeys(function ($queue) use ($supervisors) {
             $totalProcesses = $this->totalProcessesFor($supervisors, $queue);
 
-            [$connection, $name] = explode(':', $queue, 2);
+            [$connection, $queueName] = explode(':', $queue, 2);
+
+            $timeToClear = ! str_contains($queueName, ',')
+                ? $this->timeToClearFor($connection, $queueName)
+                : collect(explode(',', $queueName))->sum(function ($queueName) use ($connection) {
+                    return $this->timeToClearFor($connection, $queueName);
+                });
 
             return $totalProcesses === 0
-                    ? [$queue => round($this->timeToClearFor($connection, $name) / 1000)]
-                    : [$queue => round(($this->timeToClearFor($connection, $name) / $totalProcesses) / 1000)];
+                    ? [$queue => round($timeToClear / 1000)]
+                    : [$queue => round(($timeToClear / $totalProcesses) / 1000)];
         })->sort()->reverse()->all();
     }
 
