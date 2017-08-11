@@ -43,7 +43,7 @@
 </script>
 
 <template>
-    <message v-if="!jobs.length" text="There aren't any jobs."/>
+    <message v-if="!loadingJobs && !jobs.length" text="There aren't any jobs."/>
 
     <table v-else class="table panel-table" cellpadding="0" cellspacing="0">
         <thead>

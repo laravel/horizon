@@ -43,7 +43,7 @@
 </script>
 
 <template>
-    <message v-if="!queues.length" text="There aren't any queues."/>
+    <message v-if="!loadingQueues && !queues.length" text="There aren't any queues."/>
 
     <table v-else class="table panel-table" cellpadding="0" cellspacing="0">
         <thead>
