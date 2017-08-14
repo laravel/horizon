@@ -3,6 +3,7 @@
 namespace Laravel\Horizon;
 
 use Closure;
+use Illuminate\Support\Facades\Route;
 
 class Horizon
 {
@@ -55,6 +56,23 @@ class Horizon
         return (static::$authUsing ?: function () {
             return app()->environment('local');
         })($request);
+    }
+
+    /**
+     * Register the Horizon routes.
+     *
+     * @param  string|array  $middleware
+     * @return void
+     */
+    public static function routes($middleware = [])
+    {
+        Route::group([
+            'prefix' => 'horizon',
+            'namespace' => 'Laravel\Horizon\Http\Controllers',
+            'middleware' => array_merge(['web'], array_wrap($middleware)),
+        ], function () {
+            require __DIR__.'/../routes/web.php';
+        });
     }
 
     /**
