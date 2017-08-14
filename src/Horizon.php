@@ -8,13 +8,6 @@ use Illuminate\Support\Facades\Route;
 class Horizon
 {
     /**
-     * The callback that should be used to authenticate Horizon users.
-     *
-     * @var \Closure
-     */
-    public static $authUsing;
-
-    /**
      * The Slack notifications webhook URL.
      *
      * @var string
@@ -46,19 +39,6 @@ class Horizon
     ];
 
     /**
-     * Determine if the given request can access the Horizon dashboard.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
-     */
-    public static function check($request)
-    {
-        return (static::$authUsing ?: function () {
-            return app()->environment('local');
-        })($request);
-    }
-
-    /**
      * Register the Horizon routes.
      *
      * @param  string|array  $middleware
@@ -73,19 +53,6 @@ class Horizon
         ], function () {
             require __DIR__.'/../routes/web.php';
         });
-    }
-
-    /**
-     * Set the callback that should be used to authenticate Horizon users.
-     *
-     * @param  \Closure  $callback
-     * @return static
-     */
-    public static function auth(Closure $callback)
-    {
-        static::$authUsing = $callback;
-
-        return new static;
     }
 
     /**
