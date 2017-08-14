@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon;
 
-use Closure;
 use Illuminate\Support\Facades\Route;
 
 class Horizon
