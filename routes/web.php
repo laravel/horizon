@@ -33,6 +33,5 @@ Route::prefix('api')->group(function () {
     Route::post('/jobs/retry/{id}', 'RetryController@store');
 });
 
-// Catch-all Routes...
-Route::get('/', 'HomeController@index');
-Route::get('{view}', 'HomeController@index')->where('view', '(.*)');
+// Catch-all Route...
+Route::get('/{view?}', 'HomeController@index')->where('view', '(.*)');
