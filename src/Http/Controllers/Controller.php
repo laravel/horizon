@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
-use Laravel\Horizon\Http\Middleware\Authenticate;
+use Laravel\Horizon\Horizon;
 use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
@@ -14,6 +14,6 @@ class Controller extends BaseController
      */
     public function __construct()
     {
-        $this->middleware(Authenticate::class);
+        $this->middleware(Horizon::middleware());
     }
 }

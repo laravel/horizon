@@ -3,13 +3,15 @@
 namespace Laravel\Horizon;
 
 use Closure;
+use Laravel\Horizon\Contracts\InvalidAuthenticationMethod;
+use Laravel\Horizon\Http\Middleware\Authenticate;
 
 class Horizon
 {
     /**
-     * The callback that should be used to authenticate Horizon users.
+     * The callback or middleware that should be used to authenticate Horizon users.
      *
-     * @var \Closure
+     * @var \Closure|string
      */
     public static $authUsing;
 
@@ -49,9 +51,14 @@ class Horizon
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
+     * @throws InvalidAuthenticationMethod
      */
     public static function check($request)
     {
+        if (static::usesMiddlewareAuth()) {
+            throw new InvalidAuthenticationMethod;
+        }
+
         return (static::$authUsing ?: function () {
             return app()->environment('local');
         })($request);
@@ -60,10 +67,10 @@ class Horizon
     /**
      * Set the callback that should be used to authenticate Horizon users.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure|string  $callback
      * @return static
      */
-    public static function auth(Closure $callback)
+    public static function auth($callback)
     {
         static::$authUsing = $callback;
 
@@ -122,5 +129,25 @@ class Horizon
         static::$smsNumber = $number;
 
         return new static;
+    }
+
+    /**
+     * Retrieve the middleware to be used for authentication.
+     *
+     * @return string
+     */
+    public static function middleware()
+    {
+        return static::usesMiddlewareAuth() ? static::$authUsing : Authenticate::class;
+    }
+
+    /**
+     * Determine whether the user has specified a middleware for authentication.
+     *
+     * @return bool
+     */
+    protected static function usesMiddlewareAuth()
+    {
+        return is_string(static::$authUsing);
     }
 }
