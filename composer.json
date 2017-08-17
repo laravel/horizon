@@ -46,7 +46,8 @@
         "laravel": {
             "providers": [
                 "Laravel\\Horizon\\HorizonServiceProvider"
-            ]
+            ],
+            "aliases" => "Laravel\\Horizon\\Horizon"
         }
     },
     "config": {
