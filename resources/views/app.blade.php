@@ -9,7 +9,7 @@
     <body>
         <div id="root"></div>
 
-        <div style="height: 0; width: 0; position: absolute; visibility: hidden;">
+        <div style="height: 0; width: 0; position: absolute; display: none;">
             {!! file_get_contents(public_path('/vendor/horizon/img/sprite.svg')) !!}
         </div>
 
