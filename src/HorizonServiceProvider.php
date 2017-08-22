@@ -20,7 +20,6 @@ class HorizonServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerEvents();
-        $this->registerRoutes();
         $this->registerResources();
         $this->defineAssetPublishing();
     }
@@ -39,22 +38,6 @@ class HorizonServiceProvider extends ServiceProvider
                 $events->listen($event, $listener);
             }
         }
-    }
-
-    /**
-     * Register the Horizon routes.
-     *
-     * @return void
-     */
-    protected function registerRoutes()
-    {
-        Route::group([
-            'prefix' => 'horizon',
-            'namespace' => 'Laravel\Horizon\Http\Controllers',
-            'middleware' => 'web',
-        ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        });
     }
 
     /**

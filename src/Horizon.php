@@ -2,17 +2,10 @@
 
 namespace Laravel\Horizon;
 
-use Closure;
+use Illuminate\Support\Facades\Route;
 
 class Horizon
 {
-    /**
-     * The callback that should be used to authenticate Horizon users.
-     *
-     * @var \Closure
-     */
-    public static $authUsing;
-
     /**
      * The Slack notifications webhook URL.
      *
@@ -45,29 +38,20 @@ class Horizon
     ];
 
     /**
-     * Determine if the given request can access the Horizon dashboard.
+     * Register the Horizon routes.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
+     * @param  string|array  $middleware
+     * @return void
      */
-    public static function check($request)
+    public static function routes($middleware = [])
     {
-        return (static::$authUsing ?: function () {
-            return app()->environment('local');
-        })($request);
-    }
-
-    /**
-     * Set the callback that should be used to authenticate Horizon users.
-     *
-     * @param  \Closure  $callback
-     * @return static
-     */
-    public static function auth(Closure $callback)
-    {
-        static::$authUsing = $callback;
-
-        return new static;
+        Route::group([
+            'prefix' => 'horizon',
+            'namespace' => 'Laravel\Horizon\Http\Controllers',
+            'middleware' => array_merge(['web'], array_wrap($middleware)),
+        ], function () {
+            require __DIR__.'/../routes/web.php';
+        });
     }
 
     /**
