@@ -21,7 +21,7 @@ class ContinueCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Instruct the master supevisor to continue processing jobs';
+    protected $description = 'Instruct the master supervisor to continue processing jobs';
 
     /**
      * Execute the console command.
