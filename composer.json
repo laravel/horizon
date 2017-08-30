@@ -15,6 +15,7 @@
     "require": {
         "php": ">=7.1.0",
         "ext-pcntl": "*",
+        "ext-posix": "*",
         "cakephp/chronos": "^1.0",
         "illuminate/contracts": "~5.5",
         "illuminate/queue": "~5.5",
