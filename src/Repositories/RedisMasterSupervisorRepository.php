@@ -88,6 +88,35 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
         })->filter()->all();
     }
 
+    public function pause()
+    {
+      $this->connection()->set('master:please-pause', true);
+    }
+
+    public function resume()
+    {
+      $this->connection()->set('master:please-resume', true);
+    }
+
+    public function paused()
+    {
+      return !!$this->connection()->get('master:please-pause');
+    }
+
+    public function resumed()
+    {
+      return !!$this->connection()->get('master:please-resume');
+    }
+
+    public function clearPause()
+    {
+      $this->connection()->del('master:please-pause');
+    }
+
+    public function clearResume()
+    {
+      $this->connection()->del('master:please-resume');
+    }
     /**
      * Update the information about the given master supervisor.
      *

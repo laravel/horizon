@@ -228,6 +228,10 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     public function loop()
     {
         try {
+            $this->shouldPause();
+
+            $this->shouldResume();
+
             $this->processPendingCommands();
 
             if ($this->working) {
@@ -242,6 +246,42 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         } catch (Throwable $e) {
             resolve(ExceptionHandler::class)->report(new FatalThrowableError($e));
         }
+    }
+
+    protected function shouldPause()
+    {
+      //not working. skip the check.
+      if(!$this->working) {
+        return;
+      }
+
+      $repo = resolve(MasterSupervisorRepository::class);
+
+      if($repo->paused()) {
+        $this->pause();
+
+        $repo->clearPause();
+
+        echo "Got pause signal from WEB\nPausing...\n";
+      }
+    }
+
+    protected function shouldResume()
+    {
+      //already working. skip the check.
+      if($this->working) {
+        return;
+      }
+
+      $repo = resolve(MasterSupervisorRepository::class);
+
+      if($repo->resumed()) {
+        $this->continue();
+
+        $repo->clearResume();
+
+        echo "Got resume signal from WEB\nResuming...\n";
+      }
     }
 
     /**
