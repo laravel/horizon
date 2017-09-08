@@ -89,6 +89,66 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     }
 
     /**
+     * Set a redis key to signal the master to pause.
+     *
+     * @return void
+     */
+    public function pause()
+    {
+          $this->connection()->set('master:please-pause', true);
+    }
+
+    /**
+     * Set a redis key to signal the master to resume.
+     *
+     * @return void
+     */
+    public function resume()
+    {
+          $this->connection()->set('master:please-resume', true);
+    }
+
+    /**
+     * Check if the master has been signaled to pause
+     *
+     * @return boolean
+     */
+    public function paused()
+    {
+          return !!$this->connection()->get('master:please-pause');
+    }
+
+    /**
+     * Check if the master has been signaled to resume.
+     *
+     * @return boolean
+     */
+    public function resumed()
+    {
+          return !!$this->connection()->get('master:please-resume');
+    }
+
+    /**
+     * Clear the pause signal
+     *
+     * @return void
+     */
+    public function clearPause()
+    {
+          $this->connection()->del('master:please-pause');
+    }
+
+    /**
+     * Clear the resume signal
+     *
+     * @return void
+     */
+    public function clearResume()
+    {
+          $this->connection()->del('master:please-resume');
+    }
+
+    /**
      * Update the information about the given master supervisor.
      *
      * @param  \Laravel\Horizon\MasterSupervisor  $master
