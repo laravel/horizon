@@ -1,37 +1,69 @@
 <script type="text/ecmascript-6">
     export default {
-        props: {
-            active: {},
-            pending: {},
-            activeClass: {
-                default: 'fsuccess'
-            },
+        components: {
+            PauseQueue: require('./PauseQueue'),
+            ResumeQueue: require('./ResumeQueue'),
         },
 
+        props: {
+            status: {},
+        },
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                theActiveClass: this.activeClass
-            }
+        computed: {
+            isPaused() {
+                return this.status == 'paused';
+            },
+
+            isRunning() {
+                return this.status == 'running';
+            },
+
+
+            isInactive() {
+                return !this.isPaused && !this.isRunning;
+            },
+
+            statusText() {
+                let status = {
+                    running: 'Running',
+                    paused: 'Paused',
+                }[this.status];
+
+                return status ? status : 'Inactive';
+            },
         },
     }
 </script>
 
 <template>
-    <i class="ico20">
-        <svg v-if="active" class="fcc" :class="[theActiveClass]">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-checkmark-outline"></use>
-        </svg>
-        <svg v-else-if="!pending" class="fcc fdanger">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-close-outline"></use>
-        </svg>
 
-        <svg v-if="pending" class="fcc fwarning">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-pause-outline"></use>
-        </svg>
-    </i>
+    <div>
+        <pause-queue v-if="isRunning">
+            <i class="ico20">
+                <svg class="fcc fsuccess">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-checkmark-outline"></use>
+                </svg>
+            </i>
+        </pause-queue>
+
+
+        <resume-queue v-else-if="isPaused">
+            <i class="ico20">
+                <svg class="fcc fwarning">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-pause-outline"></use>
+                </svg>
+            </i>
+        </resume-queue>
+
+        <i class="ico20" v-else>
+            <svg class="fcc fdanger">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-close-outline"></use>
+            </svg>
+        </i>
+
+        <span class="stat-value">
+            {{statusText}}
+        </span>
+    </div>
+
 </template>
-

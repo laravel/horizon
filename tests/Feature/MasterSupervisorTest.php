@@ -219,6 +219,42 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertTrue($master->exited);
     }
 
+    public function test_master_supervisor_pauses_when_repository_is_told_to_pause()
+    {
+        $repository = resolve(MasterSupervisorRepository::class);
+
+        $master = new MasterSupervisor;
+
+        $master->loop();
+
+        $this->assertTrue($master->working);
+
+        $repository->pause();
+
+        $master->loop();
+
+        $this->assertFalse($master->working);
+    }
+
+    public function test_master_supervisor_resumes_when_repository_is_told_to_resume()
+    {
+        $repository = resolve(MasterSupervisorRepository::class);
+
+        $master = new MasterSupervisor;
+        $master->pause();
+        $master->loop();
+
+        //master is paused
+        $this->assertFalse($master->working);
+
+        //send the resume signal
+        $repository->resume();
+        $master->loop();
+
+        //master is unpaused
+        $this->assertTrue($master->working);
+    }
+
     protected function options()
     {
         return tap(new SupervisorOptions(MasterSupervisor::name().':name', 'redis'), function ($options) {

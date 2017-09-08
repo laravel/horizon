@@ -184,16 +184,8 @@
                             <h3 class="stat-meta">&nbsp;</h3>
 
                             <div class="df aic acc">
-                                <status :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr1.5"/>
-                                <span v-if="stats.status == 'running'" class="stat-value">
-                                  Active
-                                </span>
-                                <span v-else-if="stats.status == 'paused'" class="stat-value">
-                                  Paused
-                                </span>
-                                <span v-else class="stat-value">
-                                  Inactive
-                                </span>
+                                <status :status="stats.status" class="mr1.5"/>
+
                             </div>
                         </div>
                     </div>
