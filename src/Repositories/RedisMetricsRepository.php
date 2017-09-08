@@ -183,7 +183,7 @@ class RedisMetricsRepository implements MetricsRepository
     public function incrementJob($job, $runtime)
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'job:'.$job, 'measured_jobs', number_format($runtime, 2, '.', '')
+            'job:'.$job, 'measured_jobs', str_replace(',', '.', $runtime)
         );
     }
 
@@ -197,7 +197,7 @@ class RedisMetricsRepository implements MetricsRepository
     public function incrementQueue($queue, $runtime)
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'queue:'.$queue, 'measured_queues', number_format($runtime, 2, '.', '')
+            'queue:'.$queue, 'measured_queues', str_replace(',', '.', $runtime)
         );
     }
 
