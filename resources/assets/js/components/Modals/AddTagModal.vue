@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import $ from 'jQuery'
+    import $ from 'jquery'
     import Modal from './Modal.vue'
     import Panel from '../Panels/Panel.vue'
     import Spinner from '../Loaders/Spinner.vue'
