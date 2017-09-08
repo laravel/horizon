@@ -248,36 +248,46 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         }
     }
 
+    /**
+     * Check if the queue should be paused and clear the pause flag.
+     *
+     * @return void
+     */
     protected function shouldPause()
     {
-      //not working. skip the check.
-      if(!$this->working) {
-        return;
-      }
+        //not working. skip the check.
+        if(!$this->working) {
+            return;
+        }
 
-      $repo = resolve(MasterSupervisorRepository::class);
+        $repo = resolve(MasterSupervisorRepository::class);
 
-      if($repo->paused()) {
-        $this->pause();
+        if($repo->paused()) {
+            $this->pause();
 
-        $repo->clearPause();
-      }
+            $repo->clearPause();
+        }
     }
 
+    /**
+     * Check if the queue should be resumed and clear the resume flag.
+     *
+     * @return void
+     */
     protected function shouldResume()
     {
-      //already working. skip the check.
-      if($this->working) {
-        return;
-      }
+        //already working. skip the check.
+        if($this->working) {
+            return;
+        }
 
-      $repo = resolve(MasterSupervisorRepository::class);
+        $repo = resolve(MasterSupervisorRepository::class);
 
-      if($repo->resumed()) {
-        $this->continue();
+        if($repo->resumed()) {
+            $this->continue();
 
-        $repo->clearResume();
-      }
+            $repo->clearResume();
+        }
     }
 
     /**
