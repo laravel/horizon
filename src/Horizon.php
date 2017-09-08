@@ -21,6 +21,13 @@ class Horizon
     public static $slackWebhookUrl;
 
     /**
+     * The Slack notifications channel.
+     *
+     * @var string
+     */
+    public static $slackChannel;
+
+    /**
      * The SMS notifications phone number.
      *
      * @var string
@@ -99,14 +106,16 @@ class Horizon
     }
 
     /**
-     * Specify the webhook URL to which Slack notifications should be routed.
+     * Specify the webhook URL and channel to which Slack notifications should be routed.
      *
      * @param  string  $url
+     * @param  string  $channel
      * @return static
      */
-    public static function routeSlackNotificationsTo($url)
+    public static function routeSlackNotificationsTo($url, $channel = null)
     {
         static::$slackWebhookUrl = $url;
+        static::$slackChannel = $channel;
 
         return new static;
     }
