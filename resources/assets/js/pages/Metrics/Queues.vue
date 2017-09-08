@@ -45,7 +45,7 @@
 
 <template>
     <div>
-        <div v-if="loadingJobs" style="text-align: center; margin: 50px;">
+        <div v-if="loadingQueues" style="text-align: center; margin: 50px;">
             <spinner/>
         </div>
 
