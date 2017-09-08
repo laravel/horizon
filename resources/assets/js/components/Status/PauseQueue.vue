@@ -1,20 +1,20 @@
 <script type="text/ecmascript-6">
-export default {
+    export default {
 
-    data() {
-        return {
-            pausing: false,
-        }
-    },
-
-    methods: {
-        pause() {
-            this.pausing = true;
-
-            this.$http.post('/horizon/api/pause');
+        data() {
+            return {
+                pausing: false,
+            }
         },
-    },
-}
+
+        methods: {
+            pause() {
+                this.pausing = true;
+
+                this.$http.post('/horizon/api/pause');
+            },
+        },
+    }
 </script>
 
 
@@ -30,11 +30,11 @@ export default {
 </template>
 
 <style scoped>
-a {
-    cursor: pointer;
-}
+    a {
+        cursor: pointer;
+    }
 
-i {
-    font-size:2rem;
-}
+    i {
+        font-size:2rem;
+    }
 </style>

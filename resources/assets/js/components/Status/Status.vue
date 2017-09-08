@@ -1,45 +1,45 @@
 <script type="text/ecmascript-6">
-import PauseQueue from './PauseQueue.vue';
-import ResumeQueue from './ResumeQueue.vue';
+    import PauseQueue from './PauseQueue.vue';
+    import ResumeQueue from './ResumeQueue.vue';
 
-export default {
-    components: {
-        PauseQueue: require('./PauseQueue'),
-        ResumeQueue: require('./ResumeQueue'),
-    },
-
-    props: {
-        status: {},
-    },
-
-    computed: {
-        isPaused() {
-            return this.status == 'paused';
+    export default {
+        components: {
+            PauseQueue: require('./PauseQueue'),
+            ResumeQueue: require('./ResumeQueue'),
         },
 
-        isRunning() {
-            return this.status == 'running';
+        props: {
+            status: {},
         },
 
+        computed: {
+            isPaused() {
+                return this.status == 'paused';
+            },
 
-        isInactive() {
-            return !this.isPaused && !this.isRunning;
+            isRunning() {
+                return this.status == 'running';
+            },
+
+
+            isInactive() {
+                return !this.isPaused && !this.isRunning;
+            },
+
+            statusText() {
+                let status = {
+                    running: 'Running',
+                    paused: 'Paused',
+                }[this.status];
+
+                if(status) {
+                    return status;
+                }
+
+                return 'Inactive';
+            },
         },
-
-        statusText() {
-            let status = {
-                running: 'Running',
-                paused: 'Paused',
-            }[this.status];
-
-            if(status) {
-                return status;
-            }
-
-            return 'Inactive';
-        },
-    },
-}
+    }
 </script>
 
 <template>

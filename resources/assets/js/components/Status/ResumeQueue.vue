@@ -1,20 +1,20 @@
 <script type="text/ecmascript-6">
-export default {
+    export default {
 
-    data() {
-        return {
-            resuming: false,
-        }
-    },
-
-    methods: {
-        resume() {
-            this.resuming = true;
-
-            this.$http.delete('/horizon/api/pause');
+        data() {
+            return {
+                resuming: false,
+            }
         },
-    },
-}
+
+        methods: {
+            resume() {
+                this.resuming = true;
+
+                this.$http.delete('/horizon/api/pause');
+            },
+        },
+    }
 </script>
 
 
@@ -31,11 +31,11 @@ export default {
 </template>
 
 <style scoped>
-a {
-    cursor: pointer;
-}
+    a {
+        cursor: pointer;
+    }
 
-i {
-    font-size:2rem;
-}
+    i {
+        font-size:2rem;
+    }
 </style>
