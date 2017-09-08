@@ -4,12 +4,13 @@
     import Layout from '../layouts/MainLayout.vue';
     import Panel from '../components/Panels/Panel.vue';
     import Status from '../components/Status/Status.vue';
+    import QueueStatus from '../components/Status/QueueStatus.vue';
     import Spinner from '../components/Loaders/Spinner.vue';
     import PanelHeading from '../components/Panels/PanelHeading.vue';
     import PanelContent from '../components/Panels/PanelContent.vue';
 
     export default {
-        components: {Layout, Spinner, Status, Panel, PanelContent, PanelHeading},
+        components: {Layout, Spinner, Status, Panel, PanelContent, PanelHeading, QueueStatus},
 
 
         /**
@@ -184,16 +185,8 @@
                             <h3 class="stat-meta">&nbsp;</h3>
 
                             <div class="df aic acc">
-                                <status :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr1.5"/>
-                                <span v-if="stats.status == 'running'" class="stat-value">
-                                  Active
-                                </span>
-                                <span v-else-if="stats.status == 'paused'" class="stat-value">
-                                  Paused
-                                </span>
-                                <span v-else class="stat-value">
-                                  Inactive
-                                </span>
+                                <queue-status :status="stats.status" class="mr1.5"/>
+
                             </div>
                         </div>
                     </div>

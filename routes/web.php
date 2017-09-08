@@ -31,6 +31,10 @@ Route::prefix('api')->group(function () {
     Route::get('/jobs/failed', 'FailedJobsController@index');
     Route::get('/jobs/failed/{id}', 'FailedJobsController@show');
     Route::post('/jobs/retry/{id}', 'RetryController@store');
+
+    //Pausing / continuing
+    Route::post('/pause', 'PauseController@store');
+    Route::delete('/pause', 'PauseController@destroy');
 });
 
 // Catch-all Route...
