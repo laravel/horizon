@@ -24,7 +24,7 @@
         <slot></slot>
     </a>
 
-    <a v-else>
+    <a v-else title="Please wait...">
         <i class="fa fa-circle-o-notch fa-spin fcsuccess"/>
     </a>
 
