@@ -29,11 +29,7 @@
                     paused: 'Paused',
                 }[this.status];
 
-                if(status) {
-                    return status;
-                }
-
-                return 'Inactive';
+                return status ? status : 'Inactive';
             },
         },
     }
