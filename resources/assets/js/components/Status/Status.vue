@@ -1,7 +1,4 @@
 <script type="text/ecmascript-6">
-    import PauseQueue from './PauseQueue.vue';
-    import ResumeQueue from './ResumeQueue.vue';
-
     export default {
         components: {
             PauseQueue: require('./PauseQueue'),
