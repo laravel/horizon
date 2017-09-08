@@ -255,11 +255,6 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertTrue($master->working);
     }
 
-    public function test_master_supervisor_repository_clears_paused_status()
-    {
-
-    }
-
     protected function options()
     {
         return tap(new SupervisorOptions(MasterSupervisor::name().':name', 'redis'), function ($options) {
