@@ -92,6 +92,7 @@ class LongWaitDetected extends Notification
     {
         return (new SlackMessage)
                     ->from('Laravel Horizon')
+                    ->to(Horizon::$slackChannel)
                     ->image('https://laravel.com/assets/img/horizon-48px.png')
                     ->error()
                     ->content('Oh no! Something needs your attention.')
