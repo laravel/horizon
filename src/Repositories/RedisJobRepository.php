@@ -230,7 +230,7 @@ class RedisJobRepository implements JobRepository
      */
     protected function storeJobReferences($pipe, $id)
     {
-        $pipe->zadd('recent_jobs', str_replace(',', '.', microtime(true) * -1), $id);
+        $pipe->zadd('recent_jobs', number_format(microtime(true) * -1, 2, '.', ''), $id);
     }
 
     /**
@@ -494,7 +494,7 @@ class RedisJobRepository implements JobRepository
      */
     protected function storeFailedJobReferences($pipe, $id)
     {
-        $score = str_replace(',', '.', microtime(true) * -1);
+        $score = number_format(microtime(true) * -1, 2, '.', '');
 
         $pipe->zadd('failed_jobs', $score, $id);
 
