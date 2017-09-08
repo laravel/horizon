@@ -10,6 +10,32 @@ use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
 class MasterSupervisorControllerTest extends AbstractControllerTest
 {
+    public function test_master_supervisor_is_signaled_to_pause()
+    {
+        $repo = resolve(MasterSupervisorRepository::class);
+
+        $this->actingAs(new Fakes\User);
+
+        $response = $this->json('POST', '/horizon/api/pause');
+
+        $this->assertEquals(204, $response->getStatusCode());
+
+        $this->assertTrue($repo->paused());
+    }
+
+    public function test_master_supervisor_is_signaled_to_resume()
+    {
+        $repo = resolve(MasterSupervisorRepository::class);
+
+        $this->actingAs(new Fakes\User);
+
+        $response = $this->json('DELETE', '/horizon/api/pause');
+
+        $this->assertEquals(204, $response->getStatusCode());
+
+        $this->assertTrue($repo->resumed());
+    }
+
     public function test_master_supervisor_listing_without_supervisors()
     {
         $master = new MasterSupervisor;

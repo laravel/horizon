@@ -261,8 +261,6 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         $this->pause();
 
         $repo->clearPause();
-
-        echo "Got pause signal from WEB\nPausing...\n";
       }
     }
 
@@ -279,8 +277,6 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         $this->continue();
 
         $repo->clearResume();
-
-        echo "Got resume signal from WEB\nResuming...\n";
       }
     }
 

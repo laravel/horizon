@@ -14,6 +14,8 @@ class PauseController extends Controller
     public function store()
     {
         resolve(MasterSupervisorRepository::class)->pause();
+
+        return response()->json([], 204);
     }
 
     /**
@@ -24,5 +26,7 @@ class PauseController extends Controller
     public function destroy()
     {
         resolve(MasterSupervisorRepository::class)->resume();
+
+        return response()->json([], 204);
     }
 }
