@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Redis Prefix
+    |--------------------------------------------------------------------------
+    |
+    | This is the prefix that is used for the horizon dashboard. By default
+    | the prefix is 'horizon:' but if you are running multiple instances of
+    | horizon you can change the prefix.
+    |
+    */
+
+    'prefix' => 'horizon:',
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Wait Time Thresholds
     |--------------------------------------------------------------------------
     |
