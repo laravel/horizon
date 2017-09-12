@@ -86,10 +86,9 @@ class Horizon
     public static function use($connection)
     {
         $config = config("database.redis.{$connection}");
-        $prefix = config('horizon.prefix') ?: 'horizon:';
-        
+
         config(['database.redis.horizon' => array_merge($config, [
-            'options' => ['prefix' => $prefix]
+            'options' => ['prefix' => config('horizon.prefix') ?: 'horizon:'],
         ])]);
     }
 
