@@ -231,13 +231,10 @@ class RedisMetricsRepository implements MetricsRepository
      */
     protected function snapshotsFor($key)
     {
-        $snapshots = collect($this->connection()->zrange('snapshot:'.$key, 0, - 1, 'withscores'))->map(function ($val) {
-            return (integer) $val;
-        })->flip();
-
-        return collect($snapshots)->map(function ($snapshot, $time) {
-            return (object) json_decode($snapshot, true);
-        })->values()->all();
+        return collect($this->connection()->zrange('snapshot:'.$key, 0, - 1, 'withscores'))
+            ->map(function ($time, $snapshot) {
+                return (object) json_decode($snapshot, true);
+            })->values()->all();
     }
 
     /**
