@@ -168,7 +168,6 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\PurgeCommand::class,
                 Console\PauseCommand::class,
                 Console\ContinueCommand::class,
-                Console\SnapshotCommand::class,
                 Console\SupervisorCommand::class,
                 Console\SupervisorsCommand::class,
                 Console\TerminateCommand::class,
@@ -176,5 +175,7 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\WorkCommand::class,
             ]);
         }
+
+        $this->commands([Console\SnapshotCommand::class]);
     }
 }
