@@ -59,7 +59,7 @@
                     this.loadState = true;
                 }
 
-                return this.$http.get('/horizon/api/jobs/recent/' + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
                         .then(response => {
                             this.jobs = response.data.jobs;
 
