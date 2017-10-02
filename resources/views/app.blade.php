@@ -4,6 +4,7 @@
         <title>Horizon</title>
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/horizon') }}">
+        <link rel="icon" href="{{ public_path('/img/favicon.png') }}" />
     </head>
 
     <body>
