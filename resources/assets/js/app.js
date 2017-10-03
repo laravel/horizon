@@ -21,7 +21,7 @@ Vue.mixin({
          * Convert to human readable timestamp.
          */
         readableTimestamp(timestamp){
-            return this.formatDate(timestamp).format('HH:mm:ss');
+            return this.formatDate(timestamp).format('YY-MM-DD HH:mm:ss');
         }
     }
 });
