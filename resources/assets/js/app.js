@@ -13,15 +13,26 @@ Vue.mixin({
         /**
          * Format the given date with respect to timezone.
          */
-        formatDate(unixTime){
+        formatDate(unixTime) {
             return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
         },
-
+        /**
+         * Check if the timestamp is from the current day
+         */
+        isCurrentDay(timestamp) {
+            return moment().isSame(timestamp, 'day');
+        },
         /**
          * Convert to human readable timestamp.
          */
-        readableTimestamp(timestamp){
-            return this.formatDate(timestamp).format('HH:mm:ss');
+        readableTimestamp(timestamp) {
+            let finalTimestamp = this.formatDate(timestamp);
+            let formatTemplate = 'YYYY-MM-DD HH:mm:ss';
+
+            if (this.isCurrentDay(finalTimestamp)) {
+                formatTemplate = 'HH:mm:ss';
+            }
+            return finalTimestamp.format(formatTemplate);
         }
     }
 });
