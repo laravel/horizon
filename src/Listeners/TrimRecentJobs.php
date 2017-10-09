@@ -31,8 +31,10 @@ class TrimRecentJobs
     public function handle(MasterSupervisorLooped $event)
     {
         if (! isset($this->lastTrimmed)) {
-            $expiry = config('horizon.recent_jobs.expiry', 60);
-            $this->frequency = max(1, intdiv($expiry, 12));
+            $this->frequency = max(1, intdiv(
+                config('horizon.trim.recent', 60), 12
+            ));
+
             $this->lastTrimmed = Chronos::now()->subMinutes($this->frequency + 1);
         }
 
