@@ -147,16 +147,14 @@ class WorkerProcess
         }
 
         if ($this->restartAgainAt) {
-            // The last cool-down period is passed. If the process is running, we end the cool-down.
-            // Otherwise we start a long cool-down period and fire an event.
-            if ($this->process->isRunning()) {
-                $this->restartAgainAt = null;
-            } else {
-                $this->restartAgainAt = Chronos::now()->addMinute();
+            $this->restartAgainAt = ! $this->process->isRunning()
+                            ? Chronos::now()->addMinute()
+                            : null;
+
+            if (! $this->process->isRunning()) {
                 event(new UnableToLaunchProcess($this));
             }
         } else {
-            // Start a short cool-down period.
             $this->restartAgainAt = Chronos::now()->addSecond();
         }
     }
