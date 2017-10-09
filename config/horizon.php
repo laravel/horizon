@@ -45,6 +45,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Job Repository Configurations
+    |--------------------------------------------------------------------------
+    |
+    | Here you can configure for how long (in minutes) you need horizon to
+    | persist the recent jobs. The defaults are 1 hour for recent jobs and
+    | 1 week for recent failed jobs.
+    |
+    */
+
+    'recent_jobs' => [
+        'expiry' => 60,
+        'failed_expiry' => 10080,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Worker Configuration
     |--------------------------------------------------------------------------
     |

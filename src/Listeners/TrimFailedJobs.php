@@ -16,11 +16,11 @@ class TrimFailedJobs
     public $lastTrimmed;
 
     /**
-     * How many hours to wait in between each trim.
+     * How many minutes to wait in between each trim.
      *
      * @var int
      */
-    public $frequency = 23;
+    public $frequency = 5040;
 
     /**
      * Handle the event.
@@ -31,10 +31,12 @@ class TrimFailedJobs
     public function handle(MasterSupervisorLooped $event)
     {
         if (! isset($this->lastTrimmed)) {
-            $this->lastTrimmed = Chronos::now()->subHours($this->frequency + 1);
+            $expiry = config('horizon.recent_jobs.failed_expiry', 10080);
+            $this->frequency = max(1, intdiv($expiry, 12));
+            $this->lastTrimmed = Chronos::now()->subMinutes($this->frequency + 1);
         }
 
-        if ($this->lastTrimmed->lte(Chronos::now()->subHours($this->frequency))) {
+        if ($this->lastTrimmed->lte(Chronos::now()->subMinutes($this->frequency))) {
             resolve(JobRepository::class)->trimFailedJobs();
 
             $this->lastTrimmed = Chronos::now();
