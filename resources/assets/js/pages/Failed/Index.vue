@@ -196,7 +196,7 @@
                             </td>
                             <td>{{ job.queue }}</td>
                             <td>{{ job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</td>
-                            <td>{{ job.failed_at ? String(job.failed_at - job.reserved_at)+'s' : '-' }}</td>
+                            <td>{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</td>
                             <td>{{ readableTimestamp(job.failed_at) }}</td>
                             <td>
                                 <span @click="retry(job.id)" v-if="!hasCompleted(job)">
