@@ -20,7 +20,7 @@ class WorkerProcessTest extends IntegrationTest
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
-        usleep(250 * 1000);
+        sleep(1);
         $workerProcess->monitor();
 
         Event::assertDispatched(WorkerProcessRestarting::class);
@@ -35,7 +35,7 @@ class WorkerProcessTest extends IntegrationTest
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
-        usleep(250 * 1000);
+        sleep(1);
         $workerProcess->monitor();
         $workerProcess->monitor();
 
@@ -53,13 +53,14 @@ class WorkerProcessTest extends IntegrationTest
         });
 
         // Give process time to start...
-        usleep(250 * 1000);
+        sleep(1);
 
         // Should fail and set cooldown timestamp...
         $workerProcess->monitor();
         $this->assertTrue($workerProcess->coolingDown());
 
         // Travel to the future...
+        sleep(1);
         Chronos::setTestNow(Chronos::now()->addMinutes(3));
         $this->assertFalse($workerProcess->coolingDown());
 
