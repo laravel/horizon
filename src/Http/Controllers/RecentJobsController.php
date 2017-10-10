@@ -36,7 +36,7 @@ class RecentJobsController extends Controller
     public function index(Request $request)
     {
         $jobs = $this->jobs->getRecent($request->query('starting_at', -1))->map(function ($job) {
-            $job->payload = json_decode($job->payload);
+            $this->checkPayload($job);
 
             return $job;
         })->values();

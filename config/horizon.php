@@ -45,6 +45,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Payload Threshold
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to configure when the Job Payload will be truncated
+    | for reports. Size of payload is limited in bytes.
+    |
+    */
+
+    'payload' => 1000,
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Worker Configuration
     |--------------------------------------------------------------------------
     |
