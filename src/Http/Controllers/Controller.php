@@ -26,7 +26,10 @@ class Controller extends BaseController
         $payload_size = ini_get('mbstring.func_overload') ? mb_strlen($job->payload , '8bit') : strlen($job->payload);
         $job->payload = json_decode($job->payload);
         if($payload_size > config('horizon.payload')) {
-            $job->payload->data = 'Payload Size Exceeded';
+            $job->payload->data->command = serialize([
+                'command'=>$job->payload->data->commandName,
+                'payload'=>'Payload Size Exceeded'
+            ]);
         }
     }
 }
