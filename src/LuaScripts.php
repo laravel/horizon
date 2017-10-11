@@ -34,4 +34,20 @@ class LuaScripts
             redis.call('hmset', KEYS[1], 'throughput', throughput, 'runtime', runtime)
 LUA;
     }
+
+    /**
+     * Get the base snapshot data for a given key and remove it.
+     *
+     * KEYS[1] - The name of the key to snapshot
+     *
+     * @return string
+     */
+    public static function baseSnapshotData()
+    {
+        return <<<'LUA'
+            local hash = redis.call('hmget', KEYS[1], 'throughput', 'runtime')
+            redis.call('del', KEYS[1])
+            return hash
+LUA;
+    }
 }
