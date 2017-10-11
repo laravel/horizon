@@ -39,7 +39,7 @@ class RedisMetricsRepository implements MetricsRepository
         $classes = (array) $this->connection()->smembers('measured_jobs');
 
         return collect($classes)->map(function ($class) {
-            return substr($class, 12);
+            return preg_match('/job:(.*)$/', $class, $matches) ? $matches[1] : $class;
         })->all();
     }
 
@@ -53,7 +53,7 @@ class RedisMetricsRepository implements MetricsRepository
         $queues = (array) $this->connection()->smembers('measured_queues');
 
         return collect($queues)->map(function ($class) {
-            return substr($class, 14);
+            return preg_match('/queue:(.*)$/', $class, $matches) ? $matches[1] : $class;
         })->all();
     }
 
