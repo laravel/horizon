@@ -5,11 +5,11 @@ namespace Laravel\Horizon;
 class PhpBinary
 {
     /**
-     * Determine the proper PHP executable.
+     * Get the path to the PHP executable.
      *
      * @return string
      */
-    public static function getPath()
+    public static function path()
     {
         $escape = '\\' === DIRECTORY_SEPARATOR ? '"' : '\'';
 

@@ -14,7 +14,7 @@ class AddSupervisorTest extends IntegrationTest
     public function test_add_supervisor_command_creates_new_supervisor_on_master_process()
     {
         $master = new MasterSupervisor;
-        $phpBinary = PhpBinary::getPath();
+        $phpBinary = PhpBinary::path();
 
         $master->loop();
 

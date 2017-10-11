@@ -31,7 +31,7 @@ class SupervisorTest extends IntegrationTest
     {
         parent::setUp();
 
-        $this->phpBinary = PhpBinary::getPath();
+        $this->phpBinary = PhpBinary::path();
     }
 
     public function tearDown()

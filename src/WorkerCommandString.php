@@ -19,7 +19,7 @@ class WorkerCommandString
      */
     public static function fromOptions(SupervisorOptions $options)
     {
-        $command = str_replace('@php', PhpBinary::getPath(), static::$command);
+        $command = str_replace('@php', PhpBinary::path(), static::$command);
 
         return sprintf(
             "%s {$options->connection} %s",

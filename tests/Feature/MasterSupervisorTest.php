@@ -223,7 +223,7 @@ class MasterSupervisorTest extends IntegrationTest
     protected function options()
     {
         return tap(new SupervisorOptions(MasterSupervisor::name().':name', 'redis'), function ($options) {
-            $phpBinary = PhpBinary::getPath();
+            $phpBinary = PhpBinary::path();
             $options->directory = realpath(__DIR__.'/../');
 
             WorkerCommandString::$command = 'exec '.$phpBinary.' worker.php';
