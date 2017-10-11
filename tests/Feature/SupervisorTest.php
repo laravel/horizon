@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
 use Cake\Chronos\Chronos;
+use Laravel\Horizon\PhpBinary;
 use Laravel\Horizon\AutoScaler;
 use Laravel\Horizon\Supervisor;
 use Illuminate\Support\Facades\Event;
@@ -23,7 +24,15 @@ use Laravel\Horizon\Events\WorkerProcessRestarting;
 
 class SupervisorTest extends IntegrationTest
 {
+    public $phpBinary;
     public $supervisor;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->phpBinary = PhpBinary::getPath();
+    }
 
     public function tearDown()
     {
@@ -57,7 +66,7 @@ class SupervisorTest extends IntegrationTest
 
         $host = MasterSupervisor::name();
         $this->assertEquals(
-            'exec php worker.php redis --delay=0 --memory=128 --queue=default --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue=default --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
             $supervisor->processes()[0]->getCommandLine()
         );
     }
@@ -75,12 +84,12 @@ class SupervisorTest extends IntegrationTest
         $host = MasterSupervisor::name();
 
         $this->assertEquals(
-            'exec php worker.php redis --delay=0 --memory=128 --queue=first --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue=first --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
             $supervisor->processes()[0]->getCommandLine()
         );
 
         $this->assertEquals(
-            'exec php worker.php redis --delay=0 --memory=128 --queue=second --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue=second --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
             $supervisor->processes()[1]->getCommandLine()
         );
     }
@@ -465,7 +474,7 @@ class SupervisorTest extends IntegrationTest
     {
         return tap(new SupervisorOptions(MasterSupervisor::name().':name', 'redis'), function ($options) {
             $options->directory = realpath(__DIR__.'/../');
-            WorkerCommandString::$command = 'exec php worker.php';
+            WorkerCommandString::$command = 'exec '.$this->phpBinary.' worker.php';
         });
     }
 }
