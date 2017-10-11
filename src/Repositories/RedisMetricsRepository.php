@@ -310,13 +310,10 @@ class RedisMetricsRepository implements MetricsRepository
      */
     protected function baseSnapshotData($key)
     {
-        $responses = $this->connection()->transaction(function ($trans) use ($key) {
-            $trans->hmget($key, ['throughput', 'runtime']);
+        $response = $this->connection()->hmget($key, ['throughput', 'runtime']);
+        $this->connection()->del($key);
 
-            $trans->del($key);
-        });
-
-        $snapshot = array_values($responses[0]);
+        $snapshot = array_values($response);
 
         return [
             'throughput' => $snapshot[0],
