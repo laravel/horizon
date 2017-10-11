@@ -9,7 +9,7 @@ class WorkerCommandString
      *
      * @var string
      */
-    public static $command = 'exec php artisan horizon:work';
+    public static $command = 'exec @php artisan horizon:work';
 
     /**
      * Get the command-line representation of the options for a worker.
@@ -19,9 +19,11 @@ class WorkerCommandString
      */
     public static function fromOptions(SupervisorOptions $options)
     {
+        $command = str_replace('@php', PhpBinary::getPath(), static::$command);
+
         return sprintf(
             "%s {$options->connection} %s",
-            static::$command,
+            $command,
             static::toOptionsString($options)
         );
     }
@@ -46,6 +48,6 @@ class WorkerCommandString
      */
     public static function reset()
     {
-        static::$command = 'exec php artisan horizon:work';
+        static::$command = 'exec @php artisan horizon:work';
     }
 }

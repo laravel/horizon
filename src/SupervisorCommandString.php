@@ -9,7 +9,7 @@ class SupervisorCommandString
      *
      * @var string
      */
-    public static $command = 'exec php artisan horizon:supervisor';
+    public static $command = 'exec @php artisan horizon:supervisor';
 
     /**
      * Get the command-line representation of the options for a supervisor.
@@ -19,9 +19,11 @@ class SupervisorCommandString
      */
     public static function fromOptions(SupervisorOptions $options)
     {
+        $command = str_replace('@php', PhpBinary::getPath(), static::$command);
+
         return sprintf(
             "%s {$options->name} {$options->connection} %s",
-            static::$command,
+            $command,
             static::toOptionsString($options)
         );
     }
@@ -47,6 +49,6 @@ class SupervisorCommandString
      */
     public static function reset()
     {
-        static::$command = 'exec php artisan horizon:supervisor';
+        static::$command = 'exec @php artisan horizon:supervisor';
     }
 }

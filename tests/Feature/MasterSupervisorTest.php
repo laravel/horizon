@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
+use Laravel\Horizon\PhpBinary;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\SupervisorOptions;
@@ -222,8 +223,10 @@ class MasterSupervisorTest extends IntegrationTest
     protected function options()
     {
         return tap(new SupervisorOptions(MasterSupervisor::name().':name', 'redis'), function ($options) {
+            $phpBinary = PhpBinary::getPath();
             $options->directory = realpath(__DIR__.'/../');
-            WorkerCommandString::$command = 'exec php worker.php';
+
+            WorkerCommandString::$command = 'exec '.$phpBinary.' worker.php';
         });
     }
 }
