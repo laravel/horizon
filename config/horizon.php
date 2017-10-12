@@ -92,17 +92,4 @@ return [
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Route Prefix
-    |--------------------------------------------------------------------------
-    |
-    | This is the name of the route prefix, and will define the base URL
-    | where your installation of Horizon will live. If you would like
-    | Horizon to live at the webroot, you can use a forward slash.
-    |
-    */
-
-    'route' => 'horizon',
-
 ];
