@@ -25,7 +25,7 @@ class Lock
     }
 
     /**
-     * Execute the given callback if a lock can be aquired.
+     * Execute the given callback if a lock can be acquired.
      *
      * @param  string  $key
      * @param  \Closure  $callback
