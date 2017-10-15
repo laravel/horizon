@@ -147,7 +147,7 @@
                                 {{job.id}}<br>
                                 {{job.queue}}<br>
                                 {{job.payload.tags.length ? job.payload.tags.join(', ') : ''}}<br>
-                                {{this.formatDate(job.failed_at).format('YYYY-MM-DD HH:mm:ss')}}
+                                {{readableTimestamp(job.failed_at)}}
                             </div>
                         </div>
                         <div class="frame mb2 pb2 brdr1--bottom bcg1">
@@ -198,7 +198,7 @@
                                 </a>
                                 <span v-else>{{ retry.id }}</span>
                             </td>
-                            <td>{{formatDate(retry.retried_at).format('YYYY-MM-DD HH:mm:ss')}}</td>
+                            <td>{{readableTimestamp(retry.retried_at)}}</td>
                         </tr>
                         </tbody>
                     </table>
