@@ -1,0 +1,115 @@
+// Variables
+@import "variables";
+// Bootstrap
+@import "node_modules/bootstrap/scss/bootstrap";
+
+#mainHeader {
+    border-bottom: solid 1px #d8d8d8;
+}
+
+#mainFooter {
+    border-top: solid 1px #d8d8d8;
+}
+
+.card {
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .16);
+
+    .card-header {
+        padding: 1rem 1.25rem;
+        font-size: 1.3rem;
+    }
+}
+
+#mainSidebar {
+    a {
+        color: $gray-700;
+        padding: 0.5rem 0;
+    }
+
+    svg {
+        fill: $gray-500;
+    }
+
+    li.active {
+        a {
+            color: $primary;
+        }
+
+        svg {
+            fill: $primary;
+        }
+    }
+
+    i {
+        display: inline-flex;
+        align-self: center;
+        position: relative;
+        height: 1em;
+        width: 0.4em;
+        margin-right: 1.5rem;
+
+        svg {
+            bottom: -.3em;
+            position: absolute;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+    }
+}
+
+.stats {
+    overflow: scroll;
+
+    .stat {
+        border-right-style: solid;
+        border-right-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-color: #d8d8d8;
+
+        .stat-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: $gray-700;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+        }
+    }
+}
+
+.statusIcon {
+    > svg {
+        width: 1.5rem;
+        height: 1.5rem
+    }
+}
+
+.fill-success {
+    fill: $success;
+}
+
+.fill-danger {
+    fill: $danger;
+}
+
+.fill-warning {
+    fill: $warning;
+}
+
+.card-table {
+    margin:0;
+
+    th {
+        background-color: #ebecee;
+        vertical-align: middle;
+        font-weight: normal;
+        padding: 0.5rem 1.25rem;
+        border: 0;
+    }
+
+    td{
+        padding: 1.25rem;
+    }
+}

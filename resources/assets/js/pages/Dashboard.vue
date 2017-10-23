@@ -60,16 +60,16 @@
                 }
 
                 this.$http.get('/horizon/api/stats')
-                        .then(response => {
-                            this.stats = response.data;
+                    .then(response => {
+                        this.stats = response.data;
 
-                            if (_.values(response.data.wait)[0]) {
-                                this.stats.max_wait_time = _.values(response.data.wait)[0];
-                                this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1];
-                            }
+                        if (_.values(response.data.wait)[0]) {
+                            this.stats.max_wait_time = _.values(response.data.wait)[0];
+                            this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1];
+                        }
 
-                            this.loadingStats = false;
-                        });
+                        this.loadingStats = false;
+                    });
             },
 
 
@@ -82,11 +82,11 @@
                 }
 
                 this.$http.get('/horizon/api/masters')
-                        .then(response => {
-                            this.workers = response.data;
+                    .then(response => {
+                        this.workers = response.data;
 
-                            this.loadingWorkers = false;
-                        });
+                        this.loadingWorkers = false;
+                    });
             },
 
 
@@ -99,11 +99,11 @@
                 }
 
                 this.$http.get('/horizon/api/workload')
-                        .then(response => {
-                            this.workload = response.data;
+                    .then(response => {
+                        this.workload = response.data;
 
-                            this.loadingWorkload = false;
-                        });
+                        this.loadingWorkload = false;
+                    });
             },
 
 
@@ -152,155 +152,139 @@
 
 <template>
     <layout>
-        <section class="main-content">
-            <panel :loading="loadingStats" class="mb3">
-                <panel-heading>Overview</panel-heading>
+        <section class="mainContent">
+            <div class="card">
+                <div class="card-header">Overview</div>
 
-                <panel-content>
-                    <div class="stats">
-                        <div class="stat">
-                            <h2 class="stat-title">Jobs Per Minute</h2>
-                            <h3 class="stat-meta">&nbsp;</h3>
-                            <p class="stat-value">
-                                {{ stats.jobsPerMinute }}
-                            </p>
-                        </div>
-                        <div class="stat">
-                            <h2 class="stat-title">Jobs past hour</h2>
-                            <h3 class="stat-meta">&nbsp;</h3>
-                            <p class="stat-value">
-                                {{ stats.recentJobs }}
-                            </p>
-                        </div>
-                        <div class="stat">
-                            <h2 class="stat-title">Failed Jobs past hour</h2>
-                            <h3 class="stat-meta">&nbsp;</h3>
-                            <p class="stat-value">
-                                {{ stats.recentlyFailed }}
-                            </p>
-                        </div>
-                        <div class="stat stat-last">
-                            <h2 class="stat-title">Status</h2>
-                            <h3 class="stat-meta">&nbsp;</h3>
+                <div class="card-body p-0">
+                    <div class="container">
+                        <div class="stats row">
+                            <div class="stat col-3 p-4">
+                                <h2 class="stat-title">Jobs Per Minute</h2>
+                                <h3 class="stat-meta">&nbsp;</h3>
+                                <span class="stat-value">
+                                    {{ stats.jobsPerMinute }}
+                                </span>
+                            </div>
+                            <div class="stat col-3 p-4">
+                                <h2 class="stat-title">Jobs past hour</h2>
+                                <h3 class="stat-meta">&nbsp;</h3>
+                                <span class="stat-value">
+                                    {{ stats.recentJobs }}
+                                </span>
+                            </div>
+                            <div class="stat col-3 p-4">
+                                <h2 class="stat-title">Failed Jobs past hour</h2>
+                                <h3 class="stat-meta">&nbsp;</h3>
+                                <span class="stat-value">
+                                    {{ stats.recentlyFailed }}
+                                </span>
+                            </div>
+                            <div class="stat col-3 p-4 border-right-0">
+                                <h2 class="stat-title">Status</h2>
+                                <h3 class="stat-meta">&nbsp;</h3>
 
-                            <div class="df aic acc">
-                                <status :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr1.5"/>
-                                <span v-if="stats.status == 'running'" class="stat-value">
-                                  Active
+                                <div class="d-flex align-items-center">
+                                    <status :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr-2"/>
+                                    <span class="stat-value">
+                                      {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="stat col-3 p-4 border-bottom-0">
+                                <h2 class="stat-title">Total Processes</h2>
+                                <h3 class="state-meta">&nbsp;</h3>
+                                <span class="stat-value">
+                                    {{ stats.processes }}
                                 </span>
-                                <span v-else-if="stats.status == 'paused'" class="stat-value">
-                                  Paused
+                            </div>
+
+                            <div class="stat col-3 p-4 border-bottom-0">
+                                <h2 class="stat-title">Max Wait Time</h2>
+                                <h3 class="stat-meta">
+                                    {{ stats.max_wait_queue || '&nbsp;' }}
+                                </h3>
+                                <span class="stat-value">
+                                    {{ stats.max_wait_time ? stats.max_wait_time + 's' : '-' }}
                                 </span>
-                                <span v-else class="stat-value">
-                                  Inactive
+                            </div>
+
+                            <div class="stat col-3 p-4 border-bottom-0">
+                                <h2 class="stat-title">Max Runtime</h2>
+                                <h3 class="state-meta">&nbsp;</h3>
+                                <span class="stat-value">
+                                    {{ stats.queueWithMaxRuntime ? stats.queueWithMaxRuntime : '-' }}
+                                </span>
+                            </div>
+
+                            <div class="stat col-3 p-4 border-0">
+                                <h2 class="stat-title">Max Throughput</h2>
+                                <h3 class="state-meta">&nbsp;</h3>
+                                <span class="stat-value">
+                                    {{ stats.queueWithMaxThroughput ? stats.queueWithMaxThroughput : '-' }}
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="stats">
-                        <div class="stat">
-                            <h2 class="stat-title">Total Processes</h2>
-                            <h3 class="state-meta">&nbsp;</h3>
-                            <p class="stat-value">
-                                {{ stats.processes }}
-                            </p>
-                        </div>
-                        <div class="stat">
-                            <h2 class="stat-title">Max Wait Time</h2>
-                            <h3 class="stat-meta" v-if="stats.max_wait_time">
-                                {{ stats.max_wait_queue }}
-                            </h3>
-                            <p class="stat-value">
-                                {{ stats.max_wait_time ? stats.max_wait_time + 's' : '-' }}
-                            </p>
-                        </div>
-                        <div class="stat">
-                            <h2 class="stat-title">Max Runtime</h2>
-                            <h3 class="state-meta">&nbsp;</h3>
-                            <p class="stat-value">
-                                {{ stats.queueWithMaxRuntime ? stats.queueWithMaxRuntime : '-' }}
-                            </p>
-                        </div>
-                        <div class="stat stat-last">
-                            <h2 class="stat-title">Max Throughput</h2>
-                            <h3 class="state-meta">&nbsp;</h3>
-                            <p class="stat-value">
-                                {{ stats.queueWithMaxThroughput ? stats.queueWithMaxThroughput : '-' }}
-                            </p>
-                        </div>
-                    </div>
-                </panel-content>
-            </panel>
-
-            <div v-if="loadingWorkload">
-                <panel class="w100% df aic acc jcc pa8">
-                    <spinner/>
-                </panel>
-            </div>
-            <div v-if="workload.length">
-                <panel>
-                    <panel-heading>Current Workload</panel-heading>
-                    <panel-content>
-                        <table class="table panel-table" cellpadding="0" cellspacing="0">
-                            <thead>
-                            <tr>
-                                <th class="ph2">Queue</th>
-                                <th>Processes</th>
-                                <th>Jobs</th>
-                                <th>Wait</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="queue in workload">
-                                <td class="ph2">
-                                    <span class="fw7">{{ queue.name }}</span>
-                                </td>
-                                <td>{{ queue.processes }}</td>
-                                <td>{{ queue.length }}</td>
-                                <td>{{ humanTime(queue.wait) }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </panel-content>
-                </panel>
+                </div>
             </div>
 
-            <div v-if="loadingWorkers">
-                <panel class="w100% df aic acc jcc pa8">
-                    <spinner/>
-                </panel>
+            <div class="card mt-4" v-if="workload.length">
+                <div class="card-header">Current Workload</div>
+                <div class="table-responsive">
+                    <table class="table card-table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Queue</th>
+                            <th>Processes</th>
+                            <th>Jobs</th>
+                            <th>Wait</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="queue in workload">
+                            <td>
+                                <span>{{ queue.name }}</span>
+                            </td>
+                            <td>{{ queue.processes }}</td>
+                            <td>{{ queue.length }}</td>
+                            <td>{{ humanTime(queue.wait) }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div v-else>
-                <panel v-for="worker in workers" :key="worker.name">
-                    <panel-heading>{{ worker.name }}</panel-heading>
-                    <panel-content>
-                        <table class="table panel-table" cellpadding="0" cellspacing="0">
-                            <thead>
-                            <tr>
-                                <th class="ph2">Supervisor</th>
-                                <th>Processes</th>
-                                <th>Queues</th>
-                                <th>Balancing</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="supervisor in worker.supervisors">
-                                <td class="ph2">
-                                    <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
-                                </td>
-                                <td>{{ countProcesses(supervisor.processes) }}</td>
-                                <td>{{ supervisor.options.queue }}</td>
-                                <td>
-                                    <status :active="supervisor.options.balance"/>
-                                    <span v-if="supervisor.options.balance">
-                                        ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
-                                    </span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </panel-content>
-                </panel>
+
+            <div class="card mt-4" v-for="worker in workers" :key="worker.name">
+                <div class="card-header">{{ worker.name }}</div>
+                <div class="table-responsive">
+                    <table class="table card-table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Supervisor</th>
+                            <th>Processes</th>
+                            <th>Queues</th>
+                            <th>Balancing</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="supervisor in worker.supervisors">
+                            <td class="ph2">
+                                <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
+                            </td>
+                            <td>{{ countProcesses(supervisor.processes) }}</td>
+                            <td>{{ supervisor.options.queue }}</td>
+                            <td class="d-flex align-items-center">
+                                <status :active="supervisor.options.balance"  class="mr-2"/>
+                            <span v-if="supervisor.options.balance">
+                                ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                            </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     </layout>

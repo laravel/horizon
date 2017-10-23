@@ -4,6 +4,11 @@ import moment from 'moment';
 import router from './router/';
 import App from './components/App.vue';
 
+window.$ = window.jQuery = require('jquery');
+window.Popper = require('popper.js').default;
+
+require('bootstrap');
+
 Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
@@ -29,9 +34,7 @@ Vue.mixin({
 new Vue({
     el: '#root',
 
-
     router,
-
 
     /**
      * The component's data.
