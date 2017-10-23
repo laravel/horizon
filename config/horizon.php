@@ -91,15 +91,4 @@ return [
             ],
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Middleware Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define which middleware to apply to horizon routes. By
-    | default the standard web middleware is applied.
-    |
-    */
-    'middleware' => env('HORIZON_MIDDLEWARE', 'web'),
 ];
