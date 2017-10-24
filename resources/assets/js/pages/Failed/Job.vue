@@ -1,18 +1,13 @@
 <script type="text/ecmascript-6">
     import phpunserialize from 'phpunserialize'
     import Layout from '../../layouts/MainLayout.vue'
-    import Icon from '../../components/Icons/Icon.vue'
-    import Panel from '../../components/Panels/Panel.vue'
     import Status from '../../components/Status/Status.vue'
-    import Message from '../../components/Messages/Message.vue'
-    import PanelHeading from '../../components/Panels/PanelHeading.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue'
 
     export default {
         props: ['jobId'],
 
 
-        components: {Icon, Layout, Message, Panel, PanelContent, PanelHeading, Status},
+        components: {Layout, Status},
 
 
         /**
@@ -154,14 +149,14 @@
                             <div class="col-md-2"><strong>Tags</strong></div>
                             <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                         </div>
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-2"><strong>Failed At</strong></div>
                             <div class="col">{{readableTimestamp(job.failed_at)}}</div>
                         </div>
 
                         <hr>
 
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-2"><strong>Error</strong></div>
                             <div class="col">
                                 <div class="exceptionDisplay" v-html="prettyPrintException(job.exception)"></div>
@@ -170,7 +165,7 @@
 
                         <hr>
 
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-md-2"><strong>Data</strong></div>
                             <div class="col">
                                 <p class="jobDetailsText" v-html="prettyPrintJob(job.payload.data.command)"></p>

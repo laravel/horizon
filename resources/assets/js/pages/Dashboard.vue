@@ -2,14 +2,10 @@
     import _ from 'lodash';
     import moment from 'moment';
     import Layout from '../layouts/MainLayout.vue';
-    import Panel from '../components/Panels/Panel.vue';
     import Status from '../components/Status/Status.vue';
-    import Spinner from '../components/Loaders/Spinner.vue';
-    import PanelHeading from '../components/Panels/PanelHeading.vue';
-    import PanelContent from '../components/Panels/PanelContent.vue';
 
     export default {
-        components: {Layout, Spinner, Status, Panel, PanelContent, PanelHeading},
+        components: {Layout, Status},
 
 
         /**

@@ -1,15 +1,9 @@
 <script type="text/ecmascript-6">
     import moment from 'moment';
     import Layout from '../../layouts/MainLayout.vue'
-    import Icon from '../../components/Icons/Icon.vue'
-    import Panel from '../../components/Panels/Panel.vue'
-    import Spinner from '../../components/Loaders/Spinner.vue'
-    import Message from '../../components/Messages/Message.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue'
-    import PanelHeading from '../../components/Panels/PanelHeading.vue'
 
     export default {
-        components: {Layout, Panel, PanelContent, PanelHeading, Message, Icon, Spinner},
+        components: {Layout},
 
 
         /**
@@ -186,7 +180,7 @@
                         <tbody>
                         <tr v-for="job in jobs">
                             <td>
-                                <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" class="fw7">
+                                <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}">
                                     {{ job.name }}
                                 </router-link>
                             </td>

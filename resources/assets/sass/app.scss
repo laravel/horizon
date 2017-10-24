@@ -156,7 +156,7 @@
 .card-tabs {
     padding: 0 1.25rem;
 
-    .nav-item{
+    .nav-item {
         margin-right: 1.5rem;
     }
 
@@ -166,15 +166,14 @@
         padding: 0.8rem 0;
     }
 
-    .nav-link.active{
+    .nav-link.active {
         background-color: transparent;
         color: $primary;
         border-bottom: solid 2px $primary;
     }
 }
 
-
-@-webkit-keyframes spin /* Safari and Chrome */ {
+@-webkit-keyframes spin {
     from {
         -ms-transform: rotate(0deg);
         -moz-transform: rotate(0deg);
@@ -216,23 +215,19 @@
     animation: spin 2s linear infinite;
 }
 
-
-.exceptionDisplay{
-    span{
+.exceptionDisplay {
+    span {
         margin-bottom: 5px;
-        display:block;
+        display: block;
         background: #efefef;
         padding: 1px 3px;
     }
 }
 
-
 .jobDetailsText {
     overflow-wrap: break-word;
     word-wrap: break-word;
-    -ms-word-break: break-all;
     word-break: break-all;
-    word-break: break-word;
     -ms-hyphens: auto;
     -moz-hyphens: auto;
     -webkit-hyphens: auto;
@@ -240,9 +235,9 @@
     overflow-y: scroll;
     max-height: 400px;
 
-    span, pre{
+    span, pre {
         margin-bottom: 5px;
-        display:block;
+        display: block;
         background: #efefef;
         padding: 1px 3px;
     }

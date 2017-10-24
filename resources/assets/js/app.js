@@ -2,7 +2,7 @@ import Vue from 'vue';
 import _ from 'lodash';
 import axios from 'axios'
 import moment from 'moment';
-import router from './router/';
+import router from './router';
 import App from './components/App.vue';
 
 window.$ = window.jQuery = require('jquery');

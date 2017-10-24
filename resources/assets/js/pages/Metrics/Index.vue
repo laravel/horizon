@@ -1,13 +1,8 @@
 <script type="text/ecmascript-6">
-    import Tab from '../../components/Tabs/Tab.vue'
-    import Tabs from '../../components/Tabs/Tabs.vue'
-    import Panel from '../../components/Panels/Panel.vue'
     import Layout from '../../layouts/MainLayout.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue'
-    import PanelHeading from '../../components/Panels/PanelHeading.vue'
 
     export default {
-        components: {Layout, Panel, PanelContent, PanelHeading, Tab, Tabs},
+        components: {Layout},
 
 
         /**
@@ -22,22 +17,20 @@
 <template>
     <layout>
         <section class="main-content">
-            <panel>
-                <panel-heading>Metrics</panel-heading>
+            <div class="card">
+                <div class="card-header">Metrics</div>
 
-                <panel-content>
-                    <tabs>
-                        <tab>
-                            <router-link to="/metrics/jobs" active-class="tab-link-active" class="tab-link">Jobs</router-link>
-                        </tab>
-                        <tab>
-                            <router-link to="/metrics/queues" active-class="tab-link-active" class="tab-link">Queues</router-link>
-                        </tab>
-                    </tabs>
+                <ul class="nav nav-tabs card-tabs">
+                    <li class="nav-item">
+                        <router-link to="/metrics/jobs" active-class="active" class="nav-link">Jobs</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link to="/metrics/queues" active-class="active" class="nav-link">Queues</router-link>
+                    </li>
+                </ul>
 
-                    <router-view/>
-                </panel-content>
-            </panel>
+                <router-view/>
+            </div>
         </section>
     </layout>
 </template>

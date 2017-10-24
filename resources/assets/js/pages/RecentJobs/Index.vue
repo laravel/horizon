@@ -1,12 +1,9 @@
 <script type="text/ecmascript-6">
     import Layout from '../../layouts/MainLayout.vue'
-    import Panel from '../../components/Panels/Panel.vue'
     import JobTable from './Jobs.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue'
-    import PanelHeading from '../../components/Panels/PanelHeading.vue'
 
     export default {
-        components: {JobTable, Layout, Panel, PanelContent, PanelHeading},
+        components: {JobTable, Layout},
 
 
         /**
@@ -21,13 +18,11 @@
 <template>
     <layout>
         <section class="main-content">
-            <panel>
-                <panel-heading>Recent Jobs</panel-heading>
+            <div class="card">
+                <div class="card-header">Recent Jobs</div>
 
-                <panel-content>
-                    <job-table/>
-                </panel-content>
-            </panel>
+                <job-table/>
+            </div>
         </section>
     </layout>
 </template>

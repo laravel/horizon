@@ -1,6 +1,6 @@
 <script type="text/ecmascript-6">
     import Status from '../components/Status/Status.vue'
-    import MainSidebar from '../partials/MainSidebar.vue'
+    import MainSidebar from './MainSidebar.vue'
 
     export default {
         components: {Status, MainSidebar}

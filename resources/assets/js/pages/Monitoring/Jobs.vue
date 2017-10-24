@@ -1,12 +1,10 @@
 <script type="text/ecmascript-6">
     import Status from '../../components/Status/Status.vue'
-    import Spinner from '../../components/Loaders/Spinner.vue'
-    import Message from '../../components/Messages/Message.vue'
 
     export default {
         props: ['type'],
 
-        components: {Status, Message, Spinner},
+        components: {Status},
 
         /**
          * The component's data.
