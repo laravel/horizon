@@ -42,6 +42,8 @@
 
 <template>
     <div class="table-responsive">
+        <loader :yes="loadingJobs"/>
+
         <p class="text-center m-0 p-5" v-if="!loadingJobs && !jobs.length">
             There aren't any jobs.
         </p>

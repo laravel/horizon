@@ -118,6 +118,8 @@
 </script>
 <template>
     <div class="table-responsive">
+        <loader :yes="loadState[type]"/>
+
         <p class="text-center m-0 p-5" v-if="!loadState[type] && !jobs[type].length">
             There aren't any recent jobs for this tag.
         </p>

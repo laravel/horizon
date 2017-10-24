@@ -112,6 +112,8 @@
 
 <template>
     <div class="table-responsive">
+        <loader :yes="loadState"/>
+
         <p class="text-center m-0 p-5" v-if="!loadState && !jobs.length">
             There aren't any recent jobs.
         </p>

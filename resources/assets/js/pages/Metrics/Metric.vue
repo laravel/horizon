@@ -106,6 +106,8 @@
             <div class="card mb-4">
                 <div class="card-header">Throughput - {{slug}}</div>
                 <div class="card-body">
+                    <loader :yes="loading"/>
+
                     <p class="text-center m-0 p-5" v-if="!loading && !rawData.length">
                         Not Enough Data
                     </p>
@@ -117,6 +119,8 @@
             <div class="card">
                 <div class="card-header">Runtime - {{slug}}</div>
                 <div class="card-body">
+                    <loader :yes="loading"/>
+
                     <p class="text-center m-0 p-5" v-if="!loading && !rawData.length">
                         Not Enough Data
                     </p>

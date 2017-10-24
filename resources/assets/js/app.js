@@ -14,6 +14,8 @@ Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
 
+Vue.component('loader', require('./components/Status/Loader.vue'));
+
 Vue.mixin({
     methods: {
         /**
