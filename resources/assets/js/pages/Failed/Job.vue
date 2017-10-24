@@ -52,11 +52,11 @@
                 this.loadingJob = true;
 
                 this.$http.get('/horizon/api/jobs/failed/' + id)
-                        .then(response => {
-                            this.job = response.data;
+                    .then(response => {
+                        this.job = response.data;
 
-                            this.loadingJob = false;
-                        });
+                        this.loadingJob = false;
+                    });
             },
 
 
@@ -65,10 +65,10 @@
              */
             reloadRetries() {
                 this.$http.get('/horizon/api/jobs/failed/' + this.jobId)
-                        .then(response => {
-                            this.job.retried_by = response.data.retried_by;
+                    .then(response => {
+                        this.job.retried_by = response.data.retried_by;
 
-                        });
+                    });
             },
 
 
@@ -83,13 +83,13 @@
                 this.retryingJob = true;
 
                 this.$http.post('/horizon/api/jobs/retry/' + id)
-                        .then(() => {
-                            setTimeout(() => {
-                                this.reloadRetries();
+                    .then(() => {
+                        setTimeout(() => {
+                            this.reloadRetries();
 
-                                this.retryingJob = false;
-                            }, 3000);
-                        });
+                            this.retryingJob = false;
+                        }, 3000);
+                    });
             },
 
 
@@ -98,7 +98,7 @@
              */
             prettyPrintException(exception){
                 var lines = _.split(exception, "\n"),
-                        output = '';
+                    output = '';
 
                 lines.forEach(line => {
                     output += '<span>' + line + '</span>';
@@ -124,73 +124,79 @@
 <template>
     <layout>
         <section class="main-content">
-            <panel :loading="loadingJob">
-                <panel-heading>
-                    {{job.name}}
-                    <button @click="retry(job.id)" class="btn btn-primary btn-md">
-                        <icon icon="refresh" size="sm" color="fw" class="ico-baseline mr0.5"
-                              :spin="retryingJob"/>
-                        Retry
-                    </button>
-                </panel-heading>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-7">{{job.name}}</div>
+                        <div class="col-md-5 text-right">
+                            <button @click="retry(job.id)" class="btn btn-primary btn-sm">
+                                <i class="icon-sm">
+                                    <svg class="fill-white" :class="{spin: retryingJob}">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"></use>
+                                    </svg>
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-                <panel-content>
-                    <div class="pa2" v-if="job.id">
-                        <div class="frame mb2 pb2 brdr1--bottom bcg1">
-                            <div class="blk2 ft15 lh2 basic-text tar">
-                                ID<br>
-                                On<br>
-                                Tags<br>
-                                Failed Time
-                            </div>
-                            <div class="blk9 ft15 lh2 basic-text">
-                                {{job.id}}<br>
-                                {{job.queue}}<br>
-                                {{job.payload.tags.length ? job.payload.tags.join(', ') : ''}}<br>
-                                {{readableTimestamp(job.failed_at)}}
+                <div class="card-body">
+                    <div v-if="job.id">
+                        <div class="row mb-2">
+                            <div class="col-md-2"><strong>ID</strong></div>
+                            <div class="col">{{job.id}}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2"><strong>Queue</strong></div>
+                            <div class="col">{{job.queue}}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2"><strong>Tags</strong></div>
+                            <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2"><strong>Failed At</strong></div>
+                            <div class="col">{{readableTimestamp(job.failed_at)}}</div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row mb-2">
+                            <div class="col-md-2"><strong>Error</strong></div>
+                            <div class="col">
+                                <div class="exceptionDisplay" v-html="prettyPrintException(job.exception)"></div>
                             </div>
                         </div>
-                        <div class="frame mb2 pb2 brdr1--bottom bcg1">
-                            <div class="blk2 ft15 lh2 basic-text tar">
-                                Error
-                            </div>
-                            <div class="blk9">
-                                <p class="basic-text ft14 lh1.5 jobDetailsText"
-                                   v-html="prettyPrintException(job.exception)"></p>
-                            </div>
-                        </div>
-                        <div class="frame">
-                            <div class="blk2 ft15 lh2 basic-text tar">
-                                Data
-                            </div>
-                            <div class="blk9">
-                                <p class="basic-text ft14 lh1.5 jobDetailsText"
-                                   v-html="prettyPrintJob(job.payload.data.command)"></p>
+
+                        <hr>
+
+                        <div class="row mb-2">
+                            <div class="col-md-2"><strong>Data</strong></div>
+                            <div class="col">
+                                <p class="jobDetailsText" v-html="prettyPrintJob(job.payload.data.command)"></p>
                             </div>
                         </div>
                     </div>
-                </panel-content>
-            </panel>
+                </div>
+            </div>
 
-            <panel v-if="!loadingJob && job.retried_by.length">
-                <panel-heading>Recent Retries</panel-heading>
+            <div class="card mt-4" v-if="!loadingJob && job.retried_by.length">
+                <div class="card-header">Recent Retries</div>
 
-                <panel-content>
-                    <table class="table panel-table" cellpadding="0" cellspacing="0">
+                <div class="table-responsive">
+                    <table class="table card-table table-hover">
                         <thead>
                         <tr>
-                            <th class="pl2">Job</th>
+                            <th>Job</th>
                             <th>ID</th>
                             <th>Retry Time</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="retry in job.retried_by">
-                            <td class="ph2">
-                                <div class="df aic acc">
-                                    <status :active="retry.status == 'completed'" :pending="retry.status == 'pending'" class="mr1"/>
-                                    {{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}
-                                </div>
+                            <td class="d-flex">
+                                <status :active="retry.status == 'completed'" :pending="retry.status == 'pending'" class="mr-2"/>
+                                {{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}
                             </td>
                             <td>
                                 <a v-if="retry.status == 'failed'" :href="'/horizon/failed/'+retry.id">
@@ -204,8 +210,8 @@
                     </table>
 
                     <message v-if="!job.retried_by" text="There aren't any recent retries for this job"/>
-                </panel-content>
-            </panel>
+                </div>
+            </div>
         </section>
     </layout>
 </template>

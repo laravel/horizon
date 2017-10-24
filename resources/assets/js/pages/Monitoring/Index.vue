@@ -1,13 +1,9 @@
 <script type="text/ecmascript-6">
     import Layout from '../../layouts/MainLayout.vue'
-    import Panel from '../../components/Panels/Panel.vue'
-    import Message from '../../components/Messages/Message.vue'
-    import AddTagModal from '../../components/Modals/AddTagModal.vue'
-    import PanelHeading from '../../components/Panels/PanelHeading.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue'
+    import AddTagModal from './AddTagModal.vue'
 
     export default {
-        components: {Message, Layout, Panel, PanelContent, PanelHeading, AddTagModal},
+        components: {Layout, AddTagModal},
 
 
         /**
@@ -16,6 +12,7 @@
         data() {
             return {
                 loadingTags: true,
+                addTagModalOpened: false,
                 tags: []
             };
         },
@@ -29,7 +26,15 @@
 
             this.loadTags();
 
-            Bus.$on('tagAdded', data => this.startMonitoringTag(data.tag));
+            Bus.$on('tagAdded', data => {
+                this.addTagModalOpened = false;
+
+                this.tags.push({tag: data.tag, count: 0});
+            });
+
+            Bus.$on('addTagModalClosed', data => {
+                this.addTagModalOpened = false;
+            });
         },
 
 
@@ -41,11 +46,11 @@
                 this.loadingTags = true;
 
                 this.$http.get('/horizon/api/monitoring')
-                        .then(response => {
-                            this.tags = response.data;
+                    .then(response => {
+                        this.tags = response.data;
 
-                            this.loadingTags = false;
-                        });
+                        this.loadingTags = false;
+                    });
             },
 
 
@@ -53,26 +58,17 @@
              * Open the modal for adding a new tag.
              */
             openTagModal() {
-                this.$root.showModal = true;
+                this.addTagModalOpened = true;
             },
-
-
-            /**
-             * Start monitoring a new tag.
-             */
-            startMonitoringTag(tag){
-                this.tags.push({tag: tag, count: 0});
-            },
-
 
             /**
              * Stop monitoring the given tag.
              */
             stopMonitoring(tag) {
                 this.$http.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
-                        .then(() => {
-                            this.tags = _.reject(this.tags, existing => existing.tag == tag)
-                        })
+                    .then(() => {
+                        this.tags = _.reject(this.tags, existing => existing.tag == tag)
+                    })
             }
         }
     }
@@ -81,19 +77,21 @@
 <template>
     <layout>
         <section class="main-content">
-            <panel>
-                <panel-heading>
-                    Monitoring
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <span class="mr-auto">Monitoring</span>
                     <button @click="openTagModal" class="btn btn-primary btn-md">Monitor Tag</button>
-                </panel-heading>
+                </div>
 
-                <panel-content :loading="loadingTags">
-                    <message v-if="!tags.length" text="You're not monitoring any tags."/>
+                <div class="table-responsive">
+                    <p class="text-center m-0 p-5" v-if="!tags.length">
+                        You're not monitoring any tags.
+                    </p>
 
-                    <table v-else class="table panel-table" cellpadding="0" cellspacing="0">
+                    <table v-else class="table card-table table-hover">
                         <thead>
                         <tr>
-                            <th class="ph2" width="400">Tag Name</th>
+                            <th>Tag Name</th>
                             <th>Jobs</th>
                             <th></th>
                         </tr>
@@ -101,22 +99,22 @@
 
                         <tbody>
                         <tr v-for="tag in tags">
-                            <td class="ph2">
+                            <td>
                                 <router-link :to="{ name: 'monitoring.detail.index', params: { tag:tag.tag }}"
                                              href="#" class="fw7">{{ tag.tag }}
                                 </router-link>
                             </td>
                             <td>{{ tag.count }}</td>
-                            <td>
-                                <button @click="stopMonitoring(tag.tag)" class="btn btn-primary btn-md">Stop Monitoring</button>
+                            <td class="text-right">
+                                <button @click="stopMonitoring(tag.tag)" class="btn btn-secondary">Stop Monitoring</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                </panel-content>
-            </panel>
+                </div>
+            </div>
         </section>
 
-        <add-tag-modal/>
+        <add-tag-modal v-if="addTagModalOpened"/>
     </layout>
 </template>

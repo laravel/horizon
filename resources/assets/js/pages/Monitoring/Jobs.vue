@@ -67,15 +67,15 @@
                 tag = this.type == 'failed' ? 'failed:' + tag : tag;
 
                 return this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
-                        .then(response => {
-                            this.jobs[this.type] = response.data.jobs;
+                    .then(response => {
+                        this.jobs[this.type] = response.data.jobs;
 
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
+                        this.totalPages = Math.ceil(response.data.total / this.perPage);
 
-                            this.loadState[this.type] = false;
+                        this.loadState[this.type] = false;
 
-                            return response.data.jobs;
-                        });
+                        return response.data.jobs;
+                    });
             },
 
 
@@ -98,7 +98,7 @@
              */
             previous() {
                 this.loadJobs(this.$route.params.tag,
-                        (this.page - 2) * this.perPage
+                    (this.page - 2) * this.perPage
                 );
 
                 this.page -= 1;
@@ -110,7 +110,7 @@
              */
             next() {
                 this.loadJobs(this.$route.params.tag,
-                        this.page * this.perPage
+                    this.page * this.perPage
                 );
 
                 this.page += 1;
@@ -119,17 +119,15 @@
     }
 </script>
 <template>
-    <div>
-        <div v-if="loadState[type]" style="text-align: center; margin: 50px;">
-            <spinner/>
-        </div>
+    <div class="table-responsive">
+        <p class="text-center m-0 p-5" v-if="!loadState[type] && !jobs[type].length">
+            There aren't any recent jobs for this tag.
+        </p>
 
-        <message v-if="!loadState[type] && !jobs[type].length" text="There aren't any recent jobs for this tag."/>
-
-        <table v-if="! loadState[type] && jobs[type].length" class="table panel-table" cellpadding="0" cellspacing="0">
+        <table v-if="!loadState[type] && jobs[type].length" class="table card-table table-hover">
             <thead>
             <tr>
-                <th class="pl2">Job</th>
+                <th>Job</th>
                 <th>On</th>
                 <th>Tags</th>
                 <th v-if="type == 'index'">Queued At</th>
@@ -140,7 +138,7 @@
             </thead>
             <tbody>
             <tr v-for="job in jobs[type]">
-                <td class="ph2">
+                <td>
                     <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
                     <span v-else>{{ job.name }}</span>
                 </td>
@@ -163,8 +161,7 @@
             </tbody>
         </table>
 
-
-        <div v-if="! loadState[type]" class="simple-pagination">
+        <div v-if="!loadState[type] && jobs[type].length" class="p-3 mt-3 d-flex justify-content-between">
             <button @click="previous" class="btn btn-primary btn-md" :disabled="page==1">Previous</button>
             <button @click="next" class="btn btn-primary btn-md" :disabled="page>=totalPages">Next</button>
         </div>

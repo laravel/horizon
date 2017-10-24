@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import _ from 'lodash';
 import axios from 'axios'
 import moment from 'moment';
 import router from './router/';
@@ -22,11 +23,24 @@ Vue.mixin({
             return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
         },
 
+
         /**
          * Convert to human readable timestamp.
          */
         readableTimestamp(timestamp){
             return this.formatDate(timestamp).format('YY-MM-DD HH:mm:ss');
+        },
+
+
+        /**
+         * Convert to human readable timestamp.
+         */
+        displayableTagsList(tags){
+            if (!tags.length) return '';
+
+            return _.reduce(tags, (s, n)=> {
+                return (s ? ', ' : '')+_.truncate(n);
+            }, '');
         }
     }
 });
@@ -40,9 +54,7 @@ new Vue({
      * The component's data.
      */
     data() {
-        return {
-            showModal: false
-        }
+        return {}
     },
 
     render: h => h(App),

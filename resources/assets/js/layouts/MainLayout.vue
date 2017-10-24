@@ -19,11 +19,11 @@
 
         <main class="mt-4 mb-4">
             <div class="row">
-                <div class="col">
+                <div class="col-md-2">
                     <main-sidebar/>
                 </div>
 
-                <div class="col-10">
+                <div class="col-md-10">
                     <slot/>
                 </div>
             </div>

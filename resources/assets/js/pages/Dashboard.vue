@@ -277,9 +277,9 @@
                             <td>{{ supervisor.options.queue }}</td>
                             <td class="d-flex align-items-center">
                                 <status :active="supervisor.options.balance"  class="mr-2"/>
-                            <span v-if="supervisor.options.balance">
-                                ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
-                            </span>
+                                <span v-if="supervisor.options.balance">
+                                    ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                                </span>
                             </td>
                         </tr>
                         </tbody>
