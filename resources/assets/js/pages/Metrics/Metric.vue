@@ -2,17 +2,13 @@
     import _ from 'lodash';
     import moment from 'moment';
     import Layout from '../../layouts/MainLayout.vue';
-    import Panel from '../../components/Panels/Panel.vue';
     import LineChart from '../../components/Charts/LineChart';
-    import Message from '../../components/Messages/Message.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue';
-    import PanelHeading from '../../components/Panels/PanelHeading.vue';
 
     export default {
         props: ['type', 'slug'],
 
 
-        components: {Message, Layout, LineChart, Panel, PanelContent, PanelHeading},
+        components: {Layout, LineChart},
 
 
         /**
@@ -43,17 +39,17 @@
                 this.loading = true;
 
                 this.$http.get('/horizon/api/metrics/' + this.type + '/' + encodeURIComponent(this.slug))
-                        .then(response => {
-                            let data = this.prepareData(response.data);
+                    .then(response => {
+                        let data = this.prepareData(response.data);
 
-                            this.rawData = response.data;
+                        this.rawData = response.data;
 
-                            this.metric.throughPutChart = this.buildChartData(data, 'throughput', 'Times');
+                        this.metric.throughPutChart = this.buildChartData(data, 'throughput', 'Times');
 
-                            this.metric.runTimeChart = this.buildChartData(data, 'runtime', 'Seconds');
+                        this.metric.runTimeChart = this.buildChartData(data, 'runtime', 'Seconds');
 
-                            this.loading = false;
-                        });
+                        this.loading = false;
+                    });
             },
 
 
@@ -62,22 +58,22 @@
              */
             prepareData(data){
                 return _.chain(data)
-                        .map(value => {
-                            value.time = this.formatDate(value.time).format("hh:mmA");
+                    .map(value => {
+                        value.time = this.formatDate(value.time).format("hh:mmA");
 
-                            return value;
+                        return value;
+                    })
+                    .groupBy(value => value.time)
+                    .map(value => {
+                        return _.reduce(value, (sum, value) => {
+                            return {
+                                runtime: parseInt(sum.runtime) + parseInt(value.runtime),
+                                throughput: parseInt(sum.throughput) + parseInt(value.throughput),
+                                time: value.time
+                            };
                         })
-                        .groupBy(value => value.time)
-                        .map(value => {
-                            return _.reduce(value, (sum, value) => {
-                                return {
-                                    runtime: parseInt(sum.runtime) + parseInt(value.runtime),
-                                    throughput: parseInt(sum.throughput) + parseInt(value.throughput),
-                                    time: value.time
-                                };
-                            })
-                        })
-                        .value();
+                    })
+                    .value();
             },
 
 
@@ -107,23 +103,31 @@
 <template>
     <layout>
         <section class="main-content">
-            <panel :loading="loading">
-                <panel-heading>Throughput - {{slug}}</panel-heading>
-                <panel-content>
-                    <message v-if="!loading && !rawData.length" text="Not Enough Data."/>
+            <div class="card mb-4">
+                <div class="card-header">Throughput - {{slug}}</div>
+                <div class="card-body">
+                    <loader :yes="loading"/>
+
+                    <p class="text-center m-0 p-5" v-if="!loading && !rawData.length">
+                        Not Enough Data
+                    </p>
 
                     <line-chart v-if="!loading && rawData.length" :chart-data="metric.throughPutChart" id="throughPutChart" :width="400" :height="150"/>
-                </panel-content>
-            </panel>
+                </div>
+            </div>
 
-            <panel :loading="loading">
-                <panel-heading>Runtime - {{slug}}</panel-heading>
-                <panel-content>
-                    <message v-if="!loading && !rawData.length" text="Not Enough Data."/>
+            <div class="card">
+                <div class="card-header">Runtime - {{slug}}</div>
+                <div class="card-body">
+                    <loader :yes="loading"/>
+
+                    <p class="text-center m-0 p-5" v-if="!loading && !rawData.length">
+                        Not Enough Data
+                    </p>
 
                     <line-chart v-if="!loading && rawData.length" :chart-data="metric.runTimeChart" id="runTimeChart" :width="400" :height="150"/>
-                </panel-content>
-            </panel>
+                </div>
+            </div>
         </section>
     </layout>
 </template>

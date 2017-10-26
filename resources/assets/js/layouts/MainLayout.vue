@@ -1,31 +1,37 @@
 <script type="text/ecmascript-6">
     import Status from '../components/Status/Status.vue'
-    import MainHeader from '../partials/MainHeader.vue'
-    import MainFooter from '../partials/MainFooter.vue'
-    import MainSidebar from '../partials/MainSidebar.vue'
+    import MainSidebar from './MainSidebar.vue'
 
     export default {
-        components: {Status, MainHeader, MainFooter, MainSidebar}
+        components: {Status, MainSidebar}
     }
 </script>
 
 <template>
-    <div>
-        <main-header>
-            <div class="df aic acc">
-                <p class="h34 df aic acc ft14 tcg7 uppercase"></p>
+    <div class="container">
+        <div id="mainHeader" class="pt-4 pb-4">
+            <div class="row">
+                <div class="col">
+                    <img src="/vendor/horizon/img/horizon.svg">
+                </div>
             </div>
-        </main-header>
+        </div>
 
-        <main>
-            <div class="wrapper df">
-                <main-sidebar/>
+        <main class="mt-4 mb-4">
+            <div class="row">
+                <div class="col-md-2">
+                    <main-sidebar/>
+                </div>
 
-                <slot/>
+                <div class="col-md-10">
+                    <slot/>
+                </div>
             </div>
         </main>
 
-        <main-footer/>
+        <footer id="mainFooter" class="pt-4 pb-4 text-center">
+            Laravel is a trademark of Taylor Otwell. Copyright © Laravel LLC. All rights reserved.
+        </footer>
     </div>
 </template>
 

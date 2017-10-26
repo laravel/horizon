@@ -1,38 +1,30 @@
 <script type="text/ecmascript-6">
-    import Tab from '../../components/Tabs/Tab.vue'
-    import Tabs from '../../components/Tabs/Tabs.vue'
     import Layout from '../../layouts/MainLayout.vue'
-    import Panel from '../../components/Panels/Panel.vue'
-    import Spinner from '../../components/Loaders/Spinner.vue'
-    import PanelHeading from '../../components/Panels/PanelHeading.vue'
-    import PanelContent from '../../components/Panels/PanelContent.vue'
 
     export default {
-        components: {Layout, Panel, PanelContent, PanelHeading, Tab, Tabs, Spinner}
+        components: {Layout}
     }
 </script>
 
 <template>
     <layout>
         <section class="main-content">
-            <panel>
-                <panel-heading>
+            <div class="card">
+                <div class="card-header">
                     Recent Jobs for "{{ $route.params.tag }}"
-                </panel-heading>
+                </div>
 
-                <panel-content>
-                    <tabs>
-                        <tab>
-                            <router-link :to="{ name: 'monitoring.detail.index', params: { tag: $route.params.tag }}" exact active-class="tab-link-active" class="tab-link">All</router-link>
-                        </tab>
-                        <tab>
-                            <router-link :to="{ name: 'monitoring.detail.failed', params: { tag: $route.params.tag }}" active-class="tab-link-active" class="tab-link">Failed</router-link>
-                        </tab>
-                    </tabs>
+                <ul class="nav nav-tabs card-tabs">
+                    <li class="nav-item">
+                        <router-link :to="{ name: 'monitoring.detail.index', params: { tag: $route.params.tag }}" exact active-class="active" class="nav-link">All</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link :to="{ name: 'monitoring.detail.failed', params: { tag: $route.params.tag }}" active-class="active" class="nav-link">Failed</router-link>
+                    </li>
+                </ul>
 
-                    <router-view/>
-                </panel-content>
-            </panel>
+                <router-view/>
+            </div>
         </section>
     </layout>
 </template>

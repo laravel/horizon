@@ -15,7 +15,7 @@ const webpack = require('webpack');
 mix
     .setPublicPath('public')
     .js('resources/assets/js/app.js', 'public/js')
-    .less('resources/assets/less/app.less', 'public/css')
+    .sass('resources/assets/sass/app.scss', 'public/css')
     .copy('resources/assets/img', 'public/img')
     .sourceMaps()
     .copy('public', '../../laravelhorizon/public/vendor/horizon')

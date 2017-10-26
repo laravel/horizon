@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import Chart from 'chart.js';
-import {mergeOptions} from '../../../helpers/options';
+import merge from 'lodash/fp/merge';
 
 export default Vue.extend({
     props: {
@@ -80,7 +80,7 @@ export default Vue.extend({
             Chart.defaults.global.layout.padding = 40;
             Chart.defaults.global.legend.display = false;
 
-            const chartOptions = mergeOptions(this.defaultOptions, options);
+            const chartOptions = merge(this.defaultOptions, options);
 
             this._chart = new Chart(this.$refs.canvas.getContext('2d'), {
                 type: 'line',

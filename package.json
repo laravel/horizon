@@ -1,29 +1,31 @@
 {
-  "private": true,
-  "scripts": {
-    "dev": "npm run development",
-    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch-poll": "npm run watch -- --watch-poll",
-    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "prod": "npm run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
-  },
-  "dependencies": {
-    "axios": "^0.15.3",
-    "chart.js": "^2.5.0",
-    "jquery": "^3.1.0",
-    "less": "^2.7.2",
-    "less-loader": "^4.0.5",
-    "lodash": "^4.16.2",
-    "moment": "^2.10.6",
-    "phpunserialize": "1.*",
-    "vue": "^2.2.0",
-    "vue-router": "^2.2.0"
-  },
-  "devDependencies": {
-    "cross-env": "^5.0.1",
-    "es6-promise": "^4.0.5",
-    "laravel-mix": "^1.4.2"
-  }
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "dependencies": {
+        "axios": "^0.15.3",
+        "bootstrap": "^4.0.0-beta.2",
+        "chart.js": "^2.5.0",
+        "jquery": "^3.1.0",
+        "less": "^3.0.0-alpha.3",
+        "less-loader": "^4.0.5",
+        "lodash": "^4.16.2",
+        "moment": "^2.10.6",
+        "phpunserialize": "1.*",
+        "popper.js": "^1.12",
+        "vue": "^2.2.0",
+        "vue-router": "^2.2.0"
+    },
+    "devDependencies": {
+        "cross-env": "^5.0.1",
+        "es6-promise": "^4.0.5",
+        "laravel-mix": "^1.4.2"
+    }
 }

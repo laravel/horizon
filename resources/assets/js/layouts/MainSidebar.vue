@@ -1,7 +1,7 @@
 <template>
-    <aside class="main-sidebar">
-        <ul class="nav">
-            <router-link tag="li" to="/dashboard" active-class="nav-item-active" class="nav-item">
+    <aside id="mainSidebar">
+        <ul class="nav flex-column">
+            <router-link tag="li" to="/dashboard" active-class="active" class="nav-item">
                 <a class="nav-link">
                     <i>
                         <svg>
@@ -13,7 +13,7 @@
                 </a>
             </router-link>
 
-            <router-link tag="li" to="/monitoring" active-class="nav-item-active" class="nav-item">
+            <router-link tag="li" to="/monitoring" active-class="active" class="nav-item">
                 <a class="nav-link">
                     <i>
                         <svg>
@@ -25,7 +25,7 @@
                 </a>
             </router-link>
 
-            <router-link tag="li" to="/metrics" active-class="nav-item-active" class="nav-item">
+            <router-link tag="li" to="/metrics" active-class="active" class="nav-item">
                 <a href="#" class="nav-link">
                     <i>
                         <svg>
@@ -37,7 +37,7 @@
                 </a>
             </router-link>
 
-            <router-link tag="li" to="/recent-jobs" active-class="nav-item-active" class="nav-item">
+            <router-link tag="li" to="/recent-jobs" active-class="active" class="nav-item">
                 <a href="#" class="nav-link">
                     <i>
                         <svg>
@@ -49,7 +49,7 @@
                 </a>
             </router-link>
 
-            <router-link tag="li" to="/failed" active-class="nav-item-active" class="nav-item">
+            <router-link tag="li" to="/failed" active-class="active" class="nav-item">
                 <a href="#" class="nav-link">
                     <i>
                         <svg>

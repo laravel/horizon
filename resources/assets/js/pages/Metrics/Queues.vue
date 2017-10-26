@@ -1,9 +1,6 @@
 <script type="text/ecmascript-6">
-    import Spinner from '../../components/Loaders/Spinner.vue'
-    import Message from '../../components/Messages/Message.vue'
-
     export default {
-        components: {Message, Spinner},
+        components: {},
 
 
         /**
@@ -45,22 +42,22 @@
 
 <template>
     <div>
-        <div v-if="loadingJobs" style="text-align: center; margin: 50px;">
-            <spinner/>
-        </div>
+        <loader :yes="loadingQueues"/>
 
-        <message v-if="!loadingQueues && !queues.length" text="There aren't any queues."/>
+        <p class="text-center m-0 p-5" v-if="!loadingQueues && !queues.length">
+            There aren't any queues.
+        </p>
 
-        <table v-if="!loadingQueues && queues.length" class="table panel-table" cellpadding="0" cellspacing="0">
+        <table v-if="!loadingQueues && queues.length" class="table card-table table-hover">
             <thead>
             <tr>
-                <th class="ph2">Queue</th>
+                <th>Queue</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="queue in queues">
-                <td class="ph2">
-                    <router-link :to="{ name: 'metrics.detail', params: { type: 'queues', slug: queue }}" class="fw7">{{ queue }}</router-link>
+                <td>
+                    <router-link :to="{ name: 'metrics.detail', params: { type: 'queues', slug: queue }}">{{ queue }}</router-link>
                 </td>
             </tr>
             </tbody>
