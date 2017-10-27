@@ -293,7 +293,7 @@ class SupervisorTest extends IntegrationTest
         $this->assertTrue($process->isRunning());
 
         $process->terminate();
-        usleep(500 * 1000);
+        sleep(1);
 
         $this->assertFalse($process->isRunning());
     }
