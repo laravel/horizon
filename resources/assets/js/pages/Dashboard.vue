@@ -202,7 +202,7 @@
                                     {{ stats.max_wait_queue || '&nbsp;' }}
                                 </h3>
                                 <span class="stat-value">
-                                    {{ stats.max_wait_time ? stats.max_wait_time + 's' : '-' }}
+                                    {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
                                 </span>
                             </div>
 
