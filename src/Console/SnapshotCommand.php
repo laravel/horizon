@@ -34,5 +34,9 @@ class SnapshotCommand extends Command
 
             $this->info('Metrics snapshot stored successfully.');
         }
+        
+        else {
+            $this->error('Unable to take snapshot.');
+        }
     }
 }
