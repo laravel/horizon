@@ -58,15 +58,15 @@
                 }
 
                 return this.$http.get('/horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
-                        .then(response => {
-                            this.jobs = response.data.jobs;
+                    .then(response => {
+                        this.jobs = response.data.jobs;
 
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
+                        this.totalPages = Math.ceil(response.data.total / this.perPage);
 
-                            this.loadState = false;
+                        this.loadState = false;
 
-                            return response.data.jobs;
-                        });
+                        return response.data.jobs;
+                    });
             },
 
 
@@ -89,7 +89,7 @@
              */
             previous() {
                 this.loadJobs(
-                        ((this.page - 2) * this.perPage) - 1
+                    ((this.page - 2) * this.perPage) - 1
                 );
 
                 this.page -= 1;
@@ -101,7 +101,7 @@
              */
             next() {
                 this.loadJobs(
-                        (this.page * this.perPage) - 1
+                    (this.page * this.perPage) - 1
                 );
 
                 this.page += 1;
@@ -133,8 +133,10 @@
             <tbody>
             <tr v-for="job in jobs">
                 <td>
-                    <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
-                    <span v-else>{{ job.name }}</span>
+                    <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id"
+                       data-toggle="tooltip" :title="job.name">{{ jobBaseName(job.name) }}
+                    </a>
+                    <span data-toggle="tooltip" :title="job.name" v-else>{{ jobBaseName(job.name) }}</span>
                 </td>
                 <td>{{ job.queue }}</td>
                 <td>{{ displayableTagsList(job.payload.tags) }}</td>

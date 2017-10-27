@@ -182,8 +182,8 @@
                         <tbody>
                         <tr v-for="job in jobs">
                             <td>
-                                <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}">
-                                    {{ job.name }}
+                                <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" data-toggle="tooltip" :title="job.name">
+                                    {{ jobBaseName(job.name) }}
                                 </router-link>
                             </td>
                             <td>{{ job.queue }}</td>

@@ -84,11 +84,13 @@
                 </div>
 
                 <div class="table-responsive">
-                    <p class="text-center m-0 p-5" v-if="!tags.length">
+                    <loader :yes="loadingTags"/>
+
+                    <p class="text-center m-0 p-5" v-if="!loadingTags && !tags.length">
                         You're not monitoring any tags.
                     </p>
 
-                    <table v-else class="table card-table table-hover">
+                    <table v-if="!loadingTags && tags.length" class="table card-table table-hover">
                         <thead>
                         <tr>
                             <th>Tag Name</th>

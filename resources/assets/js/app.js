@@ -10,6 +10,10 @@ window.Popper = require('popper.js').default;
 
 require('bootstrap');
 
+$('body').tooltip({
+    selector: '[data-toggle=tooltip]'
+});
+
 Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
@@ -23,6 +27,18 @@ Vue.mixin({
          */
         formatDate(unixTime){
             return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
+        },
+
+
+        /**
+         * Extract the job base name.
+         */
+        jobBaseName(name){
+            if (!name.includes('\\')) return name;
+
+            var parts = name.split("\\");
+
+            return parts[parts.length - 1];
         },
 
 
@@ -41,7 +57,7 @@ Vue.mixin({
             if (!tags.length) return '';
 
             return _.reduce(tags, (s, n)=> {
-                return (s ? ', ' : '')+_.truncate(n);
+                return (s ? ', ' : '') + _.truncate(n);
             }, '');
         }
     }
