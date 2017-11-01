@@ -18,7 +18,7 @@ Vue.component('loader', require('./components/Status/Loader.vue'));
 
 Vue.mixin({
     created: function() {
-        this.$root.basePath = window.basePath || '/';
+        this.$root.basePath = window.basePath;
     },
     methods: {
         /**
