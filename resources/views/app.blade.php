@@ -16,7 +16,7 @@
         </div>
 
         <script>
-            window.basePath = '{{ config('horizon.base_path') }}'
+            window.basePath = '{{ config('horizon.base_path') . '/' }}'
         </script>
         <script src="{{ config('horizon.base_path') . mix('js/app.js', 'vendor/horizon') }}"></script>
     </body>

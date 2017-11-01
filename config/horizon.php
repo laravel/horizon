@@ -9,11 +9,11 @@ return [
     |
     | This is the base path that Horizon will sit under. This is helpful
     | if you need to use Horizon in a subpath on the server. The default
-    | is / so that Horizon will run from the root directory on the server.
+    | is empty so that Horizon will run from the root directory on the server.
     |
     */
 
-    'base_path' => '/',
+    'base_path' => '',
 
     /*
     |--------------------------------------------------------------------------

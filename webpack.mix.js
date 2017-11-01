@@ -19,7 +19,7 @@ mix
     .copy('resources/assets/img', 'public/img')
     .sourceMaps()
     .copy('public', '../../laravelhorizon/public/vendor/horizon')
-    //.copy('public', '../app/public/vendor/horizon')
+    // .copy('public', '../public/vendor/horizon')
     .version();
 
 
