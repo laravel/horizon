@@ -5,7 +5,7 @@ Vue.use(Router);
 
 export default new Router({
     mode: 'history',
-    base: window.basePath + 'horizon/',
+    base: window.basePath + '/horizon/',
     routes: [
         {
             path: '/',

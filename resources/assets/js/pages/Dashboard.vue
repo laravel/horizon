@@ -55,7 +55,7 @@
                     this.loadingStats = true;
                 }
 
-                this.$http.get(this.$root.basePath + 'horizon/api/stats')
+                this.$http.get('/horizon/api/stats')
                     .then(response => {
                         this.stats = response.data;
 
@@ -77,7 +77,7 @@
                     this.loadingWorkers = true;
                 }
 
-                this.$http.get(this.$root.basePath + 'horizon/api/masters')
+                this.$http.get('/horizon/api/masters')
                     .then(response => {
                         this.workers = response.data;
 
@@ -94,7 +94,7 @@
                     this.loadingWorkload = true;
                 }
 
-                this.$http.get(this.$root.basePath + 'horizon/api/workload')
+                this.$http.get('/horizon/api/workload')
                     .then(response => {
                         this.workload = response.data;
 

@@ -29,7 +29,7 @@
             loadJobs() {
                 this.loadingJobs = true;
 
-                this.$http.get(this.$root.basePath + 'horizon/api/metrics/jobs')
+                this.$http.get('/horizon/api/metrics/jobs')
                     .then(response => {
                         this.jobs = response.data;
 

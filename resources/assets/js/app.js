@@ -10,7 +10,9 @@ window.Popper = require('popper.js').default;
 
 require('bootstrap');
 
-Vue.prototype.$http = axios.create();
+Vue.prototype.$http = axios.create({
+    baseURL: window.basePath || '/'
+});
 
 window.Bus = new Vue({name: 'Bus'});
 
@@ -18,7 +20,7 @@ Vue.component('loader', require('./components/Status/Loader.vue'));
 
 Vue.mixin({
     created: function() {
-        this.$root.basePath = window.basePath;
+        this.$root.basePath = window.basePath || '/';
     },
     methods: {
         /**

@@ -56,7 +56,7 @@
                 if (preload) {
                     this.loadState = true;
                 }
-                return this.$http.get(this.$root.basePath + 'horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         this.jobs = response.data.jobs;
 
@@ -132,7 +132,7 @@
             <tbody>
             <tr v-for="job in jobs">
                 <td>
-                    <a v-if="job.status == 'failed'" :href="this.$root.basePath + 'horizon/failed/'+job.id"
+                    <a v-if="job.status == 'failed'" :href="this.$root.basePath + '/horizon/failed/'+job.id"
                        data-toggle="tooltip" :title="job.name">{{ jobBaseName(job.name) }}
                     </a>
                     <span data-toggle="tooltip" :title="job.name" v-else>{{ jobBaseName(job.name) }}</span>

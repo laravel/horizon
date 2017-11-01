@@ -45,7 +45,7 @@
             loadTags() {
                 this.loadingTags = true;
 
-                this.$http.get(this.$root.basePath + 'horizon/api/monitoring')
+                this.$http.get('/horizon/api/monitoring')
                     .then(response => {
                         this.tags = response.data;
 
@@ -65,7 +65,7 @@
              * Stop monitoring the given tag.
              */
             stopMonitoring(tag) {
-                this.$http.delete(this.$root.basePath + 'horizon/api/monitoring/' + encodeURIComponent(tag))
+                this.$http.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
                     .then(() => {
                         this.tags = _.reject(this.tags, existing => existing.tag == tag)
                     })
