@@ -17,6 +17,9 @@ window.Bus = new Vue({name: 'Bus'});
 Vue.component('loader', require('./components/Status/Loader.vue'));
 
 Vue.mixin({
+    created: function() {
+        this.$root.basePath = window.basePath || '/';
+    },
     methods: {
         /**
          * Format the given date with respect to timezone.

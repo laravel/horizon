@@ -68,7 +68,7 @@
 
                 var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
 
-                this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+                this.$http.get(this.$root.basePath + 'horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
                     .then(response => {
                         this.jobs = response.data.jobs;
 
@@ -89,7 +89,7 @@
 
                 this.retryingJobs.push(id);
 
-                this.$http.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post(this.$root.basePath + 'horizon/api/jobs/retry/' + id)
                     .then(() => {
                         setTimeout(() => {
                             this.retryingJobs = _.reject(this.retryingJobs, job => job == id);

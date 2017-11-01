@@ -46,7 +46,7 @@
             loadFailedJob(id) {
                 this.loadingJob = true;
 
-                this.$http.get('/horizon/api/jobs/failed/' + id)
+                this.$http.get(this.$root.basePath + 'horizon/api/jobs/failed/' + id)
                     .then(response => {
                         this.job = response.data;
 
@@ -59,7 +59,7 @@
              * Reload the job retries.
              */
             reloadRetries() {
-                this.$http.get('/horizon/api/jobs/failed/' + this.jobId)
+                this.$http.get(this.$root.basePath + 'horizon/api/jobs/failed/' + this.jobId)
                     .then(response => {
                         this.job.retried_by = response.data.retried_by;
 
@@ -77,7 +77,7 @@
 
                 this.retryingJob = true;
 
-                this.$http.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post(this.$root.basePath + 'horizon/api/jobs/retry/' + id)
                     .then(() => {
                         setTimeout(() => {
                             this.reloadRetries();

@@ -64,7 +64,7 @@
 
                 tag = this.type == 'failed' ? 'failed:' + tag : tag;
 
-                return this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get(this.$root.basePath + 'horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         this.jobs[this.type] = response.data.jobs;
 
@@ -139,7 +139,7 @@
             <tbody>
             <tr v-for="job in jobs[type]">
                 <td>
-                    <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
+                    <a v-if="job.status == 'failed'" :href="this.$root.basePath + 'horizon/failed/'+job.id">{{ job.name }}</a>
                     <span v-else>{{ job.name }}</span>
                 </td>
                 <td>{{ job.queue }}</td>
