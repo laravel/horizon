@@ -153,7 +153,7 @@
                 <div class="card-header">Overview</div>
 
                 <div class="card-body p-0">
-                    <div class="container">
+                    <div class="container-fluid">
                         <div class="stats row">
                             <div class="stat col-3 p-4">
                                 <h2 class="stat-title">Jobs Per Minute</h2>
