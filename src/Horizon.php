@@ -87,7 +87,7 @@ class Horizon
      */
     public static function use($connection)
     {
-        if (is_null($config = config("database.redis.{$connection}"))){
+        if (is_null($config = config("database.redis.{$connection}"))) {
             throw new Exception("Redis connection [{$connection}] has not been configured.");
         }
 
