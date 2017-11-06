@@ -139,7 +139,7 @@
             <tbody>
             <tr v-for="job in jobs[type]">
                 <td>
-                    <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
+                    <a v-if="job.status == 'failed'" :href="$root.basePath+'/horizon/failed/'+job.id">{{ job.name }}</a>
                     <span v-else>{{ job.name }}</span>
                 </td>
                 <td>{{ job.queue }}</td>
