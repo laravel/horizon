@@ -22,6 +22,10 @@ window.Bus = new Vue({name: 'Bus'});
 
 Vue.component('loader', require('./components/Status/Loader.vue'));
 
+Vue.config.errorHandler = function (err, vm, info) {
+    console.error(err);
+};
+
 Vue.mixin({
     created: function() {
         this.$root.basePath = window.basePath;

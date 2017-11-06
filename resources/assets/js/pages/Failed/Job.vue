@@ -110,7 +110,7 @@
              * @returns {string}
              */
             prettyPrintJob(data){
-                return '<pre>' + JSON.stringify(phpunserialize(data), null, 2) + '</pre>';
+                return '<pre>' + JSON.stringify(data.command ? phpunserialize(data.command) : data, null, 2) + '</pre>';
             }
         }
     }
@@ -168,7 +168,7 @@
                         <div class="row">
                             <div class="col-md-2"><strong>Data</strong></div>
                             <div class="col">
-                                <p class="jobDetailsText" v-html="prettyPrintJob(job.payload.data.command)"></p>
+                                <p class="jobDetailsText" v-html="prettyPrintJob(job.payload.data)"></p>
                             </div>
                         </div>
                     </div>
