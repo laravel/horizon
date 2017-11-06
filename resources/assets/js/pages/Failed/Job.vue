@@ -194,7 +194,7 @@
                                 {{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}
                             </td>
                             <td>
-                                <a v-if="retry.status == 'failed'" :href="'/horizon/failed/'+retry.id">
+                                <a v-if="retry.status == 'failed'" :href="$root.basePath+'/horizon/failed/'+retry.id">
                                     {{ retry.id }}
                                 </a>
                                 <span v-else>{{ retry.id }}</span>
