@@ -61,7 +61,7 @@ Vue.mixin({
             if (!tags.length) return '';
 
             return _.reduce(tags, (s, n)=> {
-                return (s ? ', ' : '') + _.truncate(n);
+                return (s ? s + ', ' : '') + _.truncate(n);
             }, '');
         }
     }
