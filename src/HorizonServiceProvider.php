@@ -48,11 +48,17 @@ class HorizonServiceProvider extends ServiceProvider
      */
     protected function registerRoutes()
     {
-        Route::group([
-            'prefix' => config('horizon.uri', 'horizon'),
-            'namespace' => 'Laravel\Horizon\Http\Controllers',
-            'middleware' => config('horizon.middleware', 'web'),
-        ], function () {
+        $attributes = array_merge([
+                'prefix' => config('horizon.uri', 'horizon'),
+                'middleware' => config('horizon.middleware', 'web')
+            ], 
+            config('horizon.route_attributes', []),
+            [
+                'namespace' => 'Laravel\Horizon\Http\Controllers'
+            ]
+        );
+
+        Route::group($attributes, function () {
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         });
     }
