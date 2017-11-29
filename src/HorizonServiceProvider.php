@@ -49,8 +49,8 @@ class HorizonServiceProvider extends ServiceProvider
     protected function registerRoutes()
     {
         $attributes = array_merge([
-                'prefix' => 'horizon',
-                'middleware' => 'web'
+                'prefix' => config('horizon.uri', 'horizon'),
+                'middleware' => config('horizon.middleware', 'web')
             ], 
             config('horizon.route_attributes', []),
             [
