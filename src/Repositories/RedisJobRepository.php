@@ -420,7 +420,7 @@ class RedisJobRepository implements JobRepository
     {
         $this->connection()->pipeline(function ($pipe) use ($ids) {
             foreach ($ids as $id) {
-                $pipe->expireat($id, Chronos::now()->addDays(7)->getTimestamp());
+                $pipe->expireat($id, Chronos::now()->subDays(7)->getTimestamp());
             }
         });
     }
