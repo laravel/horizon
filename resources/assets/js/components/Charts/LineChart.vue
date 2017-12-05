@@ -11,14 +11,6 @@
             }
         },
 
-        watch:{
-            data(value){
-                this.chart.data = data;
-
-                this.chart.update();
-            }
-        },
-
         mounted(){
             this.context = this.$refs.canvas.getContext('2d');
 
