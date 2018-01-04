@@ -28,7 +28,7 @@ class SupervisorsCommand extends Command
      */
     public function handle()
     {
-        $repository = resolve(SupervisorRepository::class);
+        $repository = app(SupervisorRepository::class);
 
         $supervisors = $repository->all();
 
