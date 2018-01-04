@@ -50,7 +50,7 @@ class SupervisorCommand extends Command
      */
     public function handle()
     {
-        $supervisor = resolve(SupervisorFactory::class)->make(
+        $supervisor = app(SupervisorFactory::class)->make(
             $this->supervisorOptions()
         );
 

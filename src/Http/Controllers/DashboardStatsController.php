@@ -18,14 +18,14 @@ class DashboardStatsController extends Controller
     public function index()
     {
         return [
-            'jobsPerMinute' => resolve(MetricsRepository::class)->jobsProcessedPerMinute(),
+            'jobsPerMinute' => app(MetricsRepository::class)->jobsProcessedPerMinute(),
             'processes' => $this->totalProcessCount(),
-            'queueWithMaxRuntime' => resolve(MetricsRepository::class)->queueWithMaximumRuntime(),
-            'queueWithMaxThroughput' => resolve(MetricsRepository::class)->queueWithMaximumThroughput(),
-            'recentlyFailed' => resolve(JobRepository::class)->countRecentlyFailed(),
-            'recentJobs' => resolve(JobRepository::class)->countRecent(),
+            'queueWithMaxRuntime' => app(MetricsRepository::class)->queueWithMaximumRuntime(),
+            'queueWithMaxThroughput' => app(MetricsRepository::class)->queueWithMaximumThroughput(),
+            'recentlyFailed' => app(JobRepository::class)->countRecentlyFailed(),
+            'recentJobs' => app(JobRepository::class)->countRecent(),
             'status' => $this->currentStatus(),
-            'wait' => collect(resolve(WaitTimeCalculator::class)->calculate())->take(1),
+            'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
         ];
     }
 
@@ -36,7 +36,7 @@ class DashboardStatsController extends Controller
      */
     protected function totalProcessCount()
     {
-        $supervisors = resolve(SupervisorRepository::class)->all();
+        $supervisors = app(SupervisorRepository::class)->all();
 
         return collect($supervisors)->reduce(function ($carry, $supervisor) {
             return $carry + collect($supervisor->processes)->sum();
@@ -50,7 +50,7 @@ class DashboardStatsController extends Controller
      */
     protected function currentStatus()
     {
-        if (! $masters = resolve(MasterSupervisorRepository::class)->all()) {
+        if (! $masters = app(MasterSupervisorRepository::class)->all()) {
             return 'inactive';
         }
 

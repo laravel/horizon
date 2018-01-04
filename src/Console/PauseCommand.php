@@ -30,7 +30,7 @@ class PauseCommand extends Command
      */
     public function handle()
     {
-        $masters = resolve(MasterSupervisorRepository::class)->all();
+        $masters = app(MasterSupervisorRepository::class)->all();
 
         $masters = collect($masters)->filter(function ($master) {
             return Str::startsWith($master->name, MasterSupervisor::basename());

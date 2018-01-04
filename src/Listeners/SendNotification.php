@@ -18,7 +18,7 @@ class SendNotification
     {
         $notification = $event->toNotification();
 
-        if (! resolve(Lock::class)->get('notification:'.$notification->signature(), 300)) {
+        if (! app(Lock::class)->get('notification:'.$notification->signature(), 300)) {
             return;
         }
 

@@ -106,7 +106,7 @@ class ProvisioningPlan
      */
     protected function add(SupervisorOptions $options)
     {
-        resolve(HorizonCommandQueue::class)->push(
+        app(HorizonCommandQueue::class)->push(
             MasterSupervisor::commandQueueFor($this->master),
             AddSupervisor::class,
             $options->toArray()

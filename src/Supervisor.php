@@ -82,7 +82,7 @@ class Supervisor implements Pausable, Restartable, Terminable
             //
         };
 
-        resolve(HorizonCommandQueue::class)->flush($this->name);
+        app(HorizonCommandQueue::class)->flush($this->name);
     }
 
     /**
@@ -217,7 +217,7 @@ class Supervisor implements Pausable, Restartable, Terminable
         // We will mark this supervisor as terminating so that any user interface can
         // correctly show the supervisor's status. Then, we will scale the process
         // pools down to zero workers to gracefully terminate them all out here.
-        resolve(SupervisorRepository::class)
+        app(SupervisorRepository::class)
                     ->forget($this->name);
 
         $this->processPools->each->scale(0);
@@ -260,7 +260,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function ensureNoDuplicateSupervisors()
     {
-        if (resolve(SupervisorRepository::class)->find($this->name) !== null) {
+        if (app(SupervisorRepository::class)->find($this->name) !== null) {
             throw new Exception("A supervisor with the name [{$this->name}] is already running.");
         }
     }
@@ -291,9 +291,9 @@ class Supervisor implements Pausable, Restartable, Terminable
 
             event(new SupervisorLooped($this));
         } catch (Exception $e) {
-            resolve(ExceptionHandler::class)->report($e);
+            app(ExceptionHandler::class)->report($e);
         } catch (Throwable $e) {
-            resolve(ExceptionHandler::class)->report(new FatalThrowableError($e));
+            app(ExceptionHandler::class)->report(new FatalThrowableError($e));
         }
     }
 
@@ -304,8 +304,8 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     protected function processPendingCommands()
     {
-        foreach (resolve(HorizonCommandQueue::class)->pending($this->name) as $command) {
-            resolve($command->command)->process($this, $command->options);
+        foreach (app(HorizonCommandQueue::class)->pending($this->name) as $command) {
+            app($command->command)->process($this, $command->options);
         }
     }
 
@@ -322,7 +322,7 @@ class Supervisor implements Pausable, Restartable, Terminable
         if (Chronos::now()->subSeconds($this->autoScaleCooldown)->gte($this->lastAutoScaled)) {
             $this->lastAutoScaled = Chronos::now();
 
-            resolve(AutoScaler::class)->scale($this);
+            app(AutoScaler::class)->scale($this);
         }
     }
 
@@ -333,7 +333,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function persist()
     {
-        resolve(SupervisorRepository::class)->update($this);
+        app(SupervisorRepository::class)->update($this);
     }
 
     /**
@@ -395,7 +395,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function totalSystemProcessCount()
     {
-        return resolve(SystemProcessCounter::class)->get($this->name);
+        return app(SystemProcessCounter::class)->get($this->name);
     }
 
     /**
