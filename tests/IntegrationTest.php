@@ -56,7 +56,7 @@ abstract class IntegrationTest extends TestCase
      */
     protected function recentJobs()
     {
-        return resolve(JobRepository::class)->totalRecent();
+        return app(JobRepository::class)->totalRecent();
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class IntegrationTest extends TestCase
      */
     protected function monitoredJobs($tag)
     {
-        return resolve(TagRepository::class)->count($tag);
+        return app(TagRepository::class)->count($tag);
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class IntegrationTest extends TestCase
      */
     protected function failedJobs()
     {
-        return resolve(JobRepository::class)->totalFailed();
+        return app(JobRepository::class)->totalFailed();
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class IntegrationTest extends TestCase
      */
     protected function worker()
     {
-        return resolve('queue.worker');
+        return app('queue.worker');
     }
 
     /**
