@@ -22,7 +22,7 @@
         "illuminate/support": "~5.5",
         "predis/predis": "^1.1",
         "ramsey/uuid": "^3.5",
-        "symfony/debug": "~3.3"
+        "symfony/debug": "~3.3|~4.0"
     },
     "require-dev": {
         "mockery/mockery": "~1.0",
