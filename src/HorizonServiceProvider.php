@@ -146,7 +146,7 @@ class HorizonServiceProvider extends ServiceProvider
      */
     protected function registerServices()
     {
-        foreach ($this->bindings as $key => $value) {
+        foreach ($this->serviceBindings as $key => $value) {
             is_numeric($key)
                     ? $this->app->singleton($value)
                     : $this->app->singleton($key, $value);
