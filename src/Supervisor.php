@@ -220,14 +220,11 @@ class Supervisor implements Pausable, Restartable, Terminable
         app(SupervisorRepository::class)
                     ->forget($this->name);
 
-        $this->processPools->each->scale(0);
-
-        // Next we will wait for all of the terminating workers to actually terminate
-        // since this is a graceful operation. This method will also remove any of
-        // the processes that have been terminating for too long and are frozen.
-        while (count($this->terminatingProcesses()) > 0) {
-            sleep(1);
-        }
+        $this->processPools->each(function($pool){
+            $pool->processes()->each(function($process){
+                $process->terminate();
+            });
+        });
 
         $this->exit($status);
     }
