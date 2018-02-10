@@ -20,7 +20,7 @@ class RedisConnector extends BaseConnector
             $this->redis, $config['queue'],
             Arr::get($config, 'connection', $this->connection),
             Arr::get($config, 'retry_after', 60),
-            Arr::get($config, 'block_for', 0)
+            Arr::get($config, 'block_for', null)
         );
     }
 }
