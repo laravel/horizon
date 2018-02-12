@@ -283,6 +283,18 @@ class ProcessPool implements Countable
     }
 
     /**
+     * Get all of the current running processes as a collection.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function runningProcesses()
+    {
+        return collect($this->processes)->filter(function ($process) {
+            return $process->process->isRunning();
+        });
+    }
+
+    /**
      * Get the total active process count, including processes pending termination.
      *
      * @return int

@@ -159,10 +159,10 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         // First we will terminate all child supervisors so they will gracefully scale
         // down to zero. We'll also grab the longest expiration times of any of the
         // active supervisors so we know the maximum amount of time to wait here.
-        $this->supervisors->each->terminate();
-
         $longest = app(SupervisorRepository::class)
-                    ->longestActiveTimeout();
+            ->longestActiveTimeout();
+        
+        $this->supervisors->each->terminate();
 
         // We will go ahead and remove this master supervisor's record from storage so
         // another master supervisor could get started in its place without waiting

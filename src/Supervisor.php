@@ -217,14 +217,11 @@ class Supervisor implements Pausable, Restartable, Terminable
         // We will mark this supervisor as terminating so that any user interface can
         // correctly show the supervisor's status. Then, we will scale the process
         // pools down to zero workers to gracefully terminate them all out here.
-        app(SupervisorRepository::class)
-                    ->forget($this->name);
+        app(SupervisorRepository::class)->forget($this->name);
 
-        $this->processPools->each(function($pool){
-            $pool->processes()->each(function($process){
-                $process->terminate();
-            });
-        });
+        while ($this->processPools->map->runningProcesses()->collapse()->count()) {
+            sleep(1);
+        }
 
         $this->exit($status);
     }
