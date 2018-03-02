@@ -149,13 +149,13 @@ class JobPayload implements ArrayAccess
     }
 
     /**
-     * Get the "command name" for the job.
+     * Get the "display name" for the job.
      *
      * @return string
      */
-    public function commandName()
+    public function displayName()
     {
-        return Arr::get($this->decoded, 'data.commandName');
+        return Arr::get($this->decoded, 'displayName');
     }
 
     /**
