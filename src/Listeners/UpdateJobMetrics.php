@@ -54,7 +54,7 @@ class UpdateJobMetrics
         );
 
         $this->metrics->incrementJob(
-            $event->payload->displayName(), $time
+            $event->payload->commandName(), $time
         );
     }
 }
