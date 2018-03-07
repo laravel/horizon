@@ -2,9 +2,11 @@
 
 namespace Laravel\Horizon\Jobs;
 
-use Laravel\Horizon\JobId;
-use Laravel\Horizon\Contracts\JobRepository;
 use Illuminate\Contracts\Queue\Factory as Queue;
+use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\JobId;
+use ReflectionClass;
+use ReflectionException;
 
 class RetryFailedJob
 {
@@ -18,7 +20,7 @@ class RetryFailedJob
     /**
      * Create a new job instance.
      *
-     * @param  string  $id;
+     * @param  string  $id
      * @return void
      */
     public function __construct($id)
@@ -55,10 +57,36 @@ class RetryFailedJob
      */
     protected function preparePayload($id, $payload)
     {
-        return json_encode(array_merge(json_decode($payload, true), [
+        $payload = json_decode($payload, true);
+
+        $overwrite = $this->updateTimeoutAt($payload, [
             'id' => $id,
             'attempts' => 0,
             'retry_of' => $this->id,
-        ]));
+        ]);
+
+        return json_encode(array_merge($payload, $overwrite));
+    }
+
+    /**
+     * Refresh the timeoutAt of the payload if exists
+     *
+     * @param array  $payload
+     * @param array  $overwrite
+     *
+     * @return array
+     */
+    protected function updateTimeoutAt(array $payload, array $overwrite)
+    {
+        if ($payload['timeoutAt'] < time()) {
+            try {
+                if ((new ReflectionClass($payload['data']['commandName']))->hasMethod('retryUntil')) {
+                    $overwrite['timeoutAt'] = (unserialize($payload['data']['command']))->retryUntil();
+                }
+            } catch (ReflectionException $e) {
+            }
+        }
+
+        return $overwrite;
     }
 }
