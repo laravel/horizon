@@ -159,6 +159,16 @@ class JobPayload implements ArrayAccess
     }
 
     /**
+     * Get the "display name" for the job.
+     *
+     * @return string
+     */
+    public function displayName()
+    {
+        return Arr::get($this->decoded, 'displayName');
+    }
+
+    /**
      * Determine if the given offset exists.
      *
      * @param  string  $offset
