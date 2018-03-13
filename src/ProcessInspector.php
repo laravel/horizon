@@ -33,7 +33,7 @@ class ProcessInspector
     public function current()
     {
         return array_diff(
-            $this->exec->run('pgrep -f horizon'),
+            $this->exec->run('pgrep -f [h]orizon'),
             $this->exec->run('pgrep -f horizon:purge')
         );
     }
