@@ -15,8 +15,10 @@ const webpack = require('webpack');
 mix
     .options({
         uglify: {
-            compress: {
-                drop_console: false,
+            uglifyOptions: {
+                compress: {
+                    drop_console: true,
+                }
             }
         }
     })
