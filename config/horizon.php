@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Middleware
+    |--------------------------------------------------------------------------
+    |
+    | This is the name of the middleware being used by Horizon
+    | for authentication.
+    |
+    */
+
+    'middleware' => 'horizon',
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Redis Prefix
     |--------------------------------------------------------------------------
     |
@@ -78,6 +90,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 3,
+                'timeout' => 60,
             ],
         ],
 
@@ -88,6 +101,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 3,
+                'timeout' => 60,
             ],
         ],
     ],
