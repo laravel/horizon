@@ -101,14 +101,14 @@
             /**
              * Refresh the stats every period of time.
              */
-            refreshStatsPeriodically() {
+            refreshStatsPeriodically(reload = true) {
                 Promise.all([
-                    this.loadStats(false),
-                    this.loadWorkers(false),
-                    this.loadWorkload(false),
+                    this.loadStats(reload),
+                    this.loadWorkers(reload),
+                    this.loadWorkload(reload),
                 ]).then(() => {
                     this.timeout = setTimeout(() => {
-                        this.refreshStatsPeriodically();
+                        this.refreshStatsPeriodically(false);
                     }, 5000);
                 });
             },
