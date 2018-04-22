@@ -1,11 +1,12 @@
 <script type="text/ecmascript-6">
     import _ from 'lodash';
     import moment from 'moment';
-    import Layout from '../layouts/MainLayout.vue';
-    import Status from '../components/Status/Status.vue';
+    import Layout from '../../layouts/MainLayout.vue';
+    import Status from '../../components/Status/Status.vue';
+    import DisplayFullConfigModal from './DisplayFullConfigModal.vue'
 
     export default {
-        components: {Layout, Status},
+        components: {Layout, Status, DisplayFullConfigModal},
 
 
         /**
@@ -19,6 +20,7 @@
                 stats: {},
                 workers: [],
                 workload: [],
+                displayFullConfig: false
             };
         },
 
@@ -36,6 +38,10 @@
             this.loadWorkload();
 
             this.refreshStatsPeriodically();
+
+            Bus.$on('displayFullConfigModalClosed', data => {
+                this.displayFullConfig = false;
+            });
         },
 
         /**
@@ -68,7 +74,9 @@
                     });
             },
 
-
+            displayConfigModal(config){
+                this.displayFullConfig = config;
+            },
             /**
              * Load the workers stats.
              */
@@ -282,6 +290,35 @@
                     </table>
                 </div>
             </div>
+
+            <div class="card mt-4" v-for="worker in workers">
+                <div class="card-header">Configuration</div>
+                <div class="table-responsive">
+                    <table class="table card-table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Supervisor</th>
+                            <th>Queues</th>
+                            <th>Config</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="supervisor in worker.supervisors">
+                            <td class="ph2">
+                                <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
+                            </td>
+                            <td>{{ supervisor.options.queue }}</td>
+                            <td class="d-flex align-items-center">
+                               <span class="btn btn-success" @click="displayConfigModal(supervisor)">Show</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
+
+        <display-full-config-modal v-if="displayFullConfig" :config="displayFullConfig"/>
+
     </layout>
 </template>

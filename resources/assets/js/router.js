@@ -13,7 +13,7 @@ export default new Router({
         },
         {
             path: '/dashboard',
-            component: require('./pages/Dashboard.vue'),
+            component: require('./pages/Dashboard/Dashboard.vue'),
         },
         {
             path: '/monitoring',
