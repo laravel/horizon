@@ -4,6 +4,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Configuration
+    |--------------------------------------------------------------------------
+    |
+    | To return to your application, you can define a URL here for the logo.
+    | Clicking on the logo will redirect you to the preferred URL.
+    |
+    */
+
+    'logo_url' => '/horizon',
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Redis Connection
     |--------------------------------------------------------------------------
     |

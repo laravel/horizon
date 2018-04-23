@@ -3,7 +3,15 @@
     import MainSidebar from './MainSidebar.vue'
 
     export default {
-        components: {Status, MainSidebar}
+        components: {Status, MainSidebar},
+        data() {
+            return {
+                logo_url: false
+            }
+        },
+        mounted(){
+            this.logo_url = window.HORIZON.logo_url;
+        }
     }
 </script>
 
@@ -12,7 +20,10 @@
         <div id="mainHeader" class="pt-4 pb-4">
             <div class="row">
                 <div class="col">
-                    <img src="/vendor/horizon/img/horizon.svg">
+                    <a v-if="logo_url" :href="logo_url">
+                        <img src="/vendor/horizon/img/horizon.svg">
+                    </a>
+                    <img v-else src="/vendor/horizon/img/horizon.svg">
                 </div>
             </div>
         </div>
