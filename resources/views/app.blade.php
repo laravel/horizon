@@ -5,6 +5,12 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/horizon') }}">
         <link rel="icon" href="/vendor/horizon/img/favicon.png" />
+        <script type="text/javascript">
+            window.HORIZON = {
+                logo_url: '{{e(config('horizon.logo_url'))}}'
+            };
+
+        </script>
     </head>
 
     <body>
