@@ -29,20 +29,15 @@
         mounted() {
             document.title = "Horizon - Dashboard";
 
-            this.loadStats();
-
-            this.loadWorkers();
-
-            this.loadWorkload();
-
             this.refreshStatsPeriodically();
         },
+
 
         /**
          * Clean after the component is destroyed.
          */
-        destroyed(){
-            clearInterval(this.interval);
+        destroyed() {
+            clearTimeout(this.timeout);
         },
 
 
@@ -55,7 +50,7 @@
                     this.loadingStats = true;
                 }
 
-                this.$http.get('/horizon/api/stats')
+                return this.$http.get('/horizon/api/stats')
                     .then(response => {
                         this.stats = response.data;
 
@@ -77,7 +72,7 @@
                     this.loadingWorkers = true;
                 }
 
-                this.$http.get('/horizon/api/masters')
+                return this.$http.get('/horizon/api/masters')
                     .then(response => {
                         this.workers = response.data;
 
@@ -94,7 +89,7 @@
                     this.loadingWorkload = true;
                 }
 
-                this.$http.get('/horizon/api/workload')
+                return this.$http.get('/horizon/api/workload')
                     .then(response => {
                         this.workload = response.data;
 
@@ -106,21 +101,23 @@
             /**
              * Refresh the stats every period of time.
              */
-            refreshStatsPeriodically() {
-                this.interval = setInterval(() => {
-                    this.loadStats(false);
-
-                    this.loadWorkers(false);
-
-                    this.loadWorkload(false);
-                }, 5000);
+            refreshStatsPeriodically(reload = true) {
+                Promise.all([
+                    this.loadStats(reload),
+                    this.loadWorkers(reload),
+                    this.loadWorkload(reload),
+                ]).then(() => {
+                    this.timeout = setTimeout(() => {
+                        this.refreshStatsPeriodically(false);
+                    }, 5000);
+                });
             },
 
 
             /**
              *  Count processes for the given supervisor.
              */
-            countProcesses(processes){
+            countProcesses(processes) {
                 return _.chain(processes).values().sum().value()
             },
 
@@ -128,7 +125,7 @@
             /**
              *  Format the Supervisor display name.
              */
-            superVisorDisplayName(supervisor, worker){
+            superVisorDisplayName(supervisor, worker) {
                 return _.replace(supervisor, worker + ':', '');
             },
 
@@ -137,7 +134,7 @@
              *
              * @returns {string}
              */
-            humanTime(time){
+            humanTime(time) {
                 return moment.duration(time, "seconds").humanize().replace(/^(.)|\s+(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
