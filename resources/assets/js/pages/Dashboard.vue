@@ -13,9 +13,6 @@
          */
         data() {
             return {
-                loadingStats: true,
-                loadingWorkers: true,
-                loadingWorkload: true,
                 stats: {},
                 workers: [],
                 workload: [],
@@ -45,11 +42,7 @@
             /**
              * Load the general stats.
              */
-            loadStats(reload = true) {
-                if (reload) {
-                    this.loadingStats = true;
-                }
-
+            loadStats() {
                 return this.$http.get('/horizon/api/stats')
                     .then(response => {
                         this.stats = response.data;
@@ -58,8 +51,6 @@
                             this.stats.max_wait_time = _.values(response.data.wait)[0];
                             this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1];
                         }
-
-                        this.loadingStats = false;
                     });
             },
 
@@ -67,16 +58,10 @@
             /**
              * Load the workers stats.
              */
-            loadWorkers(reload = true) {
-                if (reload) {
-                    this.loadingWorkers = true;
-                }
-
+            loadWorkers() {
                 return this.$http.get('/horizon/api/masters')
                     .then(response => {
                         this.workers = response.data;
-
-                        this.loadingWorkers = false;
                     });
             },
 
@@ -84,16 +69,12 @@
             /**
              * Load the workload stats.
              */
-            loadWorkload(reload = true) {
-                if (reload) {
-                    this.loadingWorkload = true;
-                }
+            loadWorkload() {
+                this.loadingWorkload = !this.ready;
 
                 return this.$http.get('/horizon/api/workload')
                     .then(response => {
                         this.workload = response.data;
-
-                        this.loadingWorkload = false;
                     });
             },
 
@@ -101,12 +82,14 @@
             /**
              * Refresh the stats every period of time.
              */
-            refreshStatsPeriodically(reload = true) {
+            refreshStatsPeriodically() {
                 Promise.all([
-                    this.loadStats(reload),
-                    this.loadWorkers(reload),
-                    this.loadWorkload(reload),
+                    this.loadStats(),
+                    this.loadWorkers(),
+                    this.loadWorkload(),
                 ]).then(() => {
+                    this.ready = true;
+
                     this.timeout = setTimeout(() => {
                         this.refreshStatsPeriodically(false);
                     }, 5000);
@@ -269,7 +252,7 @@
                             <td>{{ countProcesses(supervisor.processes) }}</td>
                             <td>{{ supervisor.options.queue }}</td>
                             <td class="d-flex align-items-center">
-                                <status :active="supervisor.options.balance"  class="mr-2"/>
+                                <status :active="supervisor.options.balance" class="mr-2"/>
                                 <span v-if="supervisor.options.balance">
                                     ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
                                 </span>
