@@ -15,7 +15,7 @@ All of your worker configuration is stored in a single, simple configuration fil
 
 ## Official Documentation
 
-Documentation for Horizon can be found on the [Laravel website](http://laravel.com/docs/master/horizon).
+Documentation for Horizon can be found on the [Laravel website](http://laravel.com/docs/horizon).
 
 ## License
 
