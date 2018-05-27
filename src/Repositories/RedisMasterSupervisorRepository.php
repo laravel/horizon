@@ -128,7 +128,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
             return;
         }
 
-        resolve(SupervisorRepository::class)->forget(
+        app(SupervisorRepository::class)->forget(
             $master->supervisors
         );
 

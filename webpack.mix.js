@@ -13,6 +13,15 @@ const webpack = require('webpack');
  */
 
 mix
+    .options({
+        uglify: {
+            uglifyOptions: {
+                compress: {
+                    drop_console: true,
+                }
+            }
+        }
+    })
     .setPublicPath('public')
     .js('resources/assets/js/app.js', 'public/js')
     .sass('resources/assets/sass/app.scss', 'public/css')

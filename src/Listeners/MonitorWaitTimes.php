@@ -50,7 +50,7 @@ class MonitorWaitTimes
         // Here we will calculate the wait time in seconds for each of the queues that
         // the application is working. Then, we will filter the results to find the
         // queues with the longest wait times and raise events for each of these.
-        $results = resolve(WaitTimeCalculator::class)->calculate();
+        $results = app(WaitTimeCalculator::class)->calculate();
 
         $long = collect($results)->filter(function ($wait, $queue) {
             return $wait > (config("horizon.waits.{$queue}") ?? 60);

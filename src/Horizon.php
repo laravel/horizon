@@ -3,6 +3,7 @@
 namespace Laravel\Horizon;
 
 use Closure;
+use Exception;
 
 class Horizon
 {
@@ -82,10 +83,13 @@ class Horizon
      *
      * @param  string  $connection
      * @return void
+     * @throws Exception
      */
     public static function use($connection)
     {
-        $config = config("database.redis.{$connection}");
+        if (is_null($config = config("database.redis.{$connection}"))) {
+            throw new Exception("Redis connection [{$connection}] has not been configured.");
+        }
 
         config(['database.redis.horizon' => array_merge($config, [
             'options' => ['prefix' => config('horizon.prefix') ?: 'horizon:'],

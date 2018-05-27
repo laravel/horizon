@@ -82,7 +82,7 @@ class PurgeCommand extends Command
     protected function recordOrphans($master, ProcessRepository $processes)
     {
         $processes->orphaned(
-            $master, $orphans = resolve(ProcessInspector::class)->orphaned()
+            $master, $orphans = app(ProcessInspector::class)->orphaned()
         );
 
         foreach ($orphans as $processId) {

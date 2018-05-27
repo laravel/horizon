@@ -10,11 +10,19 @@ window.Popper = require('popper.js').default;
 
 require('bootstrap');
 
+$('body').tooltip({
+    selector: '[data-toggle=tooltip]'
+});
+
 Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
 
 Vue.component('loader', require('./components/Status/Loader.vue'));
+
+Vue.config.errorHandler = function (err, vm, info) {
+    console.error(err);
+};
 
 Vue.mixin({
     methods: {
@@ -23,6 +31,18 @@ Vue.mixin({
          */
         formatDate(unixTime){
             return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
+        },
+
+
+        /**
+         * Extract the job base name.
+         */
+        jobBaseName(name){
+            if (!name.includes('\\')) return name;
+
+            var parts = name.split("\\");
+
+            return parts[parts.length - 1];
         },
 
 
@@ -38,10 +58,10 @@ Vue.mixin({
          * Convert to human readable timestamp.
          */
         displayableTagsList(tags){
-            if (!tags.length) return '';
+            if (!tags || !tags.length) return '';
 
             return _.reduce(tags, (s, n)=> {
-                return (s ? ', ' : '')+_.truncate(n);
+                return (s ? s + ', ' : '') + _.truncate(n);
             }, '');
         }
     }

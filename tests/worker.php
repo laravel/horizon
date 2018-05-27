@@ -28,7 +28,7 @@ $app->register(Laravel\Horizon\HorizonServiceProvider::class);
 $app['config']->set('queue.default', 'redis');
 
 // Create the worker...
-$worker = resolve(Worker::class);
+$worker = app(Worker::class);
 
 // Pause the worker if needed...
 if (in_array('--paused', $_SERVER['argv'])) {

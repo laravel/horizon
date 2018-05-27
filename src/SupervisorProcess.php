@@ -112,7 +112,7 @@ class SupervisorProcess extends WorkerProcess
      */
     protected function reprovision()
     {
-        resolve(HorizonCommandQueue::class)->push(
+        app(HorizonCommandQueue::class)->push(
             MasterSupervisor::commandQueue(),
             AddSupervisor::class,
             $this->options->toArray()
@@ -127,7 +127,7 @@ class SupervisorProcess extends WorkerProcess
      */
     public function terminateWithStatus($status)
     {
-        resolve(HorizonCommandQueue::class)->push(
+        app(HorizonCommandQueue::class)->push(
             $this->options->name, Terminate::class, ['status' => $status]
         );
     }

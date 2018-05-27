@@ -39,7 +39,7 @@ class TrimFailedJobs
         }
 
         if ($this->lastTrimmed->lte(Chronos::now()->subMinutes($this->frequency))) {
-            resolve(JobRepository::class)->trimFailedJobs();
+            app(JobRepository::class)->trimFailedJobs();
 
             $this->lastTrimmed = Chronos::now();
         }

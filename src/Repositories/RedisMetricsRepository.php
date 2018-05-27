@@ -292,7 +292,7 @@ class RedisMetricsRepository implements MetricsRepository
             'snapshot:'.$key, $time = Chronos::now()->getTimestamp(), json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
-                'wait' => resolve(WaitTimeCalculator::class)->calculateFor($queue),
+                'wait' => app(WaitTimeCalculator::class)->calculateFor($queue),
                 'time' => $time,
             ])
         );
@@ -358,7 +358,7 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function acquireWaitTimeMonitorLock()
     {
-        return resolve(Lock::class)->get('monitor:time-to-clear');
+        return app(Lock::class)->get('monitor:time-to-clear');
     }
 
     /**

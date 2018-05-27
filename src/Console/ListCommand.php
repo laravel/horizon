@@ -28,7 +28,7 @@ class ListCommand extends Command
      */
     public function handle()
     {
-        $repository = resolve(MasterSupervisorRepository::class);
+        $repository = app(MasterSupervisorRepository::class);
 
         $masters = $repository->all();
 

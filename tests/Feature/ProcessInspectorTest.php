@@ -14,7 +14,7 @@ class ProcessInspectorTest extends IntegrationTest
     public function test_finds_orphaned_process_ids()
     {
         $exec = Mockery::mock(Exec::class);
-        $exec->shouldReceive('run')->with('pgrep -f horizon')->andReturn([1, 2, 3, 4, 5, 6]);
+        $exec->shouldReceive('run')->with('pgrep -f [h]orizon')->andReturn([1, 2, 3, 4, 5, 6]);
         $exec->shouldReceive('run')->with('pgrep -f horizon:purge')->andReturn([]);
         $exec->shouldReceive('run')->with('pgrep -P 2')->andReturn([4]);
         $exec->shouldReceive('run')->with('pgrep -P 3')->andReturn([5]);

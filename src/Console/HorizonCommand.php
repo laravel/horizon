@@ -37,7 +37,7 @@ class HorizonCommand extends Command
      */
     public function handle()
     {
-        $repository = resolve(MasterSupervisorRepository::class);
+        $repository = app(MasterSupervisorRepository::class);
 
         if ($repository->find(MasterSupervisor::name())) {
             return $this->comment('A master supervisor is already running on this machine.');

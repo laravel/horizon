@@ -33,7 +33,7 @@ class ProcessInspector
     public function current()
     {
         return array_diff(
-            $this->exec->run('pgrep -f horizon'),
+            $this->exec->run('pgrep -f [h]orizon'),
             $this->exec->run('pgrep -f horizon:purge')
         );
     }
@@ -55,7 +55,7 @@ class ProcessInspector
      */
     public function monitoring()
     {
-        return collect(resolve(SupervisorRepository::class)->all())
+        return collect(app(SupervisorRepository::class)->all())
             ->pluck('pid')
             ->pipe(function ($processes) {
                 $processes->each(function ($process) use (&$processes) {
@@ -65,7 +65,7 @@ class ProcessInspector
                 return $processes;
             })
             ->merge(
-                array_pluck(resolve(MasterSupervisorRepository::class)->all(), 'pid')
+                array_pluck(app(MasterSupervisorRepository::class)->all(), 'pid')
             )->all();
     }
 }

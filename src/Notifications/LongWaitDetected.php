@@ -18,14 +18,14 @@ class LongWaitDetected extends Notification
      *
      * @var string
      */
-    public $connection;
+    public $longWaitConnection;
 
     /**
      * The queue name.
      *
      * @var string
      */
-    public $queue;
+    public $longWaitQueue;
 
     /**
      * The wait time in seconds.
@@ -44,9 +44,9 @@ class LongWaitDetected extends Notification
      */
     public function __construct($connection, $queue, $seconds)
     {
-        $this->queue = $queue;
+        $this->longWaitQueue = $queue;
         $this->seconds = $seconds;
-        $this->connection = $connection;
+        $this->longWaitConnection = $connection;
     }
 
     /**
@@ -78,7 +78,7 @@ class LongWaitDetected extends Notification
             ->greeting('Oh no! Something needs your attention.')
             ->line(sprintf(
                  'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-                $this->queue, $this->connection, $this->seconds
+                $this->longWaitQueue, $this->longWaitConnection, $this->seconds
             ));
     }
 
@@ -100,7 +100,7 @@ class LongWaitDetected extends Notification
                         $attachment->title('Long Wait Detected')
                                    ->content(sprintf(
                                         '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-                                       config('app.name'), $this->queue, $this->connection, $this->seconds
+                                       config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
                                    ));
                     });
     }
@@ -115,7 +115,7 @@ class LongWaitDetected extends Notification
     {
         return (new NexmoMessage)->content(sprintf(
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-            config('app.name'), $this->queue, $this->connection, $this->seconds
+            config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
         ));
     }
 
@@ -126,6 +126,6 @@ class LongWaitDetected extends Notification
      */
     public function signature()
     {
-        return md5($this->connection.$this->queue);
+        return md5($this->longWaitConnection.$this->longWaitQueue);
     }
 }

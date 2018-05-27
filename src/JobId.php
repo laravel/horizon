@@ -24,7 +24,7 @@ class JobId
             return call_user_func(static::$generator);
         }
 
-        return resolve(JobRepository::class)->nextJobId();
+        return app(JobRepository::class)->nextJobId();
     }
 
     /**

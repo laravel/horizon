@@ -2,7 +2,7 @@
     import _ from 'lodash';
     import moment from 'moment';
     import Layout from '../../layouts/MainLayout.vue';
-    import LineChart from '../../components/Charts/LineChart';
+    import LineChart from '../../components/Charts/LineChart.vue';
 
     export default {
         props: ['type', 'slug'],
@@ -112,7 +112,7 @@
                         Not Enough Data
                     </p>
 
-                    <line-chart v-if="!loading && rawData.length" :chart-data="metric.throughPutChart" id="throughPutChart" :width="400" :height="150"/>
+                    <line-chart v-if="!loading && rawData.length" :data="metric.throughPutChart"/>
                 </div>
             </div>
 
@@ -125,7 +125,7 @@
                         Not Enough Data
                     </p>
 
-                    <line-chart v-if="!loading && rawData.length" :chart-data="metric.runTimeChart" id="runTimeChart" :width="400" :height="150"/>
+                    <line-chart v-if="!loading && rawData.length" :data="metric.runTimeChart"/>
                 </div>
             </div>
         </section>

@@ -17,8 +17,8 @@ class ExpireSupervisors
      */
     public function handle(MasterSupervisorLooped $event)
     {
-        resolve(MasterSupervisorRepository::class)->flushExpired();
+        app(MasterSupervisorRepository::class)->flushExpired();
 
-        resolve(SupervisorRepository::class)->flushExpired();
+        app(SupervisorRepository::class)->flushExpired();
     }
 }
