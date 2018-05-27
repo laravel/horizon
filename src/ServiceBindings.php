@@ -9,7 +9,7 @@ trait ServiceBindings
      *
      * @var array
      */
-    protected $bindings = [
+    public $bindings = [
         // General services...
         AutoScaler::class,
         Contracts\HorizonCommandQueue::class => RedisHorizonCommandQueue::class,
