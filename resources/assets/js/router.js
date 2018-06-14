@@ -3,11 +3,11 @@ import Router from 'vue-router'
 
 Vue.use(Router);
 
-let base_url = document.querySelector("meta[name=base-url]");
+let base_url = document.querySelector('meta[name=base-url]');
 
 export default new Router({
     mode: 'history',
-    base: (base_url ? base_url.content.replace(window.location.origin, "") : '') + "/horizon/",
+    base: (base_url ? base_url.content.replace(window.location.origin, '') : '') + '/horizon/',
     routes: [
         {
             path: '/',
