@@ -1,6 +1,7 @@
 <!doctype>
 <html>
     <head>
+        <meta name="base-url" content="{{ url('/') }}">
         <title>Horizon</title>
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/horizon') }}">
