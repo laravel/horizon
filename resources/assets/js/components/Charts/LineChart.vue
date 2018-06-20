@@ -32,7 +32,7 @@
                                 beforeBuildTicks: function (scale) {
                                     var max = _.max(scale.chart.data.datasets[0].data);
 
-                                    scale.max = parseInt(max) + parseInt(max * 0.25);
+                                    scale.max = parseFloat(max) + parseFloat(max * 0.25);
                                 },
                             }
                         ],

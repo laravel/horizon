@@ -148,8 +148,8 @@
                     {{ readableTimestamp(job.payload.pushedAt) }}
                 </td>
                 <td>
-                    <span v-if="job.status == 'failed'">{{ job.failed_at ? String(job.failed_at - job.reserved_at)+'s' : '-' }}</span>
-                    <span v-else="">{{ job.completed_at ? String(job.completed_at - job.reserved_at)+'s' : '-' }}</span>
+                    <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                    <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
                 </td>
                 <td v-if="type == 'index'">
                     <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'" class="mr1"/>

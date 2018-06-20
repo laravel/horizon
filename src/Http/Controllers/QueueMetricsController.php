@@ -45,7 +45,7 @@ class QueueMetricsController extends Controller
     public function show($slug)
     {
         return collect($this->metrics->snapshotsForQueue($slug))->map(function ($record) {
-            $record->runtime = ceil($record->runtime / 1000);
+            $record->runtime = round($record->runtime / 1000, 3);
             $record->throughput = (int) $record->throughput;
 
             return $record;

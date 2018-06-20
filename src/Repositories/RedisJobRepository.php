@@ -218,6 +218,8 @@ class RedisJobRepository implements JobRepository
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReferences($pipe, $payload->id());
 
+            $time = microtime(true);
+
             $pipe->hmset(
                 $payload->id(), [
                     'id' => $payload->id(),
@@ -226,8 +228,8 @@ class RedisJobRepository implements JobRepository
                     'name' => $payload->decoded['displayName'],
                     'status' => 'pending',
                     'payload' => $payload->value,
-                    'created_at' => time(),
-                    'updated_at' => time(),
+                    'created_at' => $time,
+                    'updated_at' => $time,
                 ]
             );
 
@@ -259,12 +261,14 @@ class RedisJobRepository implements JobRepository
      */
     public function reserved($connection, $queue, JobPayload $payload)
     {
+        $time = microtime(true);
+
         $this->connection()->hmset(
             $payload->id(), [
                 'status' => 'reserved',
                 'payload' => $payload->value,
-                'updated_at' => time(),
-                'reserved_at' => time(),
+                'updated_at' => $time,
+                'reserved_at' => $time,
             ]
         );
     }
@@ -283,7 +287,7 @@ class RedisJobRepository implements JobRepository
             $payload->id(), [
                 'status' => 'pending',
                 'payload' => $payload->value,
-                'updated_at' => time(),
+                'updated_at' => microtime(true),
             ]
         );
     }
@@ -307,7 +311,7 @@ class RedisJobRepository implements JobRepository
                     'name' => $payload->decoded['displayName'],
                     'status' => 'completed',
                     'payload' => $payload->value,
-                    'completed_at' => time(),
+                    'completed_at' => microtime(true),
                 ]
             );
 
@@ -331,7 +335,7 @@ class RedisJobRepository implements JobRepository
                     $payload->id(), [
                         'status' => 'pending',
                         'payload' => $payload->value,
-                        'updated_at' => time(),
+                        'updated_at' => microtime(true),
                     ]
                 );
             }
@@ -368,7 +372,7 @@ class RedisJobRepository implements JobRepository
     {
         $failed
             ? $pipe->hmset($id, ['status' => 'failed'])
-            : $pipe->hmset($id, ['status' => 'completed', 'completed_at' => time()]);
+            : $pipe->hmset($id, ['status' => 'completed', 'completed_at' => microtime(true)]);
 
         $pipe->expireat($id, Chronos::now()->addMinutes($this->recentJobExpires)->getTimestamp());
     }
@@ -491,7 +495,7 @@ class RedisJobRepository implements JobRepository
                     'status' => 'failed',
                     'payload' => $payload->value,
                     'exception' => (string) $exception,
-                    'failed_at' => time(),
+                    'failed_at' => microtime(true),
                 ]
             );
 

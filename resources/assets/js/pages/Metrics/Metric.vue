@@ -67,7 +67,7 @@
                     .map(value => {
                         return _.reduce(value, (sum, value) => {
                             return {
-                                runtime: parseInt(sum.runtime) + parseInt(value.runtime),
+                                runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
                                 throughput: parseInt(sum.throughput) + parseInt(value.throughput),
                                 time: value.time
                             };
