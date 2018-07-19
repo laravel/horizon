@@ -55,7 +55,7 @@ Vue.mixin({
 
 
         /**
-         * Convert to human readable timestamp.
+         * Format the tags.
          */
         displayableTagsList(tags){
             if (!tags || !tags.length) return '';
