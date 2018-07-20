@@ -139,7 +139,10 @@
                     <span data-toggle="tooltip" :title="job.name" v-else>{{ jobBaseName(job.name) }}</span>
                 </td>
                 <td>{{ job.queue }}</td>
-                <td>{{ displayableTagsList(job.payload.tags) }}</td>
+                <td>
+                    <span data-toggle="tooltip"
+                          :title="displayableTagsList(job.payload.tags, false)">{{ displayableTagsList(job.payload.tags) }}</span>
+                </td>
                 <td class="text-nowrap">{{ readableTimestamp(job.payload.pushedAt) }}</td>
                 <td>
                     <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
