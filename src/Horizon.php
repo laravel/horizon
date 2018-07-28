@@ -2,18 +2,11 @@
 
 namespace Laravel\Horizon;
 
-use Closure;
+use Route;
 use Exception;
 
 class Horizon
 {
-    /**
-     * The callback that should be used to authenticate Horizon users.
-     *
-     * @var \Closure
-     */
-    public static $authUsing;
-
     /**
      * The Slack notifications webhook URL.
      *
@@ -53,36 +46,25 @@ class Horizon
     ];
 
     /**
-     * Determine if the given request can access the Horizon dashboard.
+     * package routes.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
-     */
-    public static function check($request)
-    {
-        return (static::$authUsing ?: function () {
-            return app()->environment('local');
-        })($request);
-    }
-
-    /**
-     * Set the callback that should be used to authenticate Horizon users.
-     *
-     * @param  \Closure  $callback
      * @return static
      */
-    public static function auth(Closure $callback)
+    public static function routes()
     {
-        static::$authUsing = $callback;
-
-        return new static;
+        Route::group([
+            'prefix'     => config('horizon.uri', 'horizon'),
+            'middleware' => config('horizon.middleware', 'web'),
+        ], function () {
+            require __DIR__ . '/../routes/web.php';
+        });
     }
 
     /**
      * Configure the Redis databases that will store Horizon data.
      *
-     * @param  string  $connection
-     * @return void
+     * @param string $connection
+     *
      * @throws Exception
      */
     public static function use($connection)
@@ -99,41 +81,44 @@ class Horizon
     /**
      * Specify the email address to which email notifications should be routed.
      *
-     * @param  string  $email
+     * @param string $email
+     *
      * @return static
      */
     public static function routeMailNotificationsTo($email)
     {
         static::$email = $email;
 
-        return new static;
+        return new static();
     }
 
     /**
      * Specify the webhook URL and channel to which Slack notifications should be routed.
      *
-     * @param  string  $url
-     * @param  string  $channel
+     * @param string $url
+     * @param string $channel
+     *
      * @return static
      */
     public static function routeSlackNotificationsTo($url, $channel = null)
     {
         static::$slackWebhookUrl = $url;
-        static::$slackChannel = $channel;
+        static::$slackChannel    = $channel;
 
-        return new static;
+        return new static();
     }
 
     /**
      * Specify the phone number to which SMS notifications should be routed.
      *
-     * @param  string  $number
+     * @param string $number
+     *
      * @return static
      */
     public static function routeSmsNotificationsTo($number)
     {
         static::$smsNumber = $number;
 
-        return new static;
+        return new static();
     }
 }

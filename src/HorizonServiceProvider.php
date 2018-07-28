@@ -3,7 +3,6 @@
 namespace Laravel\Horizon;
 
 use Illuminate\Queue\QueueManager;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
 use Laravel\Horizon\Connectors\RedisConnector;
@@ -14,21 +13,15 @@ class HorizonServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot()
     {
         $this->registerEvents();
-        $this->registerRoutes();
         $this->registerResources();
-        $this->defineAssetPublishing();
     }
 
     /**
      * Register the Horizon job events.
-     *
-     * @return void
      */
     protected function registerEvents()
     {
@@ -42,107 +35,48 @@ class HorizonServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the Horizon routes.
-     *
-     * @return void
-     */
-    protected function registerRoutes()
-    {
-        Route::group([
-            'prefix' => config('horizon.uri', 'horizon'),
-            'namespace' => 'Laravel\Horizon\Http\Controllers',
-            'middleware' => config('horizon.middleware', 'web'),
-        ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        });
-    }
-
-    /**
      * Register the Horizon resources.
-     *
-     * @return void
      */
     protected function registerResources()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'horizon');
-    }
-
-    /**
-     * Define the asset publishing configuration.
-     *
-     * @return void
-     */
-    public function defineAssetPublishing()
-    {
+        // config
+        $this->mergeConfigFrom(__DIR__ . '/../config/horizon.php', 'horizon');
         $this->publishes([
-            HORIZON_PATH.'/public' => public_path('vendor/horizon'),
+            __DIR__ . '/../config/horizon.php' => config_path('horizon.php'),
+        ], 'horizon-config');
+
+        // views
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'horizon');
+        $this->publishes([
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/horizon'),
+        ], 'horizon-views');
+
+        // resources
+        $this->publishes([
+            __DIR__ . '/../resources/assets' => resource_path('assets/vendor/horizon'),
         ], 'horizon-assets');
     }
 
     /**
-     * Register the custom queue connectors for Horizon.
-     *
-     * @return void
-     */
-    protected function registerQueueConnectors()
-    {
-        $this->app->resolving(QueueManager::class, function ($manager) {
-            $manager->addConnector('redis', function () {
-                return new RedisConnector($this->app['redis']);
-            });
-        });
-    }
-
-    /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register()
     {
-        if (! defined('HORIZON_PATH')) {
-            define('HORIZON_PATH', realpath(__DIR__.'/../'));
+        if (!defined('HORIZON_PATH')) {
+            define('HORIZON_PATH', realpath(__DIR__ . '/../'));
         }
 
-        $this->configure();
-        $this->offerPublishing();
+        if ($config = config('horizon.use')) {
+            Horizon::use($config);
+        }
+
         $this->registerServices();
         $this->registerCommands();
         $this->registerQueueConnectors();
     }
 
     /**
-     * Setup the configuration for Horizon.
-     *
-     * @return void
-     */
-    protected function configure()
-    {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/horizon.php', 'horizon'
-        );
-
-        Horizon::use(config('horizon.use'));
-    }
-
-    /**
-     * Setup the resource publishing groups for Horizon.
-     *
-     * @return void
-     */
-    protected function offerPublishing()
-    {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/horizon.php' => config_path('horizon.php'),
-            ], 'horizon-config');
-        }
-    }
-
-    /**
      * Register Horizon's services in the container.
-     *
-     * @return void
      */
     protected function registerServices()
     {
@@ -155,8 +89,6 @@ class HorizonServiceProvider extends ServiceProvider
 
     /**
      * Register the Horizon Artisan commands.
-     *
-     * @return void
      */
     protected function registerCommands()
     {
@@ -177,5 +109,17 @@ class HorizonServiceProvider extends ServiceProvider
         }
 
         $this->commands([Console\SnapshotCommand::class]);
+    }
+
+    /**
+     * Register the custom queue connectors for Horizon.
+     */
+    protected function registerQueueConnectors()
+    {
+        $this->app->resolving(QueueManager::class, function ($manager) {
+            $manager->addConnector('redis', function () {
+                return new RedisConnector($this->app['redis']);
+            });
+        });
     }
 }
