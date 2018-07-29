@@ -1,7 +1,7 @@
-<script type="text/ecmascript-6">
-    export default {
-        name: 'App'
-    };
+<script>
+export default {
+    name: 'app'
+}
 </script>
 
 <template>

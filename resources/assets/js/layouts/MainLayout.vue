@@ -1,10 +1,10 @@
-<script type="text/ecmascript-6">
-    import Status from '../components/Status/Status.vue'
-    import MainSidebar from './MainSidebar.vue'
+<script>
+import Status from '../components/Status/Status.vue'
+import MainSidebar from './MainSidebar.vue'
 
-    export default {
-        components: {Status, MainSidebar}
-    }
+export default {
+    components: {Status, MainSidebar}
+}
 </script>
 
 <template>

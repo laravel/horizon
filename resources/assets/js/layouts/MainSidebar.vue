@@ -6,7 +6,7 @@
                     <i>
                         <svg>
                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 xlink:href="#zondicon-dashboard"></use>
+                                 xlink:href="#zondicon-dashboard"/>
                         </svg>
                     </i>
                     Dashboard
@@ -18,7 +18,7 @@
                     <i>
                         <svg>
                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 xlink:href="#zondicon-search"></use>
+                                 xlink:href="#zondicon-search"/>
                         </svg>
                     </i>
                     Monitoring
@@ -30,7 +30,7 @@
                     <i>
                         <svg>
                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 xlink:href="#zondicon-chart-bar"></use>
+                                 xlink:href="#zondicon-chart-bar"/>
                         </svg>
                     </i>
                     Metrics
@@ -42,7 +42,7 @@
                     <i>
                         <svg>
                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 xlink:href="#zondicon-cog"></use>
+                                 xlink:href="#zondicon-cog"/>
                         </svg>
                     </i>
                     Recent Jobs
@@ -54,7 +54,7 @@
                     <i>
                         <svg>
                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 xlink:href="#zondicon-close-outline"></use>
+                                 xlink:href="#zondicon-close-outline"/>
                         </svg>
                     </i>
                     Failed

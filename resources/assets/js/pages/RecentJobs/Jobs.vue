@@ -1,12 +1,8 @@
-<script type="text/ecmascript-6">
+<script>
 import Status from '../../components/Status/Status.vue'
 
 export default {
     components: {Status},
-
-    /**
-         * The component's data.
-         */
     data() {
         return {
             page: 1,
@@ -16,47 +12,37 @@ export default {
             jobs: []
         }
     },
-
-    /**
-         * Prepare the component.
-         */
     created() {
         this.loadJobs()
-
         this.refreshJobsPeriodically()
     },
-
-    /**
-         * Clean after the component is destroyed.
-         */
     destroyed() {
         clearInterval(this.interval)
     },
-
     methods: {
         /**
-             * Load the jobs.
-             */
+         * Load the jobs.
+         */
         loadJobs(starting = -1, preload = true) {
             if (preload) {
                 this.loadState = true
             }
 
-            return this.$http.get('/horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
-                .then((response) => {
-                    this.jobs = response.data.jobs
+            return axios.get('/horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
+                .then(({data}) => {
+                    this.jobs = data.jobs
 
-                    this.totalPages = Math.ceil(response.data.total / this.perPage)
+                    this.totalPages = Math.ceil(data.total / this.perPage)
 
                     this.loadState = false
 
-                    return response.data.jobs
+                    return data.jobs
                 })
         },
 
         /**
-             * Refresh the jobs every period of time.
-             */
+         * Refresh the jobs every period of time.
+         */
         refreshJobsPeriodically() {
             this.interval = setInterval(() => {
                 if (this.page != 1) {
@@ -68,8 +54,8 @@ export default {
         },
 
         /**
-             * Load the jobs for the previous page.
-             */
+         * Load the jobs for the previous page.
+         */
         previous() {
             this.loadJobs(
                 (this.page - 2) * this.perPage - 1
@@ -79,8 +65,8 @@ export default {
         },
 
         /**
-             * Load the jobs for the next page.
-             */
+         * Load the jobs for the next page.
+         */
         next() {
             this.loadJobs(
                 this.page * this.perPage - 1
@@ -89,14 +75,9 @@ export default {
             this.page += 1
         }
     },
-
-    /**
-         * Watch these properties for changes.
-         */
     watch: {
         '$route'() {
             this.page = 1
-
             this.loadJobs()
         }
     }
@@ -124,17 +105,17 @@ export default {
             </thead>
 
             <tbody>
-                <tr v-for="job in jobs">
+                <tr v-for="job in jobs" :key="job.name">
                     <td>
                         <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id"
-                           :title="job.name" data-toggle="tooltip">{{ jobBaseName(job.name) }}
+                           :title="job.name" vue-tippy>{{ jobBaseName(job.name) }}
                         </a>
-                        <span v-else :title="job.name" data-toggle="tooltip">{{ jobBaseName(job.name) }}</span>
+                        <span v-else :title="job.name" vue-tippy>{{ jobBaseName(job.name) }}</span>
                     </td>
                     <td>{{ job.queue }}</td>
                     <td>
                         <span :title="displayableTagsList(job.payload.tags, false)"
-                              data-toggle="tooltip">{{ displayableTagsList(job.payload.tags) }}</span>
+                              vue-tippy>{{ displayableTagsList(job.payload.tags) }}</span>
                     </td>
                     <td class="text-nowrap">{{ readableTimestamp(job.payload.pushedAt) }}</td>
                     <td>

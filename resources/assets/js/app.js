@@ -1,28 +1,10 @@
-import Vue from 'vue'
-import _ from 'lodash'
-import axios from 'axios'
+require('./bootstrap')
+
+import _reduce from 'lodash/reduce'
+import _truncate from 'lodash/truncate'
 import moment from 'moment'
 import router from './router'
 import App from './components/App.vue'
-
-window.$ = window.jQuery = require('jquery')
-window.Popper = require('popper.js').default
-
-require('bootstrap')
-
-$('body').tooltip({
-    selector: '[data-toggle=tooltip]'
-})
-
-Vue.prototype.$http = axios.create()
-
-window.Bus = new Vue({name: 'bus'})
-
-Vue.component('loader', require('./components/Status/Loader.vue'))
-
-Vue.config.errorHandler = function (err, vm, info) {
-    console.error(err)
-}
 
 Vue.mixin({
     methods: {
@@ -39,7 +21,7 @@ Vue.mixin({
         jobBaseName(name) {
             if (!name.includes('\\')) return name
 
-            var parts = name.split('\\')
+            let parts = name.split('\\')
 
             return parts[parts.length - 1]
         },
@@ -57,8 +39,8 @@ Vue.mixin({
         displayableTagsList(tags, truncate = true) {
             if (!tags || !tags.length) return ''
 
-            return _.reduce(tags, (s, n) => {
-                return (s ? s + ', ' : '') + (truncate ? _.truncate(n) : n)
+            return _reduce(tags, (s, n) => {
+                return (s ? s + ', ' : '') + (truncate ? _truncate(n) : n)
             }, '')
         }
     }
@@ -66,15 +48,9 @@ Vue.mixin({
 
 new Vue({
     el: '#root',
-
     router,
-
-    /**
-     * The component's data.
-     */
     data() {
         return {}
     },
-
     render: (h) => h(App)
 })

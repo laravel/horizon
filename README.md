@@ -20,7 +20,11 @@ Documentation for Horizon can be found on the [Laravel website](http://laravel.c
     + `Horizon::auth()`
     + public dist
 - add to publish `config/views/assets`
-- register routes `Horizon::routes();`
+- register routes
+```php
+Horizon::routes();
+```
+
 - add to `composer.json`
 ```json
 "repositories": [
@@ -30,6 +34,33 @@ Documentation for Horizon can be found on the [Laravel website](http://laravel.c
     }
 ],
 "require": {
-    "laravel/horizon": "^1.3"
+    "laravel/horizon": "dev-master"
 },
 ```
+
+- add dep
+```bash
+yarn add axios bootstrap chart.js jquery phpunserialize vue vue-router vue-tippy@v1 laravel-mix-purgecss
+```
+
+- compile assets
+```js
+require('laravel-mix-purgecss')
+
+const mix = require('laravel-mix')
+const webpack = require('webpack')
+
+mix.js('resources/assets/vendor/horizon/js/app.js', 'public/vendor/horizon/js')
+    .sass('resources/assets/vendor/horizon/sass/app.scss', 'public/vendor/horizon/css')
+    .copy('resources/assets/vendor/horizon/img', 'public/vendor/horizon/img')
+    .purgeCss({enabled: true})
+
+mix.webpackConfig({
+    plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    ]
+})
+```
+
+### TODO
+- find a way for `lodash/chain` atm we need to import the whole package

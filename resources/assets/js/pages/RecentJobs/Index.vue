@@ -1,18 +1,13 @@
-<script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
-    import JobTable from './Jobs.vue'
+<script>
+import Layout from '../../layouts/MainLayout.vue'
+import JobTable from './Jobs.vue'
 
-    export default {
-        components: {JobTable, Layout},
-
-
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Recent Jobs";
-        }
+export default {
+    components: {JobTable, Layout},
+    mounted() {
+        document.title = 'Horizon - Recent Jobs'
     }
+}
 </script>
 
 <template>
