@@ -105,17 +105,18 @@ export default {
             </thead>
 
             <tbody>
-                <tr v-for="job in jobs" :key="job.name">
+                <tr v-for="job in jobs" :key="job.id">
                     <td>
-                        <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id"
-                           :title="job.name" vue-tippy>{{ jobBaseName(job.name) }}
+                        <a v-tippy v-if="job.status == 'failed'"
+                           :href="'/horizon/failed/'+job.id" :title="job.name">{{ jobBaseName(job.name) }}
                         </a>
-                        <span v-else :title="job.name" vue-tippy>{{ jobBaseName(job.name) }}</span>
+                        <span v-tippy v-else :title="job.name">{{ jobBaseName(job.name) }}</span>
                     </td>
                     <td>{{ job.queue }}</td>
                     <td>
-                        <span :title="displayableTagsList(job.payload.tags, false)"
-                              vue-tippy>{{ displayableTagsList(job.payload.tags) }}</span>
+                        <span :title="displayableTagsList(job.payload.tags, false)" vue-tippy>
+                            {{ displayableTagsList(job.payload.tags) }}
+                        </span>
                     </td>
                     <td class="text-nowrap">{{ readableTimestamp(job.payload.pushedAt) }}</td>
                     <td>

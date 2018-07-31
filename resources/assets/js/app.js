@@ -49,8 +49,5 @@ Vue.mixin({
 new Vue({
     el: '#root',
     router,
-    data() {
-        return {}
-    },
     render: (h) => h(App)
 })

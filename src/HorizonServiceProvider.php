@@ -18,6 +18,7 @@ class HorizonServiceProvider extends ServiceProvider
     {
         $this->registerEvents();
         $this->registerResources();
+        $this->registerMacro();
     }
 
     /**
@@ -55,6 +56,22 @@ class HorizonServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/assets' => resource_path('assets/vendor/horizon'),
         ], 'horizon-assets');
+    }
+
+    /**
+     * route group namespace workaround.
+     */
+    protected function registerMacro()
+    {
+        $this->app['router']->macro('setGroupNamespace', function ($namesapce = null) {
+            $lastGroupStack = array_pop($this->groupStack);
+            if ($lastGroupStack !== null) {
+                array_set($lastGroupStack, 'namespace', $namesapce);
+                $this->groupStack[] = $lastGroupStack;
+            }
+
+            return $this;
+        });
     }
 
     /**

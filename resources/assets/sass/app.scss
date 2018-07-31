@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
 @import 'variables';
 @import 'node_modules/bootstrap/scss/bootstrap';
 
@@ -19,6 +20,16 @@
 }
 
 .modal {
+    z-index: 0;
+
+    &.show {
+        display: block;
+    }
+
+    .modal-dialog {
+        z-index: 1050;
+    }
+
     .modal-header {
         background: #fff;
     }
@@ -152,7 +163,6 @@
 
     td {
         padding: 1.25rem;
-        vertical-align: middle;
     }
 }
 

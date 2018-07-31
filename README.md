@@ -40,7 +40,7 @@ Horizon::routes();
 
 - add dep
 ```bash
-yarn add axios bootstrap chart.js jquery phpunserialize vue vue-router vue-tippy@v1 laravel-mix-purgecss
+yarn add axios chart.js bootstrap phpunserialize vue vue-router vue-tippy@v1 laravel-mix-purgecss
 ```
 
 - compile assets
