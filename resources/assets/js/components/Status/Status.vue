@@ -6,11 +6,6 @@ export default {
         activeClass: {
             default: 'fsuccess'
         }
-    },
-    data() {
-        return {
-            theActiveClass: this.activeClass
-        }
     }
 }
 </script>

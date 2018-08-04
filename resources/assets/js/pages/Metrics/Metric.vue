@@ -1,5 +1,5 @@
 <script>
-import _chain from 'lodash/chain'
+import _ from 'lodash'
 import _reduce from 'lodash/reduce'
 import _map from 'lodash/map'
 
@@ -43,7 +43,7 @@ export default {
          * Prepare the response data for charts.
          */
         prepareData(data) {
-            return _chain(data)
+            return _.chain(data)
                 .map((value) => {
                     value.time = this.formatDate(value.time).format('hh:mmA')
 

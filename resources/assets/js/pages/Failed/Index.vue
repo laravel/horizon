@@ -157,7 +157,7 @@ export default {
                         <tbody>
                             <tr v-for="job in jobs" :key="job.name">
                                 <td>
-                                    <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" :title="job.name" vue-tippy>
+                                    <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" :title="job.name" v-tippy>
                                         {{ jobBaseName(job.name) }}
                                     </router-link>
                                 </td>

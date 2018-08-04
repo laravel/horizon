@@ -1,10 +1,6 @@
-// bs
-window.$ = window.jQuery = require('jquery')
-require('bootstrap')
-
 // vue
 window.Vue = require('vue')
-window.Bus = new Vue({name: 'bus'})
+window.Bus = new Vue()
 
 Vue.config.errorHandler = (err, vm, info) => {
     console.error(err)

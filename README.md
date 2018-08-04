@@ -19,11 +19,17 @@ Documentation for Horizon can be found on the [Laravel website](http://laravel.c
     + middleware
     + `Horizon::auth()`
     + public dist
-- add to publish `config/views/assets`
+    + jquery
+    + boostrap js
+    
+- publish `config/views/assets`
+
 - register routes
 ```php
 Horizon::routes();
 ```
+
+## Installation
 
 - add to `composer.json`
 ```json
@@ -40,7 +46,7 @@ Horizon::routes();
 
 - add dep
 ```bash
-yarn add axios bootstrap chart.js jquery phpunserialize vue vue-router vue-tippy@v1 laravel-mix-purgecss
+yarn add axios chart.js bootstrap phpunserialize vue vue-router vue-tippy@v1 laravel-mix-purgecss
 ```
 
 - compile assets
@@ -50,10 +56,15 @@ require('laravel-mix-purgecss')
 const mix = require('laravel-mix')
 const webpack = require('webpack')
 
-mix.js('resources/assets/vendor/horizon/js/app.js', 'public/vendor/horizon/js')
-    .sass('resources/assets/vendor/horizon/sass/app.scss', 'public/vendor/horizon/css')
-    .copy('resources/assets/vendor/horizon/img', 'public/vendor/horizon/img')
-    .purgeCss({enabled: true})
+mix.js('resources/assets/vendor/horizon/js/app.js', 'vendor/horizon/js')
+    .sass('resources/assets/vendor/horizon/sass/app.scss', 'vendor/horizon/css')
+    .copy('resources/assets/vendor/horizon/img', 'vendor/horizon/img')
+    .purgeCss({
+        enabled: true,
+        keyframes: true,
+        fontFace: true,
+        rejected: true
+    })
 
 mix.webpackConfig({
     plugins: [

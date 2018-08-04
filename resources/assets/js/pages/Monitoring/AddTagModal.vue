@@ -4,19 +4,14 @@ export default {
     data() {
         return {
             name: '',
-            saving: false
+            saving: false,
+            showModal: true
         }
     },
     mounted() {
-        $('#addTagModal').modal()
-
-        $('#addTagModal').on('hidden.bs.modal', (e) => {
-            Bus.$emit('addTagModalClosed')
-        })
-
         this.name = ''
 
-        this.$nextTick((_) => {
+        this.$nextTick(() => {
             this.$refs.tag.focus()
         })
     },
@@ -35,19 +30,33 @@ export default {
 
             axios.post('/horizon/api/monitoring', {'tag': this.name})
                 .then(({data}) => {
-                    $('#addTagModal').modal('hide')
+                    this.showModal = false
+                    this.saving = false
 
                     Bus.$emit('tagAdded', {tag: this.name})
-
-                    this.saving = false
                 })
+        },
+        hideModal() {
+            this.showModal = false
+        }
+    },
+    watch: {
+        showModal: {
+            handler(val) {
+                if (!val) Bus.$emit('addTagModalClosed')
+
+                document.querySelector('body').classList.toggle('modal-open')
+            },
+            immediate: true
         }
     }
 }
 </script>
 
 <template>
-    <div id="addTagModal" class="modal" tabindex="-1" role="dialog">
+    <div id="addTagModal" :class="{'show': showModal}" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-backdrop show" @click="hideModal"/>
+
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
