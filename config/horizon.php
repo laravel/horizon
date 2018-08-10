@@ -30,7 +30,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Horizon Redis Prefix
+    | Horizon Default URI
     |--------------------------------------------------------------------------
     |
     | Here you may configure the default base url for the horizon dashboard
