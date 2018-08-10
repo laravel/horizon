@@ -29,7 +29,7 @@
             loadQueues() {
                 this.loadingQueues = true;
 
-                this.$http.get('/horizon/api/metrics/queues')
+                this.$http.get('/api/metrics/queues')
                         .then(response => {
                             this.queues = response.data;
 
@@ -55,7 +55,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="queue in queues">
+            <tr v-for="queue in queues" :key="queue">
                 <td>
                     <router-link :to="{ name: 'metrics.detail', params: { type: 'queues', slug: queue }}">{{ queue }}</router-link>
                 </td>

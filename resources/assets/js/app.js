@@ -14,7 +14,9 @@ $('body').tooltip({
     selector: '[data-toggle=tooltip]'
 });
 
-Vue.prototype.$http = axios.create();
+Vue.prototype.$http = axios.create({
+  baseURL: `${location.protocol}//${location.host}/${horizon.uri}`
+});
 
 window.Bus = new Vue({name: 'Bus'});
 

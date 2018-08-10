@@ -57,7 +57,7 @@
                     this.loadState = true;
                 }
 
-                return this.$http.get('/horizon/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/api/jobs/recent' + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         this.jobs = response.data.jobs;
 
@@ -131,7 +131,7 @@
             </thead>
 
             <tbody>
-            <tr v-for="job in jobs">
+            <tr v-for="job in jobs" :key="job.id">
                 <td>
                     <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id"
                        data-toggle="tooltip" :title="job.name">{{ jobBaseName(job.name) }}
@@ -146,7 +146,7 @@
                 <td class="text-nowrap">{{ readableTimestamp(job.payload.pushedAt) }}</td>
                 <td>
                     <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                    <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                    <span v-else>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
                 </td>
                 <td>
                     <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'"/>

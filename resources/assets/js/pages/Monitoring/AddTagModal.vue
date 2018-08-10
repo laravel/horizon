@@ -46,7 +46,7 @@
 
                 this.saving = true;
 
-                this.$http.post('/horizon/api/monitoring', {'tag': this.name})
+                this.$http.post('/api/monitoring', {'tag': this.name})
                     .then(response => {
                         $('#addTagModal').modal('hide');
 

@@ -38,7 +38,7 @@
             loadMetric() {
                 this.loading = true;
 
-                this.$http.get('/horizon/api/metrics/' + this.type + '/' + encodeURIComponent(this.slug))
+                this.$http.get('/api/metrics/' + this.type + '/' + encodeURIComponent(this.slug))
                     .then(response => {
                         let data = this.prepareData(response.data);
 

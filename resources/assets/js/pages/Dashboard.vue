@@ -43,7 +43,7 @@
              * Load the general stats.
              */
             loadStats() {
-                return this.$http.get('/horizon/api/stats')
+                return this.$http.get('/api/stats')
                     .then(response => {
                         this.stats = response.data;
 
@@ -59,7 +59,7 @@
              * Load the workers stats.
              */
             loadWorkers() {
-                return this.$http.get('/horizon/api/masters')
+                return this.$http.get('/api/masters')
                     .then(response => {
                         this.workers = response.data;
                     });
@@ -72,7 +72,7 @@
             loadWorkload() {
                 this.loadingWorkload = !this.ready;
 
-                return this.$http.get('/horizon/api/workload')
+                return this.$http.get('/api/workload')
                     .then(response => {
                         this.workload = response.data;
                     });
@@ -219,7 +219,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="queue in workload">
+                        <tr v-for="queue in workload" :key="queue.name">
                             <td>
                                 <span>{{ queue.name }}</span>
                             </td>
@@ -245,7 +245,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="supervisor in worker.supervisors">
+                        <tr v-for="supervisor in worker.supervisors" :key="supervisor.name+worker.name">
                             <td class="ph2">
                                 <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
                             </td>
