@@ -14,6 +14,9 @@
             {!! file_get_contents(public_path('/vendor/horizon/img/sprite.svg')) !!}
         </div>
 
+        <script>
+          var horizon = @json(['uri' => config('horizon.uri', 'horizon')]);
+        </script>
         <script src="{{ mix('js/app.js', 'vendor/horizon') }}"></script>
     </body>
 </html>

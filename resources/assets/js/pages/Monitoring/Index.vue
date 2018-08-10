@@ -45,7 +45,7 @@
             loadTags() {
                 this.loadingTags = true;
 
-                this.$http.get('/horizon/api/monitoring')
+                this.$http.get('/api/monitoring')
                     .then(response => {
                         this.tags = response.data;
 
@@ -65,7 +65,7 @@
              * Stop monitoring the given tag.
              */
             stopMonitoring(tag) {
-                this.$http.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
+                this.$http.delete('/api/monitoring/' + encodeURIComponent(tag))
                     .then(() => {
                         this.tags = _.reject(this.tags, existing => existing.tag == tag)
                     })
@@ -100,7 +100,7 @@
                         </thead>
 
                         <tbody>
-                        <tr v-for="tag in tags">
+                        <tr v-for="tag in tags" :key="tag.tag">
                             <td>
                                 <router-link :to="{ name: 'monitoring.detail.index', params: { tag:tag.tag }}"
                                              href="#" class="fw7">{{ tag.tag }}

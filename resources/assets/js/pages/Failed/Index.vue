@@ -68,7 +68,7 @@
 
                 var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
 
-                this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+                this.$http.get('/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
                     .then(response => {
                         this.jobs = response.data.jobs;
 
@@ -89,7 +89,7 @@
 
                 this.retryingJobs.push(id);
 
-                this.$http.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post('/api/jobs/retry/' + id)
                     .then(() => {
                         setTimeout(() => {
                             this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
@@ -180,7 +180,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="job in jobs">
+                        <tr v-for="job in jobs" :key="job.id">
                             <td>
                                 <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" data-toggle="tooltip" :title="job.name">
                                     {{ jobBaseName(job.name) }}

@@ -29,7 +29,7 @@
             loadJobs() {
                 this.loadingJobs = true;
 
-                this.$http.get('/horizon/api/metrics/jobs')
+                this.$http.get('/api/metrics/jobs')
                     .then(response => {
                         this.jobs = response.data;
 
@@ -55,7 +55,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="job in jobs">
+            <tr v-for="job in jobs" :key="job.id">
                 <td>
                     <router-link :to="{ name: 'metrics.detail', params: { type: 'jobs', slug: job }}">{{ job }}</router-link>
                 </td>

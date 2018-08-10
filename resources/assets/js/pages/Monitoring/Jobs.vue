@@ -64,7 +64,7 @@
 
                 tag = this.type == 'failed' ? 'failed:' + tag : tag;
 
-                return this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         this.jobs[this.type] = response.data.jobs;
 
@@ -137,7 +137,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="job in jobs[type]">
+            <tr v-for="job in jobs[type]" :key="job.id">
                 <td>
                     <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
                     <span v-else>{{ job.name }}</span>
@@ -149,7 +149,7 @@
                 </td>
                 <td>
                     <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                    <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                    <span v-else>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
                 </td>
                 <td v-if="type == 'index'">
                     <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'" class="mr1"/>
