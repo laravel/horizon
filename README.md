@@ -58,7 +58,7 @@ const webpack = require('webpack')
 
 mix.js('resources/assets/vendor/horizon/js/app.js', 'vendor/horizon/js')
     .sass('resources/assets/vendor/horizon/sass/app.scss', 'vendor/horizon/css')
-    .copy('resources/assets/vendor/horizon/img', 'vendor/horizon/img')
+    .copyDirectory('resources/assets/vendor/horizon/img', 'vendor/horizon/img')
     .purgeCss({
         enabled: true,
         keyframes: true,
