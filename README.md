@@ -15,8 +15,8 @@ All of your worker configuration is stored in a single, simple configuration fil
 
 ## Official Documentation
 
-Documentation for Horizon can be found on the [Laravel website](http://laravel.com/docs/horizon).
+Documentation for Horizon can be found on the [Laravel website](https://laravel.com/docs/horizon).
 
 ## License
 
-Laravel Horizon is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+Laravel Horizon is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
