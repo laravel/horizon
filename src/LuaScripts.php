@@ -34,4 +34,34 @@ class LuaScripts
             redis.call('hmset', KEYS[1], 'throughput', throughput, 'runtime', runtime)
 LUA;
     }
+
+    /**
+     * https://redislabs.com/blog/the-7th-principle-of-redis-we-optimize-for-joy/
+     * A fast, type-agnostic way to copy a Redis key
+     *
+     * KEYS[1] - The name of the source key
+     * KEYS[2] - The name of the destination key
+     * ARGV[1] - If equal to "NX" and the destination key exists, it will not be
+     *           overridden and the copy operation will not be carried out.
+     *
+     * @return string|null "OK" on success, null otherwise
+     */
+    public static function copy()
+    {
+        return <<<'LUA'
+            local s = KEYS[1]
+            local d = KEYS[2]
+            
+            if redis.call("EXISTS", d) == 1 then
+              if type(ARGV[1]) == "string" and ARGV[1]:upper() == "NX" then
+                return nil
+              else
+                redis.call("DEL", d)
+              end
+            end
+            
+            redis.call("RESTORE", d, 0, redis.call("DUMP", s))
+            return "OK"
+LUA;
+    }
 }

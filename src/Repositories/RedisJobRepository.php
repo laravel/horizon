@@ -5,12 +5,15 @@ namespace Laravel\Horizon\Repositories;
 use Cake\Chronos\Chronos;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\JobPayload;
+use Laravel\Horizon\LuaScripts;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\JobRepository;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 
 class RedisJobRepository implements JobRepository
 {
+    public const FAILED_JOBS_SNAPSHOT_PREFIX = 'failed_jobs_snapshot_';
+
     /**
      * The Redis connection instance.
      *
@@ -144,7 +147,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    protected function getJobsByType($type, $afterIndex)
+    public function getJobsByType($type, $afterIndex)
     {
         $afterIndex = $afterIndex === null ? -1 : $afterIndex;
 
@@ -562,5 +565,35 @@ class RedisJobRepository implements JobRepository
     protected function connection()
     {
         return $this->redis->connection('horizon');
+    }
+
+    /**
+     * Inserts a snapshot of the failed jobs into storage.
+     *
+     * @return string the snapshot ID
+     */
+    public function snapshotFailedJobs()
+    {
+        $id = self::FAILED_JOBS_SNAPSHOT_PREFIX . time();
+
+        $ret = $this->connection()->eval(
+            LuaScripts::copy(),
+            2,
+            'failed_jobs',
+            $id
+        );
+
+        return $ret === 'OK'? $id : null;
+    }
+
+    /**
+     * Delete a snapshot of the failed jobs from storage by ID.
+     *
+     * @param  string $id
+     * @return bool
+     */
+    public function deleteFailedJobsSnapshot($id)
+    {
+        return $this->connection()->del($id) === 1;
     }
 }

@@ -190,4 +190,28 @@ interface JobRepository
      * @return int
      */
     public function deleteFailed($id);
+
+    /**
+     * Get a chunk of jobs from the given type set.
+     *
+     * @param  string  $type
+     * @param  string  $afterIndex
+     * @return \Illuminate\Support\Collection
+     */
+    public function getJobsByType($type, $afterIndex);
+
+    /**
+     * Inserts a snapshot of the failed jobs into storage.
+     *
+     * @return string|null the snapshot ID or null if the operation fails.
+     */
+    public function snapshotFailedJobs();
+
+    /**
+     * Delete a snapshot of the failed jobs from storage by ID.
+     *
+     * @param  string  $id
+     * @return bool
+     */
+    public function deleteFailedJobsSnapshot($id);
 }
