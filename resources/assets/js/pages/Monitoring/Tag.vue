@@ -1,9 +1,9 @@
-<script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
+<script>
+import Layout from '../../layouts/MainLayout.vue'
 
-    export default {
-        components: {Layout}
-    }
+export default {
+    components: {Layout}
+}
 </script>
 
 <template>

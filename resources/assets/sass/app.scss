@@ -1,24 +1,43 @@
-@import "variables";
-@import "node_modules/bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+@import 'variables';
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+body {
+    display: flex;
+    flex-direction: column;
+}
 
 #mainHeader {
     border-bottom: solid 1px #d8d8d8;
 }
 
 #mainFooter {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
     border-top: solid 1px #d8d8d8;
 }
 
 .card {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, .16);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
 
     .card-header {
-        padding: 1rem 1.25rem;
         font-size: 1.3rem;
+        padding: 1rem 1.25rem;
     }
 }
 
 .modal {
+    z-index: 0;
+
+    &.show {
+        display: block;
+    }
+
+    .modal-dialog {
+        z-index: 1050;
+    }
+
     .modal-header {
         background: #fff;
     }
@@ -30,8 +49,8 @@
 
 #mainSidebar {
     a {
-        color: $gray-700;
         padding: 0.5rem 0;
+        color: $gray-700;
     }
 
     svg {
@@ -49,16 +68,16 @@
     }
 
     i {
+        position: relative;
         display: inline-flex;
         align-self: center;
-        position: relative;
-        height: 1em;
         width: 0.4em;
+        height: 1em;
         margin-right: 1.5rem;
 
         svg {
-            bottom: -.3em;
             position: absolute;
+            bottom: -0.3em;
             width: 1.2rem;
             height: 1.2rem;
         }
@@ -69,11 +88,11 @@
     overflow: scroll;
 
     .stat {
-        border-right-style: solid;
-        border-right-width: 1px;
-        border-bottom-style: solid;
-        border-bottom-width: 1px;
         border-color: #d8d8d8;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
 
         .stat-title {
             font-size: 0.8rem;
@@ -85,7 +104,7 @@
             font-size: 1.4rem;
         }
 
-        .stat-meta{
+        .stat-meta {
             font-size: 1rem;
             line-height: 2rem;
         }
@@ -95,21 +114,21 @@
 .statusIcon {
     > svg {
         width: 1.5rem;
-        height: 1.5rem
+        height: 1.5rem;
     }
 }
 
 .icon {
     > svg {
         width: 1.5rem;
-        height: 1.5rem
+        height: 1.5rem;
     }
 }
 
 .icon-sm {
     > svg {
         width: 1rem;
-        height: 1rem
+        height: 1rem;
     }
 }
 
@@ -143,11 +162,11 @@
     }
 
     th {
-        background-color: #ebecee;
-        vertical-align: middle;
         font-weight: normal;
         padding: 0.5rem 1.25rem;
+        vertical-align: middle;
         border: 0;
+        background-color: #ebecee;
     }
 
     td {
@@ -163,84 +182,54 @@
     }
 
     .nav-link {
-        border: 0;
-        color: #495057;
         padding: 0.8rem 0;
+        color: #495057;
+        border: 0;
     }
 
     .nav-link.active {
-        background-color: transparent;
         color: $primary;
         border-bottom: solid 2px $primary;
-    }
-}
-
-@-webkit-keyframes spin {
-    from {
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    to {
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
+        background-color: transparent;
     }
 }
 
 @keyframes spin {
     from {
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     to {
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
         transform: rotate(360deg);
     }
 }
 
 .spin {
-    -webkit-animation: spin 2s linear infinite;
-    -moz-animation: spin 2s linear infinite;
-    -ms-animation: spin 2s linear infinite;
-    -o-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
 }
 
 .exceptionDisplay {
     span {
-        margin-bottom: 5px;
         display: block;
-        background: #efefef;
+        margin-bottom: 5px;
         padding: 1px 3px;
+        background: #efefef;
     }
 }
 
 .jobDetailsText {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-all;
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
     overflow-y: scroll;
     max-height: 400px;
+    word-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    overflow-wrap: break-word;
 
-    span, pre {
-        margin-bottom: 5px;
+    span,
+    pre {
         display: block;
-        background: #efefef;
+        margin-bottom: 5px;
         padding: 1px 3px;
+        background: #efefef;
     }
 }

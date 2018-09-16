@@ -1,129 +1,116 @@
-<script type="text/ecmascript-6">
-    import _ from 'lodash';
-    import moment from 'moment';
-    import Layout from '../layouts/MainLayout.vue';
-    import Status from '../components/Status/Status.vue';
+<script>
+import _ from 'lodash'
+import _values from 'lodash/values'
+import _keys from 'lodash/keys'
+import _replace from 'lodash/replace'
 
-    export default {
-        components: {Layout, Status},
+import moment from 'moment'
+import Layout from '../layouts/MainLayout.vue'
+import Status from '../components/Status/Status.vue'
 
+export default {
+    components: {Layout, Status},
+    data() {
+        return {
+            stats: {},
+            workers: [],
+            workload: []
+        }
+    },
+    mounted() {
+        document.title = 'Horizon - Dashboard'
 
+        this.refreshStatsPeriodically()
+    },
+    destroyed() {
+        clearTimeout(this.timeout)
+    },
+
+    methods: {
         /**
-         * The component's data.
+         * Load the general stats.
          */
-        data() {
-            return {
-                stats: {},
-                workers: [],
-                workload: [],
-            };
+        loadStats() {
+            return axios.get('/horizon/api/stats')
+                .then(({data}) => {
+                    this.stats = data
+
+                    if (_values(data.wait)[0]) {
+                        this.stats.max_wait_time = _values(data.wait)[0]
+                        this.stats.max_wait_queue = _keys(data.wait)[0].split(':')[1]
+                    }
+                })
         },
 
-
         /**
-         * Prepare the component.
+         * Load the workers stats.
          */
-        mounted() {
-            document.title = "Horizon - Dashboard";
-
-            this.refreshStatsPeriodically();
+        loadWorkers() {
+            return axios.get('/horizon/api/masters')
+                .then(({data}) => {
+                    this.workers = data
+                })
         },
 
-
         /**
-         * Clean after the component is destroyed.
+         * Load the workload stats.
          */
-        destroyed() {
-            clearTimeout(this.timeout);
+        loadWorkload() {
+            this.loadingWorkload = !this.ready
+
+            return axios.get('/horizon/api/workload')
+                .then(({data}) => {
+                    this.workload = data
+                })
         },
 
+        /**
+         * Refresh the stats every period of time.
+         */
+        refreshStatsPeriodically() {
+            Promise.all([
+                this.loadStats(),
+                this.loadWorkers(),
+                this.loadWorkload()
+            ]).then(() => {
+                this.ready = true
 
-        methods: {
-            /**
-             * Load the general stats.
-             */
-            loadStats() {
-                return this.$http.get('/horizon/api/stats')
-                    .then(response => {
-                        this.stats = response.data;
+                this.timeout = setTimeout(() => {
+                    this.refreshStatsPeriodically(false)
+                }, 5000)
+            })
+        },
 
-                        if (_.values(response.data.wait)[0]) {
-                            this.stats.max_wait_time = _.values(response.data.wait)[0];
-                            this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1];
-                        }
-                    });
-            },
+        /**
+         *  Count processes for the given supervisor.
+         */
+        countProcesses(processes) {
+            return _.chain(processes)
+                .values()
+                .sum()
+                .value()
+        },
 
+        /**
+         *  Format the Supervisor display name.
+         */
+        superVisorDisplayName(supervisor, worker) {
+            return _replace(supervisor, worker + ':', '')
+        },
 
-            /**
-             * Load the workers stats.
-             */
-            loadWorkers() {
-                return this.$http.get('/horizon/api/masters')
-                    .then(response => {
-                        this.workers = response.data;
-                    });
-            },
-
-
-            /**
-             * Load the workload stats.
-             */
-            loadWorkload() {
-                this.loadingWorkload = !this.ready;
-
-                return this.$http.get('/horizon/api/workload')
-                    .then(response => {
-                        this.workload = response.data;
-                    });
-            },
-
-
-            /**
-             * Refresh the stats every period of time.
-             */
-            refreshStatsPeriodically() {
-                Promise.all([
-                    this.loadStats(),
-                    this.loadWorkers(),
-                    this.loadWorkload(),
-                ]).then(() => {
-                    this.ready = true;
-
-                    this.timeout = setTimeout(() => {
-                        this.refreshStatsPeriodically(false);
-                    }, 5000);
-                });
-            },
-
-
-            /**
-             *  Count processes for the given supervisor.
-             */
-            countProcesses(processes) {
-                return _.chain(processes).values().sum().value()
-            },
-
-
-            /**
-             *  Format the Supervisor display name.
-             */
-            superVisorDisplayName(supervisor, worker) {
-                return _.replace(supervisor, worker + ':', '');
-            },
-
-
-            /**
-             *
-             * @returns {string}
-             */
-            humanTime(time) {
-                return moment.duration(time, "seconds").humanize().replace(/^(.)|\s+(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
-            }
+        /**
+         * @returns {string}
+         */
+        humanTime(time) {
+            return moment
+                .duration(time, 'seconds')
+                .humanize()
+                .replace(/^(.)|\s+(.)/g, ($1) => {
+                    return $1.toUpperCase()
+                })
         }
     }
+}
 </script>
 
 <template>
@@ -163,7 +150,7 @@
                                 <div class="d-flex align-items-center">
                                     <status :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr-2"/>
                                     <span class="stat-value">
-                                      {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
+                                        {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
                                     </span>
                                 </div>
                             </div>
@@ -206,58 +193,58 @@
                 </div>
             </div>
 
-            <div class="card mt-4" v-if="workload.length">
+            <div v-if="workload.length" class="card mt-4">
                 <div class="card-header">Current Workload</div>
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Queue</th>
-                            <th>Processes</th>
-                            <th>Jobs</th>
-                            <th>Wait</th>
-                        </tr>
+                            <tr>
+                                <th>Queue</th>
+                                <th>Processes</th>
+                                <th>Jobs</th>
+                                <th>Wait</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="queue in workload">
-                            <td>
-                                <span>{{ queue.name }}</span>
-                            </td>
-                            <td>{{ queue.processes }}</td>
-                            <td>{{ queue.length }}</td>
-                            <td>{{ humanTime(queue.wait) }}</td>
-                        </tr>
+                            <tr v-for="queue in workload" :key="queue.name">
+                                <td>
+                                    <span>{{ queue.name }}</span>
+                                </td>
+                                <td>{{ queue.processes }}</td>
+                                <td>{{ queue.length }}</td>
+                                <td>{{ humanTime(queue.wait) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="card mt-4" v-for="worker in workers" :key="worker.name">
+            <div v-for="worker in workers" :key="worker.name" class="card mt-4">
                 <div class="card-header">{{ worker.name }}</div>
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Supervisor</th>
-                            <th>Processes</th>
-                            <th>Queues</th>
-                            <th>Balancing</th>
-                        </tr>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Processes</th>
+                                <th>Queues</th>
+                                <th>Balancing</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="supervisor in worker.supervisors">
-                            <td class="ph2">
-                                <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
-                            </td>
-                            <td>{{ countProcesses(supervisor.processes) }}</td>
-                            <td>{{ supervisor.options.queue }}</td>
-                            <td class="d-flex align-items-center">
-                                <status :active="supervisor.options.balance" class="mr-2"/>
-                                <span v-if="supervisor.options.balance">
-                                    ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
-                                </span>
-                            </td>
-                        </tr>
+                            <tr v-for="supervisor in worker.supervisors" :key="supervisor.name">
+                                <td class="ph2">
+                                    <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
+                                </td>
+                                <td>{{ countProcesses(supervisor.processes) }}</td>
+                                <td>{{ supervisor.options.queue }}</td>
+                                <td class="d-flex align-items-center">
+                                    <status :active="supervisor.options.balance" class="mr-2"/>
+                                    <span v-if="supervisor.options.balance">
+                                        ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

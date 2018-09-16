@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Horizon</title>
-        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css', 'vendor/horizon') }}">
-        <link rel="icon" href="/vendor/horizon/img/favicon.png" />
+        <link rel="stylesheet" href="{{ mix('vendor/horizon/css/app.css') }}">
+        <link rel="icon" href="/vendor/horizon/img/favicon.png"/>
+        <meta name="logo" content="/vendor/horizon/img/horizon.svg">
     </head>
 
     <body>
@@ -14,6 +14,10 @@
             {!! file_get_contents(public_path('/vendor/horizon/img/sprite.svg')) !!}
         </div>
 
-        <script src="{{ mix('js/app.js', 'vendor/horizon') }}"></script>
+        <footer id="mainFooter" class="pt-4 pb-4 text-center">
+            Laravel is a trademark of Taylor Otwell. Copyright © Laravel LLC. All rights reserved.
+        </footer>
+
+        <script src="{{ mix('vendor/horizon/js/app.js') }}"></script>
     </body>
 </html>
