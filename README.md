@@ -7,16 +7,71 @@
 <a href="https://packagist.org/packages/laravel/horizon"><img src="https://poser.pugx.org/laravel/horizon/license.svg" alt="License"></a>
 </p>
 
-## Introduction
-
-Horizon provides a beautiful dashboard and code-driven configuration for your Laravel powered Redis queues. Horizon allows you to easily monitor key metrics of your queue system such as job throughput, runtime, and job failures.
-
-All of your worker configuration is stored in a single, simple configuration file, allowing your configuration to stay in source control where your entire team can collaborate.
-
 ## Official Documentation
 
-Documentation for Horizon can be found on the [Laravel website](https://laravel.com/docs/horizon).
+Documentation for Horizon can be found on the [Laravel website](http://laravel.com/docs/horizon).
 
-## License
+---
 
-Laravel Horizon is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
+## Diff
+
+- removed
+    + middleware
+    + `Horizon::auth()`
+    + public dist
+    + jquery
+    + boostrap js
+
+- publish `config/views/assets`
+
+- register routes
+```php
+Horizon::routes();
+```
+
+## Installation
+
+- add to `composer.json`
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/ctf0/horizon"
+    }
+],
+"require": {
+    "laravel/horizon": "dev-master"
+},
+```
+
+- add dep
+```bash
+yarn add axios chart.js bootstrap phpunserialize vue vue-router vue-tippy@v1 laravel-mix-purgecss
+```
+
+- compile assets
+```js
+require('laravel-mix-purgecss')
+
+const mix = require('laravel-mix')
+const webpack = require('webpack')
+
+mix.js('resources/assets/vendor/horizon/js/app.js', 'vendor/horizon/js')
+    .sass('resources/assets/vendor/horizon/sass/app.scss', 'vendor/horizon/css')
+    .copyDirectory('resources/assets/vendor/horizon/img', 'vendor/horizon/img')
+    .purgeCss({
+        enabled: true,
+        keyframes: true,
+        fontFace: true,
+        rejected: true
+    })
+
+mix.webpackConfig({
+    plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    ]
+})
+```
+
+### TODO
+- find a way for `lodash/chain` atm we need to import the whole package
