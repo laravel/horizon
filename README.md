@@ -21,7 +21,7 @@ Documentation for Horizon can be found on the [Laravel website](http://laravel.c
     + public dist
     + jquery
     + boostrap js
-    
+
 - publish `config/views/assets`
 
 - register routes
