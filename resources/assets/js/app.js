@@ -12,7 +12,8 @@ Vue.mixin({
          * Format the given date with respect to timezone.
          */
         formatDate(unixTime) {
-            return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
+            return moment(unixTime * 1000)
+                .add(new Date().getTimezoneOffset() / 60)
         },
 
         /**

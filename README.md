@@ -75,3 +75,4 @@ mix.webpackConfig({
 
 ### TODO
 - find a way for `lodash/chain` atm we need to import the whole package
+- replace momentjs

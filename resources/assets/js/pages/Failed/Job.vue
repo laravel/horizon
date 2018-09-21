@@ -135,16 +135,20 @@ export default {
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-2"><strong>Error</strong></div>
+                            <div class="col-md-2">
+                                <strong>Error</strong>
+                            </div>
                             <div class="col">
                                 <div class="exceptionDisplay" v-html="prettyPrintException(job.exception)"/>
                             </div>
                         </div>
 
-                        <hr>
+                        <br>
 
                         <div class="row">
-                            <div class="col-md-2"><strong>Data</strong></div>
+                            <div class="col-md-2">
+                                <strong>Data</strong>
+                            </div>
                             <div class="col">
                                 <p class="jobDetailsText" v-html="prettyPrintJob(job.payload.data)"/>
                             </div>

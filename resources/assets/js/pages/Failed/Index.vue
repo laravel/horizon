@@ -3,7 +3,6 @@ import _reject from 'lodash/reject'
 import _includes from 'lodash/includes'
 import _find from 'lodash/find'
 
-import moment from 'moment'
 import Layout from '../../layouts/MainLayout.vue'
 
 export default {
@@ -155,9 +154,9 @@ export default {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="job in jobs" :key="job.name">
+                            <tr v-for="(job, i) in jobs" :key="`${job.name}_${i}`">
                                 <td>
-                                    <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" :title="job.name" v-tippy>
+                                    <router-link v-tippy :to="{ name: 'failed.detail', params: { jobId: job.id }}" :title="job.name">
                                         {{ jobBaseName(job.name) }}
                                     </router-link>
                                 </td>

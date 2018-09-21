@@ -209,27 +209,30 @@ body {
 }
 
 .exceptionDisplay {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #efefef;
+
     span {
         display: block;
-        margin-bottom: 5px;
-        padding: 1px 3px;
-        background: #efefef;
+        margin-bottom: 0.5rem;
     }
 }
 
 .jobDetailsText {
     overflow-y: scroll;
     max-height: 400px;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
     word-wrap: break-word;
     word-break: break-all;
     hyphens: auto;
+    background: #efefef;
     overflow-wrap: break-word;
 
     span,
     pre {
         display: block;
-        margin-bottom: 5px;
-        padding: 1px 3px;
-        background: #efefef;
+        margin: 0;
     }
 }

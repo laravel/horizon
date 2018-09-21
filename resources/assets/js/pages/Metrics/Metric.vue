@@ -3,7 +3,6 @@ import _ from 'lodash'
 import _reduce from 'lodash/reduce'
 import _map from 'lodash/map'
 
-import moment from 'moment'
 import Layout from '../../layouts/MainLayout.vue'
 import LineChart from '../../components/Charts/LineChart.vue'
 
