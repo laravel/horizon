@@ -1,10 +1,14 @@
-<script type="text/ecmascript-6">
-    import Status from '../components/Status/Status.vue'
-    import MainSidebar from './MainSidebar.vue'
+<script>
+import MainSidebar from './MainSidebar.vue'
 
-    export default {
-        components: {Status, MainSidebar}
+export default {
+    components: {MainSidebar},
+    data() {
+        return {
+            logo: document.querySelector('meta[name="logo"]').getAttribute('content')
+        }
     }
+}
 </script>
 
 <template>
@@ -12,7 +16,7 @@
         <div id="mainHeader" class="pt-4 pb-4">
             <div class="row">
                 <div class="col">
-                    <img src="/vendor/horizon/img/horizon.svg">
+                    <img :src="logo">
                 </div>
             </div>
         </div>
@@ -28,10 +32,6 @@
                 </div>
             </div>
         </main>
-
-        <footer id="mainFooter" class="pt-4 pb-4 text-center">
-            Laravel is a trademark of Taylor Otwell. Copyright © Laravel LLC. All rights reserved.
-        </footer>
     </div>
 </template>
 

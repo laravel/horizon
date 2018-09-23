@@ -1,153 +1,127 @@
-<script type="text/ecmascript-6">
-    import moment from 'moment';
-    import Layout from '../../layouts/MainLayout.vue'
+<script>
+import _reject from 'lodash/reject'
+import _includes from 'lodash/includes'
+import _find from 'lodash/find'
 
-    export default {
-        components: {Layout},
+import Layout from '../../layouts/MainLayout.vue'
 
+export default {
+    components: {Layout},
+    data() {
+        return {
+            tagSearchPhrase: '',
+            searchTimeout: null,
+            page: 1,
+            perPage: 50,
+            totalPages: 1,
+            loadingJobs: true,
+            retryingJobs: [],
+            jobs: []
+        }
+    },
+    created() {
+        document.title = 'Horizon - Failed Jobs'
 
+        this.loadJobs()
+        this.refreshJobsPeriodically()
+    },
+    destroyed() {
+        clearInterval(this.interval)
+    },
+    methods: {
         /**
-         * The component's data.
+         * Load the failed jobs.
          */
-        data() {
-            return {
-                tagSearchPhrase: '',
-                searchTimeout: null,
-                page: 1,
-                perPage: 50,
-                totalPages: 1,
-                loadingJobs: true,
-                retryingJobs: [],
-                jobs: []
-            };
-        },
-
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            tagSearchPhrase() {
-                clearTimeout(this.searchTimeout);
-
-                this.searchTimeout = setTimeout(() => {
-                    this.loadJobs();
-                }, 500);
+        loadJobs(starting = -1, preload = true) {
+            if (preload) {
+                this.loadingJobs = true
             }
-        },
 
+            let tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : ''
+
+            axios.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+                .then(({data}) => {
+                    this.jobs = data.jobs
+
+                    this.totalPages = Math.ceil(data.total / this.perPage)
+
+                    this.loadingJobs = false
+                })
+        },
 
         /**
-         * Prepare the component.
+         * Retry the given failed job.
          */
-        created() {
-            document.title = "Horizon - Failed Jobs";
+        retry(id) {
+            if (this.isRetrying(id)) {
+                return
+            }
 
-            this.loadJobs();
+            this.retryingJobs.push(id)
 
-            this.refreshJobsPeriodically();
+            axios.post('/horizon/api/jobs/retry/' + id)
+                .then(() => {
+                    setTimeout(() => {
+                        this.retryingJobs = _reject(this.retryingJobs, (job) => job == id)
+                    }, 3000)
+                })
         },
-
 
         /**
-         * Clean after the component is destroyed.
+         * Determine if the given job is currently retrying.
          */
-        destroyed(){
-            clearInterval(this.interval);
+        isRetrying(id) {
+            return _includes(this.retryingJobs, id)
         },
 
+        /**
+         * Determine if the given job has completed.
+         */
+        hasCompleted(job) {
+            return _find(job.retried_by, (retry) => retry.status == 'completed')
+        },
 
-        methods: {
-            /**
-             * Load the failed jobs.
-             */
-            loadJobs(starting = -1, preload = true) {
-                if (preload) {
-                    this.loadingJobs = true;
+        /**
+         * Refresh the jobs every period of time.
+         */
+        refreshJobsPeriodically() {
+            this.interval = setInterval(() => {
+                if (this.page != 1) {
+                    return
                 }
 
-                var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
+                this.loadJobs(-1, false)
+            }, 3000)
+        },
 
-                this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
-                    .then(response => {
-                        this.jobs = response.data.jobs;
+        /**
+         * Load the jobs for the previous page.
+         */
+        previous() {
+            this.loadJobs((this.page - 2) * this.perPage - 1)
 
-                        this.totalPages = Math.ceil(response.data.total / this.perPage);
+            this.page -= 1
+        },
 
-                        this.loadingJobs = false;
-                    });
-            },
+        /**
+         * Load the jobs for the next page.
+         */
+        next() {
+            this.loadJobs(this.page * this.perPage - 1)
 
+            this.page += 1
+        }
+    },
+    watch: {
+        tagSearchPhrase() {
+            clearTimeout(this.searchTimeout)
 
-            /**
-             * Retry the given failed job.
-             */
-            retry(id) {
-                if (this.isRetrying(id)) {
-                    return;
-                }
-
-                this.retryingJobs.push(id);
-
-                this.$http.post('/horizon/api/jobs/retry/' + id)
-                    .then(() => {
-                        setTimeout(() => {
-                            this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
-                        }, 3000);
-                    });
-            },
-
-
-            /**
-             * Determine if the given job is currently retrying.
-             */
-            isRetrying(id) {
-                return _.includes(this.retryingJobs, id);
-            },
-
-
-            /**
-             * Determine if the given job has completed.
-             */
-            hasCompleted(job){
-                return _.find(job.retried_by, retry => retry.status == 'completed');
-            },
-
-
-            /**
-             * Refresh the jobs every period of time.
-             */
-            refreshJobsPeriodically() {
-                this.interval = setInterval(() => {
-                    if (this.page != 1) {
-                        return;
-                    }
-
-                    this.loadJobs(-1, false);
-                }, 3000);
-            },
-
-
-            /**
-             * Load the jobs for the previous page.
-             */
-            previous() {
-                this.loadJobs(((this.page - 2) * this.perPage) - 1);
-
-                this.page -= 1;
-            },
-
-
-            /**
-             * Load the jobs for the next page.
-             */
-            next() {
-                this.loadJobs((this.page * this.perPage) - 1);
-
-                this.page += 1;
-            }
+            this.searchTimeout = setTimeout(() => {
+                this.loadJobs()
+            }, 500)
         }
     }
+}
 </script>
 
 <template>
@@ -157,55 +131,55 @@
                 <div class="card-header d-flex align-items-center">
                     <span class="mr-auto">Failed Jobs</span>
                     <div class="search">
-                        <input type="text" class="form-control" v-model="tagSearchPhrase" placeholder="Search Tags">
+                        <input v-model="tagSearchPhrase" type="text" class="form-control" placeholder="Search Tags">
                     </div>
                 </div>
 
                 <div class="table-responsive">
                     <loader :yes="loadingJobs"/>
 
-                    <p class="text-center m-0 p-5" v-if="!loadingJobs && !jobs.length">
+                    <p v-if="!loadingJobs && !jobs.length" class="text-center m-0 p-5">
                         There aren't any recent failed jobs.
                     </p>
 
                     <table v-if="! loadingJobs && jobs.length" class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Job</th>
-                            <th>On</th>
-                            <th>Tags</th>
-                            <th>Runtime</th>
-                            <th>Failed At</th>
-                            <th>Retry</th>
-                        </tr>
+                            <tr>
+                                <th>Job</th>
+                                <th>On</th>
+                                <th>Tags</th>
+                                <th>Runtime</th>
+                                <th>Failed At</th>
+                                <th>Retry</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="job in jobs">
-                            <td>
-                                <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" data-toggle="tooltip" :title="job.name">
-                                    {{ jobBaseName(job.name) }}
-                                </router-link>
-                            </td>
-                            <td>{{ job.queue }}</td>
-                            <td>{{ displayableTagsList(job.payload.tags) }}</td>
-                            <td>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(3))+'s' : '-' }}</td>
-                            <td class="text-nowrap">{{ readableTimestamp(job.failed_at) }}</td>
-                            <td>
-                                <span @click="retry(job.id)" v-if="!hasCompleted(job)">
-                                    <i class="icon">
-                                        <svg class="fill-primary" :class="{spin: isRetrying(job.id)}">
-                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"></use>
-                                        </svg>
-                                    </i>
-                                </span>
-                            </td>
-                        </tr>
+                            <tr v-for="(job, i) in jobs" :key="`${job.name}_${i}`">
+                                <td>
+                                    <router-link v-tippy :to="{ name: 'failed.detail', params: { jobId: job.id }}" :title="job.name">
+                                        {{ jobBaseName(job.name) }}
+                                    </router-link>
+                                </td>
+                                <td>{{ job.queue }}</td>
+                                <td>{{ displayableTagsList(job.payload.tags) }}</td>
+                                <td>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(3))+'s' : '-' }}</td>
+                                <td class="text-nowrap">{{ readableTimestamp(job.failed_at) }}</td>
+                                <td>
+                                    <span v-if="!hasCompleted(job)" @click="retry(job.id)">
+                                        <i class="icon">
+                                            <svg :class="{spin: isRetrying(job.id)}" class="fill-primary">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"/>
+                                            </svg>
+                                        </i>
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 
                     <div v-if="! loadingJobs && jobs.length" class="p-3 mt-3 d-flex justify-content-between">
-                        <button @click="previous" class="btn btn-primary btn-md" :disabled="page==1">Previous</button>
-                        <button @click="next" class="btn btn-primary btn-md" :disabled="page>=totalPages">Next</button>
+                        <button :disabled="page==1" class="btn btn-primary btn-md" @click="previous">Previous</button>
+                        <button :disabled="page>=totalPages" class="btn btn-primary btn-md" @click="next">Next</button>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
+    app('router')->setGroupNamespace('\Laravel\Horizon\Http\Controllers');
+
     // Dashboard Routes...
     Route::get('/stats', 'DashboardStatsController@index')->name('horizon.stats.index');
 
@@ -23,7 +25,7 @@ Route::prefix('api')->group(function () {
     Route::get('/metrics/jobs/{id}', 'JobMetricsController@show')->name('horizon.jobs-metrics.show');
 
     // Queue Metric Routes...
-    Route::get('/metrics/queues', 'QueueMetricsController@index')->name('horizon.queues-metrics.index');;
+    Route::get('/metrics/queues', 'QueueMetricsController@index')->name('horizon.queues-metrics.index');
     Route::get('/metrics/queues/{id}', 'QueueMetricsController@show')->name('horizon.queues-metrics.show');
 
     // Job Routes...
@@ -34,4 +36,4 @@ Route::prefix('api')->group(function () {
 });
 
 // Catch-all Route...
-Route::get('/{view?}', 'HomeController@index')->where('view', '(.*)')->name('horizon.index');
+Route::get('/{view?}', '\Laravel\Horizon\Http\Controllers\HomeController@index')->where('view', '(.*)')->name('horizon.index');

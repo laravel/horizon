@@ -1,17 +1,12 @@
-<script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
+<script>
+import Layout from '../../layouts/MainLayout.vue'
 
-    export default {
-        components: {Layout},
-
-
-        /**
-         * Prepare the component.
-         */
-        created() {
-            document.title = "Horizon - Metrics";
-        }
+export default {
+    components: {Layout},
+    created() {
+        document.title = 'Horizon - Metrics'
     }
+}
 </script>
 
 <template>
