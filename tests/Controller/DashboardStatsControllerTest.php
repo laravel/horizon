@@ -50,7 +50,6 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         ]);
         $this->app->instance(WaitTimeCalculator::class, $wait);
 
-
         $response = $this->actingAs(new Fakes\User)
                     ->get('/horizon/api/stats');
 
