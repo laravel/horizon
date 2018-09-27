@@ -62,6 +62,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
             'recentJobs' => 1,
             'queueWithMaxRuntime' => 'default',
             'queueWithMaxThroughput' => 'default',
+            'recency' => 1,
         ]);
     }
 
