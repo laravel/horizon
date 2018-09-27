@@ -143,14 +143,14 @@
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">Jobs past hour</h2>
+                                <h2 class="stat-title">Jobs past {{ stats.recency }} hour(s)</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentJobs }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">Failed Jobs past hour</h2>
+                                <h2 class="stat-title">Failed Jobs past {{ stats.recency }} hour(s)</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentlyFailed }}
