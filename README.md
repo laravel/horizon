@@ -23,4 +23,4 @@ Documentation for Horizon can be found on the [Laravel website](https://laravel.
 
 ## License
 
-Laravel Horizon is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
+Laravel Horizon is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
