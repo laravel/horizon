@@ -171,16 +171,25 @@
                     <table v-if="! loadingJobs && jobs.length" class="table card-table table-hover">
                         <thead>
                         <tr>
+                            <th>Retry</th>
                             <th>Job</th>
                             <th>On</th>
                             <th>Tags</th>
                             <th>Runtime</th>
                             <th>Failed At</th>
-                            <th>Retry</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="job in jobs">
+                            <td>
+                                <span class="pointer" @click="retry(job.id)" v-if="!hasCompleted(job)">
+                                    <i class="icon">
+                                        <svg class="fill-primary" :class="{spin: isRetrying(job.id)}">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"></use>
+                                        </svg>
+                                    </i>
+                                </span>
+                            </td>
                             <td>
                                 <router-link :to="{ name: 'failed.detail', params: { jobId: job.id }}" data-toggle="tooltip" :title="job.name">
                                     {{ jobBaseName(job.name) }}
@@ -190,15 +199,6 @@
                             <td>{{ displayableTagsList(job.payload.tags) }}</td>
                             <td>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(3))+'s' : '-' }}</td>
                             <td class="text-nowrap">{{ readableTimestamp(job.failed_at) }}</td>
-                            <td>
-                                <span @click="retry(job.id)" v-if="!hasCompleted(job)">
-                                    <i class="icon">
-                                        <svg class="fill-primary" :class="{spin: isRetrying(job.id)}">
-                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"></use>
-                                        </svg>
-                                    </i>
-                                </span>
-                            </td>
                         </tr>
                         </tbody>
                     </table>

@@ -121,17 +121,20 @@
         <table v-if="! loadState && jobs.length" class="table card-table table-hover">
             <thead>
             <tr>
+                <th>Status</th>
                 <th>Job</th>
                 <th>On</th>
                 <th>Tags</th>
                 <th>Queued At</th>
                 <th>Runtime</th>
-                <th>Status</th>
             </tr>
             </thead>
 
             <tbody>
             <tr v-for="job in jobs">
+                <td>
+                    <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'"/>
+                </td>
                 <td>
                     <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id"
                        data-toggle="tooltip" :title="job.name">{{ jobBaseName(job.name) }}
@@ -147,9 +150,6 @@
                 <td>
                     <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
                     <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                </td>
-                <td>
-                    <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'"/>
                 </td>
             </tr>
             </tbody>
