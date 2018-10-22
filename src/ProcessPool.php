@@ -5,6 +5,7 @@ namespace Laravel\Horizon;
 use Closure;
 use Countable;
 use Cake\Chronos\Chronos;
+use Symfony\Component\Process\Process;
 
 class ProcessPool implements Countable
 {
@@ -174,7 +175,7 @@ class ProcessPool implements Countable
      */
     protected function createProcess()
     {
-        return new WorkerProcess((new BackgroundProcess(
+        return new WorkerProcess((new Process(
             $this->options->toWorkerCommand(), $this->options->directory)
         )->setTimeout(null)->disableOutput());
     }
