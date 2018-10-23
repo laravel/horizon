@@ -26,7 +26,7 @@ class Tags
         }
 
         return static::modelsFor(static::targetsFor($job))->map(function ($model) {
-            return get_class($model).':'.$model->getKey();
+            return get_class($model).':'.(method_exists($model, 'getReadableKey') ? $model->getReadableKey() : $model->getKey());
         })->all();
     }
 
