@@ -225,11 +225,23 @@ class Supervisor implements Pausable, Restartable, Terminable
             });
         });
 
-        while ($this->processPools->map->runningProcesses()->collapse()->count()) {
-            sleep(1);
+        if ($this->shouldWait()) {
+            while ($this->processPools->map->runningProcesses()->collapse()->count()) {
+                sleep(1);
+            }
         }
 
         $this->exit($status);
+    }
+
+    /**
+     * Check if the supervisor should wait for all its workers to terminate.
+     *
+     * @return bool
+     */
+    protected function shouldWait()
+    {
+        return app('cache')->get('horizon:terminate:wait');
     }
 
     /**

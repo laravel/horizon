@@ -17,7 +17,8 @@ class TerminateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:terminate';
+    protected $signature = 'horizon:terminate
+                            {--wait : Horizon supervisors should wait for their workers to terminate}';
 
     /**
      * The console command description.
@@ -33,6 +34,8 @@ class TerminateCommand extends Command
      */
     public function handle()
     {
+        $this->laravel['cache']->forever('horizon:terminate:wait', $this->option('wait'));
+
         $masters = app(MasterSupervisorRepository::class)->all();
 
         $masters = collect($masters)->filter(function ($master) {

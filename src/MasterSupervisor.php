@@ -4,6 +4,7 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 use Cake\Chronos\Chronos;
 use Illuminate\Support\Str;
@@ -183,6 +184,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
 
             sleep(1);
         }
+
+        app('cache')->forget('horizon:terminate:wait');
 
         $this->exit($status);
     }
