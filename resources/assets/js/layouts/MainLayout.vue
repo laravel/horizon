@@ -8,7 +8,7 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div id="mainHeader" class="pt-4 pb-4">
             <div class="row">
                 <div class="col">
