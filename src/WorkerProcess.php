@@ -4,9 +4,9 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Cake\Chronos\Chronos;
-use Symfony\Component\Process\Process;
 use Laravel\Horizon\Events\UnableToLaunchProcess;
 use Laravel\Horizon\Events\WorkerProcessRestarting;
+use Symfony\Component\Process\Exception\ExceptionInterface;
 
 class WorkerProcess
 {
@@ -66,9 +66,7 @@ class WorkerProcess
      */
     public function pause()
     {
-        if ($this->process->isRunning()) {
-            $this->process->signal(SIGUSR2);
-        }
+        $this->sendSignal(SIGUSR2);
     }
 
     /**
@@ -78,9 +76,7 @@ class WorkerProcess
      */
     public function continue()
     {
-        if ($this->process->isRunning()) {
-            $this->process->signal(SIGCONT);
-        }
+        $this->sendSignal(SIGCONT);
     }
 
     /**
@@ -118,9 +114,7 @@ class WorkerProcess
      */
     public function terminate()
     {
-        if ($this->process->isRunning()) {
-            $this->process->signal(SIGTERM);
-        }
+        $this->sendSignal(SIGTERM);
     }
 
     /**
@@ -132,6 +126,22 @@ class WorkerProcess
     {
         if ($this->process->isRunning()) {
             $this->process->stop();
+        }
+    }
+
+    /**
+     * Sends a POSIX signal to the process.
+     *
+     * @param $signal
+     */
+    protected function sendSignal($signal)
+    {
+        try {
+            $this->process->signal($signal);
+        } catch (ExceptionInterface $e) {
+            if ($this->process->isRunning()) {
+                throw $e;
+            }
         }
     }
 
