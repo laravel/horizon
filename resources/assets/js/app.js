@@ -10,9 +10,13 @@ window.Popper = require('popper.js').default;
 
 require('bootstrap');
 
-$('body').tooltip({
-    selector: '[data-toggle=tooltip]'
-});
+$('body')
+    .tooltip({
+        selector: '[data-toggle=tooltip]'
+    })
+    .click(function(){
+        $('a[data-toggle="tooltip"]').tooltip('hide');
+    });
 
 Vue.prototype.$http = axios.create();
 
