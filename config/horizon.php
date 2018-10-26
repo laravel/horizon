@@ -91,4 +91,15 @@ return [
             ],
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home Link Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define a home link url to navigate back to your application.
+    |
+    */
+
+    'home-link' => '',
 ];

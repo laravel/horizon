@@ -3,6 +3,14 @@
 
 #mainHeader {
     border-bottom: solid 1px #d8d8d8;
+
+    .home-link {
+        svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            fill: $gray-500;
+        }
+    }
 }
 
 #mainFooter {
