@@ -3,6 +3,7 @@
 namespace Laravel\Horizon;
 
 use Illuminate\Queue\QueueManager;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -23,6 +24,20 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerResources();
         $this->defineAssetPublishing();
+        $this->authorization();
+    }
+
+    /**
+     * Configure the Telescope authorization services.
+     *
+     * @return void
+     */
+    protected function authorization()
+    {
+        Horizon::auth(function ($request) {
+            return app()->environment('local') ||
+                Gate::check('viewHorizon', [$request->user()]);
+        });
     }
 
     /**

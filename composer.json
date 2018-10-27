@@ -17,6 +17,7 @@
         "ext-pcntl": "*",
         "ext-posix": "*",
         "cakephp/chronos": "^1.0",
+        "illuminate/auth": "~5.5",
         "illuminate/contracts": "~5.5",
         "illuminate/queue": "~5.5",
         "illuminate/support": "~5.5",
