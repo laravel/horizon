@@ -134,6 +134,10 @@ class HorizonServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
+                __DIR__.'/../stubs/HorizonServiceProvider.stub' => app_path('Providers/HorizonServiceProvider.php'),
+            ], 'horizon-provider');
+
+            $this->publishes([
                 __DIR__.'/../config/horizon.php' => config_path('horizon.php'),
             ], 'horizon-config');
         }
@@ -162,6 +166,7 @@ class HorizonServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Console\InstallCommand::class,
                 Console\AssetsCommand::class,
                 Console\HorizonCommand::class,
                 Console\ListCommand::class,
