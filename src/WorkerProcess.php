@@ -130,9 +130,10 @@ class WorkerProcess
     }
 
     /**
-     * Sends a POSIX signal to the process.
+     * Send a POSIX signal to the process.
      *
-     * @param $signal
+     * @param  int  $signal
+     * @return void
      */
     protected function sendSignal($signal)
     {
