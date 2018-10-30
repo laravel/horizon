@@ -175,7 +175,9 @@ class ProcessPool implements Countable
      */
     protected function createProcess()
     {
-        $class = config('horizon.fast_termination') ? BackgroundProcess::class : Process::class;
+        $class = config('horizon.fast_termination')
+                    ? BackgroundProcess::class
+                    : Process::class;
 
         return new WorkerProcess((new $class(
             $this->options->toWorkerCommand(), $this->options->directory)

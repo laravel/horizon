@@ -14,6 +14,7 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
 use Laravel\Horizon\Events\MasterSupervisorLooped;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 
@@ -187,7 +188,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         }
 
         if (config('horizon.fast_termination')) {
-            app('cache')->forget('horizon:terminate:wait');
+            app(CacheFactory::class)->forget('horizon:terminate:wait');
         }
 
         $this->exit($status);

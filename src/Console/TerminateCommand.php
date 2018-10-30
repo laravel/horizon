@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Laravel\Horizon\MasterSupervisor;
 use Illuminate\Support\InteractsWithTime;
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
 class TerminateCommand extends Command
@@ -18,7 +19,7 @@ class TerminateCommand extends Command
      * @var string
      */
     protected $signature = 'horizon:terminate
-                            {--wait : Horizon supervisors should wait for their workers to terminate}';
+                            {--wait : Wait for all workers to terminate}';
 
     /**
      * The console command description.
@@ -35,10 +36,12 @@ class TerminateCommand extends Command
     public function handle()
     {
         if (config('horizon.fast_termination')) {
-            $this->laravel['cache']->forever('horizon:terminate:wait', $this->option('wait'));
+            resolve(CacheFactory::class)->forever(
+                'horizon:terminate:wait', $this->option('wait')
+            );
         }
 
-        $masters = app(MasterSupervisorRepository::class)->all();
+        $masters = resolve(MasterSupervisorRepository::class)->all();
 
         $masters = collect($masters)->filter(function ($master) {
             return Str::startsWith($master->name, MasterSupervisor::basename());

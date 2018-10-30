@@ -13,6 +13,7 @@ use Laravel\Horizon\Events\SupervisorLooped;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class Supervisor implements Pausable, Restartable, Terminable
@@ -243,7 +244,8 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     protected function shouldWait()
     {
-        return ! config('horizon.fast_termination') || app('cache')->get('horizon:terminate:wait');
+        return ! config('horizon.fast_termination') ||
+               app(CacheFactory::class)->get('horizon:terminate:wait');
     }
 
     /**
