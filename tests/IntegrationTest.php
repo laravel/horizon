@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests;
 
+use Laravel\Horizon\Horizon;
 use Orchestra\Testbench\TestCase;
 use Illuminate\Queue\WorkerOptions;
 use Illuminate\Support\Facades\Redis;
@@ -34,6 +35,7 @@ abstract class IntegrationTest extends TestCase
         Redis::flushall();
         WorkerCommandString::reset();
         SupervisorCommandString::reset();
+        Horizon::$authUsing = null;
 
         parent::tearDown();
     }

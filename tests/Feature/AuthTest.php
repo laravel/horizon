@@ -10,7 +10,7 @@ class AuthTest extends IntegrationTest
 {
     public function test_authentication_callback_works()
     {
-        $this->assertTrue(Horizon::check('taylor'));
+        $this->assertFalse(Horizon::check('taylor'));
 
         Horizon::auth(function ($request) {
             return $request === 'taylor';
