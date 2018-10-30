@@ -17,6 +17,8 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class Supervisor implements Pausable, Restartable, Terminable
 {
+    use ListenForSignals;
+
     /**
      * The name of this supervisor instance.
      *
@@ -273,6 +275,8 @@ class Supervisor implements Pausable, Restartable, Terminable
     public function loop()
     {
         try {
+            $this->processPendingSignals();
+
             $this->processPendingCommands();
 
             // If the supervisor is working, we will perform any needed scaling operations and
@@ -396,32 +400,6 @@ class Supervisor implements Pausable, Restartable, Terminable
     public function totalSystemProcessCount()
     {
         return app(SystemProcessCounter::class)->get($this->name);
-    }
-
-    /**
-     * Listen for incoming process signals.
-     *
-     * @return void
-     */
-    protected function listenForSignals()
-    {
-        pcntl_async_signals(true);
-
-        pcntl_signal(SIGTERM, function () {
-            $this->terminate();
-        });
-
-        pcntl_signal(SIGUSR1, function () {
-            $this->restart();
-        });
-
-        pcntl_signal(SIGUSR2, function () {
-            $this->pause();
-        });
-
-        pcntl_signal(SIGCONT, function () {
-            $this->continue();
-        });
     }
 
     /**

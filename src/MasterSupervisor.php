@@ -19,6 +19,8 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class MasterSupervisor implements Pausable, Restartable, Terminable
 {
+    use ListenForSignals;
+
     /**
      * The name of the master supervisor.
      *
@@ -228,6 +230,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     public function loop()
     {
         try {
+            $this->processPendingSignals();
+
             $this->processPendingCommands();
 
             if ($this->working) {
@@ -276,32 +280,6 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     public function persist()
     {
         app(MasterSupervisorRepository::class)->update($this);
-    }
-
-    /**
-     * Listen for incoming process signals.
-     *
-     * @return void
-     */
-    protected function listenForSignals()
-    {
-        pcntl_async_signals(true);
-
-        pcntl_signal(SIGTERM, function () {
-            $this->terminate();
-        });
-
-        pcntl_signal(SIGUSR1, function () {
-            $this->restart();
-        });
-
-        pcntl_signal(SIGUSR2, function () {
-            $this->pause();
-        });
-
-        pcntl_signal(SIGCONT, function () {
-            $this->continue();
-        });
     }
 
     /**
