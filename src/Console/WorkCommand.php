@@ -31,4 +31,18 @@ class WorkCommand extends BaseWorkCommand
      * @var bool
      */
     protected $hidden = true;
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        if (config('horizon.fast_termination')) {
+            ignore_user_abort(true);
+        }
+
+        return parent::handle();
+    }
 }
