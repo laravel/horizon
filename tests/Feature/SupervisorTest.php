@@ -295,7 +295,9 @@ class SupervisorTest extends IntegrationTest
         $process->terminate();
         usleep(500 * 1000);
 
-        $this->assertFalse($process->isRunning());
+        retry(10, function () use ($process) {
+            $this->assertFalse($process->isRunning());
+        }, 1000);
     }
 
     public function test_supervisor_can_prune_terminating_processes_and_return_total_process_count()
