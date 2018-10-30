@@ -17,7 +17,7 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class Supervisor implements Pausable, Restartable, Terminable
 {
-    use ListenForSignals;
+    use ListensForSignals;
 
     /**
      * The name of this supervisor instance.

@@ -19,7 +19,7 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class MasterSupervisor implements Pausable, Restartable, Terminable
 {
-    use ListenForSignals;
+    use ListensForSignals;
 
     /**
      * The name of the master supervisor.
@@ -163,7 +163,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         // active supervisors so we know the maximum amount of time to wait here.
         $longest = app(SupervisorRepository::class)
             ->longestActiveTimeout();
-        
+
         $this->supervisors->each->terminate();
 
         // We will go ahead and remove this master supervisor's record from storage so
