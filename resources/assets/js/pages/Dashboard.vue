@@ -161,7 +161,7 @@
                                 <h3 class="stat-meta">&nbsp;</h3>
 
                                 <div class="d-flex align-items-center">
-                                    <status :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr-2"/>
+                                    <status v-if="stats.status" :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr-2"/>
                                     <span class="stat-value">
                                       {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
                                     </span>
