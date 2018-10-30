@@ -61,6 +61,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fast Termination
+    |--------------------------------------------------------------------------
+    |
+    | If this option is set horizon:terminate command don't wait for all the
+    | workers to terminate unless --wait option is provided. Fast termination
+    | minimizes the deployment delay on the queued jobs by letting a new
+    | instance of horizon gets started while the workers of a previously
+    | terminated horizon are still working on their last job.
+    |
+    */
+
+    'fast_termination' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Worker Configuration
     |--------------------------------------------------------------------------
     |

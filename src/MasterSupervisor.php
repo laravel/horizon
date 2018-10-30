@@ -186,6 +186,10 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
             sleep(1);
         }
 
+        if (config('horizon.fast_termination')) {
+            app('cache')->forget('horizon:terminate:wait');
+        }
+
         $this->exit($status);
     }
 
