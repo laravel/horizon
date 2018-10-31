@@ -36,12 +36,12 @@ class TerminateCommand extends Command
     public function handle()
     {
         if (config('horizon.fast_termination')) {
-            resolve(CacheFactory::class)->forever(
+            app(CacheFactory::class)->forever(
                 'horizon:terminate:wait', $this->option('wait')
             );
         }
 
-        $masters = resolve(MasterSupervisorRepository::class)->all();
+        $masters = app(MasterSupervisorRepository::class)->all();
 
         $masters = collect($masters)->filter(function ($master) {
             return Str::startsWith($master->name, MasterSupervisor::basename());
