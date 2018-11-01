@@ -14,6 +14,18 @@ return [
     */
 
     'use' => 'default',
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Panel Middleware
+    |--------------------------------------------------------------------------
+    |
+    | This is the middleware that will be applied for the admin panel routes.
+    | Multiple named middlewares can be applied.
+    |
+    */
+
+    'middleware' => ['web'],
 
     /*
     |--------------------------------------------------------------------------
