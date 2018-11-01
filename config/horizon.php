@@ -17,7 +17,7 @@ return [
     
     /*
     |--------------------------------------------------------------------------
-    | Horizon Panel Middleware
+    | Horizon Middleware
     |--------------------------------------------------------------------------
     |
     | This is the middleware that will be applied for the admin panel routes.
