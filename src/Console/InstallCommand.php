@@ -52,10 +52,11 @@ class InstallCommand extends Command
      */
     protected function registerHorizonServiceProvider()
     {
-        $appConfig = file_get_contents(config_path('app.php'));
         $namespace = str_replace_last('\\', '', $this->getAppNamespace());
 
-        if (Str::contains($appConfig, "{$namespace}\Providers\HorizonServiceProvider::class")) {
+        $appConfig = file_get_contents(config_path('app.php'));
+
+        if (Str::contains($appConfig, $namespace."\\Providers\\HorizonServiceProvider::class")) {
             return;
         }
 
@@ -63,6 +64,12 @@ class InstallCommand extends Command
             "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL,
             "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL."        {$namespace}\Providers\HorizonServiceProvider::class,".PHP_EOL,
             $appConfig
+        ));
+
+        file_put_contents(app_path('Providers/HorizonServiceProvider.php'), str_replace(
+            "namespace App\Providers;",
+            "namespace {$namespace}\Providers;",
+            file_get_contents(app_path('Providers/HorizonServiceProvider.php'))
         ));
     }
 }
