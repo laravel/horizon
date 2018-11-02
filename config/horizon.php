@@ -14,18 +14,7 @@ return [
     */
 
     'use' => 'default',
-    
-    /*
-    |--------------------------------------------------------------------------
-    | Horizon Middleware
-    |--------------------------------------------------------------------------
-    |
-    | This is the middleware that will be applied for the admin panel routes.
-    | Multiple named middlewares can be applied.
-    |
-    */
 
-    'middleware' => ['web'],
 
     /*
     |--------------------------------------------------------------------------
@@ -39,6 +28,19 @@ return [
     */
 
     'prefix' => env('HORIZON_PREFIX', 'horizon:'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Route Middleware
+    |--------------------------------------------------------------------------
+    |
+    | These middleware will get attached onto each Horizon route, giving you
+    | the chance to add your own middleware to this list or change any of
+    | the existing middleware. Or, you can simply stick with this list.
+    |
+    */
+
+    'middleware' => ['web'],
 
     /*
     |--------------------------------------------------------------------------
