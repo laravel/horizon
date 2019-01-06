@@ -8,7 +8,7 @@
     </head>
 
     <body>
-        <div id="root"></div>
+        <div id="root" data-base-url="/{{ config('horizon.uri', 'horizon') }}"></div>
 
         <div style="height: 0; width: 0; position: absolute; display: none;">
             {!! file_get_contents(public_path('/vendor/horizon/img/sprite.svg')) !!}

@@ -3,9 +3,15 @@ import Router from 'vue-router'
 
 Vue.use(Router);
 
+var base = "/horizon/";
+const rootEl = document.getElementById('root')
+if (rootEl && rootEl.getAttribute('data-base-url')) {
+    base = rootEl.getAttribute('data-base-url') + "/"
+}
+
 export default new Router({
     mode: 'history',
-    base: '/horizon/',
+    base,
     routes: [
         {
             path: '/',

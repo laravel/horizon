@@ -64,7 +64,7 @@
 
                 tag = this.type == 'failed' ? 'failed:' + tag : tag;
 
-                return this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
+                return this.$http.get('/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         this.jobs[this.type] = response.data.jobs;
 

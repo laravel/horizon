@@ -18,7 +18,13 @@ $('body')
         $('a[data-toggle="tooltip"]').tooltip('hide');
     });
 
-Vue.prototype.$http = axios.create();
+var baseURL = "/horizon/api";
+const rootEl = document.getElementById('root')
+if (rootEl && rootEl.getAttribute('data-base-url')) {
+    baseURL = rootEl.getAttribute('data-base-url') + "/api"
+}
+
+Vue.prototype.$http = axios.create({baseURL});
 
 window.Bus = new Vue({name: 'Bus'});
 
