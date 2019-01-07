@@ -43,7 +43,7 @@
              * Load the general stats.
              */
             loadStats() {
-                return this.$http.get('/horizon/api/stats')
+                return this.$http.get('/stats')
                     .then(response => {
                         this.stats = response.data;
 
@@ -59,7 +59,7 @@
              * Load the workers stats.
              */
             loadWorkers() {
-                return this.$http.get('/horizon/api/masters')
+                return this.$http.get('/masters')
                     .then(response => {
                         this.workers = response.data;
                     });
@@ -72,7 +72,7 @@
             loadWorkload() {
                 this.loadingWorkload = !this.ready;
 
-                return this.$http.get('/horizon/api/workload')
+                return this.$http.get('/workload')
                     .then(response => {
                         this.workload = response.data;
                     });

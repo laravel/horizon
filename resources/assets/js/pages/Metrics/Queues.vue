@@ -29,7 +29,7 @@
             loadQueues() {
                 this.loadingQueues = true;
 
-                this.$http.get('/horizon/api/metrics/queues')
+                this.$http.get('/metrics/queues')
                         .then(response => {
                             this.queues = response.data;
 
