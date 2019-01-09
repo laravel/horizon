@@ -155,18 +155,15 @@ class RedisJobRepository implements JobRepository
      */
     protected function determinePeriod($minutes)
     {
-        $unit = 'hour';
-
-        if ($minutes <= 60) {
-            return $unit;
+        if (($days = Chronos::now()->subMinutes($minutes)->diffInDays(Chronos::now())) >= 1) {
+            return sprintf('%d %s', $days, str_plural('day', $days));
         }
 
-        if (($period = ceil($minutes / 60)) >= 24) {
-            $period = ceil($period / 24);
-            $unit = 'day';
+        if (($hours = Chronos::now()->subMinutes($minutes)->diffInHours(Chronos::now())) > 1) {
+            return sprintf('%d %s', $hours, str_plural('hour', $hours));
         }
 
-        return sprintf('%s %s', $period, str_plural($unit, $period));
+        return 'hour';
     }
 
     /**

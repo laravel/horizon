@@ -109,10 +109,10 @@ class JobRetrievalTest extends IntegrationTest
             '0 minutes' => [0, 'Jobs past hour', 'Failed jobs past hour'],
             '30 minutes' => [30, 'Jobs past hour', 'Failed jobs past hour'],
             '60 minutes' => [60, 'Jobs past hour', 'Failed jobs past hour'],
-            '90 minutes' => [90, 'Jobs past 2 hours', 'Failed jobs past 2 hours'],
+            '90 minutes' => [90, 'Jobs past hour', 'Failed jobs past hour'],
             '120 minutes' => [120, 'Jobs past 2 hours', 'Failed jobs past 2 hours'],
             '1 day' => [1440, 'Jobs past 1 day', 'Failed jobs past 1 day'],
-            '36 hours' => [2160, 'Jobs past 2 days', 'Failed jobs past 2 days'],
+            '48 hours' => [2880, 'Jobs past 2 days', 'Failed jobs past 2 days'],
             '5 days' => [7200, 'Jobs past 5 days', 'Failed jobs past 5 days'],
         ];
     }
