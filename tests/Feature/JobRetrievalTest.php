@@ -87,4 +87,33 @@ class JobRetrievalTest extends IntegrationTest
         $pending = $repository->getRecent($pending->last()->index);
         $this->assertCount(25, $pending);
     }
+
+    /**
+     * @dataProvider recentJobsPeriodProvider
+     */
+    public function test_it_correctly_labels_recent_jobs($trim, $period, $failedPeriod)
+    {
+        config(['horizon.trim.recent' => $trim]);
+        config(['horizon.trim.failed' => $trim]);
+
+        $repository = resolve(JobRepository::class);
+
+        $this->assertEquals($period, $repository->recentJobsPeriod());
+        $this->assertEquals($failedPeriod, $repository->recentlyFailedJobsPeriod());
+    }
+
+    public function recentJobsPeriodProvider()
+    {
+        return [
+            '-100 minutes' => [-100, 'Jobs past hour', 'Failed jobs past hour'],
+            '0 minutes' => [0, 'Jobs past hour', 'Failed jobs past hour'],
+            '30 minutes' => [30, 'Jobs past hour', 'Failed jobs past hour'],
+            '60 minutes' => [60, 'Jobs past hour', 'Failed jobs past hour'],
+            '90 minutes' => [90, 'Jobs past 2 hours', 'Failed jobs past 2 hours'],
+            '120 minutes' => [120, 'Jobs past 2 hours', 'Failed jobs past 2 hours'],
+            '1 day' => [1440, 'Jobs past 1 day', 'Failed jobs past 1 day'],
+            '36 hours' => [2160, 'Jobs past 2 days', 'Failed jobs past 2 days'],
+            '5 days' => [7200, 'Jobs past 5 days', 'Failed jobs past 5 days'],
+        ];
+    }
 }
