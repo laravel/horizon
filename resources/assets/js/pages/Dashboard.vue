@@ -143,14 +143,14 @@
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">{{ stats.periods.recentJobs }}</h2>
+                                <h2 class="stat-title" v-text="stats.periods.recentJobs"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentJobs }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">{{ stats.periods.recentlyFailed }}</h2>
+                                <h2 class="stat-title" v-text="stats.periods.recentlyFailed"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentlyFailed }}
