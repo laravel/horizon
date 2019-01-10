@@ -118,16 +118,6 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
-     * Get the label of the recent jobs period.
-     *
-     * @return string
-     */
-    public function recentJobsPeriod()
-    {
-        return sprintf('Jobs past %s', $this->determinePeriod($this->recentJobExpires));
-    }
-
-    /**
      * Get the count of failed jobs.
      *
      * @return int
@@ -135,16 +125,6 @@ class RedisJobRepository implements JobRepository
     public function countFailed()
     {
         return $this->countJobsByType('failed_jobs');
-    }
-
-    /**
-     * Get the label of the recently failed jobs period.
-     *
-     * @return string
-     */
-    public function recentlyFailedJobsPeriod()
-    {
-        return sprintf('Failed jobs past %s', $this->determinePeriod($this->failedJobExpires));
     }
 
     /**

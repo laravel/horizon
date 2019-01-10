@@ -16,6 +16,7 @@
                 stats: {},
                 workers: [],
                 workload: [],
+                ready: false,
             };
         },
 
@@ -35,6 +36,28 @@
          */
         destroyed() {
             clearTimeout(this.timeout);
+        },
+
+
+        computed: {
+            /**
+             * Determine the recent job period label.
+             */
+            recentJobsPeriod() {
+                return ! this.ready
+                    ? 'Jobs past hour'
+                    : `Jobs past ${this.determinePeriodUnit(this.stats.periods.recentJobs)}`;
+            },
+
+
+            /**
+             * Determine the recently failed job period label.
+             */
+            recentlyFailedPeriod() {
+                return ! this.ready
+                    ? 'Jobs failed past 7 days'
+                    : `Jobs failed past ${this.determinePeriodUnit(this.stats.periods.recentlyFailed)}`;
+            },
         },
 
 
@@ -121,6 +144,26 @@
                 return moment.duration(time, "seconds").humanize().replace(/^(.)|\s+(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
+            },
+
+
+            /**
+             * Determine the unit for the given timeframe.
+             */
+            determinePeriodUnit(minutes) {
+                let period = moment().subtract(minutes, 'minutes');
+                let days = moment().diff(period, 'days');
+                let hours = moment().diff(period, 'hours');
+
+                if (days > 1) {
+                    return `${days} days`;
+                } else if (days == 1) {
+                    return 'day';
+                } else if (hours > 1) {
+                    return `${hours} hours`;
+                }
+
+                return 'hour';
             }
         }
     }
@@ -143,14 +186,14 @@
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title" v-text="stats.periods.recentJobs"></h2>
+                                <h2 class="stat-title" v-text="recentJobsPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentJobs }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title" v-text="stats.periods.recentlyFailed"></h2>
+                                <h2 class="stat-title" v-text="recentlyFailedPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentlyFailed }}

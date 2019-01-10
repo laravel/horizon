@@ -52,13 +52,6 @@ interface JobRepository
     public function countRecent();
 
     /**
-     * Get the label of the recent jobs period.
-     *
-     * @return string
-     */
-    public function recentJobsPeriod();
-
-    /**
      * Get the count of failed jobs.
      *
      * @return \Illuminate\Support\Collection
@@ -71,13 +64,6 @@ interface JobRepository
      * @return \Illuminate\Support\Collection
      */
     public function countRecentlyFailed();
-
-    /**
-     * Get the label of the recently failed jobs period.
-     *
-     * @return string
-     */
-    public function recentlyFailedJobsPeriod();
 
     /**
      * Retrieve the jobs with the given IDs.

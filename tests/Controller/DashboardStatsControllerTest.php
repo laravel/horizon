@@ -39,9 +39,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
 
         $jobs = Mockery::mock(JobRepository::class);
         $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
-        $jobs->shouldReceive('recentlyFailedJobsPeriod')->andReturn('Failed jobs past hour');
         $jobs->shouldReceive('countRecent')->andReturn(1);
-        $jobs->shouldReceive('recentJobsPeriod')->andReturn('Jobs past hour');
         $this->app->instance(JobRepository::class, $jobs);
 
         // Setup wait time data...
@@ -65,8 +63,8 @@ class DashboardStatsControllerTest extends AbstractControllerTest
             'queueWithMaxRuntime' => 'default',
             'queueWithMaxThroughput' => 'default',
             'periods' => [
-                'recentlyFailed' => 'Failed jobs past hour',
-                'recentJobs' => 'Jobs past hour',
+                'recentJobs' => 60,
+                'recentlyFailed' => 10080,
             ],
         ]);
     }

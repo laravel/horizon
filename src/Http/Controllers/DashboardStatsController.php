@@ -27,8 +27,8 @@ class DashboardStatsController extends Controller
             'status' => $this->currentStatus(),
             'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
             'periods' => [
-                'recentlyFailed' => app(JobRepository::class)->recentlyFailedJobsPeriod(),
-                'recentJobs' => app(JobRepository::class)->recentJobsPeriod(),
+                'recentJobs' => config('horizon.trim.recent'),
+                'recentlyFailed' => config('horizon.trim.failed'),
             ],
         ];
     }
