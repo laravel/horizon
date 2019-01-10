@@ -46,7 +46,7 @@
             recentJobsPeriod() {
                 return ! this.ready
                     ? 'Jobs past hour'
-                    : `Jobs past ${this.determinePeriodUnit(this.stats.periods.recentJobs)}`;
+                    : `Jobs past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
             },
 
 
@@ -56,7 +56,7 @@
             recentlyFailedPeriod() {
                 return ! this.ready
                     ? 'Jobs failed past 7 days'
-                    : `Jobs failed past ${this.determinePeriodUnit(this.stats.periods.recentlyFailed)}`;
+                    : `Jobs failed past ${this.determinePeriod(this.stats.periods.recentlyFailed)}`;
             },
         },
 
@@ -150,20 +150,8 @@
             /**
              * Determine the unit for the given timeframe.
              */
-            determinePeriodUnit(minutes) {
-                let period = moment().subtract(minutes, 'minutes');
-                let days = moment().diff(period, 'days');
-                let hours = moment().diff(period, 'hours');
-
-                if (days > 1) {
-                    return `${days} days`;
-                } else if (days == 1) {
-                    return 'day';
-                } else if (hours > 1) {
-                    return `${hours} hours`;
-                }
-
-                return 'hour';
+            determinePeriod(minutes) {
+                return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?/i, '');
             }
         }
     }
