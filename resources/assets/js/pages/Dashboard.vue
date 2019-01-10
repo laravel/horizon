@@ -101,7 +101,7 @@
              *  Count processes for the given supervisor.
              */
             countProcesses(processes) {
-                return _.chain(processes).values().sum().value()
+                return _.chain(processes).values().sum().value().toLocaleString()
             },
 
 
@@ -139,21 +139,21 @@
                                 <h2 class="stat-title">Jobs Per Minute</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.jobsPerMinute }}
+                                    {{ stats.jobsPerMinute.toLocaleString() }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
                                 <h2 class="stat-title">Jobs past hour</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.recentJobs }}
+                                    {{ stats.recentJobs.toLocaleString() }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
                                 <h2 class="stat-title">Failed Jobs past hour</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.recentlyFailed }}
+                                    {{ stats.recentlyFailed.toLocaleString() }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4 border-right-0">
@@ -172,7 +172,7 @@
                                 <h2 class="stat-title">Total Processes</h2>
                                 <h3 class="state-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.processes }}
+                                    {{ stats.processes.toLocaleString() }}
                                 </span>
                             </div>
 
@@ -223,8 +223,8 @@
                             <td>
                                 <span>{{ queue.name }}</span>
                             </td>
-                            <td>{{ queue.processes }}</td>
-                            <td>{{ queue.length }}</td>
+                            <td>{{ queue.processes.toLocaleString() }}</td>
+                            <td>{{ queue.length.toLocaleString() }}</td>
                             <td>{{ humanTime(queue.wait) }}</td>
                         </tr>
                         </tbody>
