@@ -90,15 +90,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Memory Usage
+    | Memory Limit (MB)
     |--------------------------------------------------------------------------
     |
-    | Set this option to limit the max memory usage
+    | This value describes the maximum amount of memory the Horizon worker
+    | may consume before it is terminated and restarted. You should set
+    | this value according to the resources available to your server.
     |
     */
 
-    'memory_usage' => 64,
-    
+    'memory_limit' => 64,
+
     /*
     |--------------------------------------------------------------------------
     | Queue Worker Configuration
