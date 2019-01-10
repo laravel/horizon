@@ -128,25 +128,6 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
-     * Determine the period for the given number of minutes.
-     *
-     * @param  int  $minutes
-     * @return string
-     */
-    protected function determinePeriod($minutes)
-    {
-        if (($days = Chronos::now()->subMinutes($minutes)->diffInDays(Chronos::now())) >= 1) {
-            return sprintf('%d %s', $days, str_plural('day', $days));
-        }
-
-        if (($hours = Chronos::now()->subMinutes($minutes)->diffInHours(Chronos::now())) > 1) {
-            return sprintf('%d %s', $hours, str_plural('hour', $hours));
-        }
-
-        return 'hour';
-    }
-
-    /**
      * Get the count of the recently failed jobs.
      *
      * @return int
