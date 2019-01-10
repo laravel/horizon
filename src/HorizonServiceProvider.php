@@ -49,7 +49,7 @@ class HorizonServiceProvider extends ServiceProvider
     protected function registerRoutes()
     {
         Route::group([
-            'prefix' => config('horizon.uri', 'horizon'),
+            'prefix' => 'horizon',
             'namespace' => 'Laravel\Horizon\Http\Controllers',
             'middleware' => config('horizon.middleware', 'web'),
         ], function () {
