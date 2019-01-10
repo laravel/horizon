@@ -55,8 +55,8 @@
              */
             recentlyFailedPeriod() {
                 return ! this.ready
-                    ? 'Jobs failed past 7 days'
-                    : `Jobs failed past ${this.determinePeriod(this.stats.periods.recentlyFailed)}`;
+                    ? 'Failed jobs past 7 days'
+                    : `Failed jobs past ${this.determinePeriod(this.stats.periods.recentlyFailed)}`;
             },
         },
 
