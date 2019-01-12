@@ -62,6 +62,10 @@ class DashboardStatsControllerTest extends AbstractControllerTest
             'recentJobs' => 1,
             'queueWithMaxRuntime' => 'default',
             'queueWithMaxThroughput' => 'default',
+            'periods' => [
+                'recentJobs' => 60,
+                'recentlyFailed' => 10080,
+            ],
         ]);
     }
 

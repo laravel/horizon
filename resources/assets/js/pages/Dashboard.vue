@@ -16,6 +16,7 @@
                 stats: {},
                 workers: [],
                 workload: [],
+                ready: false,
             };
         },
 
@@ -35,6 +36,28 @@
          */
         destroyed() {
             clearTimeout(this.timeout);
+        },
+
+
+        computed: {
+            /**
+             * Determine the recent job period label.
+             */
+            recentJobsPeriod() {
+                return ! this.ready
+                    ? 'Jobs past hour'
+                    : `Jobs past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
+            },
+
+
+            /**
+             * Determine the recently failed job period label.
+             */
+            recentlyFailedPeriod() {
+                return ! this.ready
+                    ? 'Failed jobs past 7 days'
+                    : `Failed jobs past ${this.determinePeriod(this.stats.periods.recentlyFailed)}`;
+            },
         },
 
 
@@ -121,6 +144,14 @@
                 return moment.duration(time, "seconds").humanize().replace(/^(.)|\s+(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
+            },
+
+
+            /**
+             * Determine the unit for the given timeframe.
+             */
+            determinePeriod(minutes) {
+                return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?/i, '');
             }
         }
     }
@@ -143,14 +174,14 @@
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">Jobs past hour</h2>
+                                <h2 class="stat-title" v-text="recentJobsPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentJobs.toLocaleString() }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">Failed Jobs past hour</h2>
+                                <h2 class="stat-title" v-text="recentlyFailedPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
                                     {{ stats.recentlyFailed.toLocaleString() }}
