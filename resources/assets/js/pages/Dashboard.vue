@@ -170,21 +170,21 @@
                                 <h2 class="stat-title">Jobs Per Minute</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.jobsPerMinute.toLocaleString() }}
+                                    {{ stats.jobsPerMinute ? stats.jobsPerMinute.toLocaleString() : 0 }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
                                 <h2 class="stat-title" v-text="recentJobsPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.recentJobs.toLocaleString() }}
+                                    {{ stats.recentJobs ? stats.recentJobs.toLocaleString() : 0 }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
                                 <h2 class="stat-title" v-text="recentlyFailedPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.recentlyFailed.toLocaleString() }}
+                                    {{ stats.recentlyFailed ? stats.recentlyFailed.toLocaleString() : 0 }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4 border-right-0">
@@ -203,7 +203,7 @@
                                 <h2 class="stat-title">Total Processes</h2>
                                 <h3 class="state-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.processes.toLocaleString() }}
+                                    {{ stats.processes ? stats.processes.toLocaleString() : 0 }}
                                 </span>
                             </div>
 
@@ -254,8 +254,8 @@
                             <td>
                                 <span>{{ queue.name }}</span>
                             </td>
-                            <td>{{ queue.processes.toLocaleString() }}</td>
-                            <td>{{ queue.length.toLocaleString() }}</td>
+                            <td>{{ queue.processes ? stats.processes.toLocaleString() : 0 }}</td>
+                            <td>{{ queue.length ? stats.length.toLocaleString() : 0 }}</td>
                             <td>{{ humanTime(queue.wait) }}</td>
                         </tr>
                         </tbody>
