@@ -28,4 +28,19 @@ class RedisJobRepositoryTest extends IntegrationTest
 
         $this->assertNull($repository->findFailed(1));
     }
+
+    public function test_it_saves_microseconds_as_a_float_and_disregards_the_locale()
+    {
+        setlocale(LC_NUMERIC, 'fr_FR');
+
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+        $repository->reserved('redis', 'default', $payload);
+
+        $result = $repository->getRecent()[0];
+
+        $this->assertNotContains(',', $result->reserved_at);
+    }
 }
