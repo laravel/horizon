@@ -48,7 +48,7 @@ class HorizonCommand extends Command
         });
 
         ProvisioningPlan::get(MasterSupervisor::name())->deploy(
-            config('app.env')
+            config('horizon.env') ?? config('app.env')
         );
 
         $this->info('Horizon started successfully.');
