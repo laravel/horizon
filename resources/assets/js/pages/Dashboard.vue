@@ -254,8 +254,8 @@
                             <td>
                                 <span>{{ queue.name }}</span>
                             </td>
-                            <td>{{ queue.processes ? stats.processes.toLocaleString() : 0 }}</td>
-                            <td>{{ queue.length ? stats.length.toLocaleString() : 0 }}</td>
+                            <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                            <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td>{{ humanTime(queue.wait) }}</td>
                         </tr>
                         </tbody>
