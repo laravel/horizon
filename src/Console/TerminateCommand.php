@@ -50,7 +50,9 @@ class TerminateCommand extends Command
         foreach (array_pluck($masters, 'pid') as $processId) {
             $this->info("Sending TERM Signal To Process: {$processId}");
 
-            posix_kill($processId, SIGTERM);
+            if (! posix_kill($processId, SIGTERM)) {
+                $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+            }
         }
 
         $this->laravel['cache']->forever('illuminate:queue:restart', $this->currentTime());

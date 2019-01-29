@@ -39,7 +39,9 @@ class ContinueCommand extends Command
         foreach (array_pluck($masters, 'pid') as $processId) {
             $this->info("Sending CONT Signal To Process: {$processId}");
 
-            posix_kill($processId, SIGCONT);
+            if (! posix_kill($processId, SIGCONT)) {
+                $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+            }
         }
     }
 }
