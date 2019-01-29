@@ -88,8 +88,8 @@ class PurgeCommand extends Command
         foreach ($orphans as $processId) {
             $this->info("Observed Orphan: {$processId}");
 
-            if (function_exists('posix_kill')) {
-                posix_kill($processId, SIGTERM);
+            if (! posix_kill($processId, SIGTERM)) {
+                $this->error("Failed to kill process for Orphan: {$processId} (".posix_strerror(posix_get_last_error()).')');
             }
         }
     }
