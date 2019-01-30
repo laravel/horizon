@@ -31,19 +31,19 @@ class TerminateCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Illuminate\Contracts\Cache\Factory $cache
+     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @return void
      */
-    public function handle()
+    public function handle(CacheFactory $cache, MasterSupervisorRepository $masters)
     {
         if (config('horizon.fast_termination')) {
-            app(CacheFactory::class)->forever(
+            $cache->forever(
                 'horizon:terminate:wait', $this->option('wait')
             );
         }
 
-        $masters = app(MasterSupervisorRepository::class)->all();
-
-        $masters = collect($masters)->filter(function ($master) {
+        $masters = collect($masters->all())->filter(function ($master) {
             return Str::startsWith($master->name, MasterSupervisor::basename());
         })->all();
 
