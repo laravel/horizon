@@ -22,7 +22,7 @@ Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
 
-Vue.component('loader', require('./components/Status/Loader.vue'));
+Vue.component('loader', require('./components/Status/Loader.vue').default);
 
 Vue.config.errorHandler = function (err, vm, info) {
     console.error(err);

@@ -14,8 +14,8 @@ const webpack = require('webpack');
 
 mix
     .options({
-        uglify: {
-            uglifyOptions: {
+        terser: {
+            terserOptions: {
                 compress: {
                     drop_console: true,
                 }
