@@ -46,11 +46,12 @@ class SupervisorCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return void
+     * @param  \Laravel\Horizon\SupervisorFactory  $factory
+     * @return int
      */
-    public function handle()
+    public function handle(SupervisorFactory $factory)
     {
-        $supervisor = app(SupervisorFactory::class)->make(
+        $supervisor = $factory->make(
             $this->supervisorOptions()
         );
 

@@ -25,12 +25,14 @@ class SnapshotCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Laravel\Horizon\Lock  $lock
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
      * @return void
      */
-    public function handle()
+    public function handle(Lock $lock, MetricsRepository $metrics)
     {
-        if (app(Lock::class)->get('metrics:snapshot', 300)) {
-            app(MetricsRepository::class)->snapshot();
+        if ($lock->get('metrics:snapshot', 300)) {
+            $metrics->snapshot();
 
             $this->info('Metrics snapshot stored successfully.');
         }
