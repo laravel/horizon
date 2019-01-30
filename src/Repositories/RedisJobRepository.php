@@ -224,7 +224,7 @@ class RedisJobRepository implements JobRepository
     public function pushed($connection, $queue, JobPayload $payload)
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
-            $this->storeJobReferences($pipe, $payload->id());
+            $this->storeJobReference($pipe, 'recent_jobs', $payload);
 
             $time = str_replace(',', '.', microtime(true));
 
@@ -245,18 +245,6 @@ class RedisJobRepository implements JobRepository
                 $payload->id(), Chronos::now()->addMinutes($this->recentJobExpires)->getTimestamp()
             );
         });
-    }
-
-    /**
-     * Store the look-up references for a newly pushed job.
-     *
-     * @param  mixed  $pipe
-     * @param  string  $id
-     * @return void
-     */
-    protected function storeJobReferences($pipe, $id)
-    {
-        $pipe->zadd('recent_jobs', str_replace(',', '.', microtime(true) * -1), $id);
     }
 
     /**
@@ -311,7 +299,7 @@ class RedisJobRepository implements JobRepository
     public function remember($connection, $queue, JobPayload $payload)
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
-            $this->storeMonitoredReferences($pipe, $payload->id());
+            $this->storeJobReference($pipe, 'monitored_jobs', $payload);
 
             $pipe->hmset(
                 $payload->id(), [
@@ -329,18 +317,6 @@ class RedisJobRepository implements JobRepository
                 $payload->id(), Chronos::now()->addMinutes($this->monitoredJobExpires)->getTimestamp()
             );
         });
-    }
-
-    /**
-     * Store the look-up references for a monitored job.
-     *
-     * @param  mixed  $pipe
-     * @param  string  $id
-     * @return void
-     */
-    protected function storeMonitoredReferences($pipe, $id)
-    {
-        $pipe->zadd('monitored_jobs', str_replace(',', '.', microtime(true) * -1), $id);
     }
 
     /**
@@ -526,7 +502,8 @@ class RedisJobRepository implements JobRepository
     public function failed($exception, $connection, $queue, JobPayload $payload)
     {
         $this->connection()->pipeline(function ($pipe) use ($exception, $connection, $queue, $payload) {
-            $this->storeFailedJobReferences($pipe, $payload->id());
+            $this->storeJobReference($pipe, 'failed_jobs', $payload);
+            $this->storeJobReference($pipe, 'recent_failed_jobs', $payload);
 
             $pipe->hmset(
                 $payload->id(), [
@@ -548,19 +525,16 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
-     * Store the look-up references for a failed job.
+     * Store the look-up references for a job.
      *
      * @param  mixed  $pipe
-     * @param  string  $id
+     * @param  string  $key
+     * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    protected function storeFailedJobReferences($pipe, $id)
+    protected function storeJobReference($pipe, $key, JobPayload $payload)
     {
-        $score = str_replace(',', '.', microtime(true) * -1);
-
-        $pipe->zadd('failed_jobs', $score, $id);
-
-        $pipe->zadd('recent_failed_jobs', $score, $id);
+        $pipe->zadd($key, str_replace(',', '.', microtime(true) * -1), $payload->id());
     }
 
     /**
