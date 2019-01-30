@@ -53,7 +53,7 @@ class MonitoringTest extends IntegrationTest
         $id = Queue::push(new Jobs\BasicJob);
         $this->work();
         $this->assertEquals(1, $this->monitoredJobs('first'));
-        $this->assertEquals(-1, Redis::connection('horizon')->ttl($id));
+        $this->assertGreaterThan(0, Redis::connection('horizon')->ttl($id));
     }
 
     public function test_completed_jobs_are_removed_from_database_when_their_tag_is_no_longer_monitored()

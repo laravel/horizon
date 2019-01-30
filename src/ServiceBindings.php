@@ -15,6 +15,7 @@ trait ServiceBindings
         Contracts\HorizonCommandQueue::class => RedisHorizonCommandQueue::class,
         Listeners\TrimRecentJobs::class,
         Listeners\TrimFailedJobs::class,
+        Listeners\TrimMonitoredJobs::class,
         Lock::class,
         Stopwatch::class,
 

@@ -156,6 +156,13 @@ interface JobRepository
     public function trimFailedJobs();
 
     /**
+     * Trim the monitored job list.
+     *
+     * @return void
+     */
+    public function trimMonitoredJobs();
+
+    /**
      * Find a failed job by ID.
      *
      * @param  string  $id

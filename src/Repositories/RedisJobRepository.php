@@ -43,6 +43,13 @@ class RedisJobRepository implements JobRepository
     public $failedJobExpires;
 
     /**
+     * The number of minutes until monitored jobs should be purged.
+     *
+     * @var int
+     */
+    public $monitoredJobExpires;
+
+    /**
      * Create a new repository instance.
      *
      * @param  \Illuminate\Contracts\Redis\Factory  $redis
@@ -53,6 +60,7 @@ class RedisJobRepository implements JobRepository
         $this->redis = $redis;
         $this->recentJobExpires = config('horizon.trim.recent', 60);
         $this->failedJobExpires = config('horizon.trim.failed', 10080);
+        $this->monitoredJobExpires = config('horizon.trim.monitored', 10080);
     }
 
     /**
@@ -293,7 +301,7 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
-     * Store a monitored job.
+     * Mark the job as completed and monitored.
      *
      * @param  string  $connection
      * @param  string  $queue
@@ -303,6 +311,8 @@ class RedisJobRepository implements JobRepository
     public function remember($connection, $queue, JobPayload $payload)
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
+            $this->storeMonitoredReferences($pipe, $payload->id());
+
             $pipe->hmset(
                 $payload->id(), [
                     'id' => $payload->id(),
@@ -315,8 +325,22 @@ class RedisJobRepository implements JobRepository
                 ]
             );
 
-            $pipe->persist($payload->id());
+            $pipe->expireat(
+                $payload->id(), Chronos::now()->addMinutes($this->monitoredJobExpires)->getTimestamp()
+            );
         });
+    }
+
+    /**
+     * Store the look-up references for a monitored job.
+     *
+     * @param  mixed  $pipe
+     * @param  string  $id
+     * @return void
+     */
+    protected function storeMonitoredReferences($pipe, $id)
+    {
+        $pipe->zadd('monitored_jobs', str_replace(',', '.', microtime(true) * -1), $id);
     }
 
     /**
@@ -454,6 +478,18 @@ class RedisJobRepository implements JobRepository
     {
         $this->connection()->zremrangebyscore(
             'failed_jobs', Chronos::now()->subMinutes($this->failedJobExpires)->getTimestamp() * -1, '+inf'
+        );
+    }
+
+    /**
+     * Trim the monitored job list.
+     *
+     * @return void
+     */
+    public function trimMonitoredJobs()
+    {
+        $this->connection()->zremrangebyscore(
+            'monitored_jobs', Chronos::now()->subMinutes($this->monitoredJobExpires)->getTimestamp() * -1, '+inf'
         );
     }
 
