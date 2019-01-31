@@ -43,17 +43,18 @@ class TerminateCommand extends Command
             );
         }
 
-        $masters = collect($masters->all())->filter(function ($master) {
-            return Str::startsWith($master->name, MasterSupervisor::basename());
-        })->all();
+        collect($masters->all())
+            ->filter(function ($master) {
+                return Str::startsWith($master->name, MasterSupervisor::basename());
+            })
+            ->pluck('pid')
+            ->each(function ($processId) {
+                $this->info("Sending TERM Signal To Process: {$processId}");
 
-        foreach (array_pluck($masters, 'pid') as $processId) {
-            $this->info("Sending TERM Signal To Process: {$processId}");
-
-            if (! posix_kill($processId, SIGTERM)) {
-                $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
-            }
-        }
+                if (! posix_kill($processId, SIGTERM)) {
+                    $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+                }
+            });
 
         $this->laravel['cache']->forever('illuminate:queue:restart', $this->currentTime());
     }
