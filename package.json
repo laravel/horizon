@@ -19,7 +19,7 @@
         "phpunserialize": "1.*",
         "popper.js": "^1.12",
         "vue": "^2.2.0",
-        "vue-router": "^2.2.0"
+        "vue-router": "^3.0.2"
     },
     "devDependencies": {
         "cross-env": "^5.0.1",
