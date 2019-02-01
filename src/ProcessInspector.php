@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon;
 
+use Illuminate\Support\Arr;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
@@ -65,7 +66,7 @@ class ProcessInspector
                 return $processes;
             })
             ->merge(
-                array_pluck(app(MasterSupervisorRepository::class)->all(), 'pid')
+                Arr::pluck(app(MasterSupervisorRepository::class)->all(), 'pid')
             )->all();
     }
 }
