@@ -80,11 +80,13 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center">
                     <span class="mr-auto">Monitoring</span>
-                    <button @click="openTagModal" class="btn btn-primary btn-md">Monitor Tag</button>
+                    <button @click="openTagModal" class="btn btn-primary btn-md">
+                        Monitor Tag
+                    </button>
                 </div>
 
                 <div class="table-responsive">
-                    <loader :yes="loadingTags"/>
+                    <loader :yes="loadingTags" />
 
                     <p class="text-center m-0 p-5" v-if="!loadingTags && !tags.length">
                         You're not monitoring any tags.
@@ -117,6 +119,6 @@
             </div>
         </section>
 
-        <add-tag-modal v-if="addTagModalOpened"/>
+        <add-tag-modal v-if="addTagModalOpened" />
     </layout>
 </template>
