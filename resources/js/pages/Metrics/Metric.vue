@@ -104,28 +104,28 @@
     <layout>
         <section class="main-content">
             <div class="card mb-4">
-                <div class="card-header">Throughput - {{slug}}</div>
+                <div class="card-header">Throughput - {{ slug }}</div>
                 <div class="card-body">
-                    <loader :yes="loading"/>
+                    <loader :yes="loading" />
 
                     <p class="text-center m-0 p-5" v-if="!loading && !rawData.length">
                         Not Enough Data
                     </p>
 
-                    <line-chart v-if="!loading && rawData.length" :data="metric.throughPutChart"/>
+                    <line-chart v-if="!loading && rawData.length" :data="metric.throughPutChart" />
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header">Runtime - {{slug}}</div>
+                <div class="card-header">Runtime - {{ slug }}</div>
                 <div class="card-body">
-                    <loader :yes="loading"/>
+                    <loader :yes="loading" />
 
                     <p class="text-center m-0 p-5" v-if="!loading && !rawData.length">
                         Not Enough Data
                     </p>
 
-                    <line-chart v-if="!loading && rawData.length" :data="metric.runTimeChart"/>
+                    <line-chart v-if="!loading && rawData.length" :data="metric.runTimeChart" />
                 </div>
             </div>
         </section>
