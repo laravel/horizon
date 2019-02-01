@@ -1,6 +1,6 @@
 <script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
-    import JobTable from './Jobs.vue'
+    import Layout from '../../layouts/MainLayout.vue';
+    import JobTable from './Jobs.vue';
 
     export default {
         components: {JobTable, Layout},
@@ -21,9 +21,8 @@
             <div class="card">
                 <div class="card-header">Recent Jobs</div>
 
-                <job-table/>
+                <job-table />
             </div>
         </section>
     </layout>
 </template>
-
