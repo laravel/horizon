@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
+    import Layout from '../../layouts/MainLayout.vue';
 
     export default {
         components: {Layout},
@@ -29,7 +29,7 @@
                     </li>
                 </ul>
 
-                <router-view/>
+                <router-view />
             </div>
         </section>
     </layout>
