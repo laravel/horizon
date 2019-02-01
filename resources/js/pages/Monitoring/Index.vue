@@ -92,25 +92,25 @@
 
                     <table v-if="!loadingTags && tags.length" class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Tag Name</th>
-                            <th>Jobs</th>
-                            <th></th>
-                        </tr>
+                            <tr>
+                                <th>Tag Name</th>
+                                <th>Jobs</th>
+                                <th></th>
+                            </tr>
                         </thead>
 
                         <tbody>
-                        <tr v-for="tag in tags">
-                            <td>
-                                <router-link :to="{ name: 'monitoring.detail.index', params: { tag:tag.tag }}"
-                                             href="#" class="fw7">{{ tag.tag }}
-                                </router-link>
-                            </td>
-                            <td>{{ tag.count }}</td>
-                            <td class="text-right">
-                                <button @click="stopMonitoring(tag.tag)" class="btn btn-secondary">Stop Monitoring</button>
-                            </td>
-                        </tr>
+                            <tr v-for="tag in tags">
+                                <td>
+                                    <router-link :to="{ name: 'monitoring.detail.index', params: { tag:tag.tag }}"
+                                                 href="#" class="fw7">{{ tag.tag }}
+                                    </router-link>
+                                </td>
+                                <td>{{ tag.count }}</td>
+                                <td class="text-right">
+                                    <button @click="stopMonitoring(tag.tag)" class="btn btn-secondary">Stop Monitoring</button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -181,26 +181,26 @@
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Job</th>
-                            <th>ID</th>
-                            <th>Retry Time</th>
-                        </tr>
+                            <tr>
+                                <th>Job</th>
+                                <th>ID</th>
+                                <th>Retry Time</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="retry in job.retried_by">
-                            <td class="d-flex">
-                                <status :active="retry.status == 'completed'" :pending="retry.status == 'pending'" class="mr-2"/>
-                                {{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}
-                            </td>
-                            <td>
-                                <a v-if="retry.status == 'failed'" :href="'/horizon/failed/'+retry.id">
-                                    {{ retry.id }}
-                                </a>
-                                <span v-else>{{ retry.id }}</span>
-                            </td>
-                            <td>{{readableTimestamp(retry.retried_at)}}</td>
-                        </tr>
+                            <tr v-for="retry in job.retried_by">
+                                <td class="d-flex">
+                                    <status :active="retry.status == 'completed'" :pending="retry.status == 'pending'" class="mr-2"/>
+                                    {{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}
+                                </td>
+                                <td>
+                                    <a v-if="retry.status == 'failed'" :href="'/horizon/failed/'+retry.id">
+                                        {{ retry.id }}
+                                    </a>
+                                    <span v-else>{{ retry.id }}</span>
+                                </td>
+                                <td>{{readableTimestamp(retry.retried_at)}}</td>
+                            </tr>
                         </tbody>
                     </table>
 

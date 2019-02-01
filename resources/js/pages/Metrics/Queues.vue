@@ -50,16 +50,16 @@
 
         <table v-if="!loadingQueues && queues.length" class="table card-table table-hover">
             <thead>
-            <tr>
-                <th>Queue</th>
-            </tr>
+                <tr>
+                    <th>Queue</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="queue in queues">
-                <td>
-                    <router-link :to="{ name: 'metrics.detail', params: { type: 'queues', slug: queue }}">{{ queue }}</router-link>
-                </td>
-            </tr>
+                <tr v-for="queue in queues">
+                    <td>
+                        <router-link :to="{ name: 'metrics.detail', params: { type: 'queues', slug: queue }}">{{ queue }}</router-link>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
