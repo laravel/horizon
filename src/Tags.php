@@ -117,7 +117,7 @@ class Tags
             })->collapse()->filter()->all();
         }
 
-        return collect(array_collapse($models))->unique();
+        return collect($models)->collapse()->unique();
     }
 
     /**

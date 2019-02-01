@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Console;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Laravel\Horizon\MasterSupervisor;
@@ -35,7 +36,7 @@ class PauseCommand extends Command
             return Str::startsWith($master->name, MasterSupervisor::basename());
         })->all();
 
-        foreach (array_pluck($masters, 'pid') as $processId) {
+        foreach (Arr::pluck($masters, 'pid') as $processId) {
             $this->info("Sending USR2 Signal To Process: {$processId}");
 
             if (! posix_kill($processId, SIGUSR2)) {
