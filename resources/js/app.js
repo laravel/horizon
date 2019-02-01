@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import _ from 'lodash';
-import axios from 'axios'
+import axios from 'axios';
 import moment from 'moment';
 import router from './router';
 import App from './components/App.vue';
@@ -12,19 +12,19 @@ require('bootstrap');
 
 $('body')
     .tooltip({
-        selector: '[data-toggle=tooltip]'
+        selector: '[data-toggle=tooltip]',
     })
-    .click(function(){
+    .click(function() {
         $('a[data-toggle="tooltip"]').tooltip('hide');
     });
 
 Vue.prototype.$http = axios.create();
 
-window.Bus = new Vue({name: 'Bus'});
+window.Bus = new Vue({ name: 'Bus' });
 
 Vue.component('loader', require('./components/Status/Loader.vue').default);
 
-Vue.config.errorHandler = function (err, vm, info) {
+Vue.config.errorHandler = function(err, vm, info) {
     console.error(err);
 };
 
@@ -33,15 +33,17 @@ Vue.mixin({
         /**
          * Format the given date with respect to timezone.
          */
-        formatDate(unixTime){
-            return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
+        formatDate(unixTime) {
+            return moment(unixTime * 1000).add(
+                new Date().getTimezoneOffset() / 60
+            );
         },
 
 
         /**
          * Extract the job base name.
          */
-        jobBaseName(name){
+        jobBaseName(name) {
             if (!name.includes('\\')) return name;
 
             var parts = name.split("\\");
@@ -53,7 +55,7 @@ Vue.mixin({
         /**
          * Convert to human readable timestamp.
          */
-        readableTimestamp(timestamp){
+        readableTimestamp(timestamp) {
             return this.formatDate(timestamp).format('YY-MM-DD HH:mm:ss');
         },
 
@@ -61,14 +63,14 @@ Vue.mixin({
         /**
          * Format the tags.
          */
-        displayableTagsList(tags, truncate = true){
+        displayableTagsList(tags, truncate = true) {
             if (!tags || !tags.length) return '';
 
-            return _.reduce(tags, (s, n)=> {
+            return _.reduce(tags, (s, n) => {
                 return (s ? s + ', ' : '') + (truncate ? _.truncate(n) : n);
             }, '');
-        }
-    }
+        },
+    },
 });
 
 new Vue({
@@ -80,7 +82,7 @@ new Vue({
      * The component's data.
      */
     data() {
-        return {}
+        return {};
     },
 
     render: h => h(App),
