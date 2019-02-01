@@ -4,7 +4,7 @@
     export default {
         props: ['type'],
 
-        components: {Status},
+        components: { Status },
 
         /**
          * The component's data.

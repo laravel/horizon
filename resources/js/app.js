@@ -20,7 +20,7 @@ $('body')
 
 Vue.prototype.$http = axios.create();
 
-window.Bus = new Vue({name: 'Bus'});
+window.Bus = new Vue({ name: 'Bus' });
 
 Vue.component('loader', require('./components/Status/Loader.vue').default);
 
@@ -41,7 +41,7 @@ Vue.mixin({
         /**
          * Extract the job base name.
          */
-        jobBaseName(name){
+        jobBaseName(name) {
             if (!name.includes('\\')) return name;
 
             var parts = name.split("\\");
@@ -53,7 +53,7 @@ Vue.mixin({
         /**
          * Convert to human readable timestamp.
          */
-        readableTimestamp(timestamp){
+        readableTimestamp(timestamp) {
             return this.formatDate(timestamp).format('YY-MM-DD HH:mm:ss');
         },
 
@@ -61,7 +61,7 @@ Vue.mixin({
         /**
          * Format the tags.
          */
-        displayableTagsList(tags, truncate = true){
+        displayableTagsList(tags, truncate = true) {
             if (!tags || !tags.length) return '';
 
             return _.reduce(tags, (s, n)=> {

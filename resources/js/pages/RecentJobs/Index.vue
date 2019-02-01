@@ -3,7 +3,7 @@
     import JobTable from './Jobs.vue';
 
     export default {
-        components: {JobTable, Layout},
+        components: { JobTable, Layout },
 
 
         /**

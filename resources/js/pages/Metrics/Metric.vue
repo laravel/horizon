@@ -8,7 +8,7 @@
         props: ['type', 'slug'],
 
 
-        components: {Layout, LineChart},
+        components: { Layout, LineChart },
 
 
         /**

@@ -5,7 +5,7 @@
     import Status from '../components/Status/Status.vue';
 
     export default {
-        components: {Layout, Status},
+        components: { Layout, Status },
 
 
         /**

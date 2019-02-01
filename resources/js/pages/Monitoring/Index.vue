@@ -3,7 +3,7 @@
     import AddTagModal from './AddTagModal.vue';
 
     export default {
-        components: {Layout, AddTagModal},
+        components: { Layout, AddTagModal },
 
 
         /**

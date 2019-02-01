@@ -2,7 +2,7 @@
     import Layout from '../../layouts/MainLayout.vue';
 
     export default {
-        components: {Layout},
+        components: { Layout },
 
 
         /**
