@@ -124,7 +124,7 @@
              *  Count processes for the given supervisor.
              */
             countProcesses(processes) {
-                return _.chain(processes).values().sum().value().toLocaleString()
+                return _.chain(processes).values().sum().value().toLocaleString();
             },
 
 
@@ -283,7 +283,7 @@
                                 <td>{{ countProcesses(supervisor.processes) }}</td>
                                 <td>{{ supervisor.options.queue }}</td>
                                 <td class="d-flex align-items-center">
-                                    <status :active="supervisor.options.balance" class="mr-2"/>
+                                    <status :active="supervisor.options.balance" class="mr-2" />
                                     <span v-if="supervisor.options.balance">
                                         ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
                                     </span>
