@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import Status from '../../components/Status/Status.vue'
+    import Status from '../../components/Status/Status.vue';
 
     export default {
         props: ['type'],
@@ -118,7 +118,7 @@
 </script>
 <template>
     <div class="table-responsive">
-        <loader :yes="loadState[type]"/>
+        <loader :yes="loadState[type]" />
 
         <p class="text-center m-0 p-5" v-if="!loadState[type] && !jobs[type].length">
             There aren't any recent jobs for this tag.
@@ -148,11 +148,11 @@
                         {{ readableTimestamp(job.payload.pushedAt) }}
                     </td>
                     <td>
-                        <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                        <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                        <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3) + 's' : '-' }}</span>
+                        <span v-else>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3) + 's' : '-' }}</span>
                     </td>
                     <td v-if="type == 'index'">
-                        <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'" class="mr1"/>
+                        <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'" class="mr1" />
                     </td>
                     <td v-if="type != 'index'">
                         {{ readableTimestamp(job.failed_at) }}
