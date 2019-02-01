@@ -1,7 +1,7 @@
 <script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize'
-    import Layout from '../../layouts/MainLayout.vue'
-    import Status from '../../components/Status/Status.vue'
+    import phpunserialize from 'phpunserialize';
+    import Layout from '../../layouts/MainLayout.vue';
+    import Status from '../../components/Status/Status.vue';
 
     export default {
         props: ['jobId'],
@@ -91,7 +91,7 @@
             /**
              * Convert exception to a more readable format.
              */
-            prettyPrintException(exception){
+            prettyPrintException(exception) {
                 var lines = _.split(exception, "\n"),
                     output = '';
 
@@ -109,7 +109,7 @@
              * @param data
              * @returns {string}
              */
-            prettyPrintJob(data){
+            prettyPrintJob(data) {
                 return '<pre>' + JSON.stringify(data.command ? phpunserialize(data.command) : data, null, 2) + '</pre>';
             }
         }
@@ -122,11 +122,11 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-7">{{job.name}}</div>
+                        <div class="col-md-7">{{ job.name }}</div>
                         <div class="col-md-5 text-right">
                             <button @click="retry(job.id)" class="btn btn-primary btn-sm">
                                 <i class="icon-sm">
-                                    <svg class="fill-white" :class="{spin: retryingJob}">
+                                    <svg class="fill-white" :class="{ spin: retryingJob }">
                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"></use>
                                     </svg>
                                 </i>
@@ -139,11 +139,11 @@
                     <div v-if="job.id">
                         <div class="row mb-2">
                             <div class="col-md-2"><strong>ID</strong></div>
-                            <div class="col">{{job.id}}</div>
+                            <div class="col">{{ job.id }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-2"><strong>Queue</strong></div>
-                            <div class="col">{{job.queue}}</div>
+                            <div class="col">{{ job.queue }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-2"><strong>Tags</strong></div>
@@ -151,10 +151,10 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2"><strong>Failed At</strong></div>
-                            <div class="col">{{readableTimestamp(job.failed_at)}}</div>
+                            <div class="col">{{ readableTimestamp(job.failed_at) }}</div>
                         </div>
 
-                        <hr>
+                        <hr />
 
                         <div class="row">
                             <div class="col-md-2"><strong>Error</strong></div>
@@ -163,7 +163,7 @@
                             </div>
                         </div>
 
-                        <hr>
+                        <hr />
 
                         <div class="row">
                             <div class="col-md-2"><strong>Data</strong></div>
@@ -190,7 +190,7 @@
                         <tbody>
                             <tr v-for="retry in job.retried_by">
                                 <td class="d-flex">
-                                    <status :active="retry.status == 'completed'" :pending="retry.status == 'pending'" class="mr-2"/>
+                                    <status :active="retry.status == 'completed'" :pending="retry.status == 'pending'" class="mr-2" />
                                     {{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}
                                 </td>
                                 <td>
@@ -199,7 +199,7 @@
                                     </a>
                                     <span v-else>{{ retry.id }}</span>
                                 </td>
-                                <td>{{readableTimestamp(retry.retried_at)}}</td>
+                                <td>{{ readableTimestamp(retry.retried_at) }}</td>
                             </tr>
                         </tbody>
                     </table>
