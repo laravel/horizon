@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import Status from '../../components/Status/Status.vue'
+    import Status from '../../components/Status/Status.vue';
 
     export default {
         components: {Status},

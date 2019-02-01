@@ -124,7 +124,7 @@
              *  Count processes for the given supervisor.
              */
             countProcesses(processes) {
-                return _.chain(processes).values().sum().value().toLocaleString()
+                return _.chain(processes).values().sum().value().toLocaleString();
             },
 
 

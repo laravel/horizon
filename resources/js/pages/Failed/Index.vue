@@ -1,6 +1,6 @@
 <script type="text/ecmascript-6">
     import moment from 'moment';
-    import Layout from '../../layouts/MainLayout.vue'
+    import Layout from '../../layouts/MainLayout.vue';
 
     export default {
         components: {Layout},

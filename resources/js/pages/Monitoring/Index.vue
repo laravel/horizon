@@ -1,6 +1,6 @@
 <script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
-    import AddTagModal from './AddTagModal.vue'
+    import Layout from '../../layouts/MainLayout.vue';
+    import AddTagModal from './AddTagModal.vue';
 
     export default {
         components: {Layout, AddTagModal},
@@ -68,7 +68,7 @@
                 this.$http.delete('/horizon/api/monitoring/' + encodeURIComponent(tag))
                     .then(() => {
                         this.tags = _.reject(this.tags, existing => existing.tag == tag)
-                    })
+                    });
             }
         }
     }

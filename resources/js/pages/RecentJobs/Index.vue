@@ -1,6 +1,6 @@
 <script type="text/ecmascript-6">
-    import Layout from '../../layouts/MainLayout.vue'
-    import JobTable from './Jobs.vue'
+    import Layout from '../../layouts/MainLayout.vue';
+    import JobTable from './Jobs.vue';
 
     export default {
         components: {JobTable, Layout},

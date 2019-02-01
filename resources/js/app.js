@@ -33,8 +33,8 @@ Vue.mixin({
         /**
          * Format the given date with respect to timezone.
          */
-        formatDate(unixTime){
-            return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
+        formatDate(unixTime) {
+            return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60);
         },
 
 
@@ -80,7 +80,7 @@ new Vue({
      * The component's data.
      */
     data() {
-        return {}
+        return {};
     },
 
     render: h => h(App),

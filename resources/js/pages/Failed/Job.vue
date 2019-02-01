@@ -1,7 +1,7 @@
 <script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize'
-    import Layout from '../../layouts/MainLayout.vue'
-    import Status from '../../components/Status/Status.vue'
+    import phpunserialize from 'phpunserialize';
+    import Layout from '../../layouts/MainLayout.vue';
+    import Status from '../../components/Status/Status.vue';
 
     export default {
         props: ['jobId'],
@@ -26,7 +26,7 @@
          * Prepare the component.
          */
         mounted() {
-            this.loadFailedJob(this.jobId)
+            this.loadFailedJob(this.jobId);
 
             this.interval = setInterval(() => {
                 this.reloadRetries();
