@@ -194,7 +194,7 @@
                                 <div class="d-flex align-items-center">
                                     <status v-if="stats.status" :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr-2"/>
                                     <span class="stat-value">
-                                      {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
+                                        {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
                                     </span>
                                 </div>
                             </div>
@@ -242,22 +242,22 @@
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Queue</th>
-                            <th>Processes</th>
-                            <th>Jobs</th>
-                            <th>Wait</th>
-                        </tr>
+                            <tr>
+                                <th>Queue</th>
+                                <th>Processes</th>
+                                <th>Jobs</th>
+                                <th>Wait</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="queue in workload">
-                            <td>
-                                <span>{{ queue.name }}</span>
-                            </td>
-                            <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
-                            <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
-                            <td>{{ humanTime(queue.wait) }}</td>
-                        </tr>
+                            <tr v-for="queue in workload">
+                                <td>
+                                    <span>{{ queue.name }}</span>
+                                </td>
+                                <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                                <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
+                                <td>{{ humanTime(queue.wait) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -268,27 +268,27 @@
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Supervisor</th>
-                            <th>Processes</th>
-                            <th>Queues</th>
-                            <th>Balancing</th>
-                        </tr>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Processes</th>
+                                <th>Queues</th>
+                                <th>Balancing</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="supervisor in worker.supervisors">
-                            <td class="ph2">
-                                <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
-                            </td>
-                            <td>{{ countProcesses(supervisor.processes) }}</td>
-                            <td>{{ supervisor.options.queue }}</td>
-                            <td class="d-flex align-items-center">
-                                <status :active="supervisor.options.balance" class="mr-2"/>
-                                <span v-if="supervisor.options.balance">
-                                    ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
-                                </span>
-                            </td>
-                        </tr>
+                            <tr v-for="supervisor in worker.supervisors">
+                                <td class="ph2">
+                                    <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
+                                </td>
+                                <td>{{ countProcesses(supervisor.processes) }}</td>
+                                <td>{{ supervisor.options.queue }}</td>
+                                <td class="d-flex align-items-center">
+                                    <status :active="supervisor.options.balance" class="mr-2"/>
+                                    <span v-if="supervisor.options.balance">
+                                        ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
