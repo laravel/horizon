@@ -162,13 +162,13 @@
                 </div>
 
                 <div class="table-responsive">
-                    <loader :yes="loadingJobs"/>
+                    <loader :yes="loadingJobs" />
 
                     <p class="text-center m-0 p-5" v-if="!loadingJobs && !jobs.length">
                         There aren't any recent failed jobs.
                     </p>
 
-                    <table v-if="! loadingJobs && jobs.length" class="table card-table table-hover">
+                    <table v-if="!loadingJobs && jobs.length" class="table card-table table-hover">
                         <thead>
                             <tr>
                                 <th>Job</th>
@@ -193,7 +193,7 @@
                                 <td>
                                     <span @click="retry(job.id)" v-if="!hasCompleted(job)">
                                         <i class="icon">
-                                            <svg class="fill-primary" :class="{spin: isRetrying(job.id)}">
+                                            <svg class="fill-primary" :class="{ spin: isRetrying(job.id) }">
                                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#zondicon-refresh"></use>
                                             </svg>
                                         </i>
@@ -203,7 +203,7 @@
                         </tbody>
                     </table>
 
-                    <div v-if="! loadingJobs && jobs.length" class="p-3 mt-3 d-flex justify-content-between">
+                    <div v-if="!loadingJobs && jobs.length" class="p-3 mt-3 d-flex justify-content-between">
                         <button @click="previous" class="btn btn-primary btn-md" :disabled="page==1">Previous</button>
                         <button @click="next" class="btn btn-primary btn-md" :disabled="page>=totalPages">Next</button>
                     </div>
