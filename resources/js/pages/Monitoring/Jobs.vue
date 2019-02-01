@@ -15,10 +15,12 @@
                 perPage: 50,
                 totalPages: 1,
                 loadState: {
-                    index: true, failed: true
+                    index: true,
+                    failed: true
                 },
                 jobs: {
-                    index: [], failed: []
+                    index: [],
+                    failed: []
                 }
             };
         },
@@ -95,7 +97,8 @@
              * Load the jobs for the previous page.
              */
             previous() {
-                this.loadJobs(this.$route.params.tag,
+                this.loadJobs(
+                    this.$route.params.tag,
                     (this.page - 2) * this.perPage
                 );
 
@@ -107,7 +110,8 @@
              * Load the jobs for the next page.
              */
             next() {
-                this.loadJobs(this.$route.params.tag,
+                this.loadJobs(
+                    this.$route.params.tag,
                     this.page * this.perPage
                 );
 
