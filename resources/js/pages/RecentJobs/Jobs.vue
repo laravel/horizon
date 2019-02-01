@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import Status from '../../components/Status/Status.vue'
+    import Status from '../../components/Status/Status.vue';
 
     export default {
         components: {Status},
@@ -31,7 +31,7 @@
         /**
          * Clean after the component is destroyed.
          */
-        destroyed(){
+        destroyed() {
             clearInterval(this.interval);
         },
 
@@ -112,13 +112,13 @@
 
 <template>
     <div class="table-responsive">
-        <loader :yes="loadState"/>
+        <loader :yes="loadState" />
 
         <p class="text-center m-0 p-5" v-if="!loadState && !jobs.length">
             There aren't any recent jobs.
         </p>
 
-        <table v-if="! loadState && jobs.length" class="table card-table table-hover">
+        <table v-if="!loadState && jobs.length" class="table card-table table-hover">
             <thead>
                 <tr>
                     <th>Job</th>
@@ -140,13 +140,14 @@
                     </td>
                     <td>{{ job.queue }}</td>
                     <td>
-                        <span data-toggle="tooltip"
-                              :title="displayableTagsList(job.payload.tags, false)">{{ displayableTagsList(job.payload.tags) }}</span>
+                        <span data-toggle="tooltip" :title="displayableTagsList(job.payload.tags, false)">
+                            {{ displayableTagsList(job.payload.tags) }}
+                        </span>
                     </td>
                     <td class="text-nowrap">{{ readableTimestamp(job.payload.pushedAt) }}</td>
                     <td>
-                        <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                        <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                        <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3) + 's' : '-'}}</span>
+                        <span v-else>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3) + 's' : '-' }}</span>
                     </td>
                     <td>
                         <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'"/>
