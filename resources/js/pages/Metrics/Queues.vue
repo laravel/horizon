@@ -42,7 +42,7 @@
 
 <template>
     <div>
-        <loader :yes="loadingQueues"/>
+        <loader :yes="loadingQueues" />
 
         <p class="text-center m-0 p-5" v-if="!loadingQueues && !queues.length">
             There aren't any queues.
