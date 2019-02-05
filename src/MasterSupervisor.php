@@ -4,6 +4,7 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Laravel\Horizon\Events\MasterSupervisorNotWorking;
 use Throwable;
 use Cake\Chronos\Chronos;
 use Illuminate\Support\Str;
@@ -241,6 +242,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
 
             if ($this->working) {
                 $this->monitorSupervisors();
+            } else {
+                event(new MasterSupervisorNotWorking($this));
             }
 
             $this->persist();

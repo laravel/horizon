@@ -67,5 +67,8 @@ trait EventMap
         Events\LongWaitDetected::class => [
             Listeners\SendNotification::class,
         ],
+        Events\MasterSupervisorNotWorking::class => [
+            Listeners\SendNotification::class
+        ],
     ];
 }
