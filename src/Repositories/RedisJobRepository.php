@@ -168,7 +168,10 @@ class RedisJobRepository implements JobRepository
      */
     protected function countJobsByType($type)
     {
-        return $this->connection()->zcard($type);
+        $minutes = $type === 'failed_jobs' ? $this->failedJobExpires : $this->recentJobExpires;
+        $score = Chronos::now()->subMinutes($minutes)->getTimestamp() * -1;
+
+        return $this->connection()->zcount($type, '-inf', $score);
     }
 
     /**

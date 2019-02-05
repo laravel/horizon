@@ -20,7 +20,7 @@ class TrimRecentJobs
      *
      * @var int
      */
-    public $frequency = 5;
+    public $frequency = 1;
 
     /**
      * Handle the event.
@@ -31,10 +31,6 @@ class TrimRecentJobs
     public function handle(MasterSupervisorLooped $event)
     {
         if (! isset($this->lastTrimmed)) {
-            $this->frequency = max(1, intdiv(
-                config('horizon.trim.recent', 60), 12
-            ));
-
             $this->lastTrimmed = Chronos::now()->subMinutes($this->frequency + 1);
         }
 
