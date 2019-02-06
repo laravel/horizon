@@ -281,7 +281,7 @@
                                     <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
                                 </td>
                                 <td>{{ countProcesses(supervisor.processes) }}</td>
-                                <td>{{ supervisor.options.queue }}</td>
+                                <td>{{ supervisor.options.queue.replace(',', ', ') }}</td>
                                 <td class="d-flex align-items-center">
                                     <status :active="supervisor.options.balance" class="mr-2"/>
                                     <span v-if="supervisor.options.balance">
