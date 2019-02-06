@@ -13,8 +13,6 @@ use Laravel\Horizon\MasterSupervisor;
 
 class MasterSupervisorNotWorking extends Notification
 {
-    use Queueable;
-
 
     /**
      * @var MasterSupervisor

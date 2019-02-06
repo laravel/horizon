@@ -18,6 +18,7 @@ use Laravel\Horizon\Contracts\SupervisorRepository;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Log;
 
 class MasterSupervisor implements Pausable, Restartable, Terminable
 {
@@ -243,6 +244,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
             if ($this->working) {
                 $this->monitorSupervisors();
             } else {
+                Log::debug('MasterSupervisor for Horizon is not working');
                 event(new MasterSupervisorNotWorking($this));
             }
 
