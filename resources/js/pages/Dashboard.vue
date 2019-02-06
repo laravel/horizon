@@ -252,7 +252,7 @@
                         <tbody>
                             <tr v-for="queue in workload">
                                 <td>
-                                    <span>{{ queue.name }}</span>
+                                    <span>{{ queue.name.replace(/,/g, ', ') }}</span>
                                 </td>
                                 <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
                                 <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
@@ -281,7 +281,7 @@
                                     <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
                                 </td>
                                 <td>{{ countProcesses(supervisor.processes) }}</td>
-                                <td>{{ supervisor.options.queue }}</td>
+                                <td>{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
                                 <td class="d-flex align-items-center">
                                     <status :active="supervisor.options.balance" class="mr-2"/>
                                     <span v-if="supervisor.options.balance">
