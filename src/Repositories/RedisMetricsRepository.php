@@ -334,9 +334,9 @@ class RedisMetricsRepository implements MetricsRepository
         $lastSnapshotAt = $this->connection()->get('last_snapshot_at')
                     ?: $this->storeSnapshotTimestamp();
 
-        return round(max(
+        return max(
             (Chronos::now()->getTimestamp() - $lastSnapshotAt) / 60, 1
-        ));
+        );
     }
 
     /**
