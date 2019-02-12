@@ -194,7 +194,7 @@ class RedisJobRepository implements JobRepository
             $job = is_array($job) ? array_values($job) : null;
 
             return is_array($job) && $job[0] !== null;
-        }), $indexFrom);
+        })->values(), $indexFrom);
     }
 
     /**
