@@ -1,6 +1,6 @@
 # Release Notes
 
-## [v2.2.0](https://github.com/laravel/horizon/compare/v2.1.0...v2.2.0)
+## [v2.2.0 (2019-02-12)](https://github.com/laravel/horizon/compare/v2.1.0...v2.2.0)
 
 ### Added
 - Laravel 5.8 support ([292bbc1](https://github.com/laravel/horizon/commit/292bbc15ce814ae24e0b47d749631cf45a827bc1))
