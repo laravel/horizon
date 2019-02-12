@@ -50,16 +50,16 @@
 
         <table v-if="!loadingJobs && jobs.length" class="table card-table table-hover">
             <thead>
-            <tr>
-                <th>Job</th>
-            </tr>
+                <tr>
+                    <th>Job</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="job in jobs">
-                <td>
-                    <router-link :to="{ name: 'metrics.detail', params: { type: 'jobs', slug: job }}">{{ job }}</router-link>
-                </td>
-            </tr>
+                <tr v-for="job in jobs">
+                    <td>
+                        <router-link :to="{ name: 'metrics.detail', params: { type: 'jobs', slug: job }}">{{ job }}</router-link>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

@@ -16,6 +16,7 @@
                 stats: {},
                 workers: [],
                 workload: [],
+                ready: false,
             };
         },
 
@@ -35,6 +36,28 @@
          */
         destroyed() {
             clearTimeout(this.timeout);
+        },
+
+
+        computed: {
+            /**
+             * Determine the recent job period label.
+             */
+            recentJobsPeriod() {
+                return ! this.ready
+                    ? 'Jobs past hour'
+                    : `Jobs past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
+            },
+
+
+            /**
+             * Determine the recently failed job period label.
+             */
+            recentlyFailedPeriod() {
+                return ! this.ready
+                    ? 'Failed jobs past 7 days'
+                    : `Failed jobs past ${this.determinePeriod(this.stats.periods.recentlyFailed)}`;
+            },
         },
 
 
@@ -101,7 +124,7 @@
              *  Count processes for the given supervisor.
              */
             countProcesses(processes) {
-                return _.chain(processes).values().sum().value()
+                return _.chain(processes).values().sum().value().toLocaleString()
             },
 
 
@@ -121,6 +144,14 @@
                 return moment.duration(time, "seconds").humanize().replace(/^(.)|\s+(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
+            },
+
+
+            /**
+             * Determine the unit for the given timeframe.
+             */
+            determinePeriod(minutes) {
+                return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?/i, '');
             }
         }
     }
@@ -139,21 +170,21 @@
                                 <h2 class="stat-title">Jobs Per Minute</h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.jobsPerMinute }}
+                                    {{ stats.jobsPerMinute ? stats.jobsPerMinute.toLocaleString() : 0 }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">Jobs past hour</h2>
+                                <h2 class="stat-title" v-text="recentJobsPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.recentJobs }}
+                                    {{ stats.recentJobs ? stats.recentJobs.toLocaleString() : 0 }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4">
-                                <h2 class="stat-title">Failed Jobs past hour</h2>
+                                <h2 class="stat-title" v-text="recentlyFailedPeriod"></h2>
                                 <h3 class="stat-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.recentlyFailed }}
+                                    {{ stats.recentlyFailed ? stats.recentlyFailed.toLocaleString() : 0 }}
                                 </span>
                             </div>
                             <div class="stat col-3 p-4 border-right-0">
@@ -163,7 +194,7 @@
                                 <div class="d-flex align-items-center">
                                     <status v-if="stats.status" :active="stats.status == 'running'" :pending="stats.status == 'paused'" class="mr-2"/>
                                     <span class="stat-value">
-                                      {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
+                                        {{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}
                                     </span>
                                 </div>
                             </div>
@@ -172,7 +203,7 @@
                                 <h2 class="stat-title">Total Processes</h2>
                                 <h3 class="state-meta">&nbsp;</h3>
                                 <span class="stat-value">
-                                    {{ stats.processes }}
+                                    {{ stats.processes ? stats.processes.toLocaleString() : 0 }}
                                 </span>
                             </div>
 
@@ -211,22 +242,22 @@
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Queue</th>
-                            <th>Processes</th>
-                            <th>Jobs</th>
-                            <th>Wait</th>
-                        </tr>
+                            <tr>
+                                <th>Queue</th>
+                                <th>Processes</th>
+                                <th>Jobs</th>
+                                <th>Wait</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="queue in workload">
-                            <td>
-                                <span>{{ queue.name }}</span>
-                            </td>
-                            <td>{{ queue.processes }}</td>
-                            <td>{{ queue.length }}</td>
-                            <td>{{ humanTime(queue.wait) }}</td>
-                        </tr>
+                            <tr v-for="queue in workload">
+                                <td>
+                                    <span>{{ queue.name.replace(/,/g, ', ') }}</span>
+                                </td>
+                                <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                                <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
+                                <td>{{ humanTime(queue.wait) }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -237,27 +268,27 @@
                 <div class="table-responsive">
                     <table class="table card-table table-hover">
                         <thead>
-                        <tr>
-                            <th>Supervisor</th>
-                            <th>Processes</th>
-                            <th>Queues</th>
-                            <th>Balancing</th>
-                        </tr>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Processes</th>
+                                <th>Queues</th>
+                                <th>Balancing</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="supervisor in worker.supervisors">
-                            <td class="ph2">
-                                <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
-                            </td>
-                            <td>{{ countProcesses(supervisor.processes) }}</td>
-                            <td>{{ supervisor.options.queue }}</td>
-                            <td class="d-flex align-items-center">
-                                <status :active="supervisor.options.balance" class="mr-2"/>
-                                <span v-if="supervisor.options.balance">
-                                    ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
-                                </span>
-                            </td>
-                        </tr>
+                            <tr v-for="supervisor in worker.supervisors">
+                                <td class="ph2">
+                                    <span class="fw7">{{ superVisorDisplayName(supervisor.name, worker.name) }}</span>
+                                </td>
+                                <td>{{ countProcesses(supervisor.processes) }}</td>
+                                <td>{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
+                                <td class="d-flex align-items-center">
+                                    <status :active="supervisor.options.balance" class="mr-2"/>
+                                    <span v-if="supervisor.options.balance">
+                                        ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

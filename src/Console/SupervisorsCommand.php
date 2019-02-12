@@ -24,13 +24,12 @@ class SupervisorsCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
      * @return void
      */
-    public function handle()
+    public function handle(SupervisorRepository $supervisors)
     {
-        $repository = app(SupervisorRepository::class);
-
-        $supervisors = $repository->all();
+        $supervisors = $supervisors->all();
 
         if (empty($supervisors)) {
             return $this->info('No supervisors are running.');

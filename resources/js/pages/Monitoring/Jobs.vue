@@ -126,38 +126,38 @@
 
         <table v-if="!loadState[type] && jobs[type].length" class="table card-table table-hover">
             <thead>
-            <tr>
-                <th>Job</th>
-                <th>On</th>
-                <th>Tags</th>
-                <th v-if="type == 'index'">Queued At</th>
-                <th>Runtime</th>
-                <th v-if="type == 'index'">Status</th>
-                <th v-if="type != 'index'">Failed At</th>
-            </tr>
+                <tr>
+                    <th>Job</th>
+                    <th>On</th>
+                    <th>Tags</th>
+                    <th v-if="type == 'index'">Queued At</th>
+                    <th>Runtime</th>
+                    <th v-if="type == 'index'">Status</th>
+                    <th v-if="type != 'index'">Failed At</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="job in jobs[type]">
-                <td>
-                    <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
-                    <span v-else>{{ job.name }}</span>
-                </td>
-                <td>{{ job.queue }}</td>
-                <td>{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</td>
-                <td v-if="type == 'index'">
-                    {{ readableTimestamp(job.payload.pushedAt) }}
-                </td>
-                <td>
-                    <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                    <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
-                </td>
-                <td v-if="type == 'index'">
-                    <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'" class="mr1"/>
-                </td>
-                <td v-if="type != 'index'">
-                    {{ readableTimestamp(job.failed_at) }}
-                </td>
-            </tr>
+                <tr v-for="job in jobs[type]">
+                    <td>
+                        <a v-if="job.status == 'failed'" :href="'/horizon/failed/'+job.id">{{ job.name }}</a>
+                        <span v-else>{{ job.name }}</span>
+                    </td>
+                    <td>{{ job.queue }}</td>
+                    <td>{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</td>
+                    <td v-if="type == 'index'">
+                        {{ readableTimestamp(job.payload.pushedAt) }}
+                    </td>
+                    <td>
+                        <span v-if="job.status == 'failed'">{{ job.failed_at ? (job.failed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                        <span v-else="">{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(3)+'s' : '-' }}</span>
+                    </td>
+                    <td v-if="type == 'index'">
+                        <status :active="job.status == 'completed'" :pending="job.status == 'reserved' || job.status == 'pending'" class="mr1"/>
+                    </td>
+                    <td v-if="type != 'index'">
+                        {{ readableTimestamp(job.failed_at) }}
+                    </td>
+                </tr>
             </tbody>
         </table>
 

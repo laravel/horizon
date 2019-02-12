@@ -14,8 +14,8 @@ const webpack = require('webpack');
 
 mix
     .options({
-        uglify: {
-            uglifyOptions: {
+        terser: {
+            terserOptions: {
                 compress: {
                     drop_console: true,
                 }
@@ -23,9 +23,9 @@ mix
         }
     })
     .setPublicPath('public')
-    .js('resources/assets/js/app.js', 'public/js')
-    .sass('resources/assets/sass/app.scss', 'public/css')
-    .copy('resources/assets/img', 'public/img')
+    .js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+    .copy('resources/img', 'public/img')
     .sourceMaps()
     .copy('public', '../../laravelhorizon/public/vendor/horizon')
     // .copy('public', '../app/public/vendor/horizon')

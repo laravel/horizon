@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Console;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Laravel\Horizon\MasterSupervisor;
@@ -31,26 +32,28 @@ class TerminateCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Illuminate\Contracts\Cache\Factory $cache
+     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @return void
      */
-    public function handle()
+    public function handle(CacheFactory $cache, MasterSupervisorRepository $masters)
     {
         if (config('horizon.fast_termination')) {
-            app(CacheFactory::class)->forever(
+            $cache->forever(
                 'horizon:terminate:wait', $this->option('wait')
             );
         }
 
-        $masters = app(MasterSupervisorRepository::class)->all();
-
-        $masters = collect($masters)->filter(function ($master) {
+        $masters = collect($masters->all())->filter(function ($master) {
             return Str::startsWith($master->name, MasterSupervisor::basename());
         })->all();
 
-        foreach (array_pluck($masters, 'pid') as $processId) {
+        foreach (Arr::pluck($masters, 'pid') as $processId) {
             $this->info("Sending TERM Signal To Process: {$processId}");
 
-            posix_kill($processId, SIGTERM);
+            if (! posix_kill($processId, SIGTERM)) {
+                $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+            }
         }
 
         $this->laravel['cache']->forever('illuminate:queue:restart', $this->currentTime());

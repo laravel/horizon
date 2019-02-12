@@ -6,10 +6,10 @@ use Cake\Chronos\Chronos;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Events\MasterSupervisorLooped;
 
-class TrimRecentJobs
+class TrimMonitoredJobs
 {
     /**
-     * The last time the recent jobs were trimmed.
+     * The last time the monitored jobs were trimmed.
      *
      * @var \Cake\Chronos\Chronos
      */
@@ -20,7 +20,7 @@ class TrimRecentJobs
      *
      * @var int
      */
-    public $frequency = 1;
+    public $frequency = 1440;
 
     /**
      * Handle the event.
@@ -31,11 +31,15 @@ class TrimRecentJobs
     public function handle(MasterSupervisorLooped $event)
     {
         if (! isset($this->lastTrimmed)) {
+            $this->frequency = max(1, intdiv(
+                config('horizon.trim.monitored', 10080), 12
+            ));
+
             $this->lastTrimmed = Chronos::now()->subMinutes($this->frequency + 1);
         }
 
         if ($this->lastTrimmed->lte(Chronos::now()->subMinutes($this->frequency))) {
-            app(JobRepository::class)->trimRecentJobs();
+            app(JobRepository::class)->trimMonitoredJobs();
 
             $this->lastTrimmed = Chronos::now();
         }

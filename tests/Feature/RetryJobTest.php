@@ -10,14 +10,14 @@ use Laravel\Horizon\Tests\IntegrationTest;
 
 class RetryJobTest extends IntegrationTest
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         unset($_SERVER['horizon.fail']);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 

@@ -33,13 +33,12 @@ class HorizonCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @return void
      */
-    public function handle()
+    public function handle(MasterSupervisorRepository $masters)
     {
-        $repository = app(MasterSupervisorRepository::class);
-
-        if ($repository->find(MasterSupervisor::name())) {
+        if ($masters->find(MasterSupervisor::name())) {
             return $this->comment('A master supervisor is already running on this machine.');
         }
 
@@ -48,7 +47,7 @@ class HorizonCommand extends Command
         });
 
         ProvisioningPlan::get(MasterSupervisor::name())->deploy(
-            config('app.env')
+            config('horizon.env') ?? config('app.env')
         );
 
         $this->info('Horizon started successfully.');

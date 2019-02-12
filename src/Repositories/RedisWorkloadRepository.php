@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
+use Illuminate\Support\Str;
 use Laravel\Horizon\WaitTimeCalculator;
 use Laravel\Horizon\Contracts\WorkloadRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
@@ -69,7 +70,7 @@ class RedisWorkloadRepository implements WorkloadRepository
             ->map(function ($waitTime, $queue) use ($processes) {
                 [$connection, $queueName] = explode(':', $queue, 2);
 
-                $length = ! str_contains($queue, ',')
+                $length = ! Str::contains($queue, ',')
                     ? $this->queue->connection($connection)->readyNow($queueName)
                     : collect(explode(',', $queueName))->sum(function ($queueName) use ($connection) {
                         return $this->queue->connection($connection)->readyNow($queueName);

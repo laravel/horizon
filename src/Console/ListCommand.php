@@ -24,13 +24,12 @@ class ListCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @return void
      */
-    public function handle()
+    public function handle(MasterSupervisorRepository $masters)
     {
-        $repository = app(MasterSupervisorRepository::class);
-
-        $masters = $repository->all();
+        $masters = $masters->all();
 
         if (empty($masters)) {
             return $this->info('No machines are running.');
