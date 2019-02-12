@@ -18,7 +18,7 @@ abstract class IntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,7 +30,7 @@ abstract class IntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         Redis::flushall();
         WorkerCommandString::reset();

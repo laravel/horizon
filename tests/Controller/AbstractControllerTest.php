@@ -7,7 +7,7 @@ use Laravel\Horizon\Tests\IntegrationTest;
 
 abstract class AbstractControllerTest extends IntegrationTest
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

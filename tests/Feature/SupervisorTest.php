@@ -27,14 +27,14 @@ class SupervisorTest extends IntegrationTest
     public $phpBinary;
     public $supervisor;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->phpBinary = PhpBinary::path();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         // Terminate all remaining processes and wait for them to exit...
         if ($this->supervisor) {
