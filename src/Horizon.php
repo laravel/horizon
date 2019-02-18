@@ -138,4 +138,16 @@ class Horizon
 
         return new static;
     }
+
+    /**
+     * Get the default JavaScript variables for Horizon.
+     *
+     * @return array
+     */
+    public static function scriptVariables()
+    {
+        return [
+            'path' => config('horizon.path'),
+        ];
+    }
 }

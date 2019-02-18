@@ -2,6 +2,8 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
+use Laravel\Horizon\Horizon;
+
 class HomeController extends Controller
 {
     /**
@@ -11,6 +13,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('horizon::app');
+        return view('horizon::app', [
+            'horizonScriptVariables' => Horizon::scriptVariables(),
+        ]);
     }
 }
