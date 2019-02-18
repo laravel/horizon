@@ -30,6 +30,7 @@ class DashboardStatsController extends Controller
                 'recentJobs' => config('horizon.trim.recent'),
                 'recentlyFailed' => config('horizon.trim.failed'),
             ],
+            'autoRefreshInterval' => config('horizon.auto_refresh_interval')
         ];
     }
 
