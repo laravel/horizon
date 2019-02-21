@@ -19,6 +19,7 @@
         "illuminate/support": "~5.7.0|~5.8.0",
         "predis/predis": "^1.1",
         "ramsey/uuid": "^3.5",
+        "symfony/process": "^4.2",
         "symfony/debug": "^4.2"
     },
     "require-dev": {
