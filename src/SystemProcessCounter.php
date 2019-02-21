@@ -21,7 +21,7 @@ class SystemProcessCounter
      */
     public function get($name)
     {
-        $process = new Process('exec ps aux | grep '.static::$command, null, ['COLUMNS' => '2000']);
+        $process = Process::fromShellCommandline('exec ps aux | grep '.static::$command, null, ['COLUMNS' => '2000']);
 
         $process->run();
 
