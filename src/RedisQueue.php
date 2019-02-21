@@ -74,7 +74,7 @@ class RedisQueue extends BaseQueue
      */
     public function later($delay, $job, $data = '', $queue = null)
     {
-        $payload = (new JobPayload($this->createPayload($job, $data)))->prepare($job)->value;
+        $payload = (new JobPayload($this->createPayload($job, $queue, $data)))->prepare($job)->value;
 
         return tap(parent::laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
             $this->event($this->getQueue($queue), new JobPushed($payload));
