@@ -7,17 +7,18 @@ export default [
         component: require('./screens/dashboard').default
     },
 
-    // {
-    //     path: '/monitoring',
-    //     name: 'monitoring',
-    //     component: require('./screens/monitoring/index').default
-    // },
-    //
-    // {
-    //     path: '/monitoring/:tag',
-    //     name: 'monitoring-jobs',
-    //     component: require('./screens/monitoring/tag').default
-    // },
+    {
+        path: '/monitoring',
+        name: 'monitoring',
+        component: require('./screens/monitoring/index').default
+    },
+
+    {
+        path: '/monitoring/:tag',
+        name: 'monitoring-jobs',
+        component: require('./screens/monitoring/jobs').default
+    },
+
     //
     // {
     //     path: '/monitoring/:tag/failed',

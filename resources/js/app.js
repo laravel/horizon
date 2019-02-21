@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Base from './base';
+import _ from 'lodash';
 import axios from 'axios';
 import Routes from './routes';
 import VueRouter from 'vue-router';
@@ -62,6 +63,6 @@ new Vue({
                 this.autoLoadsNewEntries = false;
                 localStorage.autoLoadsNewEntries = 0;
             }
-        }
+        },
     }
 });
