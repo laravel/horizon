@@ -38,7 +38,7 @@ class AddSupervisor
     {
         $command = $options->toSupervisorCommand();
 
-        return (new Process($command, $options->directory ?? base_path()))
+        return Process::fromShellCommandline($command, $options->directory ?? base_path())
                     ->setTimeout(null)
                     ->disableOutput();
     }
