@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
+        "ext-json": "*",
         "ext-pcntl": "*",
         "ext-posix": "*",
         "cakephp/chronos": "^1.0",
