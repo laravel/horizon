@@ -7,6 +7,10 @@
 - Require symfony/process ([f2a214c](https://github.com/laravel/horizon/commit/f2a214c65cf265a5144fb8e8472d991aa8f4e71a))
 - Require ext-json ([5a54d27](https://github.com/laravel/horizon/commit/5a54d2710d4a33eb7399ddd8e31b3cbc4dcb1dc0))
 
+### Fixed
+- Fix deprecated process calls ([#515](https://github.com/laravel/horizon/pull/515))
+- Add missing createPayloadArray arg ([#516](https://github.com/laravel/horizon/pull/516))
+
 ### Removed
 - Removed support for Laravel 5.5 & 5.6 ([8a92e09](https://github.com/laravel/horizon/commit/8a92e099ecaad6d0a2823a89f860fd8f8fab51bf))
 
