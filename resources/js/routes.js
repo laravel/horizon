@@ -15,8 +15,21 @@ export default [
 
     {
         path: '/monitoring/:tag',
-        name: 'monitoring-jobs',
-        component: require('./screens/monitoring/jobs').default
+        component: require('./screens/monitoring/tag').default,
+        children: [
+            {
+                path: 'jobs',
+                name: 'monitoring-jobs',
+                component: require('./screens/monitoring/tag-jobs').default,
+                props: {type: 'jobs'}
+            },
+            {
+                path: 'failed',
+                name: 'monitoring-failed',
+                component: require('./screens/monitoring/tag-jobs').default,
+                props: {type: 'failed'}
+            },
+        ],
     },
 
     //

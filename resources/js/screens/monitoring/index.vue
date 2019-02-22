@@ -136,8 +136,8 @@
                 <tbody>
                 <tr v-for="tag in tags">
                     <td>
-                        <router-link :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}"
-                                     href="#">{{ tag.tag }}
+                        <router-link :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}" href="#">
+                            {{ tag.tag }}
                         </router-link>
                     </td>
                     <td>{{ tag.count }}</td>

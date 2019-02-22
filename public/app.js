@@ -2090,19 +2090,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/jobs.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/monitoring/jobs.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag-jobs.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/monitoring/tag-jobs.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['type'],
+
   /**
    * The component's data.
    */
@@ -2156,6 +2155,7 @@ __webpack_require__.r(__webpack_exports__);
         this.ready = false;
       }
 
+      tag = this.type == 'failed' ? 'failed:' + tag : tag;
       this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage).then(function (response) {
         if (refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
           _this.hasNewEntries = true;
@@ -2207,6 +2207,19 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/monitoring/tag.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -43580,7 +43593,13 @@ var render = function() {
                             href: "#"
                           }
                         },
-                        [_vm._v(_vm._s(tag.tag) + "\n                    ")]
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(tag.tag) +
+                              "\n                    "
+                          )
+                        ]
                       )
                     ],
                     1
@@ -43745,10 +43764,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/jobs.vue?vue&type=template&id=750990a7&":
-/*!***************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/monitoring/jobs.vue?vue&type=template&id=750990a7& ***!
-  \***************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag-jobs.vue?vue&type=template&id=2df5860c&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/monitoring/tag-jobs.vue?vue&type=template&id=2df5860c& ***!
+  \*******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -43761,255 +43780,365 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "card" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "card-header d-flex align-items-center justify-content-between"
-        },
-        [
-          _c("h5", [
-            _vm._v('Recent Jobs for "' + _vm._s(_vm.$route.params.tag) + '"')
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      !_vm.ready
-        ? _c(
-            "div",
-            {
-              staticClass:
-                "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
-            },
-            [
-              _c(
-                "svg",
-                {
-                  staticClass: "icon spin mr-2 fill-text-color",
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("span", [_vm._v("Loading...")])
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.ready && _vm.jobs.length == 0
-        ? _c(
-            "div",
-            {
-              staticClass:
-                "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
-            },
-            [_c("span", [_vm._v("There aren't any recent jobs for this tag.")])]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.ready && _vm.jobs.length > 0
-        ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
-            _vm._m(0),
-            _vm._v(" "),
+    !_vm.ready
+      ? _c(
+          "div",
+          {
+            staticClass:
+              "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+          },
+          [
             _c(
-              "tbody",
+              "svg",
+              {
+                staticClass: "icon spin mr-2 fill-text-color",
+                attrs: {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20"
+                }
+              },
               [
-                _vm.hasNewEntries
-                  ? _c(
-                      "tr",
-                      { key: "newEntries", staticClass: "dontanimate" },
+                _c("path", {
+                  attrs: {
+                    d:
+                      "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
+                  }
+                })
+              ]
+            ),
+            _vm._v(" "),
+            _c("span", [_vm._v("Loading...")])
+          ]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.ready && _vm.jobs.length == 0
+      ? _c(
+          "div",
+          {
+            staticClass:
+              "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+          },
+          [_c("span", [_vm._v("There aren't any jobs for this tag.")])]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.ready && _vm.jobs.length > 0
+      ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
+          _c("thead", [
+            _c("tr", [
+              _c("th", [_vm._v("Job")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("Queued At")]),
+              _vm._v(" "),
+              _vm.type == "jobs" ? _c("th", [_vm._v("Runtime")]) : _vm._e(),
+              _vm._v(" "),
+              _vm.type == "jobs"
+                ? _c("th", { staticClass: "text-right" }, [_vm._v("Status")])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.type == "failed"
+                ? _c("th", { staticClass: "text-right" }, [_vm._v("Failed At")])
+                : _vm._e()
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            [
+              _vm.hasNewEntries
+                ? _c("tr", { key: "newEntries", staticClass: "dontanimate" }, [
+                    _c(
+                      "td",
+                      {
+                        staticClass: "text-center card-bg-secondary py-1",
+                        attrs: { colspan: "100" }
+                      },
                       [
-                        _c(
-                          "td",
-                          {
-                            staticClass: "text-center card-bg-secondary py-1",
-                            attrs: { colspan: "100" }
-                          },
-                          [
-                            _c("small", [
-                              !_vm.loadingNewEntries
-                                ? _c(
-                                    "a",
-                                    {
-                                      attrs: { href: "#" },
-                                      on: {
-                                        click: function($event) {
-                                          $event.preventDefault()
-                                          return _vm.loadNewEntries($event)
-                                        }
-                                      }
-                                    },
-                                    [_vm._v("Load New Entries")]
-                                  )
-                                : _vm._e()
-                            ]),
-                            _vm._v(" "),
-                            _vm.loadingNewEntries
-                              ? _c("small", [_vm._v("Loading...")])
-                              : _vm._e()
-                          ]
-                        )
+                        _c("small", [
+                          !_vm.loadingNewEntries
+                            ? _c(
+                                "a",
+                                {
+                                  attrs: { href: "#" },
+                                  on: {
+                                    click: function($event) {
+                                      $event.preventDefault()
+                                      return _vm.loadNewEntries($event)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Load New Entries")]
+                              )
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _vm.loadingNewEntries
+                          ? _c("small", [_vm._v("Loading...")])
+                          : _vm._e()
                       ]
                     )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm._l(_vm.jobs, function(job) {
-                  return _c("tr", { key: job.id }, [
-                    _c("td", [
-                      _c("span", { attrs: { title: job.name } }, [
-                        _vm._v(_vm._s(_vm.truncate(job.name, 68)))
-                      ]),
-                      _c("br"),
-                      _vm._v(" "),
-                      _c("small", { staticClass: "text-muted" }, [
-                        _vm._v(
-                          "\n                        Queue: " +
-                            _vm._s(job.queue) +
-                            " | Tags: " +
-                            _vm._s(
-                              job.payload.tags && job.payload.tags.length
-                                ? job.payload.tags.join(", ")
-                                : ""
-                            ) +
-                            "\n                    "
-                        )
-                      ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._l(_vm.jobs, function(job) {
+                return _c("tr", { key: job.id }, [
+                  _c("td", [
+                    _c("span", { attrs: { title: job.name } }, [
+                      _vm._v(_vm._s(_vm.truncate(job.name, 68)))
                     ]),
+                    _c("br"),
                     _vm._v(" "),
-                    _c("td", { staticClass: "table-fit" }, [
+                    _c("small", { staticClass: "text-muted" }, [
                       _vm._v(
-                        "\n                    " +
-                          _vm._s(_vm.readableTimestamp(job.payload.pushedAt)) +
+                        "\n                    Queue: " +
+                          _vm._s(job.queue) +
+                          " | Tags: " +
+                          _vm._s(
+                            job.payload.tags && job.payload.tags.length
+                              ? job.payload.tags.join(", ")
+                              : ""
+                          ) +
                           "\n                "
                       )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "table-fit" }, [
-                      _c("span", [
-                        _vm._v(
-                          _vm._s(
-                            job.completed_at
-                              ? (job.completed_at - job.reserved_at).toFixed(
-                                  2
-                                ) + "s"
-                              : "-"
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "table-fit" }, [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(_vm.readableTimestamp(job.payload.pushedAt)) +
+                        "\n            "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _vm.type == "jobs"
+                    ? _c("td", { staticClass: "table-fit" }, [
+                        _c("span", [
+                          _vm._v(
+                            _vm._s(
+                              job.completed_at
+                                ? (job.completed_at - job.reserved_at).toFixed(
+                                    2
+                                  ) + "s"
+                                : "-"
+                            )
                           )
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type == "jobs"
+                    ? _c("td", { staticClass: "text-right table-fit" }, [
+                        job.status == "completed"
+                          ? _c(
+                              "svg",
+                              {
+                                staticClass: "fill-success",
+                                staticStyle: {
+                                  width: "1.5rem",
+                                  height: "1.5rem"
+                                },
+                                attrs: { viewBox: "0 0 20 20" }
+                              },
+                              [
+                                _c("path", {
+                                  attrs: {
+                                    d:
+                                      "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
+                                  }
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        job.status == "reserved" || job.status == "pending"
+                          ? _c(
+                              "svg",
+                              {
+                                staticClass: "fill-warning",
+                                staticStyle: {
+                                  width: "1.5rem",
+                                  height: "1.5rem"
+                                },
+                                attrs: { viewBox: "0 0 20 20" }
+                              },
+                              [
+                                _c("path", {
+                                  attrs: {
+                                    d:
+                                      "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"
+                                  }
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        job.status == "failed"
+                          ? _c(
+                              "svg",
+                              {
+                                staticClass: "fill-danger",
+                                staticStyle: {
+                                  width: "1.5rem",
+                                  height: "1.5rem"
+                                },
+                                attrs: { viewBox: "0 0 20 20" }
+                              },
+                              [
+                                _c("path", {
+                                  attrs: {
+                                    d:
+                                      "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
+                                  }
+                                })
+                              ]
+                            )
+                          : _vm._e()
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.type == "failed"
+                    ? _c("td", { staticClass: "text-right table-fit" }, [
+                        _vm._v(
+                          "\n                " +
+                            _vm._s(_vm.readableTimestamp(job.failed_at)) +
+                            "\n            "
                         )
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-right table-fit" }, [
-                      job.status == "completed"
-                        ? _c(
-                            "svg",
-                            {
-                              staticClass: "fill-success",
-                              staticStyle: {
-                                width: "1.5rem",
-                                height: "1.5rem"
-                              },
-                              attrs: { viewBox: "0 0 20 20" }
-                            },
-                            [
-                              _c("path", {
-                                attrs: {
-                                  d:
-                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
-                                }
-                              })
-                            ]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      job.status == "reserved" || job.status == "pending"
-                        ? _c(
-                            "svg",
-                            {
-                              staticClass: "fill-warning",
-                              staticStyle: {
-                                width: "1.5rem",
-                                height: "1.5rem"
-                              },
-                              attrs: { viewBox: "0 0 20 20" }
-                            },
-                            [
-                              _c("path", {
-                                attrs: {
-                                  d:
-                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"
-                                }
-                              })
-                            ]
-                          )
-                        : _vm._e()
-                    ])
-                  ])
-                })
-              ],
-              2
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.ready && _vm.jobs.length
-        ? _c(
-            "div",
-            { staticClass: "p-3 d-flex justify-content-between border-top" },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary btn-md",
-                  attrs: { disabled: _vm.page == 1 },
-                  on: { click: _vm.previous }
-                },
-                [_vm._v("Previous")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary btn-md",
-                  attrs: { disabled: _vm.page >= _vm.totalPages },
-                  on: { click: _vm.next }
-                },
-                [_vm._v("Next")]
-              )
-            ]
+                    : _vm._e()
+                ])
+              })
+            ],
+            2
           )
-        : _vm._e()
-    ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.ready && _vm.jobs.length
+      ? _c(
+          "div",
+          { staticClass: "p-3 d-flex justify-content-between border-top" },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-secondary btn-md",
+                attrs: { disabled: _vm.page == 1 },
+                on: { click: _vm.previous }
+              },
+              [_vm._v("Previous")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-secondary btn-md",
+                attrs: { disabled: _vm.page >= _vm.totalPages },
+                on: { click: _vm.next }
+              },
+              [_vm._v("Next")]
+            )
+          ]
+        )
+      : _vm._e()
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Job")]),
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag.vue?vue&type=template&id=26f6054e&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/monitoring/tag.vue?vue&type=template&id=26f6054e& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "card" },
+      [
+        _c(
+          "div",
+          {
+            staticClass:
+              "card-header d-flex align-items-center justify-content-between"
+          },
+          [
+            _c("h5", [
+              _vm._v('Recent Jobs for "' + _vm._s(_vm.$route.params.tag) + '"')
+            ])
+          ]
+        ),
         _vm._v(" "),
-        _c("th", [_vm._v("Queued At")]),
+        _c("ul", { staticClass: "nav nav-pills card-bg-secondary" }, [
+          _c(
+            "li",
+            { staticClass: "nav-item" },
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "nav-link",
+                  attrs: {
+                    "active-class": "active",
+                    to: {
+                      name: "monitoring-jobs",
+                      params: { tag: _vm.$route.params.tag }
+                    },
+                    href: "#"
+                  }
+                },
+                [_vm._v("\n                    Recent Jobs\n                ")]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "li",
+            { staticClass: "nav-item" },
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "nav-link",
+                  attrs: {
+                    "active-class": "active",
+                    to: {
+                      name: "monitoring-failed",
+                      params: { tag: _vm.$route.params.tag }
+                    },
+                    href: "#"
+                  }
+                },
+                [_vm._v("\n                    Failed Jobs\n                ")]
+              )
+            ],
+            1
+          )
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Runtime")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-right" }, [_vm._v("Status")])
-      ])
-    ])
-  }
-]
+        _c("router-view")
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -58252,8 +58381,22 @@ __webpack_require__.r(__webpack_exports__);
   component: __webpack_require__(/*! ./screens/monitoring/index */ "./resources/js/screens/monitoring/index.vue").default
 }, {
   path: '/monitoring/:tag',
-  name: 'monitoring-jobs',
-  component: __webpack_require__(/*! ./screens/monitoring/jobs */ "./resources/js/screens/monitoring/jobs.vue").default
+  component: __webpack_require__(/*! ./screens/monitoring/tag */ "./resources/js/screens/monitoring/tag.vue").default,
+  children: [{
+    path: 'jobs',
+    name: 'monitoring-jobs',
+    component: __webpack_require__(/*! ./screens/monitoring/tag-jobs */ "./resources/js/screens/monitoring/tag-jobs.vue").default,
+    props: {
+      type: 'jobs'
+    }
+  }, {
+    path: 'failed',
+    name: 'monitoring-failed',
+    component: __webpack_require__(/*! ./screens/monitoring/tag-jobs */ "./resources/js/screens/monitoring/tag-jobs.vue").default,
+    props: {
+      type: 'failed'
+    }
+  }]
 }]);
 
 /***/ }),
@@ -58396,17 +58539,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/screens/monitoring/jobs.vue":
-/*!**************************************************!*\
-  !*** ./resources/js/screens/monitoring/jobs.vue ***!
-  \**************************************************/
+/***/ "./resources/js/screens/monitoring/tag-jobs.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/screens/monitoring/tag-jobs.vue ***!
+  \******************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _jobs_vue_vue_type_template_id_750990a7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./jobs.vue?vue&type=template&id=750990a7& */ "./resources/js/screens/monitoring/jobs.vue?vue&type=template&id=750990a7&");
-/* harmony import */ var _jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./jobs.vue?vue&type=script&lang=js& */ "./resources/js/screens/monitoring/jobs.vue?vue&type=script&lang=js&");
+/* harmony import */ var _tag_jobs_vue_vue_type_template_id_2df5860c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tag-jobs.vue?vue&type=template&id=2df5860c& */ "./resources/js/screens/monitoring/tag-jobs.vue?vue&type=template&id=2df5860c&");
+/* harmony import */ var _tag_jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tag-jobs.vue?vue&type=script&lang=js& */ "./resources/js/screens/monitoring/tag-jobs.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -58416,9 +58559,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _jobs_vue_vue_type_template_id_750990a7___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _jobs_vue_vue_type_template_id_750990a7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _tag_jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _tag_jobs_vue_vue_type_template_id_2df5860c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _tag_jobs_vue_vue_type_template_id_2df5860c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -58428,38 +58571,107 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/screens/monitoring/jobs.vue"
+component.options.__file = "resources/js/screens/monitoring/tag-jobs.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/screens/monitoring/jobs.vue?vue&type=script&lang=js&":
-/*!***************************************************************************!*\
-  !*** ./resources/js/screens/monitoring/jobs.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************/
+/***/ "./resources/js/screens/monitoring/tag-jobs.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/screens/monitoring/tag-jobs.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./jobs.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/jobs.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./tag-jobs.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag-jobs.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_jobs_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/screens/monitoring/jobs.vue?vue&type=template&id=750990a7&":
-/*!*********************************************************************************!*\
-  !*** ./resources/js/screens/monitoring/jobs.vue?vue&type=template&id=750990a7& ***!
-  \*********************************************************************************/
+/***/ "./resources/js/screens/monitoring/tag-jobs.vue?vue&type=template&id=2df5860c&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/screens/monitoring/tag-jobs.vue?vue&type=template&id=2df5860c& ***!
+  \*************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_jobs_vue_vue_type_template_id_750990a7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./jobs.vue?vue&type=template&id=750990a7& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/jobs.vue?vue&type=template&id=750990a7&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_jobs_vue_vue_type_template_id_750990a7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_jobs_vue_vue_type_template_id_2df5860c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./tag-jobs.vue?vue&type=template&id=2df5860c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag-jobs.vue?vue&type=template&id=2df5860c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_jobs_vue_vue_type_template_id_2df5860c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_jobs_vue_vue_type_template_id_750990a7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_jobs_vue_vue_type_template_id_2df5860c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/screens/monitoring/tag.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/screens/monitoring/tag.vue ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tag.vue?vue&type=template&id=26f6054e& */ "./resources/js/screens/monitoring/tag.vue?vue&type=template&id=26f6054e&");
+/* harmony import */ var _tag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tag.vue?vue&type=script&lang=js& */ "./resources/js/screens/monitoring/tag.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _tag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/screens/monitoring/tag.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/screens/monitoring/tag.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/screens/monitoring/tag.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./tag.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/screens/monitoring/tag.vue?vue&type=template&id=26f6054e&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/screens/monitoring/tag.vue?vue&type=template&id=26f6054e& ***!
+  \********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./tag.vue?vue&type=template&id=26f6054e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/monitoring/tag.vue?vue&type=template&id=26f6054e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
