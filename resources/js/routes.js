@@ -32,26 +32,24 @@ export default [
         ],
     },
 
-    //
-    // {
-    //     path: '/monitoring/:tag/failed',
-    //     name: 'monitoring-failed',
-    //     component: require('./screens/monitoring/failed').default
-    // },
-    //
-    // {path: '/metrics', redirect: '/metrics/jobs'},
-    //
-    // {
-    //     path: '/metrics/jobs',
-    //     name: 'metrics-jobs',
-    //     component: require('./screens/metrics/jobs').default
-    // },
-    //
-    // {
-    //     path: '/metrics/queues',
-    //     name: 'metrics-queues',
-    //     component: require('./screens/metrics/queues').default
-    // },
+    {path: '/metrics', redirect: '/metrics/jobs'},
+
+    {
+        path: '/metrics/',
+        component: require('./screens/metrics/index').default,
+        children: [
+            {
+                path: 'jobs',
+                name: 'metrics-jobs',
+                component: require('./screens/metrics/jobs').default
+            },
+            {
+                path: 'queues',
+                name: 'metrics-queues',
+                component: require('./screens/metrics/queues').default
+            },
+        ],
+    },
     //
     // {
     //     path: '/metrics/:type/:slug',
