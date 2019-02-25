@@ -1,6 +1,4 @@
 <script type="text/ecmascript-6">
-    import $ from 'jquery';
-
     export default {
         /**
          * The component's data.
@@ -20,27 +18,13 @@
             };
         },
 
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            tagSearchPhrase() {
-                // clearTimeout(this.searchTimeout);
-                //
-                // this.searchTimeout = setTimeout(() => {
-                //     this.loadJobs();
-                // }, 500);
-            }
-        },
-
         /**
          * Prepare the component.
          */
         mounted() {
             document.title = "Horizon - Failed Jobs";
 
-            this.loadJobs(this.$route.params.tag);
+            this.loadJobs();
 
             this.refreshJobsPeriodically();
         },
@@ -60,7 +44,17 @@
             '$route'() {
                 this.page = 1;
 
-                this.loadJobs(this.$route.params.tag);
+                this.loadJobs();
+            },
+
+            tagSearchPhrase() {
+                clearTimeout(this.searchTimeout);
+                clearInterval(this.interval);
+
+                this.searchTimeout = setTimeout(() => {
+                    this.loadJobs();
+                    this.refreshJobsPeriodically();
+                }, 500);
             }
         },
 
@@ -75,9 +69,14 @@
                 }
 
                 var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
-
+                
                 this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
                     .then(response => {
+                        if(!this.$root.autoLoadsNewEntries && refreshing  && !response.data.jobs.length){
+                            return;
+                        }
+
+
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;
                         } else {
@@ -97,6 +96,41 @@
                 this.loadJobs(0, false);
 
                 this.hasNewEntries = false;
+            },
+
+
+            /**
+             * Retry the given failed job.
+             */
+            retry(id) {
+                if (this.isRetrying(id)) {
+                    return;
+                }
+
+                this.retryingJobs.push(id);
+
+                this.$http.post('/horizon/api/jobs/retry/' + id)
+                    .then(() => {
+                        setTimeout(() => {
+                            this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
+                        }, 3000);
+                    });
+            },
+
+
+            /**
+             * Determine if the given job is currently retrying.
+             */
+            isRetrying(id) {
+                return _.includes(this.retryingJobs, id);
+            },
+
+
+            /**
+             * Determine if the given job has completed.
+             */
+            hasCompleted(job){
+                return _.find(job.retried_by, retry => retry.status == 'completed');
             },
 
 
@@ -148,7 +182,9 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Recent Jobs</h5>
+                <h5>Failed Jobs</h5>
+
+                <input type="text" class="form-control" v-model="tagSearchPhrase" placeholder="Search Tags" style="width:200px">
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -168,9 +204,9 @@
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th>Queued At</th>
                     <th>Runtime</th>
-                    <th class="text-right">Status</th>
+                    <th>Failed At</th>
+                    <th class="text-right">Retry</th>
                 </tr>
                 </thead>
 
@@ -194,26 +230,21 @@
                             Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
                         </small>
                     </td>
+
                     <td class="table-fit">
-                        {{ readableTimestamp(job.payload.pushedAt) }}
+                        <span>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(2))+'s' : '-' }}</span>
                     </td>
 
                     <td class="table-fit">
-                        <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
+                        {{ readableTimestamp(job.failed_at) }}
                     </td>
 
                     <td class="text-right table-fit">
-                        <svg v-if="job.status == 'completed'" class="fill-success" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"></path>
-                        </svg>
-
-                        <svg v-if="job.status == 'reserved' || job.status == 'pending'" class="fill-warning" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
-                        </svg>
-
-                        <svg v-if="job.status == 'failed'" class="fill-danger" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/>
-                        </svg>
+                        <a href="#" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
+                            <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;" :class="{spin: isRetrying(job.id)}">
+                                <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
+                            </svg>
+                        </a>
                     </td>
                 </tr>
                 </tbody>

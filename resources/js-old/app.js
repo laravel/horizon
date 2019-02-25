@@ -4,6 +4,7 @@ import axios from 'axios'
 import moment from 'moment';
 import router from './router';
 import App from './components/App.vue';
+import VueJsonPretty from 'vue-json-pretty';
 
 window.$ = window.jQuery = require('jquery');
 window.Popper = require('popper.js').default;
@@ -22,7 +23,7 @@ Vue.prototype.$http = axios.create();
 
 window.Bus = new Vue({name: 'Bus'});
 
-Vue.component('loader', require('./components/Status/Loader.vue').default);
+Vue.component('vue-json-pretty', VueJsonPretty);
 
 Vue.config.errorHandler = function (err, vm, info) {
     console.error(err);

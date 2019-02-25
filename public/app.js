@@ -1830,6 +1830,39 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Stacktrace.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Stacktrace.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['trace'],
+
+  /**
+   * The component's data.
+   */
+  data: function data() {
+    return {
+      minimumLines: 5,
+      showAll: false
+    };
+  },
+  computed: {
+    lines: function lines() {
+      return this.showAll ? lodash__WEBPACK_IMPORTED_MODULE_0___default.a.take(this.trace, 1000) : lodash__WEBPACK_IMPORTED_MODULE_0___default.a.take(this.trace, this.minimumLines);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/dashboard.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/dashboard.vue?vue&type=script&lang=js& ***!
@@ -1987,14 +2020,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-var _data$watch$mounted$d;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
-/* harmony default export */ __webpack_exports__["default"] = (_data$watch$mounted$d = {
+/* harmony default export */ __webpack_exports__["default"] = ({
   /**
    * The component's data.
    */
@@ -2014,23 +2040,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
 
   /**
-   * Watch these properties for changes.
-   */
-  watch: {
-    tagSearchPhrase: function tagSearchPhrase() {// clearTimeout(this.searchTimeout);
-      //
-      // this.searchTimeout = setTimeout(() => {
-      //     this.loadJobs();
-      // }, 500);
-    }
-  },
-
-  /**
    * Prepare the component.
    */
   mounted: function mounted() {
     document.title = "Horizon - Failed Jobs";
-    this.loadJobs(this.$route.params.tag);
+    this.loadJobs();
     this.refreshJobsPeriodically();
   },
 
@@ -2039,77 +2053,250 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
    */
   destroyed: function destroyed() {
     clearInterval(this.interval);
-  }
-}, _defineProperty(_data$watch$mounted$d, "watch", {
-  '$route': function $route() {
-    this.page = 1;
-    this.loadJobs(this.$route.params.tag);
-  }
-}), _defineProperty(_data$watch$mounted$d, "methods", {
+  },
+
   /**
-   * Load the jobs of the given tag.
+   * Watch these properties for changes.
    */
-  loadJobs: function loadJobs() {
-    var _this = this;
+  watch: {
+    '$route': function $route() {
+      this.page = 1;
+      this.loadJobs();
+    },
+    tagSearchPhrase: function tagSearchPhrase() {
+      var _this = this;
 
-    var starting = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var refreshing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      clearTimeout(this.searchTimeout);
+      clearInterval(this.interval);
+      this.searchTimeout = setTimeout(function () {
+        _this.loadJobs();
 
-    if (!refreshing) {
-      this.ready = false;
+        _this.refreshJobsPeriodically();
+      }, 500);
     }
+  },
+  methods: {
+    /**
+     * Load the jobs of the given tag.
+     */
+    loadJobs: function loadJobs() {
+      var _this2 = this;
 
-    var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
-    this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting).then(function (response) {
-      if (!_this.$root.autoLoadsNewEntries && refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
-        _this.hasNewEntries = true;
-      } else {
-        _this.jobs = response.data.jobs;
-        _this.totalPages = Math.ceil(response.data.total / _this.perPage);
+      var starting = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var refreshing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (!refreshing) {
+        this.ready = false;
       }
 
-      _this.ready = true;
-    });
-  },
-  loadNewEntries: function loadNewEntries() {
-    this.jobs = [];
-    this.loadJobs(0, false);
-    this.hasNewEntries = false;
-  },
+      var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
+      this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting).then(function (response) {
+        if (!_this2.$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
+          return;
+        }
 
-  /**
-   * Refresh the jobs every period of time.
-   */
-  refreshJobsPeriodically: function refreshJobsPeriodically() {
-    var _this2 = this;
+        if (!_this2.$root.autoLoadsNewEntries && refreshing && _this2.jobs.length && _.first(response.data.jobs).id !== _.first(_this2.jobs).id) {
+          _this2.hasNewEntries = true;
+        } else {
+          _this2.jobs = response.data.jobs;
+          _this2.totalPages = Math.ceil(response.data.total / _this2.perPage);
+        }
 
-    this.interval = setInterval(function () {
-      if (_this2.page != 1) {
+        _this2.ready = true;
+      });
+    },
+    loadNewEntries: function loadNewEntries() {
+      this.jobs = [];
+      this.loadJobs(0, false);
+      this.hasNewEntries = false;
+    },
+
+    /**
+     * Retry the given failed job.
+     */
+    retry: function retry(id) {
+      var _this3 = this;
+
+      if (this.isRetrying(id)) {
         return;
       }
 
-      _this2.loadJobs(0, true);
+      this.retryingJobs.push(id);
+      this.$http.post('/horizon/api/jobs/retry/' + id).then(function () {
+        setTimeout(function () {
+          _this3.retryingJobs = _.reject(_this3.retryingJobs, function (job) {
+            return job == id;
+          });
+        }, 3000);
+      });
+    },
+
+    /**
+     * Determine if the given job is currently retrying.
+     */
+    isRetrying: function isRetrying(id) {
+      return _.includes(this.retryingJobs, id);
+    },
+
+    /**
+     * Determine if the given job has completed.
+     */
+    hasCompleted: function hasCompleted(job) {
+      return _.find(job.retried_by, function (retry) {
+        return retry.status == 'completed';
+      });
+    },
+
+    /**
+     * Refresh the jobs every period of time.
+     */
+    refreshJobsPeriodically: function refreshJobsPeriodically() {
+      var _this4 = this;
+
+      this.interval = setInterval(function () {
+        if (_this4.page != 1) {
+          return;
+        }
+
+        _this4.loadJobs(0, true);
+      }, 3000);
+    },
+
+    /**
+     * Load the jobs for the previous page.
+     */
+    previous: function previous() {
+      this.loadJobs((this.page - 2) * this.perPage);
+      this.page -= 1;
+      this.hasNewEntries = false;
+    },
+
+    /**
+     * Load the jobs for the next page.
+     */
+    next: function next() {
+      this.loadJobs(this.page * this.perPage);
+      this.page += 1;
+      this.hasNewEntries = false;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/job.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/failedJobs/job.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var phpunserialize__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! phpunserialize */ "./node_modules/phpunserialize/phpUnserialize.js");
+/* harmony import */ var phpunserialize__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(phpunserialize__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    'stack-trace': __webpack_require__(/*! ./../../components/Stacktrace */ "./resources/js/components/Stacktrace.vue").default
+  },
+
+  /**
+   * The component's data.
+   */
+  data: function data() {
+    return {
+      ready: false,
+      retrying: false,
+      job: {}
+    };
+  },
+
+  /**
+   * Prepare the component.
+   */
+  mounted: function mounted() {
+    var _this = this;
+
+    this.loadFailedJob(this.$route.params.jobId);
+    document.title = "Horizon - Failed Jobs";
+    this.interval = setInterval(function () {
+      _this.reloadRetries();
     }, 3000);
   },
 
   /**
-   * Load the jobs for the previous page.
+   * Clean after the component is destroyed.
    */
-  previous: function previous() {
-    this.loadJobs((this.page - 2) * this.perPage);
-    this.page -= 1;
-    this.hasNewEntries = false;
+  destroyed: function destroyed() {
+    clearInterval(this.interval);
   },
+  methods: {
+    loadFailedJob: function loadFailedJob(id) {
+      var _this2 = this;
 
-  /**
-   * Load the jobs for the next page.
-   */
-  next: function next() {
-    this.loadJobs(this.page * this.perPage);
-    this.page += 1;
-    this.hasNewEntries = false;
+      this.ready = false;
+      this.$http.get('/horizon/api/jobs/failed/' + id).then(function (response) {
+        _this2.job = response.data;
+        _this2.ready = true;
+      });
+    },
+
+    /**
+     * Reload the job retries.
+     */
+    reloadRetries: function reloadRetries() {
+      var _this3 = this;
+
+      this.$http.get('/horizon/api/jobs/failed/' + this.$route.params.jobId).then(function (response) {
+        _this3.job.retried_by = response.data.retried_by;
+      });
+    },
+
+    /**
+     * Retry the given failed job.
+     */
+    retry: function retry(id) {
+      var _this4 = this;
+
+      if (this.retrying) {
+        return;
+      }
+
+      this.retrying = true;
+      this.$http.post('/horizon/api/jobs/retry/' + id).then(function () {
+        setTimeout(function () {
+          _this4.reloadRetries();
+
+          _this4.retrying = false;
+        }, 3000);
+      });
+    },
+
+    /**
+     * Convert exception to a more readable format.
+     */
+    prettyPrintException: function prettyPrintException(exception) {
+      var lines = _.split(exception, "\n"),
+          output = '';
+
+      lines.forEach(function (line) {
+        output += '<span>' + line + '</span>';
+      });
+      return output;
+    },
+
+    /**
+     * Pretty print serialized job.
+     *
+     * @param data
+     * @returns {string}
+     */
+    prettyPrintJob: function prettyPrintJob(data) {
+      return data.command ? phpunserialize__WEBPACK_IMPORTED_MODULE_0___default()(data.command) : data;
+    }
   }
-}), _data$watch$mounted$d);
+});
 
 /***/ }),
 
@@ -39740,6 +39927,299 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 
+/***/ "./node_modules/phpunserialize/phpUnserialize.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/phpunserialize/phpUnserialize.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * php-unserialize-js JavaScript Library
+ * https://github.com/bd808/php-unserialize-js
+ *
+ * Copyright 2013 Bryan Davis and contributors
+ * Released under the MIT license
+ * http://www.opensource.org/licenses/MIT
+ */
+
+(function (root, factory) {
+  /*global define, exports, module */
+  "use strict";
+
+  if (true) {
+    // AMD. Register as an anonymous module.
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+}(this, function () {
+  "use strict";
+
+  /**
+   * Parse php serialized data into js objects.
+   *
+   * @param {String} phpstr Php serialized string to parse
+   * @return {mixed} Parsed result
+   */
+  return function (phpstr) {
+    var idx = 0
+      , refStack = []
+      , ridx = 0
+      , parseNext // forward declaraton for "use strict"
+
+      , readLength = function () {
+          var del = phpstr.indexOf(':', idx)
+            , val = phpstr.substring(idx, del);
+          idx = del + 2;
+          return parseInt(val, 10);
+        } //end readLength
+
+      , readInt = function () {
+          var del = phpstr.indexOf(';', idx)
+            , val = phpstr.substring(idx, del);
+          idx = del + 1;
+          return parseInt(val, 10);
+        } //end readInt
+
+      , parseAsInt = function () {
+          var val = readInt();
+          refStack[ridx++] = val;
+          return val;
+        } //end parseAsInt
+
+      , parseAsFloat = function () {
+          var del = phpstr.indexOf(';', idx)
+            , val = phpstr.substring(idx, del);
+          idx = del + 1;
+          val = parseFloat(val);
+          refStack[ridx++] = val;
+          return val;
+        } //end parseAsFloat
+
+      , parseAsBoolean = function () {
+          var del = phpstr.indexOf(';', idx)
+            , val = phpstr.substring(idx, del);
+          idx = del + 1;
+          val = ("1" === val)? true: false;
+          refStack[ridx++] = val;
+          return val;
+        } //end parseAsBoolean
+
+      , readString = function () {
+          var len = readLength()
+            , utfLen = 0
+            , bytes = 0
+            , ch
+            , val;
+          while (bytes < len) {
+            ch = phpstr.charCodeAt(idx + utfLen++);
+            if (ch <= 0x007F) {
+              bytes++;
+            } else if (ch > 0x07FF) {
+              bytes += 3;
+            } else {
+              bytes += 2;
+            }
+          }
+          val = phpstr.substring(idx, idx + utfLen);
+          idx += utfLen + 2;
+          return val;
+        } //end readString
+
+      , parseAsString = function () {
+          var val = readString();
+          refStack[ridx++] = val;
+          return val;
+        } //end parseAsString
+
+      , readType = function () {
+          var type = phpstr.charAt(idx);
+          idx += 2;
+          return type;
+        } //end readType
+
+      , readKey = function () {
+          var type = readType();
+          switch (type) {
+            case 'i': return readInt();
+            case 's': return readString();
+            default:
+              throw {
+                name: "Parse Error",
+                message: "Unknown key type '" + type + "' at position " +
+                    (idx - 2)
+              };
+          } //end switch
+        }
+
+      , parseAsArray = function () {
+          var len = readLength()
+            , resultArray = []
+            , resultHash = {}
+            , keep = resultArray
+            , lref = ridx++
+            , key
+            , val
+            , i
+            , j
+            , alen;
+
+          refStack[lref] = keep;
+          for (i = 0; i < len; i++) {
+            key = readKey();
+            val = parseNext();
+            if (keep === resultArray && parseInt(key, 10) === i) {
+              // store in array version
+              resultArray.push(val);
+
+            } else {
+              if (keep !== resultHash) {
+                // found first non-sequential numeric key
+                // convert existing data to hash
+                for (j = 0, alen = resultArray.length; j < alen; j++) {
+                  resultHash[j] = resultArray[j];
+                }
+                keep = resultHash;
+                refStack[lref] = keep;
+              }
+              resultHash[key] = val;
+            } //end if
+          } //end for
+
+          idx++;
+          return keep;
+        } //end parseAsArray
+
+      , fixPropertyName = function (parsedName, baseClassName) {
+          var class_name
+            , prop_name
+            , pos;
+          if ("\u0000" === parsedName.charAt(0)) {
+            // "<NUL>*<NUL>property"
+            // "<NUL>class<NUL>property"
+            pos = parsedName.indexOf("\u0000", 1);
+            if (pos > 0) {
+              class_name = parsedName.substring(1, pos);
+              prop_name  = parsedName.substr(pos + 1);
+
+              if ("*" === class_name) {
+                // protected
+                return prop_name;
+              } else if (baseClassName === class_name) {
+                // own private
+                return prop_name;
+              } else {
+                // private of a descendant
+                return class_name + "::" + prop_name;
+
+                // On the one hand, we need to prefix property name with
+                // class name, because parent and child classes both may
+                // have private property with same name. We don't want
+                // just to overwrite it and lose something.
+                //
+                // On the other hand, property name can be "foo::bar"
+                //
+                //     $obj = new stdClass();
+                //     $obj->{"foo::bar"} = 42;
+                //     // any user-defined class can do this by default
+                //
+                // and such property also can overwrite something.
+                //
+                // So, we can to lose something in any way.
+              }
+            }
+          } else {
+            // public "property"
+            return parsedName;
+          }
+        }
+
+      , parseAsObject = function () {
+          var len
+            , obj = {}
+            , lref = ridx++
+            // HACK last char after closing quote is ':',
+            // but not ';' as for normal string
+            , clazzname = readString()
+            , key
+            , val
+            , i;
+
+          refStack[lref] = obj;
+          len = readLength();
+          for (i = 0; i < len; i++) {
+            key = fixPropertyName(readKey(), clazzname);
+            val = parseNext();
+            obj[key] = val;
+          }
+          idx++;
+          return obj;
+        } //end parseAsObject
+
+      , parseAsCustom = function () {
+          var clazzname = readString()
+            , content = readString();
+          return {
+            "__PHP_Incomplete_Class_Name": clazzname,
+            "serialized": content
+          };
+        } //end parseAsCustom
+
+      , parseAsRefValue = function () {
+          var ref = readInt()
+            // php's ref counter is 1-based; our stack is 0-based.
+            , val = refStack[ref - 1];
+          refStack[ridx++] = val;
+          return val;
+        } //end parseAsRefValue
+
+      , parseAsRef = function () {
+          var ref = readInt();
+          // php's ref counter is 1-based; our stack is 0-based.
+          return refStack[ref - 1];
+        } //end parseAsRef
+
+      , parseAsNull = function () {
+          var val = null;
+          refStack[ridx++] = val;
+          return val;
+        }; //end parseAsNull
+
+      parseNext = function () {
+        var type = readType();
+        switch (type) {
+          case 'i': return parseAsInt();
+          case 'd': return parseAsFloat();
+          case 'b': return parseAsBoolean();
+          case 's': return parseAsString();
+          case 'a': return parseAsArray();
+          case 'O': return parseAsObject();
+          case 'C': return parseAsCustom();
+
+          // link to object, which is a value - affects refStack
+          case 'r': return parseAsRefValue();
+
+          // PHP's reference - DOES NOT affect refStack
+          case 'R': return parseAsRef();
+
+          case 'N': return parseAsNull();
+          default:
+            throw {
+              name: "Parse Error",
+              message: "Unknown type '" + type + "' at position " + (idx - 2)
+            };
+        } //end switch
+      }; //end parseNext
+
+      return parseNext();
+  };
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/popper.js/dist/esm/popper.js":
 /*!***************************************************!*\
   !*** ./node_modules/popper.js/dist/esm/popper.js ***!
@@ -43444,6 +43924,64 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("table", { staticClass: "table mb-0" }, [
+    _c(
+      "tbody",
+      [
+        _vm._l(_vm.lines, function(line) {
+          return _c("tr", [
+            _c("td", { staticClass: "card-bg-secondary" }, [
+              _vm._v(_vm._s(line))
+            ])
+          ])
+        }),
+        _vm._v(" "),
+        !_vm.showAll
+          ? _c("tr", [
+              _c("td", { staticClass: "card-bg-secondary" }, [
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "*" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.showAll = true
+                      }
+                    }
+                  },
+                  [_vm._v("Show All")]
+                )
+              ])
+            ])
+          : _vm._e()
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/dashboard.vue?vue&type=template&id=acad7104&":
 /*!*********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/dashboard.vue?vue&type=template&id=acad7104& ***!
@@ -43879,7 +44417,39 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "card" }, [
-      _vm._m(0),
+      _c(
+        "div",
+        {
+          staticClass:
+            "card-header d-flex align-items-center justify-content-between"
+        },
+        [
+          _c("h5", [_vm._v("Failed Jobs")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.tagSearchPhrase,
+                expression: "tagSearchPhrase"
+              }
+            ],
+            staticClass: "form-control",
+            staticStyle: { width: "200px" },
+            attrs: { type: "text", placeholder: "Search Tags" },
+            domProps: { value: _vm.tagSearchPhrase },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.tagSearchPhrase = $event.target.value
+              }
+            }
+          })
+        ]
+      ),
       _vm._v(" "),
       !_vm.ready
         ? _c(
@@ -43926,7 +44496,7 @@ var render = function() {
       _vm._v(" "),
       _vm.ready && _vm.jobs.length > 0
         ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
-            _vm._m(1),
+            _vm._m(0),
             _vm._v(" "),
             _c(
               "tbody",
@@ -44022,20 +44592,12 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("td", { staticClass: "table-fit" }, [
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(_vm.readableTimestamp(job.payload.pushedAt)) +
-                          "\n                "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "table-fit" }, [
                       _c("span", [
                         _vm._v(
                           _vm._s(
-                            job.completed_at
-                              ? (job.completed_at - job.reserved_at).toFixed(
-                                  2
+                            job.failed_at
+                              ? String(
+                                  (job.failed_at - job.reserved_at).toFixed(2)
                                 ) + "s"
                               : "-"
                           )
@@ -44043,69 +44605,48 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(_vm.readableTimestamp(job.failed_at)) +
+                          "\n                "
+                      )
+                    ]),
+                    _vm._v(" "),
                     _c("td", { staticClass: "text-right table-fit" }, [
-                      job.status == "completed"
+                      !_vm.hasCompleted(job)
                         ? _c(
-                            "svg",
+                            "a",
                             {
-                              staticClass: "fill-success",
-                              staticStyle: {
-                                width: "1.5rem",
-                                height: "1.5rem"
-                              },
-                              attrs: { viewBox: "0 0 20 20" }
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  _vm.retry(job.id)
+                                }
+                              }
                             },
                             [
-                              _c("path", {
-                                attrs: {
-                                  d:
-                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
-                                }
-                              })
-                            ]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      job.status == "reserved" || job.status == "pending"
-                        ? _c(
-                            "svg",
-                            {
-                              staticClass: "fill-warning",
-                              staticStyle: {
-                                width: "1.5rem",
-                                height: "1.5rem"
-                              },
-                              attrs: { viewBox: "0 0 20 20" }
-                            },
-                            [
-                              _c("path", {
-                                attrs: {
-                                  d:
-                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"
-                                }
-                              })
-                            ]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      job.status == "failed"
-                        ? _c(
-                            "svg",
-                            {
-                              staticClass: "fill-danger",
-                              staticStyle: {
-                                width: "1.5rem",
-                                height: "1.5rem"
-                              },
-                              attrs: { viewBox: "0 0 20 20" }
-                            },
-                            [
-                              _c("path", {
-                                attrs: {
-                                  d:
-                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
-                                }
-                              })
+                              _c(
+                                "svg",
+                                {
+                                  staticClass: "fill-primary",
+                                  class: { spin: _vm.isRetrying(job.id) },
+                                  staticStyle: {
+                                    width: "1.5rem",
+                                    height: "1.5rem"
+                                  },
+                                  attrs: { viewBox: "0 0 20 20" }
+                                },
+                                [
+                                  _c("path", {
+                                    attrs: {
+                                      d:
+                                        "M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"
+                                    }
+                                  })
+                                ]
+                              )
                             ]
                           )
                         : _vm._e()
@@ -44153,13 +44694,373 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Job")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Runtime")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Failed At")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Retry")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/job.vue?vue&type=template&id=1d53cee7&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/failedJobs/job.vue?vue&type=template&id=1d53cee7& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "card" }, [
+      _c(
+        "div",
+        {
+          staticClass:
+            "card-header d-flex align-items-center justify-content-between"
+        },
+        [
+          !_vm.ready ? _c("h5", [_vm._v("Job Preview")]) : _vm._e(),
+          _vm._v(" "),
+          _vm.ready ? _c("h5", [_vm._v(_vm._s(_vm.job.name))]) : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-primary",
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.retry(_vm.job.id)
+                }
+              }
+            },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "icon fill-primary",
+                  class: { spin: _vm.retrying },
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"
+                    }
+                  })
+                ]
+              )
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      !_vm.ready
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "icon spin mr-2 fill-text-color",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("span", [_vm._v("Loading...")])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready
+        ? _c("div", { staticClass: "card-body card-bg-secondary" }, [
+            _c("div", { staticClass: "row mb-2" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [_vm._v(_vm._s(_vm.job.id))])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row mb-2" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [_vm._v(_vm._s(_vm.job.queue))])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row mb-2" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _vm._v(
+                  _vm._s(
+                    _vm.job.payload.tags && _vm.job.payload.tags.length
+                      ? _vm.job.payload.tags.join(", ")
+                      : ""
+                  )
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _vm._v(_vm._s(_vm.readableTimestamp(_vm.job.failed_at)))
+              ])
+            ])
+          ])
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _vm.ready
+      ? _c("div", { staticClass: "card mt-4" }, [
+          _vm._m(4),
+          _vm._v(" "),
+          _c(
+            "div",
+            [
+              _c("stack-trace", {
+                attrs: { trace: _vm.job.exception.split("\n") }
+              })
+            ],
+            1
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.ready
+      ? _c("div", { staticClass: "card mt-4" }, [
+          _vm._m(5),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-body code-bg text-white" },
+            [
+              _c("vue-json-pretty", {
+                attrs: { data: _vm.prettyPrintJob(_vm.job.payload.data) }
+              })
+            ],
+            1
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.ready && _vm.job.retried_by.length
+      ? _c("div", { staticClass: "card mt-4" }, [
+          _vm._m(6),
+          _vm._v(" "),
+          _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
+            _vm._m(7),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.job.retried_by, function(retry) {
+                return _c("tr", [
+                  _c("td", [
+                    retry.status == "completed"
+                      ? _c(
+                          "svg",
+                          {
+                            staticClass: "fill-success",
+                            staticStyle: { width: "1.5rem", height: "1.5rem" },
+                            attrs: { viewBox: "0 0 20 20" }
+                          },
+                          [
+                            _c("path", {
+                              attrs: {
+                                d:
+                                  "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
+                              }
+                            })
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    retry.status == "reserved" || retry.status == "pending"
+                      ? _c(
+                          "svg",
+                          {
+                            staticClass: "fill-warning",
+                            staticStyle: { width: "1.5rem", height: "1.5rem" },
+                            attrs: { viewBox: "0 0 20 20" }
+                          },
+                          [
+                            _c("path", {
+                              attrs: {
+                                d:
+                                  "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"
+                              }
+                            })
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    retry.status == "failed"
+                      ? _c(
+                          "svg",
+                          {
+                            staticClass: "fill-danger",
+                            staticStyle: { width: "1.5rem", height: "1.5rem" },
+                            attrs: { viewBox: "0 0 20 20" }
+                          },
+                          [
+                            _c("path", {
+                              attrs: {
+                                d:
+                                  "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
+                              }
+                            })
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(
+                      "\n\n                    " +
+                        _vm._s(
+                          retry.status.charAt(0).toUpperCase() +
+                            retry.status.slice(1)
+                        ) +
+                        "\n                "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "table-fit" }, [
+                    retry.status == "failed"
+                      ? _c(
+                          "a",
+                          { attrs: { href: "/horizon/failed/" + retry.id } },
+                          [
+                            _vm._v(
+                              "\n                        " +
+                                _vm._s(retry.id) +
+                                "\n                    "
+                            )
+                          ]
+                        )
+                      : _c("span", [_vm._v(_vm._s(retry.id))])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-right table-fit" }, [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.readableTimestamp(retry.retried_at)) +
+                        "\n                "
+                    )
+                  ])
+                ])
+              }),
+              0
+            )
+          ])
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-2" }, [
+      _c("strong", [_vm._v("ID")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-2" }, [
+      _c("strong", [_vm._v("Queue")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-2" }, [
+      _c("strong", [_vm._v("Tags")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-2" }, [
+      _c("strong", [_vm._v("Failed At")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c(
       "div",
       {
         staticClass:
           "card-header d-flex align-items-center justify-content-between"
       },
-      [_c("h5", [_vm._v("Recent Jobs")])]
+      [_c("h5", [_vm._v("Exception")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "card-header d-flex align-items-center justify-content-between"
+      },
+      [_c("h5", [_vm._v("Data")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "card-header d-flex align-items-center justify-content-between"
+      },
+      [_c("h5", [_vm._v("Recent Retries")])]
     )
   },
   function() {
@@ -44170,11 +45071,9 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Job")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Queued At")]),
+        _c("th", [_vm._v("ID")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Runtime")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-right" }, [_vm._v("Status")])
+        _c("th", { staticClass: "text-right" }, [_vm._v("Retry Time")])
       ])
     ])
   }
@@ -44848,26 +45747,54 @@ var render = function() {
               _vm._v(" "),
               _vm._l(_vm.jobs, function(job) {
                 return _c("tr", { key: job.id }, [
-                  _c("td", [
-                    _c("span", { attrs: { title: job.name } }, [
-                      _vm._v(_vm._s(_vm.jobBaseName(job.name)))
-                    ]),
-                    _c("br"),
-                    _vm._v(" "),
-                    _c("small", { staticClass: "text-muted" }, [
-                      _vm._v(
-                        "\n                    Queue: " +
-                          _vm._s(job.queue) +
-                          " | Tags: " +
-                          _vm._s(
-                            job.payload.tags && job.payload.tags.length
-                              ? job.payload.tags.join(", ")
-                              : ""
-                          ) +
-                          "\n                "
-                      )
-                    ])
-                  ]),
+                  _c(
+                    "td",
+                    [
+                      job.status != "failed"
+                        ? _c("span", { attrs: { title: job.name } }, [
+                            _vm._v(_vm._s(_vm.jobBaseName(job.name)))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      job.status === "failed"
+                        ? _c(
+                            "router-link",
+                            {
+                              attrs: {
+                                title: job.name,
+                                to: {
+                                  name: "failed-jobs-preview",
+                                  params: { jobId: job.id }
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                    " +
+                                  _vm._s(_vm.jobBaseName(job.name)) +
+                                  "\n                "
+                              )
+                            ]
+                          )
+                        : _vm._e(),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("small", { staticClass: "text-muted" }, [
+                        _vm._v(
+                          "\n                    Queue: " +
+                            _vm._s(job.queue) +
+                            " | Tags: " +
+                            _vm._s(
+                              job.payload.tags && job.payload.tags.length
+                                ? job.payload.tags.join(", ")
+                                : ""
+                            ) +
+                            "\n                "
+                        )
+                      ])
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
                   _c("td", { staticClass: "table-fit" }, [
                     _vm._v(
@@ -45256,14 +46183,21 @@ var render = function() {
                           _vm._v(
                             "\n                        Queue: " +
                               _vm._s(job.queue) +
-                              " | Tags: " +
-                              _vm._s(
-                                job.payload.tags && job.payload.tags.length
-                                  ? job.payload.tags.join(", ")
-                                  : ""
-                              ) +
-                              "\n                    "
-                          )
+                              "\n                        "
+                          ),
+                          job.payload.tags.length
+                            ? _c("span", [
+                                _vm._v(
+                                  "| Tags: " +
+                                    _vm._s(
+                                      job.payload.tags &&
+                                        job.payload.tags.length
+                                        ? job.payload.tags.join(", ")
+                                        : ""
+                                    )
+                                )
+                              ])
+                            : _vm._e()
                         ])
                       ],
                       1
@@ -59384,17 +60318,6 @@ new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       },
       autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1'
     };
-  },
-  methods: {
-    autoLoadNewEntries: function autoLoadNewEntries() {
-      if (!this.autoLoadsNewEntries) {
-        this.autoLoadsNewEntries = true;
-        localStorage.autoLoadsNewEntries = 1;
-      } else {
-        this.autoLoadsNewEntries = false;
-        localStorage.autoLoadsNewEntries = 0;
-      }
-    }
   }
 });
 
@@ -59482,6 +60405,19 @@ __webpack_require__.r(__webpack_exports__);
       if (!name.includes('\\')) return name;
       var parts = name.split("\\");
       return parts[parts.length - 1];
+    },
+
+    /**
+     * Autoload new entries in listing screens.
+     */
+    autoLoadNewEntries: function autoLoadNewEntries() {
+      if (!this.autoLoadsNewEntries) {
+        this.autoLoadsNewEntries = true;
+        localStorage.autoLoadsNewEntries = 1;
+      } else {
+        this.autoLoadsNewEntries = false;
+        localStorage.autoLoadsNewEntries = 0;
+      }
     },
 
     /**
@@ -59647,6 +60583,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Stacktrace.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/Stacktrace.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Stacktrace_vue_vue_type_template_id_4b7dec30_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true& */ "./resources/js/components/Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true&");
+/* harmony import */ var _Stacktrace_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Stacktrace.vue?vue&type=script&lang=js& */ "./resources/js/components/Stacktrace.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Stacktrace_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Stacktrace_vue_vue_type_template_id_4b7dec30_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Stacktrace_vue_vue_type_template_id_4b7dec30_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "4b7dec30",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Stacktrace.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Stacktrace.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/Stacktrace.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Stacktrace_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Stacktrace.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Stacktrace.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Stacktrace_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Stacktrace_vue_vue_type_template_id_4b7dec30_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Stacktrace.vue?vue&type=template&id=4b7dec30&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Stacktrace_vue_vue_type_template_id_4b7dec30_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Stacktrace_vue_vue_type_template_id_4b7dec30_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/routes.js":
 /*!********************************!*\
   !*** ./resources/js/routes.js ***!
@@ -59715,6 +60720,10 @@ __webpack_require__.r(__webpack_exports__);
   path: '/failed',
   name: 'failed-jobs',
   component: __webpack_require__(/*! ./screens/failedJobs/index */ "./resources/js/screens/failedJobs/index.vue").default
+}, {
+  path: '/failed/:jobId',
+  name: 'failed-jobs-preview',
+  component: __webpack_require__(/*! ./screens/failedJobs/job */ "./resources/js/screens/failedJobs/job.vue").default
 }]);
 
 /***/ }),
@@ -59852,6 +60861,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/screens/failedJobs/job.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/screens/failedJobs/job.vue ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _job_vue_vue_type_template_id_1d53cee7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./job.vue?vue&type=template&id=1d53cee7& */ "./resources/js/screens/failedJobs/job.vue?vue&type=template&id=1d53cee7&");
+/* harmony import */ var _job_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./job.vue?vue&type=script&lang=js& */ "./resources/js/screens/failedJobs/job.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _job_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _job_vue_vue_type_template_id_1d53cee7___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _job_vue_vue_type_template_id_1d53cee7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/screens/failedJobs/job.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/screens/failedJobs/job.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/screens/failedJobs/job.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_job_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./job.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/job.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_job_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/screens/failedJobs/job.vue?vue&type=template&id=1d53cee7&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/screens/failedJobs/job.vue?vue&type=template&id=1d53cee7& ***!
+  \********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_job_vue_vue_type_template_id_1d53cee7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./job.vue?vue&type=template&id=1d53cee7& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/job.vue?vue&type=template&id=1d53cee7&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_job_vue_vue_type_template_id_1d53cee7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_job_vue_vue_type_template_id_1d53cee7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

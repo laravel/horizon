@@ -68,10 +68,10 @@ export default [
         name: 'failed-jobs',
         component: require('./screens/failedJobs/index').default
     },
-    //
-    // {
-    //     path: '/failed/:jobId',
-    //     name: 'failed-jobs-preview',
-    //     component: require('./screens/failedJobs/preview').default
-    // },
+
+    {
+        path: '/failed/:jobId',
+        name: 'failed-jobs-preview',
+        component: require('./screens/failedJobs/job').default
+    },
 ];

@@ -67,6 +67,20 @@ export default {
 
 
         /**
+         * Autoload new entries in listing screens.
+         */
+        autoLoadNewEntries(){
+            if (!this.autoLoadsNewEntries) {
+                this.autoLoadsNewEntries = true;
+                localStorage.autoLoadsNewEntries = 1;
+            } else {
+                this.autoLoadsNewEntries = false;
+                localStorage.autoLoadsNewEntries = 0;
+            }
+        },
+
+
+        /**
          * Convert to human readable timestamp.
          */
         readableTimestamp(timestamp){

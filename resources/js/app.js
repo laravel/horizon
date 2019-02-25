@@ -51,18 +51,5 @@ new Vue({
 
             autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1'
         }
-    },
-
-
-    methods: {
-        autoLoadNewEntries(){
-            if (!this.autoLoadsNewEntries) {
-                this.autoLoadsNewEntries = true;
-                localStorage.autoLoadsNewEntries = 1;
-            } else {
-                this.autoLoadsNewEntries = false;
-                localStorage.autoLoadsNewEntries = 0;
-            }
-        },
     }
 });

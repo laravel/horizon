@@ -170,7 +170,8 @@
                         </router-link><br>
 
                         <small class="text-muted">
-                            Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
+                            Queue: {{job.queue}}
+                            <span v-if="job.payload.tags.length">| Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</span>
                         </small>
                     </td>
                     <td class="table-fit">
