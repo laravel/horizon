@@ -50,13 +50,13 @@ export default [
             },
         ],
     },
-    //
-    // {
-    //     path: '/metrics/:type/:slug',
-    //     name: 'metrics-preview',
-    //     component: require('./screens/metrics/preview').default
-    // },
-    //
+
+    {
+        path: '/metrics/:type/:slug',
+        name: 'metrics-preview',
+        component: require('./screens/metrics/preview').default
+    },
+
     {
         path: '/recent-jobs',
         name: 'recent-jobs',
