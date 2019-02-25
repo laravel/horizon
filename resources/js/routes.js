@@ -57,17 +57,17 @@ export default [
     //     component: require('./screens/metrics/preview').default
     // },
     //
-    // {
-    //     path: '/recent-jobs',
-    //     name: 'recent-jobs',
-    //     component: require('./screens/recentJobs/index').default
-    // },
-    //
-    // {
-    //     path: '/failed',
-    //     name: 'failed-jobs',
-    //     component: require('./screens/failedJobs/index').default
-    // },
+    {
+        path: '/recent-jobs',
+        name: 'recent-jobs',
+        component: require('./screens/recentJobs/index').default
+    },
+
+    {
+        path: '/failed',
+        name: 'failed-jobs',
+        component: require('./screens/failedJobs/index').default
+    },
     //
     // {
     //     path: '/failed/:jobId',

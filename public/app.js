@@ -1978,6 +1978,141 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/index.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/failedJobs/index.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+var _data$watch$mounted$d;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+/* harmony default export */ __webpack_exports__["default"] = (_data$watch$mounted$d = {
+  /**
+   * The component's data.
+   */
+  data: function data() {
+    return {
+      tagSearchPhrase: '',
+      searchTimeout: null,
+      ready: false,
+      loadingNewEntries: false,
+      hasNewEntries: false,
+      page: 1,
+      perPage: 50,
+      totalPages: 1,
+      jobs: [],
+      retryingJobs: []
+    };
+  },
+
+  /**
+   * Watch these properties for changes.
+   */
+  watch: {
+    tagSearchPhrase: function tagSearchPhrase() {// clearTimeout(this.searchTimeout);
+      //
+      // this.searchTimeout = setTimeout(() => {
+      //     this.loadJobs();
+      // }, 500);
+    }
+  },
+
+  /**
+   * Prepare the component.
+   */
+  mounted: function mounted() {
+    document.title = "Horizon - Failed Jobs";
+    this.loadJobs(this.$route.params.tag);
+    this.refreshJobsPeriodically();
+  },
+
+  /**
+   * Clean after the component is destroyed.
+   */
+  destroyed: function destroyed() {
+    clearInterval(this.interval);
+  }
+}, _defineProperty(_data$watch$mounted$d, "watch", {
+  '$route': function $route() {
+    this.page = 1;
+    this.loadJobs(this.$route.params.tag);
+  }
+}), _defineProperty(_data$watch$mounted$d, "methods", {
+  /**
+   * Load the jobs of the given tag.
+   */
+  loadJobs: function loadJobs() {
+    var _this = this;
+
+    var starting = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var refreshing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    if (!refreshing) {
+      this.ready = false;
+    }
+
+    var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
+    this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting).then(function (response) {
+      if (!_this.$root.autoLoadsNewEntries && refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
+        _this.hasNewEntries = true;
+      } else {
+        _this.jobs = response.data.jobs;
+        _this.totalPages = Math.ceil(response.data.total / _this.perPage);
+      }
+
+      _this.ready = true;
+    });
+  },
+  loadNewEntries: function loadNewEntries() {
+    this.jobs = [];
+    this.loadJobs(0, false);
+    this.hasNewEntries = false;
+  },
+
+  /**
+   * Refresh the jobs every period of time.
+   */
+  refreshJobsPeriodically: function refreshJobsPeriodically() {
+    var _this2 = this;
+
+    this.interval = setInterval(function () {
+      if (_this2.page != 1) {
+        return;
+      }
+
+      _this2.loadJobs(0, true);
+    }, 3000);
+  },
+
+  /**
+   * Load the jobs for the previous page.
+   */
+  previous: function previous() {
+    this.loadJobs((this.page - 2) * this.perPage);
+    this.page -= 1;
+    this.hasNewEntries = false;
+  },
+
+  /**
+   * Load the jobs for the next page.
+   */
+  next: function next() {
+    this.loadJobs(this.page * this.perPage);
+    this.page += 1;
+    this.hasNewEntries = false;
+  }
+}), _data$watch$mounted$d);
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/metrics/index.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/metrics/index.vue?vue&type=script&lang=js& ***!
@@ -2269,7 +2404,7 @@ __webpack_require__.r(__webpack_exports__);
 
       tag = this.type == 'failed' ? 'failed:' + tag : tag;
       this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage).then(function (response) {
-        if (refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
+        if (!_this.$root.autoLoadsNewEntries && refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
           _this.hasNewEntries = true;
         } else {
           _this.jobs = response.data.jobs;
@@ -2279,6 +2414,10 @@ __webpack_require__.r(__webpack_exports__);
         _this.ready = true;
       });
     },
+
+    /**
+     * Load new entries.
+     */
     loadNewEntries: function loadNewEntries() {
       this.jobs = [];
       this.loadJobs(this.$route.params.tag, 0, false);
@@ -2332,6 +2471,126 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/recentJobs/index.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/recentJobs/index.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  /**
+   * The component's data.
+   */
+  data: function data() {
+    return {
+      ready: false,
+      loadingNewEntries: false,
+      hasNewEntries: false,
+      page: 1,
+      perPage: 50,
+      totalPages: 1,
+      jobs: []
+    };
+  },
+
+  /**
+   * Prepare the component.
+   */
+  mounted: function mounted() {
+    this.loadJobs(this.$route.params.tag);
+    this.refreshJobsPeriodically();
+  },
+
+  /**
+   * Clean after the component is destroyed.
+   */
+  destroyed: function destroyed() {
+    clearInterval(this.interval);
+  },
+
+  /**
+   * Watch these properties for changes.
+   */
+  watch: {
+    '$route': function $route() {
+      this.page = 1;
+      this.loadJobs(this.$route.params.tag);
+    }
+  },
+  methods: {
+    /**
+     * Load the jobs of the given tag.
+     */
+    loadJobs: function loadJobs() {
+      var _this = this;
+
+      var starting = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var refreshing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (!refreshing) {
+        this.ready = false;
+      }
+
+      this.$http.get('/horizon/api/jobs/recent?starting_at=' + starting + '&limit=' + this.perPage).then(function (response) {
+        if (!_this.$root.autoLoadsNewEntries && refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
+          _this.hasNewEntries = true;
+        } else {
+          _this.jobs = response.data.jobs;
+          _this.totalPages = Math.ceil(response.data.total / _this.perPage);
+        }
+
+        _this.ready = true;
+      });
+    },
+    loadNewEntries: function loadNewEntries() {
+      this.jobs = [];
+      this.loadJobs(0, false);
+      this.hasNewEntries = false;
+    },
+
+    /**
+     * Refresh the jobs every period of time.
+     */
+    refreshJobsPeriodically: function refreshJobsPeriodically() {
+      var _this2 = this;
+
+      this.interval = setInterval(function () {
+        if (_this2.page != 1) {
+          return;
+        }
+
+        _this2.loadJobs(0, true);
+      }, 3000);
+    },
+
+    /**
+     * Load the jobs for the previous page.
+     */
+    previous: function previous() {
+      this.loadJobs((this.page - 2) * this.perPage);
+      this.page -= 1;
+      this.hasNewEntries = false;
+    },
+
+    /**
+     * Load the jobs for the next page.
+     */
+    next: function next() {
+      this.loadJobs(this.page * this.perPage);
+      this.page += 1;
+      this.hasNewEntries = false;
+    }
+  }
+});
 
 /***/ }),
 
@@ -43603,6 +43862,329 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/index.vue?vue&type=template&id=39cd6608&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/failedJobs/index.vue?vue&type=template&id=39cd6608& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "card" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      !_vm.ready
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "icon spin mr-2 fill-text-color",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("span", [_vm._v("Loading...")])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length == 0
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [_c("span", [_vm._v("There aren't any failed jobs.")])]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length > 0
+        ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              [
+                _vm.hasNewEntries
+                  ? _c(
+                      "tr",
+                      { key: "newEntries", staticClass: "dontanimate" },
+                      [
+                        _c(
+                          "td",
+                          {
+                            staticClass: "text-center card-bg-secondary py-1",
+                            attrs: { colspan: "100" }
+                          },
+                          [
+                            _c("small", [
+                              !_vm.loadingNewEntries
+                                ? _c(
+                                    "a",
+                                    {
+                                      attrs: { href: "#" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.loadNewEntries($event)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Load New Entries")]
+                                  )
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _vm.loadingNewEntries
+                              ? _c("small", [_vm._v("Loading...")])
+                              : _vm._e()
+                          ]
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.jobs, function(job) {
+                  return _c("tr", { key: job.id }, [
+                    _c(
+                      "td",
+                      [
+                        job.status != "failed"
+                          ? _c("span", { attrs: { title: job.name } }, [
+                              _vm._v(_vm._s(_vm.jobBaseName(job.name)))
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        job.status === "failed"
+                          ? _c(
+                              "router-link",
+                              {
+                                attrs: {
+                                  title: job.name,
+                                  to: {
+                                    name: "failed-jobs-preview",
+                                    params: { jobId: job.id }
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                        " +
+                                    _vm._s(_vm.jobBaseName(job.name)) +
+                                    "\n                    "
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "text-muted" }, [
+                          _vm._v(
+                            "\n                        Queue: " +
+                              _vm._s(job.queue) +
+                              " | Tags: " +
+                              _vm._s(
+                                job.payload.tags && job.payload.tags.length
+                                  ? job.payload.tags.join(", ")
+                                  : ""
+                              ) +
+                              "\n                    "
+                          )
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(_vm.readableTimestamp(job.payload.pushedAt)) +
+                          "\n                "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _c("span", [
+                        _vm._v(
+                          _vm._s(
+                            job.completed_at
+                              ? (job.completed_at - job.reserved_at).toFixed(
+                                  2
+                                ) + "s"
+                              : "-"
+                          )
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-right table-fit" }, [
+                      job.status == "completed"
+                        ? _c(
+                            "svg",
+                            {
+                              staticClass: "fill-success",
+                              staticStyle: {
+                                width: "1.5rem",
+                                height: "1.5rem"
+                              },
+                              attrs: { viewBox: "0 0 20 20" }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      job.status == "reserved" || job.status == "pending"
+                        ? _c(
+                            "svg",
+                            {
+                              staticClass: "fill-warning",
+                              staticStyle: {
+                                width: "1.5rem",
+                                height: "1.5rem"
+                              },
+                              attrs: { viewBox: "0 0 20 20" }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      job.status == "failed"
+                        ? _c(
+                            "svg",
+                            {
+                              staticClass: "fill-danger",
+                              staticStyle: {
+                                width: "1.5rem",
+                                height: "1.5rem"
+                              },
+                              attrs: { viewBox: "0 0 20 20" }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  ])
+                })
+              ],
+              2
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length
+        ? _c(
+            "div",
+            { staticClass: "p-3 d-flex justify-content-between border-top" },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary btn-md",
+                  attrs: { disabled: _vm.page == 1 },
+                  on: { click: _vm.previous }
+                },
+                [_vm._v("Previous")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary btn-md",
+                  attrs: { disabled: _vm.page >= _vm.totalPages },
+                  on: { click: _vm.next }
+                },
+                [_vm._v("Next")]
+              )
+            ]
+          )
+        : _vm._e()
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "card-header d-flex align-items-center justify-content-between"
+      },
+      [_c("h5", [_vm._v("Recent Jobs")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Job")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Queued At")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Runtime")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Status")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/metrics/index.vue?vue&type=template&id=3a732920&":
 /*!*************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/metrics/index.vue?vue&type=template&id=3a732920& ***!
@@ -44268,7 +44850,7 @@ var render = function() {
                 return _c("tr", { key: job.id }, [
                   _c("td", [
                     _c("span", { attrs: { title: job.name } }, [
-                      _vm._v(_vm._s(_vm.truncate(job.name, 68)))
+                      _vm._v(_vm._s(_vm.jobBaseName(job.name)))
                     ]),
                     _c("br"),
                     _vm._v(" "),
@@ -44522,6 +45104,329 @@ var render = function() {
   ])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/recentJobs/index.vue?vue&type=template&id=9dc01acc&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/screens/recentJobs/index.vue?vue&type=template&id=9dc01acc& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "card" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      !_vm.ready
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "icon spin mr-2 fill-text-color",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("span", [_vm._v("Loading...")])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length == 0
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [_c("span", [_vm._v("There aren't any jobs.")])]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length > 0
+        ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              [
+                _vm.hasNewEntries
+                  ? _c(
+                      "tr",
+                      { key: "newEntries", staticClass: "dontanimate" },
+                      [
+                        _c(
+                          "td",
+                          {
+                            staticClass: "text-center card-bg-secondary py-1",
+                            attrs: { colspan: "100" }
+                          },
+                          [
+                            _c("small", [
+                              !_vm.loadingNewEntries
+                                ? _c(
+                                    "a",
+                                    {
+                                      attrs: { href: "#" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.loadNewEntries($event)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Load New Entries")]
+                                  )
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _vm.loadingNewEntries
+                              ? _c("small", [_vm._v("Loading...")])
+                              : _vm._e()
+                          ]
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.jobs, function(job) {
+                  return _c("tr", { key: job.id }, [
+                    _c(
+                      "td",
+                      [
+                        job.status != "failed"
+                          ? _c("span", { attrs: { title: job.name } }, [
+                              _vm._v(_vm._s(_vm.jobBaseName(job.name)))
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        job.status === "failed"
+                          ? _c(
+                              "router-link",
+                              {
+                                attrs: {
+                                  title: job.name,
+                                  to: {
+                                    name: "failed-jobs-preview",
+                                    params: { jobId: job.id }
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                        " +
+                                    _vm._s(_vm.jobBaseName(job.name)) +
+                                    "\n                    "
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "text-muted" }, [
+                          _vm._v(
+                            "\n                        Queue: " +
+                              _vm._s(job.queue) +
+                              " | Tags: " +
+                              _vm._s(
+                                job.payload.tags && job.payload.tags.length
+                                  ? job.payload.tags.join(", ")
+                                  : ""
+                              ) +
+                              "\n                    "
+                          )
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(_vm.readableTimestamp(job.payload.pushedAt)) +
+                          "\n                "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _c("span", [
+                        _vm._v(
+                          _vm._s(
+                            job.completed_at
+                              ? (job.completed_at - job.reserved_at).toFixed(
+                                  2
+                                ) + "s"
+                              : "-"
+                          )
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-right table-fit" }, [
+                      job.status == "completed"
+                        ? _c(
+                            "svg",
+                            {
+                              staticClass: "fill-success",
+                              staticStyle: {
+                                width: "1.5rem",
+                                height: "1.5rem"
+                              },
+                              attrs: { viewBox: "0 0 20 20" }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      job.status == "reserved" || job.status == "pending"
+                        ? _c(
+                            "svg",
+                            {
+                              staticClass: "fill-warning",
+                              staticStyle: {
+                                width: "1.5rem",
+                                height: "1.5rem"
+                              },
+                              attrs: { viewBox: "0 0 20 20" }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      job.status == "failed"
+                        ? _c(
+                            "svg",
+                            {
+                              staticClass: "fill-danger",
+                              staticStyle: {
+                                width: "1.5rem",
+                                height: "1.5rem"
+                              },
+                              attrs: { viewBox: "0 0 20 20" }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  ])
+                })
+              ],
+              2
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length
+        ? _c(
+            "div",
+            { staticClass: "p-3 d-flex justify-content-between border-top" },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary btn-md",
+                  attrs: { disabled: _vm.page == 1 },
+                  on: { click: _vm.previous }
+                },
+                [_vm._v("Previous")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary btn-md",
+                  attrs: { disabled: _vm.page >= _vm.totalPages },
+                  on: { click: _vm.next }
+                },
+                [_vm._v("Next")]
+              )
+            ]
+          )
+        : _vm._e()
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "card-header d-flex align-items-center justify-content-between"
+      },
+      [_c("h5", [_vm._v("Recent Jobs")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Job")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Queued At")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Runtime")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Status")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -58795,6 +59700,21 @@ __webpack_require__.r(__webpack_exports__);
     name: 'metrics-queues',
     component: __webpack_require__(/*! ./screens/metrics/queues */ "./resources/js/screens/metrics/queues.vue").default
   }]
+}, //
+// {
+//     path: '/metrics/:type/:slug',
+//     name: 'metrics-preview',
+//     component: require('./screens/metrics/preview').default
+// },
+//
+{
+  path: '/recent-jobs',
+  name: 'recent-jobs',
+  component: __webpack_require__(/*! ./screens/recentJobs/index */ "./resources/js/screens/recentJobs/index.vue").default
+}, {
+  path: '/failed',
+  name: 'failed-jobs',
+  component: __webpack_require__(/*! ./screens/failedJobs/index */ "./resources/js/screens/failedJobs/index.vue").default
 }]);
 
 /***/ }),
@@ -58863,6 +59783,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_dashboard_vue_vue_type_template_id_acad7104___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_dashboard_vue_vue_type_template_id_acad7104___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/screens/failedJobs/index.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/screens/failedJobs/index.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.vue?vue&type=template&id=39cd6608& */ "./resources/js/screens/failedJobs/index.vue?vue&type=template&id=39cd6608&");
+/* harmony import */ var _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.vue?vue&type=script&lang=js& */ "./resources/js/screens/failedJobs/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/screens/failedJobs/index.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/screens/failedJobs/index.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/screens/failedJobs/index.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/screens/failedJobs/index.vue?vue&type=template&id=39cd6608&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/screens/failedJobs/index.vue?vue&type=template&id=39cd6608& ***!
+  \**********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=template&id=39cd6608& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/failedJobs/index.vue?vue&type=template&id=39cd6608&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_39cd6608___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -59277,6 +60266,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_tag_vue_vue_type_template_id_26f6054e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/screens/recentJobs/index.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/screens/recentJobs/index.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index_vue_vue_type_template_id_9dc01acc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.vue?vue&type=template&id=9dc01acc& */ "./resources/js/screens/recentJobs/index.vue?vue&type=template&id=9dc01acc&");
+/* harmony import */ var _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.vue?vue&type=script&lang=js& */ "./resources/js/screens/recentJobs/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _index_vue_vue_type_template_id_9dc01acc___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _index_vue_vue_type_template_id_9dc01acc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/screens/recentJobs/index.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/screens/recentJobs/index.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/screens/recentJobs/index.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/recentJobs/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/screens/recentJobs/index.vue?vue&type=template&id=9dc01acc&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/screens/recentJobs/index.vue?vue&type=template&id=9dc01acc& ***!
+  \**********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_9dc01acc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=template&id=9dc01acc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/screens/recentJobs/index.vue?vue&type=template&id=9dc01acc&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_9dc01acc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_9dc01acc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

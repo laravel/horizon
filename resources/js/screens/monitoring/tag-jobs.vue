@@ -17,6 +17,7 @@
             };
         },
 
+
         /**
          * Prepare the component.
          */
@@ -25,6 +26,7 @@
 
             this.refreshJobsPeriodically();
         },
+
 
         /**
          * Clean after the component is destroyed.
@@ -59,7 +61,7 @@
 
                 this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
-                        if (refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
+                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;
                         } else {
                             this.jobs = response.data.jobs;
@@ -72,6 +74,9 @@
             },
 
 
+            /**
+             * Load new entries.
+             */
             loadNewEntries() {
                 this.jobs = [];
 
@@ -162,7 +167,7 @@
 
             <tr v-for="job in jobs" :key="job.id">
                 <td>
-                    <span :title="job.name">{{truncate(job.name, 68)}}</span><br>
+                    <span :title="job.name">{{jobBaseName(job.name)}}</span><br>
 
                     <small class="text-muted">
                         Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
