@@ -34,6 +34,13 @@ class QueueProcessingTest extends IntegrationTest
         $this->assertSame('pending', Redis::connection('horizon')->hget($id, 'status'));
     }
 
+    public function test_pending_delayed_jobs_are_stored_in_pending_job_database()
+    {
+        $id = Queue::later(1, new Jobs\BasicJob);
+        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame('pending', Redis::connection('horizon')->hget($id, 'status'));
+    }
+
     public function test_pending_jobs_are_stored_with_their_tags()
     {
         $id = Queue::push(new Jobs\BasicJob);

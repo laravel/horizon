@@ -16,7 +16,7 @@ class WorkerProcessTest extends IntegrationTest
     {
         Event::fake();
 
-        $process = new Process('exit 1');
+        $process = new Process(['exit', 1]);
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
@@ -31,7 +31,7 @@ class WorkerProcessTest extends IntegrationTest
     {
         Event::fake();
 
-        $process = new Process('exit 1');
+        $process = new Process(['exit', 1]);
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
@@ -47,7 +47,7 @@ class WorkerProcessTest extends IntegrationTest
     {
         Event::fake();
 
-        $process = new Process('exit 1');
+        $process = new Process(['exit', 1]);
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
