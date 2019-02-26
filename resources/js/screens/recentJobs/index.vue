@@ -21,6 +21,8 @@
          * Prepare the component.
          */
         mounted() {
+            document.title = "Horizon - Recent Jobs";
+
             this.loadJobs(this.$route.params.tag);
 
             this.refreshJobsPeriodically();
@@ -55,7 +57,7 @@
                     this.ready = false;
                 }
 
-                this.$http.get('/horizon/api/jobs/recent?starting_at=' + starting + '&limit=' + this.perPage)
+                this.$http.get('/' + Horizon.path + '/api/jobs/recent?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;

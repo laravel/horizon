@@ -69,8 +69,8 @@
                 }
 
                 var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
-                
-                this.$http.get('/horizon/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+
+                this.$http.get('/' + Horizon.path + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
                     .then(response => {
                         if(!this.$root.autoLoadsNewEntries && refreshing  && !response.data.jobs.length){
                             return;

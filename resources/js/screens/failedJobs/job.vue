@@ -44,7 +44,7 @@
             loadFailedJob(id) {
                 this.ready = false;
 
-                this.$http.get('/horizon/api/jobs/failed/' + id)
+                this.$http.get('/' + Horizon.path + '/api/jobs/failed/' + id)
                     .then(response => {
                         this.job = response.data;
 
@@ -57,7 +57,7 @@
              * Reload the job retries.
              */
             reloadRetries() {
-                this.$http.get('/horizon/api/jobs/failed/' + this.$route.params.jobId)
+                this.$http.get('/' + Horizon.path + '/api/jobs/failed/' + this.$route.params.jobId)
                     .then(response => {
                         this.job.retried_by = response.data.retried_by;
 
@@ -75,7 +75,7 @@
 
                 this.retrying = true;
 
-                this.$http.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post('/' + Horizon.path + '/api/jobs/retry/' + id)
                     .then(() => {
                         setTimeout(() => {
                             this.reloadRetries();
@@ -210,7 +210,7 @@
                     </td>
 
                     <td class="table-fit">
-                        <a v-if="retry.status == 'failed'" :href="'/horizon/failed/'+retry.id">
+                        <a v-if="retry.status == 'failed'" :href="'/' + Horizon.path + '/failed/'+retry.id">
                             {{ retry.id }}
                         </a>
                         <span v-else>{{ retry.id }}</span>

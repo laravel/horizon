@@ -22,6 +22,8 @@
          * Prepare the component.
          */
         mounted() {
+            document.title = "Horizon - Monitoring";
+
             this.loadJobs(this.$route.params.tag);
 
             this.refreshJobsPeriodically();
@@ -59,7 +61,7 @@
 
                 tag = this.type == 'failed' ? 'failed:' + tag : tag;
 
-                this.$http.get('/horizon/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
+                this.$http.get('/' + Horizon.path + '/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;
