@@ -2020,7 +2020,6 @@ __webpack_require__.r(__webpack_exports__);
     loadWorkload: function loadWorkload() {
       var _this3 = this;
 
-      this.loadingWorkload = !this.ready;
       return this.$http.get('/horizon/api/workload').then(function (response) {
         _this3.workload = response.data;
       });
@@ -59206,8 +59205,8 @@ var render = function() {
         _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "card-bg-secondary" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-3 border-right border-bottom" }, [
+          _c("div", { staticClass: "d-flex" }, [
+            _c("div", { staticClass: "w-25 border-right border-bottom" }, [
               _c("div", { staticClass: "p-4" }, [
                 _c("small", { staticClass: "text-uppercase" }, [
                   _vm._v("Jobs Per Minute")
@@ -59227,7 +59226,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-3 border-right border-bottom" }, [
+            _c("div", { staticClass: "w-25 border-right border-bottom" }, [
               _c("div", { staticClass: "p-4" }, [
                 _c("small", {
                   staticClass: "text-uppercase",
@@ -59248,7 +59247,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-3 border-right border-bottom" }, [
+            _c("div", { staticClass: "w-25 border-right border-bottom" }, [
               _c("div", { staticClass: "p-4" }, [
                 _c("small", {
                   staticClass: "text-uppercase",
@@ -59269,7 +59268,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-3 border-bottom" }, [
+            _c("div", { staticClass: "w-25 border-bottom" }, [
               _c("div", { staticClass: "p-4" }, [
                 _c("small", { staticClass: "text-uppercase" }, [
                   _vm._v("Status")
@@ -59349,8 +59348,8 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-3 border-right" }, [
+          _c("div", { staticClass: "d-flex" }, [
+            _c("div", { staticClass: "w-25 border-right" }, [
               _c("div", { staticClass: "p-4 mb-0" }, [
                 _c("small", { staticClass: "text-uppercase" }, [
                   _vm._v("TOTAL PROCESSES")
@@ -59370,7 +59369,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-3 border-right" }, [
+            _c("div", { staticClass: "w-25 border-right" }, [
               _c("div", { staticClass: "p-4 mb-0" }, [
                 _c("small", { staticClass: "text-uppercase" }, [
                   _vm._v("MAX WAIT TIME")
@@ -59396,7 +59395,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-3 border-right" }, [
+            _c("div", { staticClass: "w-25 border-right" }, [
               _c("div", { staticClass: "p-4 mb-0" }, [
                 _c("small", { staticClass: "text-uppercase" }, [
                   _vm._v("MAX RUNTIME")
@@ -59416,7 +59415,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-3" }, [
+            _c("div", { staticClass: "w-25" }, [
               _c("div", { staticClass: "p-4 mb-0" }, [
                 _c("small", { staticClass: "text-uppercase" }, [
                   _vm._v("MAX THROUGHPUT")

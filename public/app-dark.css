@@ -6734,23 +6734,23 @@ button.bg-dark:focus {
 }
 
 .border {
-  border: 1px solid #EFEFEF !important;
+  border: 1px solid #303030 !important;
 }
 
 .border-top {
-  border-top: 1px solid #EFEFEF !important;
+  border-top: 1px solid #303030 !important;
 }
 
 .border-right {
-  border-right: 1px solid #EFEFEF !important;
+  border-right: 1px solid #303030 !important;
 }
 
 .border-bottom {
-  border-bottom: 1px solid #EFEFEF !important;
+  border-bottom: 1px solid #303030 !important;
 }
 
 .border-left {
-  border-left: 1px solid #EFEFEF !important;
+  border-left: 1px solid #303030 !important;
 }
 
 .border-0 {
@@ -10565,8 +10565,8 @@ svg.icon {
 }
 
 .header svg.logo {
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .sidebar .nav-item a {

@@ -91,8 +91,6 @@
              * Load the workload stats.
              */
             loadWorkload() {
-                this.loadingWorkload = !this.ready;
-
                 return this.$http.get('/horizon/api/workload')
                     .then(response => {
                         this.workload = response.data;
@@ -163,8 +161,8 @@
             </div>
 
             <div class="card-bg-secondary">
-                <div class="row">
-                    <div class="col-3 border-right border-bottom">
+                <div class="d-flex">
+                    <div class="w-25 border-right border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase">Jobs Per Minute</small>
 
@@ -174,7 +172,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3 border-right border-bottom">
+                    <div class="w-25 border-right border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase" v-text="recentJobsPeriod"></small>
 
@@ -184,7 +182,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3 border-right border-bottom">
+                    <div class="w-25 border-right border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase" v-text="recentlyFailedPeriod"></small>
 
@@ -194,7 +192,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3 border-bottom">
+                    <div class="w-25 border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase">Status</small>
 
@@ -217,8 +215,8 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-3 border-right">
+                <div class="d-flex">
+                    <div class="w-25 border-right">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">TOTAL PROCESSES</small>
 
@@ -228,7 +226,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3 border-right">
+                    <div class="w-25 border-right">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">MAX WAIT TIME</small>
                             <small v-if="stats.max_wait_queue">({{ stats.max_wait_queue }})</small>
@@ -239,7 +237,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3 border-right">
+                    <div class="w-25 border-right">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">MAX RUNTIME</small>
 
@@ -249,7 +247,7 @@
                         </div>
                     </div>
 
-                    <div class="col-3">
+                    <div class="w-25">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">MAX THROUGHPUT</small>
 
