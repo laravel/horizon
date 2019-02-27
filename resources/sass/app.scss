@@ -1,246 +1,56 @@
-@import "variables";
-@import "node_modules/bootstrap/scss/bootstrap";
+$font-family-base: Nunito;
 
-#mainHeader {
-    border-bottom: solid 1px #d8d8d8;
-}
+$font-size-base: 0.95rem;
+$badge-font-size: 0.95rem;
 
-#mainFooter {
-    border-top: solid 1px #d8d8d8;
-}
+$primary: #7746ec;
+$secondary: #DAE1E7;
+$success: #51D88A;
+$info: #BCDEFA;
+$warning: #ffa260;
+$danger: #EF5753;
 
-.card {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, .16);
+$body-bg: #ebebeb;
 
-    .card-header {
-        padding: 1rem 1.25rem;
-        font-size: 1.3rem;
-    }
-}
+$btn-focus-width: 0;
 
-.modal {
-    .modal-header {
-        background: #fff;
-    }
+$sidebar-nav-color: #2a5164;
+$sidebar-icon-color: #c3cbd3;
 
-    .modal-content {
-        background: #fafafa;
-    }
-}
+$pill-link-active: $primary;
 
-#mainSidebar {
-    a {
-        color: $gray-700;
-        padding: 0.5rem 0;
-    }
+$border-color: #EFEFEF;
+$table-headers-color: #F3F4F6;
+$table-border-color: #EFEFEF;
+$table-hover-bg: #f1f7fa;
 
-    svg {
-        fill: $gray-500;
-    }
+$header-border-color: #d5dfe9;
 
-    li.active {
-        a {
-            color: $primary;
-        }
+$card-cap-bg: #fff;
+$card-bg-secondary: #fafafa;
+$card-shadow-color: #cdd8df;
 
-        svg {
-            fill: $primary;
-        }
-    }
+$code-bg: #120F12;
 
-    i {
-        display: inline-flex;
-        align-self: center;
-        position: relative;
-        height: 1em;
-        width: 0.4em;
-        margin-right: 1.5rem;
+$paginator-button-color: #9ea7ac;
 
-        svg {
-            bottom: -.3em;
-            position: absolute;
-            width: 1.2rem;
-            height: 1.2rem;
-        }
-    }
-}
+$new-entries-bg: #fffee9;
 
-.stats {
-    overflow: scroll;
+$control-action-icon-color: #ccd2df;
 
-    .stat {
-        border-right-style: solid;
-        border-right-width: 1px;
-        border-bottom-style: solid;
-        border-bottom-width: 1px;
-        border-color: #d8d8d8;
+$grid-breakpoints: (
+        xs: 0,
+        sm: 2px,
+        md: 8px,
+        lg: 9px,
+        xl: 10px
+) !default;
 
-        .stat-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: $gray-700;
-        }
+$container-max-widths: (
+        sm: 1137px,
+        md: 1138px,
+        lg: 1139px,
+        xl: 1140px
+) !default;
 
-        .stat-value {
-            font-size: 1.4rem;
-        }
-
-        .stat-meta{
-            font-size: 1rem;
-            line-height: 2rem;
-        }
-    }
-}
-
-.statusIcon {
-    > svg {
-        width: 1.5rem;
-        height: 1.5rem
-    }
-}
-
-.icon {
-    > svg {
-        width: 1.5rem;
-        height: 1.5rem
-    }
-}
-
-.icon-sm {
-    > svg {
-        width: 1rem;
-        height: 1rem
-    }
-}
-
-.fill-white {
-    fill: #fff;
-}
-
-.fill-primary {
-    fill: $primary;
-}
-
-.fill-success {
-    fill: $success;
-}
-
-.fill-danger {
-    fill: $danger;
-}
-
-.fill-warning {
-    fill: $warning;
-}
-
-.card-table {
-    margin: 0;
-
-    tr:first-child {
-        td {
-            border: 0;
-        }
-    }
-
-    th {
-        background-color: #ebecee;
-        vertical-align: middle;
-        font-weight: normal;
-        padding: 0.5rem 1.25rem;
-        border: 0;
-    }
-
-    td {
-        padding: 1.25rem;
-    }
-}
-
-.card-tabs {
-    padding: 0 1.25rem;
-
-    .nav-item {
-        margin-right: 1.5rem;
-    }
-
-    .nav-link {
-        border: 0;
-        color: #495057;
-        padding: 0.8rem 0;
-    }
-
-    .nav-link.active {
-        background-color: transparent;
-        color: $primary;
-        border-bottom: solid 2px $primary;
-    }
-}
-
-@-webkit-keyframes spin {
-    from {
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    to {
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes spin {
-    from {
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    to {
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-.spin {
-    -webkit-animation: spin 2s linear infinite;
-    -moz-animation: spin 2s linear infinite;
-    -ms-animation: spin 2s linear infinite;
-    -o-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
-}
-
-.exceptionDisplay {
-    span {
-        margin-bottom: 5px;
-        display: block;
-        background: #efefef;
-        padding: 1px 3px;
-    }
-}
-
-.jobDetailsText {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-all;
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
-    overflow-y: scroll;
-    max-height: 400px;
-
-    span, pre {
-        margin-bottom: 5px;
-        display: block;
-        background: #efefef;
-        padding: 1px 3px;
-    }
-}
+@import "base";

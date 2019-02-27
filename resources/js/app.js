@@ -1,87 +1,55 @@
 import Vue from 'vue';
+import Base from './base';
 import _ from 'lodash';
-import axios from 'axios'
-import moment from 'moment';
-import router from './router';
-import App from './components/App.vue';
-
-window.$ = window.jQuery = require('jquery');
-window.Popper = require('popper.js').default;
+import axios from 'axios';
+import Routes from './routes';
+import VueRouter from 'vue-router';
+import VueJsonPretty from 'vue-json-pretty';
+import moment from 'moment-timezone';
 
 require('bootstrap');
 
-$('body')
-    .tooltip({
-        selector: '[data-toggle=tooltip]'
-    })
-    .click(function(){
-        $('a[data-toggle="tooltip"]').tooltip('hide');
-    });
+let token = document.head.querySelector('meta[name="csrf-token"]');
+
+if (token) {
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+}
+
+Vue.use(VueRouter);
+
+window.Popper = require('popper.js').default;
+
+moment.tz.setDefault(Horizon.timezone);
 
 Vue.prototype.$http = axios.create();
 
-window.Bus = new Vue({name: 'Bus'});
-
-Vue.component('loader', require('./components/Status/Loader.vue').default);
-
-Vue.config.errorHandler = function (err, vm, info) {
-    console.error(err);
-};
-
-Vue.mixin({
-    methods: {
-        /**
-         * Format the given date with respect to timezone.
-         */
-        formatDate(unixTime){
-            return moment(unixTime * 1000).add(new Date().getTimezoneOffset() / 60)
-        },
-
-
-        /**
-         * Extract the job base name.
-         */
-        jobBaseName(name){
-            if (!name.includes('\\')) return name;
-
-            var parts = name.split("\\");
-
-            return parts[parts.length - 1];
-        },
-
-
-        /**
-         * Convert to human readable timestamp.
-         */
-        readableTimestamp(timestamp){
-            return this.formatDate(timestamp).format('YY-MM-DD HH:mm:ss');
-        },
-
-
-        /**
-         * Format the tags.
-         */
-        displayableTagsList(tags, truncate = true){
-            if (!tags || !tags.length) return '';
-
-            return _.reduce(tags, (s, n)=> {
-                return (s ? s + ', ' : '') + (truncate ? _.truncate(n) : n);
-            }, '');
-        }
-    }
+const router = new VueRouter({
+    routes: Routes,
+    mode: 'history',
+    base: '/' + window.Horizon.path + '/',
 });
 
+Vue.component('vue-json-pretty', VueJsonPretty);
+Vue.component('alert', require('./components/Alert.vue').default);
+
+Vue.mixin(Base);
+
 new Vue({
-    el: '#root',
+    el: '#horizon',
 
     router,
 
-    /**
-     * The component's data.
-     */
-    data() {
-        return {}
-    },
+    data(){
+        return {
+            alert: {
+                type: null,
+                autoClose: 0,
+                message: '',
+                confirmationProceed: null,
+                confirmationCancel: null,
+            },
 
-    render: h => h(App),
+            autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1'
+        }
+    }
 });

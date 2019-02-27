@@ -14,8 +14,8 @@ const webpack = require('webpack');
 
 mix
     .options({
-        terser: {
-            terserOptions: {
+        uglify: {
+            uglifyOptions: {
                 compress: {
                     drop_console: true,
                 }
@@ -23,22 +23,20 @@ mix
         }
     })
     .setPublicPath('public')
-    .js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css')
+    .js('resources/js/app.js', 'public')
+    .sass('resources/sass/app.scss', 'public')
+    .sass('resources/sass/app-dark.scss', 'public')
+    .version()
     .copy('resources/img', 'public/img')
-    .sourceMaps()
-    .copy('public', '../../laravelhorizon/public/vendor/horizon')
-    // .copy('public', '../app/public/vendor/horizon')
-    .version();
-
-
-mix.webpackConfig({
-    plugins: [
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-    ],
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.runtime.esm.js'
-        }
-    }
-});
+    .copy('public', '../../horizontest/public/vendor/horizon')
+    .webpackConfig({
+        resolve: {
+            symlinks: false,
+            alias: {
+                '@': path.resolve(__dirname, 'resources/js/'),
+            }
+        },
+        plugins: [
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+        ],
+    });
