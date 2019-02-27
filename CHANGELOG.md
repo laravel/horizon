@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v2.2.2...master)
+## [v3.0.0 (2019-02-27)](https://github.com/laravel/horizon/compare/v2.2.2...v3.0.0)
+
+### Added
+- New UI ([#522](https://github.com/laravel/horizon/pull/522))
+- Set the Horizon environment via command option ([#523](https://github.com/laravel/horizon/pull/523))
 
 ### Changed
 - Require latest symfony/debug version ([72cc3a7](https://github.com/laravel/horizon/commit/72cc3a7e250f1f03c20b0f8e65989a3b0a7d5148))
