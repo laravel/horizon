@@ -14,7 +14,7 @@ class HorizonCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon';
+    protected $signature = 'horizon {--environment= : The environment name}';
 
     /**
      * The console command description.
@@ -47,7 +47,7 @@ class HorizonCommand extends Command
         });
 
         ProvisioningPlan::get(MasterSupervisor::name())->deploy(
-            config('horizon.env') ?? config('app.env')
+            $this->option('environment') ?? config('horizon.env') ?? config('app.env')
         );
 
         $this->info('Horizon started successfully.');
