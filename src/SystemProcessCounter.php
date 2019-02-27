@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Symfony\Component\Process\Process;
+use Laravel\Horizon\Factories\ProcessFactory;
 
 class SystemProcessCounter
 {
@@ -21,7 +21,7 @@ class SystemProcessCounter
      */
     public function get($name)
     {
-        $process = new Process('exec ps aux | grep '.static::$command, null, ['COLUMNS' => '2000']);
+        $process = ProcessFactory::createProcess('exec ps aux | grep '.static::$command, null, ['COLUMNS' => '2000']);
 
         $process->run();
 

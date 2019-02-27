@@ -5,7 +5,7 @@ namespace Laravel\Horizon;
 use Closure;
 use Countable;
 use Cake\Chronos\Chronos;
-use Symfony\Component\Process\Process;
+use Laravel\Horizon\Factories\ProcessFactory;
 
 class ProcessPool implements Countable
 {
@@ -141,7 +141,7 @@ class ProcessPool implements Countable
         ];
     }
 
-    /**
+     /**
      * Remove the given number of processes from the process array.
      *
      * @param  int  $count
@@ -175,16 +175,14 @@ class ProcessPool implements Countable
      */
     protected function createProcess()
     {
-        $class = config('horizon.fast_termination')
-                    ? BackgroundProcess::class
-                    : Process::class;
+        $process = config('horizon.fast_termination')
+                    ? ProcessFactory::createBackgroundProcess($this->options->toWorkerCommand(), $this->options->directory)
+                    : ProcessFactory::createProcess($this->options->toWorkerCommand(), $this->options->directory);
 
-        return new WorkerProcess((new $class(
-            $this->options->toWorkerCommand(), $this->options->directory)
-        )->setTimeout(null)->disableOutput());
+        return new WorkerProcess($process->setTimeout(null)->disableOutput());
     }
 
-    /**
+     /**
      * Evaluate the current state of all of the processes.
      *
      * @return void

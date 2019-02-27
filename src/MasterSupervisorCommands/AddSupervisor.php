@@ -5,7 +5,7 @@ namespace Laravel\Horizon\MasterSupervisorCommands;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\SupervisorProcess;
-use Symfony\Component\Process\Process;
+use Laravel\Horizon\Factories\ProcessFactory;
 
 class AddSupervisor
 {
@@ -27,7 +27,7 @@ class AddSupervisor
         );
     }
 
-    /**
+     /**
      * Create the Symfony process instance.
      *
      * @param  \Laravel\Horizon\MasterSupervisor  $master
@@ -38,8 +38,8 @@ class AddSupervisor
     {
         $command = $options->toSupervisorCommand();
 
-        return (new Process($command, $options->directory ?? base_path()))
-                    ->setTimeout(null)
-                    ->disableOutput();
+        $process = ProcessFactory::createProcess($command, $options->directory ?? base_path());
+
+        return $process->setTimeout(null)->disableOutput();
     }
 }
