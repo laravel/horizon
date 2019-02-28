@@ -67,7 +67,7 @@ class FailedJobsController extends Controller
      */
     protected function paginate(Request $request)
     {
-        return $this->jobs->getFailed($request->query('starting_at', -1))->map(function ($job) {
+        return $this->jobs->getFailed($request->query('starting_at') ?: -1)->map(function ($job) {
             return $this->decode($job);
         });
     }
