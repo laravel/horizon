@@ -63,7 +63,7 @@ class FailedJobsController extends Controller
      * Paginate the failed jobs for the request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function paginate(Request $request)
     {
@@ -77,7 +77,7 @@ class FailedJobsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $tag
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function paginateByTag(Request $request, $tag)
     {
