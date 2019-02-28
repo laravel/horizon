@@ -30,8 +30,8 @@
         "predis/predis": "^1.1"
     },
     "suggest": {
-        "ext-redis": "Required to use the redis cache and queue drivers.",
-        "predis/predis": "Required to use the redis cache and queue drivers (^1.1)."
+        "ext-redis": "Required to use the Redis PHP driver.",
+        "predis/predis": "Required when not using the Redis PHP driver (^1.1)."
     },
     "autoload": {
         "psr-4": {
