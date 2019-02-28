@@ -5,6 +5,21 @@ php:
   - 7.2
   - 7.3
 
+env:
+  global:
+    - SETUP=stable
+  matrix:
+    - LARAVEL=5.7.*
+    - LARAVEL=5.8.*
+    - SETUP=nightly LARAVEL=5.7.*
+    - SETUP=nightly LARAVEL=5.8.*
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: SETUP=nightly LARAVEL=5.7.*
+    - env: SETUP=nightly LARAVEL=5.8.*
+
 sudo: false
 
 services:
@@ -14,6 +29,9 @@ before_install:
   - phpenv config-rm xdebug.ini || true
   - printf "\n" | pecl install -f redis
 
-install: travis_retry composer install --no-interaction --prefer-dist --no-suggest
+install:
+  - composer require "laravel/framework=${LARAVEL}" --dev --prefer-dist --no-interaction --no-suggest
+  - if [[ $SETUP = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
+  - if [[ $SETUP = 'nightly' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest; fi
 
 script: vendor/bin/phpunit --verbose
