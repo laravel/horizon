@@ -30,7 +30,7 @@
         "predis/predis": "^1.1"
     },
     "suggest": {
-        "ext-redis": "Required to use the redis cache and queue drivers (*).",
+        "ext-redis": "Required to use the redis cache and queue drivers.",
         "predis/predis": "Required to use the redis cache and queue drivers (^1.1)."
     },
     "autoload": {
