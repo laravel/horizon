@@ -154,7 +154,7 @@ class RedisJobRepository implements JobRepository
      */
     protected function getJobsByType($type, $afterIndex)
     {
-        $afterIndex = $afterIndex === null ? -1 : $afterIndex;
+        $afterIndex = null === $afterIndex || '' === $afterIndex ? -1 : $afterIndex;
 
         return $this->getJobs($this->connection()->zrange(
             $type, $afterIndex + 1, $afterIndex + 50
