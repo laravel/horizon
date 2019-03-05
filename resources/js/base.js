@@ -84,7 +84,7 @@ export default {
          * Convert to human readable timestamp.
          */
         readableTimestamp(timestamp){
-            return this.formatDate(timestamp).format('YY-MM-DD HH:mm:ss');
+            return this.formatDate(timestamp).format('YYYY-MM-DD HH:mm:ss');
         },
 
 

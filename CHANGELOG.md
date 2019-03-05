@@ -1,5 +1,20 @@
 # Release Notes
 
+## [v3.0.2 (2019-03-05)](https://github.com/laravel/horizon/compare/v3.0.1...v3.0.2)
+
+### Fixed
+- Compile assets ([57814a0](https://github.com/laravel/horizon/commit/57814a058b5baf53defaf1af813f7f0862331d00))
+
+## [v3.0.1 (2019-03-04)](https://github.com/laravel/horizon/compare/v3.0.0...v3.0.1)
+
+### Fixed
+- Fix no failing jobs problem ([#532](https://github.com/laravel/horizon/pull/532))
+- Make Year of readableTimestamp more readable ([#535](https://github.com/laravel/horizon/pull/535))
+- `Horizon::night()` move to `boot()`([#537](https://github.com/laravel/horizon/pull/537))
+
+### Removed
+- Remove unnecessary register method ([7134324](https://github.com/laravel/horizon/commit/7134324d51b3bc917fd8fdb0e3e48f2b7f98475a))
+
 ## [v3.0.0 (2019-02-27)](https://github.com/laravel/horizon/compare/v2.2.2...v3.0.0)
 
 ### Added
