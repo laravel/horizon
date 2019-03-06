@@ -52,7 +52,7 @@
             /**
              * Load the jobs of the given tag.
              */
-            loadJobs(starting = 0, refreshing = false) {
+            loadJobs(starting = -1, refreshing = false) {
                 if (!refreshing) {
                     this.ready = false;
                 }
@@ -75,7 +75,7 @@
             loadNewEntries() {
                 this.jobs = [];
 
-                this.loadJobs(0, false);
+                this.loadJobs(-1, false);
 
                 this.hasNewEntries = false;
             },
@@ -90,7 +90,7 @@
                         return;
                     }
 
-                    this.loadJobs(0, true);
+                    this.loadJobs(-1, true);
                 }, 3000);
             },
 
