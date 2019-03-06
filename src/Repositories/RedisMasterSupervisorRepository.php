@@ -150,6 +150,22 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     }
 
     /**
+     * Get the current status of Horizon.
+     *
+     * @return string
+     */
+    public function currentStatus()
+    {
+        if (! $masters = $this->all()) {
+            return 'inactive';
+        }
+
+        return collect($masters)->contains(function ($master) {
+            return $master->status === 'paused';
+        }) ? 'paused' : 'running';
+    }
+
+    /**
      * Get the Redis connection instance.
      *
      * @return \Illuminate\Redis\Connections\Connection
