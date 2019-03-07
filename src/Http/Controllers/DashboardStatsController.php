@@ -54,6 +54,12 @@ class DashboardStatsController extends Controller
      */
     protected function currentStatus()
     {
-        return app(MasterSupervisorRepository::class)->currentStatus();
+        if (! $masters = app(MasterSupervisorRepository::class)->all()) {
+            return 'inactive';
+        }
+
+        return collect($masters)->contains(function ($master) {
+            return $master->status === 'paused';
+        }) ? 'paused' : 'running';
     }
 }

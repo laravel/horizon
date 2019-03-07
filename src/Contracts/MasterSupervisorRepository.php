@@ -58,11 +58,4 @@ interface MasterSupervisorRepository
      * @return void
      */
     public function flushExpired();
-
-    /**
-     * Get the current status of Horizon.
-     *
-     * @return string
-     */
-    public function currentStatus();
 }

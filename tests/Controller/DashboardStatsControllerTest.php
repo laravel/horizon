@@ -8,7 +8,6 @@ use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
-use Laravel\Horizon\Repositories\RedisMasterSupervisorRepository;
 
 class DashboardStatsControllerTest extends AbstractControllerTest
 {
@@ -72,7 +71,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
 
     public function test_paused_status_is_reflected_if_all_master_supervisors_are_paused()
     {
-        $masters = Mockery::mock(RedisMasterSupervisorRepository::class)->makePartial();
+        $masters = Mockery::mock(MasterSupervisorRepository::class);
         $masters->shouldReceive('all')->andReturn([
             (object) [
                 'status' => 'running',
