@@ -19,7 +19,7 @@ class StatusCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Get the current status of Horizon.';
+    protected $description = 'Get the current status of Horizon';
 
     /**
      * Execute the console command.
@@ -41,11 +41,11 @@ class StatusCommand extends Command
     protected function currentStatus(MasterSupervisorRepository $masterSupervisorRepository)
     {
         if (! $masters = $masterSupervisorRepository->all()) {
-            return 'inactive';
+            return 'Horizon is inactive.';
         }
 
         return collect($masters)->contains(function ($master) {
             return $master->status === 'paused';
-        }) ? 'paused' : 'running';
+        }) ? 'Horizon is paused.' : 'Horizon is running.';
     }
 }
