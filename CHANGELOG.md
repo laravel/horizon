@@ -1,5 +1,10 @@
 # Release Notes
 
+## [v3.0.3 (2019-03-06)](https://github.com/laravel/horizon/compare/v3.0.2...v3.0.3)
+
+### Fixed
+- Fix recent jobs screen ([1ab5749](https://github.com/laravel/horizon/commit/1ab57492f66014849b51364315c875b7f76bb435))
+
 ## [v3.0.2 (2019-03-05)](https://github.com/laravel/horizon/compare/v3.0.1...v3.0.2)
 
 ### Fixed
