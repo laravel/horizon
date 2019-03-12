@@ -5,7 +5,7 @@
 
 ## [v3.0.5 (2019-03-12)](https://github.com/laravel/horizon/compare/v3.0.4...v3.0.5)
 
-### Added
+### Fixed
 - Fix URL for retrying jobs ([#547](https://github.com/laravel/horizon/pull/547))
 
 
