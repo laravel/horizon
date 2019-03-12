@@ -109,7 +109,7 @@
 
                 this.retryingJobs.push(id);
 
-                this.$http.post('/horizon/api/jobs/retry/' + id)
+                this.$http.post('/' + Horizon.path + '/api/jobs/retry/' + id)
                     .then(() => {
                         setTimeout(() => {
                             this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
