@@ -1,6 +1,17 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Domain
+    |--------------------------------------------------------------------------
+    |
+    | This is the domain of where Horizon will be accessible from. Do not
+    | change this setting if you'd want Horizon to live under the same
+    | domain as your app. Change this if you'd want to use sub-domain.
+    |
+    */
+    'domain' => null,
 
     /*
     |--------------------------------------------------------------------------
