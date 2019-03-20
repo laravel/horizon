@@ -49,7 +49,7 @@ class SupervisorOptions extends WorkerOptions
     public $minProcesses = 1;
 
     /**
-     * Increment to the process niceness.
+     * The process priority.
      *
      * @var int
      */
@@ -84,12 +84,12 @@ class SupervisorOptions extends WorkerOptions
                                 $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
     {
         $this->name = $name;
+        $this->nice = $nice;
         $this->balance = $balance;
         $this->connection = $connection;
         $this->maxProcesses = $maxProcesses;
         $this->minProcesses = $minProcesses;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
-        $this->nice = $nice;
 
         parent::__construct($delay, $memory, $timeout, $sleep, $maxTries, $force);
     }
