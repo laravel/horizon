@@ -53,10 +53,7 @@ class SupervisorTest extends IntegrationTest
         Queue::push(new Jobs\BasicJob);
         $this->assertEquals(1, $this->recentJobs());
 
-        $options = $this->options();
-        $options->nice = 10;
-
-        $this->supervisor = $supervisor = new Supervisor($options);
+        $this->supervisor = $supervisor = new Supervisor($this->options());
 
         $supervisor->scale(1);
         $supervisor->loop();
@@ -69,7 +66,7 @@ class SupervisorTest extends IntegrationTest
 
         $host = MasterSupervisor::name();
         $this->assertEquals(
-            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --nice=10 --queue="default" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue="default" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
             $supervisor->processes()[0]->getCommandLine()
         );
     }
@@ -87,12 +84,12 @@ class SupervisorTest extends IntegrationTest
         $host = MasterSupervisor::name();
 
         $this->assertEquals(
-            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --nice=0 --queue="first" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue="first" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
             $supervisor->processes()[0]->getCommandLine()
         );
 
         $this->assertEquals(
-            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --nice=0 --queue="second" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue="second" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
             $supervisor->processes()[1]->getCommandLine()
         );
     }
