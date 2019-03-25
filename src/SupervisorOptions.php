@@ -49,6 +49,13 @@ class SupervisorOptions extends WorkerOptions
     public $minProcesses = 1;
 
     /**
+     * The process priority.
+     *
+     * @var int
+     */
+    public $nice = 0;
+
+    /**
      * The working directories that new workers should be started from.
      *
      * @var string
@@ -70,12 +77,14 @@ class SupervisorOptions extends WorkerOptions
      * @param  int  $sleep
      * @param  int  $maxTries
      * @param  bool  $force
+     * @param  int  $nice
      */
     public function __construct($name, $connection, $queue = null, $balance = 'off',
                                 $delay = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
-                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false)
+                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
     {
         $this->name = $name;
+        $this->nice = $nice;
         $this->balance = $balance;
         $this->connection = $connection;
         $this->maxProcesses = $maxProcesses;
@@ -165,6 +174,7 @@ class SupervisorOptions extends WorkerOptions
             'minProcesses' => $this->minProcesses,
             'maxTries' => $this->maxTries,
             'memory' => $this->memory,
+            'nice' => $this->nice,
             'name' => $this->name,
             'sleep' => $this->sleep,
             'timeout' => $this->timeout,

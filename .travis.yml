@@ -1,37 +1,34 @@
 language: php
 
+sudo: false
+
+services:
+  - redis-server
+
 php:
   - 7.1
   - 7.2
   - 7.3
 
 env:
-  global:
-    - SETUP=stable
   matrix:
     - LARAVEL=5.7.*
     - LARAVEL=5.8.*
-    - SETUP=nightly LARAVEL=5.7.*
-    - SETUP=nightly LARAVEL=5.8.*
+    - LARAVEL=dev-master
 
 matrix:
   fast_finish: true
+  exclude:
+    - php: 7.1
+      env: LARAVEL=dev-master
   allow_failures:
-    - env: SETUP=nightly LARAVEL=5.7.*
-    - env: SETUP=nightly LARAVEL=5.8.*
-
-sudo: false
-
-services:
-  - redis-server
+    - env: LARAVEL=dev-master
 
 before_install:
   - phpenv config-rm xdebug.ini || true
   - printf "\n" | pecl install -f redis
 
 install:
-  - composer require "laravel/framework=${LARAVEL}" --dev --prefer-dist --no-interaction --no-suggest
-  - if [[ $SETUP = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
-  - if [[ $SETUP = 'nightly' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest; fi
+  - travis_retry composer require "illuminate/contracts=${LARAVEL}" --dev --prefer-dist --no-interaction --no-suggest
 
 script: vendor/bin/phpunit --verbose

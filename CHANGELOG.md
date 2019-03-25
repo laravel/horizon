@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.0.5...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.0.6...master)
+
+
+## [v3.0.6](https://github.com/laravel/horizon/compare/v3.0.5...v3.0.6)
+
+### Fixed
+- Add ability to configure route domain setting ([#550](https://github.com/laravel/horizon/pull/550))
 
 
 ## [v3.0.5 (2019-03-12)](https://github.com/laravel/horizon/compare/v3.0.4...v3.0.5)
