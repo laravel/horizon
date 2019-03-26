@@ -111,7 +111,7 @@
 
                     this.timeout = setTimeout(() => {
                         this.refreshStatsPeriodically(false);
-                    }, 5000);
+                    }, 500);
                 });
             },
 
