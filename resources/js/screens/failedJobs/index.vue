@@ -72,7 +72,7 @@
 
                 this.$http.get('/' + Horizon.path + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
                     .then(response => {
-                        if(!this.$root.autoLoadsNewEntries && refreshing  && !response.data.jobs.length){
+                        if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
                             return;
                         }
 
@@ -110,10 +110,10 @@
                 this.retryingJobs.push(id);
 
                 this.$http.post('/' + Horizon.path + '/api/jobs/retry/' + id)
-                    .then(() => {
+                    .then((response) => {
                         setTimeout(() => {
                             this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
-                        }, 3000);
+                        }, 5000);
                     });
             },
 
@@ -129,7 +129,7 @@
             /**
              * Determine if the given job has completed.
              */
-            hasCompleted(job){
+            hasCompleted(job) {
                 return _.find(job.retried_by, retry => retry.status == 'completed');
             },
 
@@ -139,11 +139,7 @@
              */
             refreshJobsPeriodically() {
                 this.interval = setInterval(() => {
-                    if (this.page != 1) {
-                        return;
-                    }
-
-                    this.loadJobs(0, true);
+                    this.loadJobs((this.page - 1) * this.perPage, true);
                 }, 3000);
             },
 
@@ -224,7 +220,8 @@
                         <span v-if="job.status != 'failed'" :title="job.name">{{jobBaseName(job.name)}}</span>
                         <router-link v-if="job.status === 'failed'" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
                             {{ jobBaseName(job.name) }}
-                        </router-link><br>
+                        </router-link>
+                        <br>
 
                         <small class="text-muted">
                             Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
