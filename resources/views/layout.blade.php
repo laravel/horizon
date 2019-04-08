@@ -5,13 +5,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ asset('/vendor/horizon/img/favicon.png') }}">
+    @if (Str::startsWith(env('APP_URL'), 'https'))
+        <link rel="shortcut icon" href="{{ secure_asset('/vendor/horizon/img/favicon.png') }}">
+    @else
+        <link rel="shortcut icon" href="{{ asset('/vendor/horizon/img/favicon.png') }}">
+    @endif
 
     <title>Horizon</title>
 
     <!-- Style sheets-->
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet" type="text/css">
+    @if (Str::startsWith(env('APP_URL'), 'https'))
+        <link href="{{ secure_asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet" type="text/css">
+    @else
+        <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet" type="text/css">
+    @endif
 </head>
 <body>
 <div id="horizon" v-cloak>
@@ -95,6 +103,11 @@
     window.Horizon = @json($horizonScriptVariables);
 </script>
 
-<script src="{{asset(mix('app.js', 'vendor/horizon'))}}"></script>
+@if (Str::startsWith(env('APP_URL'), 'https'))
+    <script src="{{ secure_asset(mix('app.js', 'vendor/horizon')) }}"></script>
+@else
+    <script src="{{ asset(mix('app.js', 'vendor/horizon')) }}"></script>
+@endif
+
 </body>
 </html>
