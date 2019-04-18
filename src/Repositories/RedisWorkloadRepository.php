@@ -75,7 +75,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                     : collect(explode(',', $queueName))->sum(function ($queueName) use ($connection) {
                         return $this->queue->connection($connection)->readyNow($queueName);
                     });
-                
+
                 return [
                     'name' => $queueName,
                     'length' => $length,

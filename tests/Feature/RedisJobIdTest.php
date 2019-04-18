@@ -5,7 +5,7 @@ namespace Laravel\Horizon\Tests\Feature;
 use Laravel\Horizon\JobId;
 use Laravel\Horizon\Tests\IntegrationTest;
 
-class JobIdTest extends IntegrationTest
+class RedisJobIdTest extends IntegrationTest
 {
     public function test_ids_can_be_generated()
     {
