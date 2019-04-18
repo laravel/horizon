@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Cake\Chronos\Chronos;
 use Laravel\Horizon\Events\MasterSupervisorLooped;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
