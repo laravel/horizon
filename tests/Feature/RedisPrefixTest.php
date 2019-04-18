@@ -2,13 +2,12 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\JobId;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Facades\Config;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Horizon;
+use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\Tests\IntegrationTest;
 
-class PrefixTest extends IntegrationTest
+class RedisPrefixTest extends IntegrationTest
 {
     public function test_prefix_can_be_configured()
     {

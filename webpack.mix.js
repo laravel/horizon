@@ -12,16 +12,15 @@ const webpack = require('webpack');
  |
  */
 
-mix
-    .options({
-        terser: {
-            terserOptions: {
-                compress: {
-                    drop_console: true,
-                }
-            }
-        }
-    })
+mix.options({
+    terser: {
+        terserOptions: {
+            compress: {
+                drop_console: true,
+            },
+        },
+    },
+})
     .setPublicPath('public')
     .js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
@@ -31,14 +30,11 @@ mix
     // .copy('public', '../app/public/vendor/horizon')
     .version();
 
-
 mix.webpackConfig({
-    plugins: [
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-    ],
+    plugins: [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.runtime.esm.js'
-        }
-    }
+            vue$: 'vue/dist/vue.runtime.esm.js',
+        },
+    },
 });
