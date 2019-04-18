@@ -1,3 +1,4 @@
-preset: laravel
-
-linting: true
+php:
+  preset: laravel
+js: true
+css: true
