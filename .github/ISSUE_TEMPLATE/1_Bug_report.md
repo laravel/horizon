@@ -6,6 +6,7 @@ about: 'Report a general library issue. Please ensure your version is still supp
 - Horizon Version: #.#.#
 - Laravel Version: #.#.#
 - PHP Version: #.#.#
+- Redis Driver & Version: predis/phpredis #.#.#
 - Database Driver & Version:
 
 ### Description:

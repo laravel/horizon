@@ -222,8 +222,8 @@ class Supervisor implements Pausable, Restartable, Terminable
         // pools down to zero workers to gracefully terminate them all out here.
         app(SupervisorRepository::class)->forget($this->name);
 
-        $this->processPools->each(function($pool) {
-            $pool->processes()->each(function($process) {
+        $this->processPools->each(function ($pool) {
+            $pool->processes()->each(function ($process) {
                 $process->terminate();
             });
         });
