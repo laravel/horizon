@@ -39,7 +39,7 @@ new Vue({
 
     router,
 
-    data(){
+    data() {
         return {
             alert: {
                 type: null,
@@ -49,7 +49,7 @@ new Vue({
                 confirmationCancel: null,
             },
 
-            autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1'
-        }
-    }
+            autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
+        };
+    },
 });

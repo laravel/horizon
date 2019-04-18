@@ -1,16 +1,16 @@
 export default [
-    {path: '/', redirect: '/dashboard'},
+    { path: '/', redirect: '/dashboard' },
 
     {
         path: '/dashboard',
         name: 'dashboard',
-        component: require('./screens/dashboard').default
+        component: require('./screens/dashboard').default,
     },
 
     {
         path: '/monitoring',
         name: 'monitoring',
-        component: require('./screens/monitoring/index').default
+        component: require('./screens/monitoring/index').default,
     },
 
     {
@@ -21,18 +21,18 @@ export default [
                 path: 'jobs',
                 name: 'monitoring-jobs',
                 component: require('./screens/monitoring/tag-jobs').default,
-                props: {type: 'jobs'}
+                props: { type: 'jobs' },
             },
             {
                 path: 'failed',
                 name: 'monitoring-failed',
                 component: require('./screens/monitoring/tag-jobs').default,
-                props: {type: 'failed'}
+                props: { type: 'failed' },
             },
         ],
     },
 
-    {path: '/metrics', redirect: '/metrics/jobs'},
+    { path: '/metrics', redirect: '/metrics/jobs' },
 
     {
         path: '/metrics/',
@@ -41,12 +41,12 @@ export default [
             {
                 path: 'jobs',
                 name: 'metrics-jobs',
-                component: require('./screens/metrics/jobs').default
+                component: require('./screens/metrics/jobs').default,
             },
             {
                 path: 'queues',
                 name: 'metrics-queues',
-                component: require('./screens/metrics/queues').default
+                component: require('./screens/metrics/queues').default,
             },
         ],
     },
@@ -54,24 +54,24 @@ export default [
     {
         path: '/metrics/:type/:slug',
         name: 'metrics-preview',
-        component: require('./screens/metrics/preview').default
+        component: require('./screens/metrics/preview').default,
     },
 
     {
         path: '/recent-jobs',
         name: 'recent-jobs',
-        component: require('./screens/recentJobs/index').default
+        component: require('./screens/recentJobs/index').default,
     },
 
     {
         path: '/failed',
         name: 'failed-jobs',
-        component: require('./screens/failedJobs/index').default
+        component: require('./screens/failedJobs/index').default,
     },
 
     {
         path: '/failed/:jobId',
         name: 'failed-jobs-preview',
-        component: require('./screens/failedJobs/job').default
+        component: require('./screens/failedJobs/job').default,
     },
 ];
