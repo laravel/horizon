@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
 Vue.use(Router);
 
@@ -27,13 +27,13 @@ export default new Router({
                     path: '/',
                     name: 'monitoring.detail.index',
                     component: require('./pages/Monitoring/Jobs.vue'),
-                    props: {type: 'index'}
+                    props: { type: 'index' },
                 },
                 {
                     path: 'failed',
                     name: 'monitoring.detail.failed',
                     component: require('./pages/Monitoring/Jobs.vue'),
-                    props: {type: 'failed'}
+                    props: { type: 'failed' },
                 },
             ],
         },
@@ -47,11 +47,11 @@ export default new Router({
                 },
                 {
                     path: 'jobs',
-                    component: require('./pages/Metrics/Jobs.vue')
+                    component: require('./pages/Metrics/Jobs.vue'),
                 },
                 {
                     path: 'queues',
-                    component: require('./pages/Metrics/Queues.vue')
+                    component: require('./pages/Metrics/Queues.vue'),
                 },
             ],
         },
@@ -77,4 +77,4 @@ export default new Router({
             props: true,
         },
     ],
-})
+});

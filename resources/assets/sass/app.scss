@@ -1,5 +1,5 @@
-@import "variables";
-@import "node_modules/bootstrap/scss/bootstrap";
+@import 'variables';
+@import 'node_modules/bootstrap/scss/bootstrap';
 
 #mainHeader {
     border-bottom: solid 1px #d8d8d8;
@@ -10,7 +10,7 @@
 }
 
 .card {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, .16);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
 
     .card-header {
         padding: 1rem 1.25rem;
@@ -57,7 +57,7 @@
         margin-right: 1.5rem;
 
         svg {
-            bottom: -.3em;
+            bottom: -0.3em;
             position: absolute;
             width: 1.2rem;
             height: 1.2rem;
@@ -85,7 +85,7 @@
             font-size: 1.4rem;
         }
 
-        .stat-meta{
+        .stat-meta {
             font-size: 1rem;
             line-height: 2rem;
         }
@@ -95,21 +95,21 @@
 .statusIcon {
     > svg {
         width: 1.5rem;
-        height: 1.5rem
+        height: 1.5rem;
     }
 }
 
 .icon {
     > svg {
         width: 1.5rem;
-        height: 1.5rem
+        height: 1.5rem;
     }
 }
 
 .icon-sm {
     > svg {
         width: 1rem;
-        height: 1rem
+        height: 1rem;
     }
 }
 
@@ -237,7 +237,8 @@
     overflow-y: scroll;
     max-height: 400px;
 
-    span, pre {
+    span,
+    pre {
         margin-bottom: 5px;
         display: block;
         background: #efefef;
