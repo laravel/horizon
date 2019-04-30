@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.1.1...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.1.2...3.0)
+
+
+## [v3.1.2 (2019-04-30)](https://github.com/laravel/horizon/compare/v3.1.1...v3.1.2)
+
+### Fixed
+- Fix false jobs causing front-end not to display them ([#582](https://github.com/laravel/horizon/pull/582))
 
 
 ## [v3.1.1 (2019-04-02)](https://github.com/laravel/horizon/compare/v3.1.0...v3.1.1)
@@ -9,7 +15,7 @@
 - Fix failed jobs retrying ([7d28272](https://github.com/laravel/horizon/commit/7d282723792f3dd6d058b8d7b87a18350635c029))
 
 
-## [v3.1.0](https://github.com/laravel/horizon/compare/v3.0.6...v3.1.0)
+## [v3.1.0 (2019-03-26)](https://github.com/laravel/horizon/compare/v3.0.6...v3.1.0)
 
 ### Added
 - Add support for Supervisor "nice" option ([#551](https://github.com/laravel/horizon/pull/551), [8d0034b](https://github.com/laravel/horizon/commit/8d0034bd6d72450be8cdba8e874656d3e704306d), [#556](https://github.com/laravel/horizon/pull/556))
