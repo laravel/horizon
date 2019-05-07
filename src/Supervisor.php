@@ -407,6 +407,16 @@ class Supervisor implements Pausable, Restartable, Terminable
     }
 
     /**
+     * Get CPU and memory usage for the active workers by asking the OS.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function workerStats()
+    {
+        return app(SystemProcessCounter::class)->getWorkerStats($this->name);
+    }
+
+    /**
      * Get the total active process count by asking the OS.
      *
      * @return int
