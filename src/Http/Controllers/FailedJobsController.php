@@ -82,7 +82,7 @@ class FailedJobsController extends Controller
     protected function paginateByTag(Request $request, $tag)
     {
         $jobIds = $this->tags->paginate(
-            'failed:'.$tag, $request->query('starting_at', -1) + 1, 50
+            'failed:'.$tag, ($request->query('starting_at') ?: -1) + 1, 50
         );
 
         $startingAt = $request->query('starting_at', 0);
