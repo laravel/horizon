@@ -50,6 +50,13 @@ class Horizon
     public static $useDarkTheme = false;
 
     /**
+     * The timezone to use in the UI (defaults to app.timezone).
+     *
+     * @var string
+     */
+    public static $timezone;
+
+    /**
      * The database configuration methods.
      *
      * @var array
@@ -126,7 +133,7 @@ class Horizon
     {
         return [
             'path' => config('horizon.path'),
-            'timezone' => config('app.timezone'),
+            'timezone' => static::$timezone ?? config('app.timezone'),
         ];
     }
 
