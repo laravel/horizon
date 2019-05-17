@@ -19,8 +19,6 @@ Vue.use(VueRouter);
 
 window.Popper = require('popper.js').default;
 
-moment.tz.setDefault(Horizon.timezone);
-
 Vue.prototype.$http = axios.create();
 
 const router = new VueRouter({
