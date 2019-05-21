@@ -1,6 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.1.2...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.0...3.0)
+
+
+## [v3.2.0 (2019-05-21)](https://github.com/laravel/horizon/compare/v3.1.2...v3.2.0)
+
+### Added
+- Display worker CPU and memory utilization in supervisor list ([#589](https://github.com/laravel/horizon/pull/589))
+
+### Fixed
+- Fix for missing first failed job when searching ([#593](https://github.com/laravel/horizon/pull/593))
+- Switch to browser timezone ([8ee690a](https://github.com/laravel/horizon/commit/8ee690a763bd4473398a4ff7a303eb5a5a712fdd), [c7a4739](https://github.com/laravel/horizon/commit/c7a4739ba9f2bc89326eba1088e91e16916f8812))
 
 
 ## [v3.1.2 (2019-04-30)](https://github.com/laravel/horizon/compare/v3.1.1...v3.1.2)
