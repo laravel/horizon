@@ -126,7 +126,6 @@ class Horizon
     {
         return [
             'path' => config('horizon.path'),
-            'timezone' => config('app.timezone'),
         ];
     }
 
