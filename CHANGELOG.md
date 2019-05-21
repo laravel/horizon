@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.1...3.0)
+
+
+## [v3.2.1 (2019-05-21)](https://github.com/laravel/horizon/compare/v3.2.0...v3.2.1)
+
+### Fixed
+- Compiled assets ([1dcbb96](https://github.com/laravel/horizon/commit/1dcbb96a5aa1dd7c4e55017782ce981b2f296223))
 
 
 ## [v3.2.0 (2019-05-21)](https://github.com/laravel/horizon/compare/v3.1.2...v3.2.0)
