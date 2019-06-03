@@ -28,7 +28,9 @@ class SystemProcessCounter
         $rows = explode("\n", $process->getOutput());
 
         return collect($rows)->filter()->map(function ($rows) {
-            $row = collect(explode(' ', $rows))->filter()->take(2);
+            $row = collect(explode(' ', $rows))->filter()->take(2)->map(function ($value) {
+                return str_replace(',', '.', $value);
+            });
 
             return ['cpu' => $row->first() / 100, 'mem' => $row->last()];
         });
