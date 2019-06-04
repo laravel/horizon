@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.1...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.2...3.0)
+
+
+## [v3.2.2 (2019-06-04)](https://github.com/laravel/horizon/compare/v3.2.1...v3.2.2)
+
+### Changed
+- Add app name to dashboard ([#605](https://github.com/laravel/horizon/pull/605))
+
+### Fixed
+- Properly format numeric values ([#606](https://github.com/laravel/horizon/pull/606))
 
 
 ## [v3.2.1 (2019-05-21)](https://github.com/laravel/horizon/compare/v3.2.0...v3.2.1)
