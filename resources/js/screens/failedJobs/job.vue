@@ -24,7 +24,7 @@
         mounted() {
             this.loadFailedJob(this.$route.params.jobId);
 
-            document.title = "Horizon - Failed Jobs";
+            document.title = "Failed Jobs - Laravel Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}";
 
             this.interval = setInterval(() => {
                 this.reloadRetries();
