@@ -21,7 +21,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Recent Jobs";
+            document.title = "Recent Jobs - Laravel Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}";
 
             this.loadJobs(this.$route.params.tag);
 
