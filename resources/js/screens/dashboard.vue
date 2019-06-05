@@ -23,7 +23,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Dashboard";
+            document.title = "Dashboard - Laravel Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}";
 
             this.refreshStatsPeriodically();
         },
