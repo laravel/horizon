@@ -19,7 +19,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Monitoring";
+            document.title = "Monitoring - Laravel Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}";
 
             this.loadTags();
 
