@@ -4,7 +4,7 @@
          * Prepare the component.
          */
         created() {
-            document.title = "Horizon - Metrics";
+            document.title = "Metrics - Laravel Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}";
         }
     }
 </script>
