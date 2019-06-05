@@ -22,7 +22,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Failed Jobs";
+            document.title = "Failed Jobs - Laravel Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}";
 
             this.loadJobs();
 
