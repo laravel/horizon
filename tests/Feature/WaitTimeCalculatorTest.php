@@ -3,7 +3,6 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
-use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\WaitTimeCalculator;
 use Laravel\Horizon\Tests\IntegrationTest;
