@@ -71,7 +71,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     {
         $records = $this->connection()->pipeline(function ($pipe) use ($names) {
             foreach ($names as $name) {
-                $pipe->hmget('supervisor:'.$name, ['name', 'master', 'pid', 'status', 'processes', 'options', 'cpu', 'mem']);
+                $pipe->hmget('supervisor:'.$name, ['name', 'master', 'pid', 'status', 'processes', 'options']);
             }
         });
 
@@ -85,8 +85,6 @@ class RedisSupervisorRepository implements SupervisorRepository
                 'status' => $record[3],
                 'processes' => json_decode($record[4], true),
                 'options' => json_decode($record[5], true),
-                'cpu' => $record[6],
-                'mem' => $record[7],
             ];
         })->filter()->all();
     }
@@ -116,7 +114,6 @@ class RedisSupervisorRepository implements SupervisorRepository
         })->toJson();
 
         $this->connection()->pipeline(function ($pipe) use ($supervisor, $processes) {
-            $workerStats = $supervisor->workerStats();
             $pipe->hmset(
                 'supervisor:'.$supervisor->name, [
                     'name' => $supervisor->name,
@@ -125,8 +122,6 @@ class RedisSupervisorRepository implements SupervisorRepository
                     'status' => $supervisor->working ? 'running' : 'paused',
                     'processes' => $processes,
                     'options' => $supervisor->options->toJson(),
-                    'cpu' => number_format($workerStats->sum('cpu'), 2),
-                    'mem' => round($workerStats->sum('mem')),
                 ]
             );
 
