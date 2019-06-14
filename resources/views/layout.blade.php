@@ -11,7 +11,7 @@
 
     <!-- Style sheets-->
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet">
 </head>
 <body>
 <div id="horizon" v-cloak>
