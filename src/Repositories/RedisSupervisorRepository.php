@@ -117,7 +117,7 @@ class RedisSupervisorRepository implements SupervisorRepository
             $pipe->hmset(
                 'supervisor:'.$supervisor->name, [
                     'name' => $supervisor->name,
-                    'master' => explode(':', $supervisor->name)[0],
+                    'master' => implode(':', explode(':', $supervisor->name, -1)),
                     'pid' => $supervisor->pid(),
                     'status' => $supervisor->working ? 'running' : 'paused',
                     'processes' => $processes,
