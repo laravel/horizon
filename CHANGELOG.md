@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.3...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.4...3.0)
+
+
+## [v3.2.4 (2019-06-25)](https://github.com/laravel/horizon/compare/v3.2.3...v3.2.4)
+
+### Fixed
+- Custom MasterSupervisor name breaks dashboard ([#619](https://github.com/laravel/horizon/pull/619))
 
 
 ## [v3.2.3 (2019-06-14)](https://github.com/laravel/horizon/compare/v3.2.2...v3.2.3)
