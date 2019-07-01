@@ -24,6 +24,7 @@ class SupervisorCommand extends Command
                             {--min-processes=1 : The minimum number of workers to assign per queue}
                             {--memory=128 : The memory limit in megabytes}
                             {--nice=0 : The process priority}
+                            {--once : Worker processes will only process the next job on the queue and then be re-started}
                             {--paused : Start the supervisor in a paused state}
                             {--queue= : The names of the queues to work}
                             {--sleep=3 : Number of seconds to sleep when no job is available}
@@ -112,7 +113,8 @@ class SupervisorCommand extends Command
             $this->option('sleep'),
             $this->option('tries'),
             $this->option('force'),
-            $this->option('nice')
+            $this->option('nice'),
+            $this->option('once')
         );
     }
 

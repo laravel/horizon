@@ -56,6 +56,13 @@ class SupervisorOptions extends WorkerOptions
     public $nice = 0;
 
     /**
+     * Worker processes will only process the next job on the queue and then be re-started
+     *
+     * @var bool
+     */
+    public $once = false;
+
+    /**
      * The working directories that new workers should be started from.
      *
      * @var string
@@ -78,13 +85,15 @@ class SupervisorOptions extends WorkerOptions
      * @param  int  $maxTries
      * @param  bool  $force
      * @param  int  $nice
+     * @param  bool  $once
      */
     public function __construct($name, $connection, $queue = null, $balance = 'off',
                                 $delay = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
-                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
+                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0, $once = false)
     {
         $this->name = $name;
         $this->nice = $nice;
+        $this->once = $once;
         $this->balance = $balance;
         $this->connection = $connection;
         $this->maxProcesses = $maxProcesses;
@@ -175,6 +184,7 @@ class SupervisorOptions extends WorkerOptions
             'maxTries' => $this->maxTries,
             'memory' => $this->memory,
             'nice' => $this->nice,
+            'once' => $this->once,
             'name' => $this->name,
             'sleep' => $this->sleep,
             'timeout' => $this->timeout,

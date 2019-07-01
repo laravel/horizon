@@ -181,7 +181,7 @@ class ProcessPool implements Countable
 
         return new WorkerProcess($class::fromShellCommandline(
             $this->options->toWorkerCommand(), $this->options->directory
-        )->setTimeout(null)->disableOutput());
+        )->setTimeout(null)->disableOutput(), $this->options->once);
     }
 
     /**
