@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.4...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.5...3.0)
+
+
+## [v3.2.5 (2019-07-02)](https://github.com/laravel/horizon/compare/v3.2.4...v3.2.5)
+
+### Fixed
+- Adjust auto scaling to always use the max processes ([#627](https://github.com/laravel/horizon/pull/627))
 
 
 ## [v3.2.4 (2019-06-25)](https://github.com/laravel/horizon/compare/v3.2.3...v3.2.4)
