@@ -38,7 +38,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         $this->app->instance(MetricsRepository::class, $metrics);
 
         $jobs = Mockery::mock(JobRepository::class);
-        $jobs->shouldReceive('countFailed')->andReturn(1);
+        $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
         $jobs->shouldReceive('countRecent')->andReturn(1);
         $this->app->instance(JobRepository::class, $jobs);
 
