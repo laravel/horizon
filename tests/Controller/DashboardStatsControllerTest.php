@@ -38,7 +38,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         $this->app->instance(MetricsRepository::class, $metrics);
 
         $jobs = Mockery::mock(JobRepository::class);
-        $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
+        $jobs->shouldReceive('countFailed')->andReturn(1);
         $jobs->shouldReceive('countRecent')->andReturn(1);
         $this->app->instance(JobRepository::class, $jobs);
 
@@ -58,13 +58,13 @@ class DashboardStatsControllerTest extends AbstractControllerTest
             'wait' => ['first' => 20],
             'processes' => 30,
             'status' => 'inactive',
-            'recentlyFailed' => 1,
+            'failedJobs' => 1,
             'recentJobs' => 1,
             'queueWithMaxRuntime' => 'default',
             'queueWithMaxThroughput' => 'default',
             'periods' => [
+                'failedJobs' => 10080,
                 'recentJobs' => 60,
-                'recentlyFailed' => 10080,
             ],
         ]);
     }

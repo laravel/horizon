@@ -51,10 +51,10 @@
             /**
              * Determine the recently failed job period label.
              */
-            recentlyFailedPeriod() {
+            failedJobsPeriod() {
                 return !this.ready
                     ? 'Failed jobs past 7 days'
-                    : `Failed jobs past ${this.determinePeriod(this.stats.periods.recentlyFailed)}`;
+                    : `Failed jobs past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
             },
         },
 
@@ -184,10 +184,10 @@
 
                     <div class="w-25 border-right border-bottom">
                         <div class="p-4">
-                            <small class="text-uppercase" v-text="recentlyFailedPeriod"></small>
+                            <small class="text-uppercase" v-text="failedJobsPeriod"></small>
 
                             <h4 class="mt-4 mb-0">
-                                {{ stats.recentlyFailed ? stats.recentlyFailed.toLocaleString() : 0 }}
+                                {{ stats.failedJobs ? stats.failedJobs.toLocaleString() : 0 }}
                             </h4>
                         </div>
                     </div>
