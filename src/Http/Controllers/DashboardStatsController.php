@@ -22,13 +22,13 @@ class DashboardStatsController extends Controller
             'processes' => $this->totalProcessCount(),
             'queueWithMaxRuntime' => app(MetricsRepository::class)->queueWithMaximumRuntime(),
             'queueWithMaxThroughput' => app(MetricsRepository::class)->queueWithMaximumThroughput(),
-            'recentlyFailed' => app(JobRepository::class)->countRecentlyFailed(),
+            'failedJobs' => app(JobRepository::class)->countFailed(),
             'recentJobs' => app(JobRepository::class)->countRecent(),
             'status' => $this->currentStatus(),
             'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
             'periods' => [
+                'failedJobs' => config('horizon.trim.failed'),
                 'recentJobs' => config('horizon.trim.recent'),
-                'recentlyFailed' => config('horizon.trim.failed'),
             ],
         ];
     }
