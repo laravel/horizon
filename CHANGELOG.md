@@ -1,6 +1,45 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.6...master)
+
+
+## [v3.2.6 (2019-07-11)](https://github.com/laravel/horizon/compare/v3.2.5...v3.2.6)
+
+### Fixed
+- Correct dashboard "Failed Jobs Past 7 Days" metric ([#633](https://github.com/laravel/horizon/pull/633))
+
+
+## [v3.2.5 (2019-07-02)](https://github.com/laravel/horizon/compare/v3.2.4...v3.2.5)
+
+### Fixed
+- Adjust auto scaling to always use the max processes ([#627](https://github.com/laravel/horizon/pull/627))
+
+
+## [v3.2.4 (2019-06-25)](https://github.com/laravel/horizon/compare/v3.2.3...v3.2.4)
+
+### Fixed
+- Custom MasterSupervisor name breaks dashboard ([#619](https://github.com/laravel/horizon/pull/619))
+
+
+## [v3.2.3 (2019-06-14)](https://github.com/laravel/horizon/compare/v3.2.2...v3.2.3)
+
+### Fixed
+- Reverted "Display worker CPU and memory utilization in supervisor list" ([#616](https://github.com/laravel/horizon/pull/616), [#614](https://github.com/laravel/horizon/pull/614))
+
+
+## [v3.2.2 (2019-06-04)](https://github.com/laravel/horizon/compare/v3.2.1...v3.2.2)
+
+### Changed
+- Add app name to dashboard ([#605](https://github.com/laravel/horizon/pull/605))
+
+### Fixed
+- Properly format numeric values ([#606](https://github.com/laravel/horizon/pull/606))
+
+
+## [v3.2.1 (2019-05-21)](https://github.com/laravel/horizon/compare/v3.2.0...v3.2.1)
+
+### Fixed
+- Compiled assets ([1dcbb96](https://github.com/laravel/horizon/commit/1dcbb96a5aa1dd7c4e55017782ce981b2f296223))
 
 
 ## [v3.2.0 (2019-05-21)](https://github.com/laravel/horizon/compare/v3.1.2...v3.2.0)

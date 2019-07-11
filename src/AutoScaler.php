@@ -115,10 +115,10 @@ class AutoScaler
 
         $poolProcesses = $pool->totalProcessCount();
 
-        if (round($workers) > $poolProcesses &&
+        if (ceil($workers) > $poolProcesses &&
             $this->wouldNotExceedMaxProcesses($supervisor)) {
             $pool->scale($poolProcesses + 1);
-        } elseif (round($workers) < $poolProcesses &&
+        } elseif (ceil($workers) < $poolProcesses &&
                   $poolProcesses > $supervisor->options->minProcesses) {
             $pool->scale($poolProcesses - 1);
         }
