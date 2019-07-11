@@ -11,7 +11,7 @@
 
     <!-- Style sheets-->
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet">
+    <link href="{{ mix($cssFile, 'vendor/horizon') }}" rel="stylesheet">
 </head>
 <body>
 <div id="horizon" v-cloak>
@@ -95,6 +95,6 @@
     window.Horizon = @json($horizonScriptVariables);
 </script>
 
-<script src="{{asset(mix('app.js', 'vendor/horizon'))}}"></script>
+<script src="{{ mix('app.js', 'vendor/horizon') }}"></script>
 </body>
 </html>
