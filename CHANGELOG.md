@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.5...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.6...3.0)
+
+
+## [v3.2.6 (2019-07-11)](https://github.com/laravel/horizon/compare/v3.2.5...v3.2.6)
+
+### Fixed
+- Correct dashboard "Failed Jobs Past 7 Days" metric ([#633](https://github.com/laravel/horizon/pull/633))
 
 
 ## [v3.2.5 (2019-07-02)](https://github.com/laravel/horizon/compare/v3.2.4...v3.2.5)
