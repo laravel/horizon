@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.7...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.8...3.0)
+
+
+## [v3.2.8 (2019-08-06)](https://github.com/laravel/horizon/compare/v3.2.7...v3.2.8)
+
+### Fixed
+- Forcing Vue to use the X-Requested-With header, set to XMLHttpRequest ([#642](https://github.com/laravel/horizon/pull/642))
 
 
 ## [v3.2.7 (2019-07-30)](https://github.com/laravel/horizon/compare/v3.2.6...v3.2.7)
