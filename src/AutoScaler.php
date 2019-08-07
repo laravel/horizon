@@ -96,8 +96,10 @@ class AutoScaler
 
         return $timeToClear->mapWithKeys(function ($timeToClear, $queue) use ($supervisor, $timeToClearAll) {
             return $timeToClearAll > 0 && $supervisor->options->autoScaling()
-                    ? [$queue => (($timeToClear / $timeToClearAll) * $supervisor->options->maxProcesses)]
-                    : [$queue => $supervisor->options->maxProcesses / count($supervisor->processPools)];
+                ? [$queue => (($timeToClear / $timeToClearAll) * $supervisor->options->maxProcesses)]
+                : ($timeToClearAll == 0 && $supervisor->options->autoScaling()
+                    ? [$queue => $supervisor->options->minProcesses]
+                    : [$queue => $supervisor->options->maxProcesses / count($supervisor->processPools)]);
         })->sort();
     }
 
