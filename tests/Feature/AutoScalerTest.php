@@ -70,6 +70,39 @@ class AutoScalerTest extends IntegrationTest
         $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
     }
 
+    public function test_balancer_assigns_more_processes_on_busy_queue()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
+            'first' => ['current' => 1, 'size' => 50, 'runtime' => 50],
+            'second' => ['current' => 1, 'size' => 0, 'runtime' => 0],
+        ]);
+
+        $scaler->scale($supervisor);
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(3, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(5, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(7, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+        $scaler->scale($supervisor);
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(9, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+    }
+
     public function test_balancing_a_single_queue_assigns_it_the_min_workers_with_empty_queue()
     {
         [$scaler, $supervisor] = $this->with_scaling_scenario(5, [
