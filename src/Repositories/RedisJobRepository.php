@@ -29,6 +29,13 @@ class RedisJobRepository implements JobRepository
     ];
 
     /**
+     * The number of minutes until recently failed jobs should be purged.
+     *
+     * @var int
+     */
+    public $recentFailedJobExpires;
+
+    /**
      * The number of minutes until recent jobs should be purged.
      *
      * @var int
@@ -60,6 +67,7 @@ class RedisJobRepository implements JobRepository
         $this->redis = $redis;
         $this->recentJobExpires = config('horizon.trim.recent', 60);
         $this->failedJobExpires = config('horizon.trim.failed', 10080);
+        $this->recentFailedJobExpires = config('horizon.trim.recent_failed', $this->failedJobExpires);
         $this->monitoredJobExpires = config('horizon.trim.monitored', 10080);
     }
 
@@ -164,15 +172,34 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the number of jobs in a given type set.
      *
+     * @param  string  $type
      * @return int
      */
     protected function countJobsByType($type)
     {
-        $minutes = $type === 'failed_jobs' ? $this->failedJobExpires : $this->recentJobExpires;
+        $minutes = $this->minutesForType($type);
 
         return $this->connection()->zcount(
             $type, '-inf', Chronos::now()->subMinutes($minutes)->getTimestamp() * -1
         );
+    }
+
+    /**
+     * Get the number of minutes to count for a given type set.
+     *
+     * @param  string  $type
+     * @return int
+     */
+    protected function minutesForType($type)
+    {
+        switch ($type) {
+            case 'failed_jobs':
+                return $this->failedJobExpires;
+            case 'recent_failed_jobs':
+                return $this->recentFailedJobExpires;
+            default:
+                return $this->recentJobExpires;
+        }
     }
 
     /**
@@ -444,6 +471,10 @@ class RedisJobRepository implements JobRepository
             $score = Chronos::now()->subMinutes($this->recentJobExpires)->getTimestamp() * -1;
 
             $pipe->zremrangebyscore('recent_jobs', $score, '+inf');
+
+            if ($this->recentJobExpires !== $this->recentFailedJobExpires) {
+                $score = Chronos::now()->subMinutes($this->recentFailedJobExpires)->getTimestamp() * -1;
+            }
 
             $pipe->zremrangebyscore('recent_failed_jobs', $score, '+inf');
         });
