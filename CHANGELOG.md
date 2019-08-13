@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.2.8...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.3.0...3.0)
+
+
+## [v3.3.0 (2019-08-13)](https://github.com/laravel/horizon/compare/v3.2.8...v3.3.0)
+
+### Added
+- Allow custom dashboard failed jobs metric period ([#644](https://github.com/laravel/horizon/pull/644))
 
 
 ## [v3.2.8 (2019-08-06)](https://github.com/laravel/horizon/compare/v3.2.7...v3.2.8)
