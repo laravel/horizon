@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.3.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.3.1...3.0)
+
+
+## [v3.3.1 (2019-08-20)](https://github.com/laravel/horizon/compare/v3.3.0...v3.3.1)
+
+### Fixed
+- Fix autobalancer ([#651](https://github.com/laravel/horizon/pull/651))
 
 
 ## [v3.3.0 (2019-08-13)](https://github.com/laravel/horizon/compare/v3.2.8...v3.3.0)
