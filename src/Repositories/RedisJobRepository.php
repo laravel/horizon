@@ -394,7 +394,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Mark a given job as completed and set it to expire.
      *
-     * @param  \Predis\Pipeline\Pipeline  $pipe
+     * @param  \Redis  $pipe
      * @param  string  $id
      * @param  bool  $failed
      * @return void
