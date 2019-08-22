@@ -32,12 +32,12 @@ abstract class IntegrationTest extends TestCase
      */
     protected function tearDown(): void
     {
+        parent::tearDown();
+
         Redis::flushall();
         WorkerCommandString::reset();
         SupervisorCommandString::reset();
         Horizon::$authUsing = null;
-
-        parent::tearDown();
     }
 
     /**
