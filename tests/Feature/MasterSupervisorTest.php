@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
+use Exception;
 use Laravel\Horizon\PhpBinary;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\MasterSupervisor;
@@ -166,11 +167,10 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertSame('paused', $masterRecord->status);
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function test_master_process_should_not_allow_duplicate_master_process_on_same_machine()
     {
+        $this->expectException(Exception::class);
+
         $master = new MasterSupervisor;
         $master->working = true;
         $master2 = new MasterSupervisor;
