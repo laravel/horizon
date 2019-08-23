@@ -3,8 +3,8 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use Illuminate\Queue\Worker;
+use Illuminate\Queue\QueueManager;
 use Illuminate\Queue\WorkerOptions;
-use \Illuminate\Queue\QueueManager;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Orchestra\Testbench\Concerns\CreatesApplication;
