@@ -15,9 +15,9 @@
         "ext-pcntl": "*",
         "ext-posix": "*",
         "cakephp/chronos": "^1.0",
-        "illuminate/contracts": "~5.8.0|^6.0|^7.0",
-        "illuminate/queue": "~5.8.0|^6.0|^7.0",
-        "illuminate/support": "~5.8.0|^6.0|^7.0",
+        "illuminate/contracts": "^6.0|^7.0",
+        "illuminate/queue": "^6.0|^7.0",
+        "illuminate/support": "^6.0|^7.0",
         "ramsey/uuid": "^3.5",
         "symfony/process": "^4.2",
         "symfony/debug": "^4.2"
