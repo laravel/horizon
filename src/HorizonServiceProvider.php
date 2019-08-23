@@ -105,6 +105,10 @@ class HorizonServiceProvider extends ServiceProvider
             define('HORIZON_PATH', realpath(__DIR__.'/../'));
         }
 
+        $this->app->bind(Console\WorkCommand::class, function ($app) {
+            return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
+        });
+
         $this->configure();
         $this->offerPublishing();
         $this->registerServices();

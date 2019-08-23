@@ -41,6 +41,6 @@ class RedisJobRepositoryTest extends IntegrationTest
 
         $result = $repository->getRecent()[0];
 
-        $this->assertNotContains(',', $result->reserved_at);
+        $this->assertStringNotContainsString(',', $result->reserved_at);
     }
 }

@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Mockery;
+use Exception;
 use Cake\Chronos\Chronos;
 use Laravel\Horizon\PhpBinary;
 use Laravel\Horizon\AutoScaler;
@@ -420,11 +421,10 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function test_supervisor_with_duplicate_name_cant_be_started()
     {
+        $this->expectException(Exception::class);
+
         $options = $this->options();
         $this->supervisor = $supervisor = new Supervisor($options);
         $supervisor->persist();
