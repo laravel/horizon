@@ -1,10 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.3.1...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.3.2...master)
 
 ### Changed
 - Dropped support for Laravel  5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
 - Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
+
+
+## [v3.3.2 (2019-08-27)](https://github.com/laravel/horizon/compare/v3.3.1...v3.3.2)
+
+### Fixed
+- Fix worker command binding ([3b53310](https://github.com/laravel/horizon/commit/3b533104caa299761ce6a1c41438bdab1e2e246f))
 
 
 ## [v3.3.1 (2019-08-20)](https://github.com/laravel/horizon/compare/v3.3.0...v3.3.1)
