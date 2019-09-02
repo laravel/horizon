@@ -48,13 +48,13 @@ class FailedJobsController extends Controller
         $jobs = ! $request->query('tag')
                 ? $this->paginate($request)
                 : $this->paginateByTag($request, $request->query('tag'));
-
+        
         $total = $request->query('tag')
                 ? $this->tags->count('failed:'.$request->query('tag'))
                 : $this->jobs->countFailed();
 
         return [
-            'jobs' => $jobs,
+            'jobs' => $this->filterHeavyFields($jobs),
             'total' => $total,
         ];
     }

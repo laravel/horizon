@@ -42,7 +42,7 @@ class RecentJobsController extends Controller
         })->values();
 
         return [
-            'jobs' => $jobs,
+            'jobs' => $this->filterHeavyFields($jobs),
             'total' => $this->jobs->countRecent(),
         ];
     }
