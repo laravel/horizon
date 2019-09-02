@@ -23,6 +23,7 @@ class Controller extends BaseController
         return $collection->transform(function ($item, $key) {
             $item->payload->data = [];
             $item->exception = [];
+
             return $item;
         });
     }
