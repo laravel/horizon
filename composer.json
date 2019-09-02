@@ -55,5 +55,10 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan horizon:assets"
+        ]
+    }
 }
