@@ -3,8 +3,8 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Laravel\Horizon\Horizon;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Http\Middleware\Authenticate;
+use Laravel\Horizon\Tests\IntegrationTest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthTest extends IntegrationTest

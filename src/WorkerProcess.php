@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon;
 
-use Closure;
 use Cake\Chronos\Chronos;
+use Closure;
 use Laravel\Horizon\Events\UnableToLaunchProcess;
 use Laravel\Horizon\Events\WorkerProcessRestarting;
 use Symfony\Component\Process\Exception\ExceptionInterface;

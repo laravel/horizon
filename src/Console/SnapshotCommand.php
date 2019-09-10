@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Console;
 
-use Laravel\Horizon\Lock;
 use Illuminate\Console\Command;
 use Laravel\Horizon\Contracts\MetricsRepository;
+use Laravel\Horizon\Lock;
 
 class SnapshotCommand extends Command
 {

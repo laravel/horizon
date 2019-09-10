@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\Jobs\MonitorTag;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\Jobs\MonitorTag;
 use Laravel\Horizon\Jobs\RetryFailedJob;
 use Laravel\Horizon\Tests\IntegrationTest;
 

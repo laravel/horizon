@@ -2,14 +2,14 @@
 
 namespace Laravel\Horizon;
 
-use stdClass;
-use ReflectionClass;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Mail\SendQueuedMailable;
-use Illuminate\Events\CallQueuedListener;
 use Illuminate\Broadcasting\BroadcastEvent;
-use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Events\CallQueuedListener;
+use Illuminate\Mail\SendQueuedMailable;
+use Illuminate\Notifications\SendQueuedNotifications;
+use ReflectionClass;
+use stdClass;
 
 class Tags
 {

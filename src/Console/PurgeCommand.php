@@ -2,13 +2,13 @@
 
 namespace Laravel\Horizon\Console;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Laravel\Horizon\MasterSupervisor;
-use Laravel\Horizon\ProcessInspector;
+use Illuminate\Support\Str;
+use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\ProcessRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
-use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\MasterSupervisor;
+use Laravel\Horizon\ProcessInspector;
 
 class PurgeCommand extends Command
 {

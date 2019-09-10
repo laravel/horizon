@@ -3,8 +3,8 @@
 namespace Laravel\Horizon;
 
 use Illuminate\Support\Arr;
-use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\SupervisorRepository;
 
 class ProcessInspector
 {

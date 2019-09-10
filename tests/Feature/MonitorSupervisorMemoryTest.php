@@ -2,12 +2,12 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Mockery;
+use Laravel\Horizon\Events\SupervisorLooped;
+use Laravel\Horizon\Listeners\MonitorSupervisorMemory;
 use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Events\SupervisorLooped;
-use Laravel\Horizon\Listeners\MonitorSupervisorMemory;
+use Mockery;
 
 class MonitorSupervisorMemoryTest extends IntegrationTest
 {

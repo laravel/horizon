@@ -3,11 +3,11 @@
 namespace Laravel\Horizon\Repositories;
 
 use Cake\Chronos\Chronos;
-use Illuminate\Support\Arr;
-use Laravel\Horizon\MasterSupervisor;
-use Laravel\Horizon\Contracts\SupervisorRepository;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Support\Arr;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\MasterSupervisor;
 
 class RedisMasterSupervisorRepository implements MasterSupervisorRepository
 {

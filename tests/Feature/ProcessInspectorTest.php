@@ -2,12 +2,12 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Mockery;
+use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Exec;
 use Laravel\Horizon\ProcessInspector;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Contracts\SupervisorRepository;
-use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Mockery;
 
 class ProcessInspectorTest extends IntegrationTest
 {

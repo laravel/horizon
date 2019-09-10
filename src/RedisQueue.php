@@ -2,14 +2,14 @@
 
 namespace Laravel\Horizon;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Queue\RedisQueue as BaseQueue;
 use Illuminate\Support\Str;
-use Laravel\Horizon\Events\JobPushed;
 use Laravel\Horizon\Events\JobDeleted;
+use Laravel\Horizon\Events\JobPushed;
 use Laravel\Horizon\Events\JobReleased;
 use Laravel\Horizon\Events\JobReserved;
 use Laravel\Horizon\Events\JobsMigrated;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Queue\RedisQueue as BaseQueue;
 
 class RedisQueue extends BaseQueue
 {

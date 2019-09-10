@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Events\JobFailed;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Events\JobFailed;
 
 class StoreTagsForFailedJob
 {

@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Contracts;
 
-use Laravel\Horizon\JobPayload;
 use Illuminate\Support\Collection;
+use Laravel\Horizon\JobPayload;
 
 interface JobRepository
 {

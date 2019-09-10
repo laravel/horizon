@@ -6,10 +6,10 @@ use Cake\Chronos\Chronos;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Events\JobReserved;
 use Laravel\Horizon\Events\JobsMigrated;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Contracts\JobRepository;
 
 class QueueProcessingTest extends IntegrationTest
 {

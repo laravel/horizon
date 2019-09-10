@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Connectors;
 
+use Illuminate\Queue\Connectors\RedisConnector as BaseConnector;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\RedisQueue;
-use Illuminate\Queue\Connectors\RedisConnector as BaseConnector;
 
 class RedisConnector extends BaseConnector
 {

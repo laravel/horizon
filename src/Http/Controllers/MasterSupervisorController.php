@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
-use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\SupervisorRepository;
 
 class MasterSupervisorController extends Controller
 {

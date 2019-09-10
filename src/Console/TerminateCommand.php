@@ -2,13 +2,13 @@
 
 namespace Laravel\Horizon\Console;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Laravel\Horizon\MasterSupervisor;
-use Illuminate\Support\InteractsWithTime;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
+use Illuminate\Support\Arr;
+use Illuminate\Support\InteractsWithTime;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\MasterSupervisor;
 
 class TerminateCommand extends Command
 {
