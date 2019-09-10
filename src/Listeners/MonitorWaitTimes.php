@@ -3,10 +3,10 @@
 namespace Laravel\Horizon\Listeners;
 
 use Cake\Chronos\Chronos;
-use Laravel\Horizon\WaitTimeCalculator;
+use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
 use Laravel\Horizon\Events\SupervisorLooped;
-use Laravel\Horizon\Contracts\MetricsRepository;
+use Laravel\Horizon\WaitTimeCalculator;
 
 class MonitorWaitTimes
 {

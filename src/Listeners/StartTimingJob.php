@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Stopwatch;
 use Laravel\Horizon\Events\JobReserved;
+use Laravel\Horizon\Stopwatch;
 
 class StartTimingJob
 {

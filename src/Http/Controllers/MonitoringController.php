@@ -3,10 +3,10 @@
 namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Laravel\Horizon\Jobs\MonitorTag;
-use Laravel\Horizon\Jobs\StopMonitoringTag;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Jobs\MonitorTag;
+use Laravel\Horizon\Jobs\StopMonitoringTag;
 
 class MonitoringController extends Controller
 {

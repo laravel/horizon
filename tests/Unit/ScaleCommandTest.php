@@ -2,10 +2,10 @@
 
 namespace Laravel\Horizon\Tests\Unit;
 
-use Mockery;
 use Laravel\Horizon\Supervisor;
-use Laravel\Horizon\Tests\UnitTest;
 use Laravel\Horizon\SupervisorCommands\Scale;
+use Laravel\Horizon\Tests\UnitTest;
+use Mockery;
 
 class ScaleCommandTest extends UnitTest
 {

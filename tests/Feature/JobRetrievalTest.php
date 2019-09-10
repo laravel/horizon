@@ -3,11 +3,11 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Cake\Chronos\Chronos;
-use Laravel\Horizon\JobPayload;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\JobPayload;
+use Laravel\Horizon\Tests\IntegrationTest;
 
 class JobRetrievalTest extends IntegrationTest
 {

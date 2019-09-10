@@ -3,9 +3,9 @@
 namespace Laravel\Horizon;
 
 use Closure;
-use Laravel\Horizon\SupervisorCommands\Terminate;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
+use Laravel\Horizon\SupervisorCommands\Terminate;
 
 class SupervisorProcess extends WorkerProcess
 {

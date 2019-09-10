@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Jobs;
 
-use Laravel\Horizon\JobId;
-use Laravel\Horizon\Contracts\JobRepository;
 use Illuminate\Contracts\Queue\Factory as Queue;
+use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\JobId;
 
 class RetryFailedJob
 {

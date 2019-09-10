@@ -2,19 +2,19 @@
 
 namespace Laravel\Horizon;
 
+use Cake\Chronos\Chronos;
 use Closure;
 use Exception;
-use Throwable;
-use Cake\Chronos\Chronos;
-use Laravel\Horizon\Contracts\Pausable;
-use Laravel\Horizon\Contracts\Terminable;
-use Laravel\Horizon\Contracts\Restartable;
-use Laravel\Horizon\Events\SupervisorLooped;
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Contracts\Pausable;
+use Laravel\Horizon\Contracts\Restartable;
 use Laravel\Horizon\Contracts\SupervisorRepository;
-use Illuminate\Contracts\Cache\Factory as CacheFactory;
+use Laravel\Horizon\Contracts\Terminable;
+use Laravel\Horizon\Events\SupervisorLooped;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
 
 class Supervisor implements Pausable, Restartable, Terminable
 {

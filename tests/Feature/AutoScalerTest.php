@@ -2,14 +2,14 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Mockery;
+use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\AutoScaler;
+use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\SystemProcessCounter;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Contracts\MetricsRepository;
-use Illuminate\Contracts\Queue\Factory as QueueFactory;
+use Mockery;
 
 class AutoScalerTest extends IntegrationTest
 {
