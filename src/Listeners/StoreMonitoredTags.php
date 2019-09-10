@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Events\JobPushed;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Events\JobPushed;
 
 class StoreMonitoredTags
 {

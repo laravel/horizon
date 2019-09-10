@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Events\MasterSupervisorLooped;
-use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\Events\MasterSupervisorLooped;
 
 class ExpireSupervisors
 {

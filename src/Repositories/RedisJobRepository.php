@@ -3,11 +3,11 @@
 namespace Laravel\Horizon\Repositories;
 
 use Cake\Chronos\Chronos;
+use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Arr;
-use Laravel\Horizon\JobPayload;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\JobRepository;
-use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Laravel\Horizon\JobPayload;
 
 class RedisJobRepository implements JobRepository
 {

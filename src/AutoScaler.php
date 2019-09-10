@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon;
 
+use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\MetricsRepository;
-use Illuminate\Contracts\Queue\Factory as QueueFactory;
 
 class AutoScaler
 {

@@ -3,8 +3,8 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Laravel\Horizon\SupervisorFactory;
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeSupervisorFactory;
+use Laravel\Horizon\Tests\IntegrationTest;
 
 class SupervisorCommandTest extends IntegrationTest
 {

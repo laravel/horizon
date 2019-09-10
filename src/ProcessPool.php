@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon;
 
+use Cake\Chronos\Chronos;
 use Closure;
 use Countable;
-use Cake\Chronos\Chronos;
 use Symfony\Component\Process\Process;
 
 class ProcessPool implements Countable

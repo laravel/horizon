@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Events\JobDeleted;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Events\JobDeleted;
 
 class MarkJobAsComplete
 {

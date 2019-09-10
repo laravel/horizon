@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Tests\IntegrationTest;
 
 class TagRepositoryTest extends IntegrationTest
 {

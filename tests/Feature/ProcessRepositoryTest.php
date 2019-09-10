@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Contracts\ProcessRepository;
+use Laravel\Horizon\Tests\IntegrationTest;
 
 class ProcessRepositoryTest extends IntegrationTest
 {

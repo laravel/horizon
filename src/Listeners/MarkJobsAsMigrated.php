@@ -2,8 +2,8 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Events\JobsMigrated;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Events\JobsMigrated;
 
 class MarkJobsAsMigrated
 {

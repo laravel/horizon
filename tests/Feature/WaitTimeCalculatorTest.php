@@ -2,13 +2,13 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Mockery;
-use Laravel\Horizon\SupervisorOptions;
-use Laravel\Horizon\WaitTimeCalculator;
-use Laravel\Horizon\Tests\IntegrationTest;
+use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
-use Illuminate\Contracts\Queue\Factory as QueueFactory;
+use Laravel\Horizon\SupervisorOptions;
+use Laravel\Horizon\Tests\IntegrationTest;
+use Laravel\Horizon\WaitTimeCalculator;
+use Mockery;
 
 class WaitTimeCalculatorTest extends IntegrationTest
 {

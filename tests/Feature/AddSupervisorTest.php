@@ -2,12 +2,12 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\PhpBinary;
+use Laravel\Horizon\Contracts\HorizonCommandQueue;
 use Laravel\Horizon\MasterSupervisor;
+use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
+use Laravel\Horizon\PhpBinary;
 use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Contracts\HorizonCommandQueue;
-use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
 
 class AddSupervisorTest extends IntegrationTest
 {

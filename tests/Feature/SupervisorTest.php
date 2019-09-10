@@ -2,26 +2,26 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Mockery;
-use Exception;
 use Cake\Chronos\Chronos;
-use Laravel\Horizon\PhpBinary;
-use Laravel\Horizon\AutoScaler;
-use Laravel\Horizon\Supervisor;
+use Exception;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
-use Laravel\Horizon\MasterSupervisor;
-use Laravel\Horizon\SupervisorOptions;
-use Laravel\Horizon\WorkerCommandString;
-use Laravel\Horizon\SystemProcessCounter;
-use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Contracts\JobRepository;
-use Laravel\Horizon\SupervisorCommands\Scale;
-use Illuminate\Contracts\Debug\ExceptionHandler;
+use Laravel\Horizon\AutoScaler;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Events\WorkerProcessRestarting;
+use Laravel\Horizon\MasterSupervisor;
+use Laravel\Horizon\PhpBinary;
+use Laravel\Horizon\Supervisor;
+use Laravel\Horizon\SupervisorCommands\Scale;
+use Laravel\Horizon\SupervisorOptions;
+use Laravel\Horizon\SystemProcessCounter;
+use Laravel\Horizon\Tests\IntegrationTest;
+use Laravel\Horizon\WorkerCommandString;
+use Mockery;
 
 class SupervisorTest extends IntegrationTest
 {

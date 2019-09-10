@@ -2,10 +2,10 @@
 
 namespace Laravel\Horizon;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Events\Dispatcher;
 use Laravel\Horizon\Connectors\RedisConnector;
 
 class HorizonServiceProvider extends ServiceProvider

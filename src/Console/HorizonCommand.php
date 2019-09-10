@@ -3,9 +3,9 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\ProvisioningPlan;
-use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
 class HorizonCommand extends Command
 {

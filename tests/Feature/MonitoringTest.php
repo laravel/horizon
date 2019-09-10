@@ -2,12 +2,12 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\Jobs\MonitorTag;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
-use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Jobs\StopMonitoringTag;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Jobs\MonitorTag;
+use Laravel\Horizon\Jobs\StopMonitoringTag;
+use Laravel\Horizon\Tests\IntegrationTest;
 
 class MonitoringTest extends IntegrationTest
 {

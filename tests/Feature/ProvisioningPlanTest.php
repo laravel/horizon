@@ -4,9 +4,9 @@ namespace Laravel\Horizon\Tests\Feature;
 
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\MasterSupervisor;
+use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
 use Laravel\Horizon\ProvisioningPlan;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
 
 class ProvisioningPlanTest extends IntegrationTest
 {

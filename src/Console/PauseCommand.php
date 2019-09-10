@@ -2,11 +2,11 @@
 
 namespace Laravel\Horizon\Console;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Console\Command;
-use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\MasterSupervisor;
 
 class PauseCommand extends Command
 {

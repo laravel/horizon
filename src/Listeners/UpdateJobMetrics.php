@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Laravel\Horizon\Stopwatch;
-use Laravel\Horizon\Events\JobDeleted;
 use Laravel\Horizon\Contracts\MetricsRepository;
+use Laravel\Horizon\Events\JobDeleted;
+use Laravel\Horizon\Stopwatch;
 
 class UpdateJobMetrics
 {
