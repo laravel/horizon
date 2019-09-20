@@ -49,6 +49,13 @@ class SupervisorOptions extends WorkerOptions
     public $minProcesses = 1;
 
     /**
+     * The maximum number of processes per queue to assign per working when auto-scaling.
+     *
+     * @var int|null
+     */
+    public $maxQueueProcesses;
+
+    /**
      * The process priority.
      *
      * @var int
@@ -78,10 +85,12 @@ class SupervisorOptions extends WorkerOptions
      * @param  int  $maxTries
      * @param  bool  $force
      * @param  int  $nice
+     * @param  int|null  $maxQueueProcesses
      */
     public function __construct($name, $connection, $queue = null, $balance = 'off',
                                 $delay = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
-                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
+                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0,
+	                            $maxQueueProcesses = null)
     {
         $this->name = $name;
         $this->nice = $nice;
@@ -89,6 +98,7 @@ class SupervisorOptions extends WorkerOptions
         $this->connection = $connection;
         $this->maxProcesses = $maxProcesses;
         $this->minProcesses = $minProcesses;
+        $this->maxQueueProcesses = $maxQueueProcesses;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
 
         parent::__construct($delay, $memory, $timeout, $sleep, $maxTries, $force);
@@ -172,6 +182,7 @@ class SupervisorOptions extends WorkerOptions
             'force' => $this->force,
             'maxProcesses' => $this->maxProcesses,
             'minProcesses' => $this->minProcesses,
+            'maxQueueProcesses' => $this->maxQueueProcesses,
             'maxTries' => $this->maxTries,
             'memory' => $this->memory,
             'nice' => $this->nice,
