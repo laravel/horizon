@@ -75,11 +75,11 @@ class ProcessPool implements Countable
         	$processes = $processes > $this->maxProcessesPerQueue() ? $this->maxProcessesPerQueue() : $processes;
         }
 
-        if ($processes === count($this->processes)) {
+        if ($processes === $this->count()) {
             return;
         }
 
-        if ($processes > count($this->processes)) {
+        if ($processes > $this->count()) {
             $this->scaleUp($processes);
         } else {
             $this->scaleDown($processes);
