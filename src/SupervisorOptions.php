@@ -89,7 +89,8 @@ class SupervisorOptions extends WorkerOptions
      */
     public function __construct($name, $connection, $queue = null, $balance = 'off',
                                 $delay = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
-                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0, $maxQueueProcesses = null)
+                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0,
+	                            $maxQueueProcesses = null)
     {
         $this->name = $name;
         $this->nice = $nice;
