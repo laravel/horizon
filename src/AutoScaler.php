@@ -122,7 +122,8 @@ class AutoScaler
         $poolProcesses = $pool->totalProcessCount();
 
         if (ceil($workers) > $poolProcesses &&
-            $this->wouldNotExceedMaxProcesses($supervisor)) {
+            $this->wouldNotExceedMaxProcesses($supervisor) &&
+            $this->wouldNotExceedMaxPoolProcesses($pool)) {
             $pool->scale($poolProcesses + 1);
         } elseif (ceil($workers) < $poolProcesses &&
                   $poolProcesses > $supervisor->options->minProcesses) {
@@ -139,5 +140,16 @@ class AutoScaler
     protected function wouldNotExceedMaxProcesses(Supervisor $supervisor)
     {
         return ($supervisor->totalProcessCount() + 1) <= $supervisor->options->maxProcesses;
+    }
+
+    /**
+     * Determine if adding another process would exceed max process limit for that queue.
+     *
+     * @param  \Laravel\Horizon\ProcessPool  $pool
+     * @return bool
+     */
+    protected function wouldNotExceedMaxPoolProcesses($pool)
+    {
+        return $pool->maxProcessesPerQueue() ? ($pool->totalProcessCount() + 1) <= $pool->maxProcessesPerQueue() : true;
     }
 }

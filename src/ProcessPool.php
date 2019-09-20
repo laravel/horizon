@@ -327,4 +327,14 @@ class ProcessPool implements Countable
     {
         return count($this->processes);
     }
+
+    /**
+     * Return the configured max processes per queue
+     *
+     * @return int|null
+     */
+    public function maxProcessesPerQueue()
+    {
+        return $this->options->maxQueueProcesses ?? null;
+    }
 }

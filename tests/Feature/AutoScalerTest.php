@@ -148,7 +148,23 @@ class AutoScalerTest extends IntegrationTest
         $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
     }
 
-    protected function with_scaling_scenario($maxProcesses, array $pools, array $extraOptions = [])
+	public function test_scaler_will_not_scale_past_max_process_threshold_per_queue()
+	{
+		[$scaler, $supervisor] = $this->with_scaling_scenario(26, [
+			'first' => ['current' => 10, 'max' => 12, 'size' => 100, 'runtime' => 50],
+			'second' => ['current' => 10, 'max' => 12, 'size' => 100, 'runtime' => 50],
+		]);
+
+		$scaler->scale($supervisor);
+		$scaler->scale($supervisor);
+		$scaler->scale($supervisor);
+
+		$this->assertEquals(12, $supervisor->processPools['first']->totalProcessCount());
+		$this->assertEquals(12, $supervisor->processPools['second']->totalProcessCount());
+	}
+
+
+	protected function with_scaling_scenario($maxProcesses, array $pools, array $extraOptions = [])
     {
         // Mock dependencies...
         $queue = Mockery::mock(QueueFactory::class);
@@ -168,7 +184,7 @@ class AutoScalerTest extends IntegrationTest
 
         // Create process pools...
         $supervisor->processPools = collect($pools)->mapWithKeys(function ($pool, $name) {
-            return [$name => new Fakes\FakePool($name, $pool['current'])];
+            return [$name => new Fakes\FakePool($name, $pool['current'], $pool['max'] ?? null)];
         });
 
         $queue->shouldReceive('connection')->with('redis')->andReturnSelf();
