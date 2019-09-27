@@ -13,6 +13,7 @@ trait EventMap
         Events\JobPushed::class => [
             Listeners\StoreJob::class,
             Listeners\StoreMonitoredTags::class,
+            Listeners\StoreTagsForRecentJob::class,
         ],
 
         Events\JobReserved::class => [
