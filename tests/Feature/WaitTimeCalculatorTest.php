@@ -5,7 +5,6 @@ namespace Laravel\Horizon\Tests\Feature;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
-use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
@@ -165,14 +164,5 @@ class WaitTimeCalculatorTest extends IntegrationTest
         }
 
         return new WaitTimeCalculator($queue, $supervisors, $metrics);
-    }
-
-    protected function supervisorOptions()
-    {
-        return tap(new SupervisorOptions('test-supervisor', 'redis'), function ($options) {
-            $options->balance = true;
-            $options->queue = 'test-queue,test-queue-2';
-            $options->directory = realpath(__DIR__.'/../');
-        });
     }
 }
