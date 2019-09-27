@@ -167,7 +167,7 @@ class WaitTimeCalculatorTest extends IntegrationTest
         return new WaitTimeCalculator($queue, $supervisors, $metrics);
     }
 
-    protected function options()
+    protected function supervisorOptions()
     {
         return tap(new SupervisorOptions('test-supervisor', 'redis'), function ($options) {
             $options->balance = true;
