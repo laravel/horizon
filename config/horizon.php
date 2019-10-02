@@ -138,7 +138,7 @@ return [
     */
 
     'monitored_tags' => [
-         'example'
+//         'example'
     ],
 
     /*
