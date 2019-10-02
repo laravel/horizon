@@ -68,6 +68,6 @@ class MonitoringTest extends IntegrationTest
     public function test_when_not_containing_monitored_tags_create_the_default_tags()
     {
         $repository = resolve(TagRepository::class);
-        $this->assertEquals(['first'], $repository->monitored(['example']));
+        $this->assertEquals(['example'], $repository->monitored(['example']));
     }
 }
