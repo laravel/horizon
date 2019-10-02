@@ -67,8 +67,7 @@ class MonitoringTest extends IntegrationTest
 
     public function test_when_not_containing_monitored_tags_create_the_default_tags()
     {
-        config(['horizon.monitored_tags' => ['first']]);
         $repository = resolve(TagRepository::class);
-        $this->assertEquals(['first'], $repository->monitored(['first']));
+        $this->assertEquals(['first'], $repository->monitored(['example']));
     }
 }
