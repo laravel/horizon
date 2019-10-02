@@ -4,7 +4,6 @@ namespace Laravel\Horizon;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Horizon\Contracts\TagRepository;
 
 class HorizonApplicationServiceProvider extends ServiceProvider
 {
@@ -16,7 +15,6 @@ class HorizonApplicationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->authorization();
-        $this->registerDefaultMonitoredTags();
     }
 
     /**
@@ -58,15 +56,5 @@ class HorizonApplicationServiceProvider extends ServiceProvider
     public function register()
     {
         //
-    }
-
-    protected function registerDefaultMonitoredTags()
-    {
-        $repository = app(TagRepository::class);
-        $defaultTags = config('horizon.monitored_tags');
-
-        foreach ($defaultTags as $tag) {
-            $repository->monitor($tag);
-        }
     }
 }

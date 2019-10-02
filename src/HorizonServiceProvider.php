@@ -7,6 +7,7 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Connectors\RedisConnector;
+use Laravel\Horizon\Contracts\TagRepository;
 
 class HorizonServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,7 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerResources();
         $this->defineAssetPublishing();
+        $this->registerDefaultMonitoredTags();
     }
 
     /**
@@ -188,5 +190,15 @@ class HorizonServiceProvider extends ServiceProvider
         }
 
         $this->commands([Console\SnapshotCommand::class]);
+    }
+
+    protected function registerDefaultMonitoredTags()
+    {
+        $repository = app(TagRepository::class);
+        $defaultTags = config('horizon.monitored_tags');
+
+        foreach ($defaultTags as $tag) {
+            $repository->monitor($tag);
+        }
     }
 }
