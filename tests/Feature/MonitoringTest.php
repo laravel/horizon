@@ -64,12 +64,4 @@ class MonitoringTest extends IntegrationTest
         dispatch(new StopMonitoringTag('first'));
         $this->assertEquals(0, $this->monitoredJobs('first'));
     }
-
-    public function test_when_start_create_a_default_monitored_tags()
-    {
-        $repository = resolve(TagRepository::class);
-        dispatch(new MonitorTag('second'));
-        dd($repository->monitoring());
-        $this->assertEquals(['first'], $repository->monitoring());
-    }
 }
