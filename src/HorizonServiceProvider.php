@@ -103,7 +103,7 @@ class HorizonServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if (!defined('HORIZON_PATH')) {
+        if (! defined('HORIZON_PATH')) {
             define('HORIZON_PATH', realpath(__DIR__.'/../'));
         }
 
