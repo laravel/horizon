@@ -32,6 +32,10 @@ class FlushCommand extends Command
      */
     public function handle(RedisFactory $redis)
     {
+        if (! $this->confirmToProceed()) {
+            return;
+        }
+
         $redis->connection('horizon')->flushdb();
     }
 }
