@@ -163,7 +163,6 @@ class AutoScalerTest extends IntegrationTest
         $this->assertEquals(12, $supervisor->processPools['second']->totalProcessCount());
     }
 
-
     protected function with_scaling_scenario($maxProcesses, array $pools, array $extraOptions = [])
     {
         // Mock dependencies...
