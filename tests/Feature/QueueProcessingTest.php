@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\Events\JobReserved;
 use Laravel\Horizon\Events\JobsMigrated;
 use Laravel\Horizon\Tests\IntegrationTest;
@@ -92,5 +93,28 @@ class QueueProcessingTest extends IntegrationTest
         $this->work();
 
         $this->assertSame('pending', $status);
+    }
+
+    public function test_tags_for_recent_jobs_are_stored_in_redis()
+    {
+        $id = Queue::push(new Jobs\BasicJob);
+        $this->work();
+        $tags = resolve(TagRepository::class);
+        $ids = $tags->jobs('recent:first');
+        $this->assertEquals([$id], $ids);
+        $ids = $tags->jobs('recent:second');
+        $this->assertEquals([$id], $ids);
+    }
+
+    public function test_recent_job_tags_have_an_expiration()
+    {
+        Queue::push(new Jobs\BasicJob);
+        $this->work();
+        $ttl = Redis::connection('horizon')->pttl('recent:first');
+        $this->assertNotNull($ttl);
+        $this->assertGreaterThan(0, $ttl);
+        $ttl = Redis::connection('horizon')->pttl('recent:second');
+        $this->assertNotNull($ttl);
+        $this->assertGreaterThan(0, $ttl);
     }
 }

@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.3.2...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.0...3.0)
+
+
+## [v3.4.0 (2019-10-01)](https://github.com/laravel/horizon/compare/v3.3.2...v3.4.0)
+
+### Added
+- Filter recent jobs by tag ([#665](https://github.com/laravel/horizon/pull/665))
 
 
 ## [v3.3.2 (2019-08-27)](https://github.com/laravel/horizon/compare/v3.3.1...v3.3.2)
