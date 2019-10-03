@@ -108,7 +108,7 @@ class AutoScaler
                       $supervisor->options->autoScaling()) {
                 return [$queue => $supervisor->options->minProcesses];
             }
-          
+
             if ($this->queue->connection($supervisor->options->connection)->readyNow($queue) === 0) {
                 return [$queue => $supervisor->options->minProcesses];
             }
