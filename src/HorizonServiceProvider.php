@@ -173,6 +173,7 @@ class HorizonServiceProvider extends ServiceProvider
             $this->commands([
                 Console\InstallCommand::class,
                 Console\AssetsCommand::class,
+                Console\FlushCommand::class,
                 Console\HorizonCommand::class,
                 Console\ListCommand::class,
                 Console\PurgeCommand::class,
