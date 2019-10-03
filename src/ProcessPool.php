@@ -71,8 +71,8 @@ class ProcessPool implements Countable
         $processes = max(0, $processes);
 
         // limit processes to max processes per pool/queue.
-        if($this->maxProcessesPerQueue()) {
-        	$processes = $processes > $this->maxProcessesPerQueue() ? $this->maxProcessesPerQueue() : $processes;
+        if ($this->maxProcessesPerQueue()) {
+            $processes = $processes > $this->maxProcessesPerQueue() ? $this->maxProcessesPerQueue() : $processes;
         }
 
         if ($processes === $this->count()) {
@@ -334,7 +334,7 @@ class ProcessPool implements Countable
     }
 
     /**
-     * Return the configured max processes per queue
+     * Return the configured max processes per queue.
      *
      * @return int|null
      */

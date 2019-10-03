@@ -100,7 +100,7 @@ class AutoScaler
 	        $processesToAssign = (($timeToClear / $timeToClearAll) * $supervisor->options->maxProcesses);
 
 	        if($supervisor->options->maxQueueProcesses) {
-			$processesToAssign = $processesToAssign > $supervisor->options->maxQueueProcesses ? $supervisor->options->maxQueueProcesses : $processesToAssign;
+		    $processesToAssign = $processesToAssign > $supervisor->options->maxQueueProcesses ? $supervisor->options->maxQueueProcesses : $processesToAssign;
 	        }
 
                 return [$queue => $processesToAssign];
