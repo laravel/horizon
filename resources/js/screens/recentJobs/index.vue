@@ -7,6 +7,8 @@
          */
         data() {
             return {
+                tagSearchPhrase: '',
+                searchTimeout: null,
                 ready: false,
                 loadingNewEntries: false,
                 hasNewEntries: false,
@@ -44,6 +46,16 @@
                 this.page = 1;
 
                 this.loadJobs(this.$route.params.tag);
+            },
+
+            tagSearchPhrase() {
+                clearTimeout(this.searchTimeout);
+                clearInterval(this.interval);
+
+                this.searchTimeout = setTimeout(() => {
+                    this.loadJobs();
+                    this.refreshJobsPeriodically();
+                }, 500);
             }
         },
 
@@ -57,7 +69,9 @@
                     this.ready = false;
                 }
 
-                this.$http.get('/' + Horizon.path + '/api/jobs/recent?starting_at=' + starting + '&limit=' + this.perPage)
+                var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
+
+                this.$http.get('/' + Horizon.path + '/api/jobs/recent?' + tagQuery + 'starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;
@@ -130,6 +144,8 @@
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>Recent Jobs</h5>
+
+                <input type="text" class="form-control" v-model="tagSearchPhrase" placeholder="Search Tags" style="width:200px">
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
