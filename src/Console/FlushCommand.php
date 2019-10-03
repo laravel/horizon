@@ -22,7 +22,7 @@ class FlushCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Flush out all data for the Horizon Redis connection';
+    protected $description = 'Flush out all the Horizon meta information for the dashboard.';
 
     /**
      * Execute the console command.
