@@ -97,11 +97,11 @@ class AutoScaler
         return $timeToClear->mapWithKeys(function ($timeToClear, $queue) use ($supervisor, $timeToClearAll) {
             if ($timeToClearAll > 0 &&
                 $supervisor->options->autoScaling()) {
-	            $processesToAssign = (($timeToClear / $timeToClearAll) * $supervisor->options->maxProcesses);
+	        $processesToAssign = (($timeToClear / $timeToClearAll) * $supervisor->options->maxProcesses);
 
-	            if($supervisor->options->maxQueueProcesses) {
-		            $processesToAssign = $processesToAssign > $supervisor->options->maxQueueProcesses ? $supervisor->options->maxQueueProcesses : $processesToAssign;
-	            }
+	        if($supervisor->options->maxQueueProcesses) {
+			$processesToAssign = $processesToAssign > $supervisor->options->maxQueueProcesses ? $supervisor->options->maxQueueProcesses : $processesToAssign;
+	        }
 
                 return [$queue => $processesToAssign];
             } elseif ($timeToClearAll == 0 &&
@@ -109,13 +109,13 @@ class AutoScaler
                 return [$queue => $supervisor->options->minProcesses];
             }
           
-            if($this->queue->connection($supervisor->options->connection)->readyNow($queue) === 0) {
-              return [$queue => $supervisor->options->minProcesses];
+            if ($this->queue->connection($supervisor->options->connection)->readyNow($queue) === 0) {
+            	return [$queue => $supervisor->options->minProcesses];
             }
 
             $processesToAssign = $supervisor->options->maxProcesses / count($supervisor->processPools);
 
-            if($supervisor->options->maxQueueProcesses) {
+            if ($supervisor->options->maxQueueProcesses) {
             	$processesToAssign = $processesToAssign > $supervisor->options->maxQueueProcesses ? $supervisor->options->maxQueueProcesses : $processesToAssign;
             }
 
