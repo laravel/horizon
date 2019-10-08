@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.1...3.0)
+
+
+## [v3.4.1 (2019-10-08)](https://github.com/laravel/horizon/compare/v3.4.0...v3.4.1)
+
+### Fixed
+- Fix pagination for recent jobs ([#678](https://github.com/laravel/horizon/pull/678))
 
 
 ## [v3.4.0 (2019-10-01)](https://github.com/laravel/horizon/compare/v3.3.2...v3.4.0)
