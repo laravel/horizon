@@ -49,7 +49,7 @@ class RecentJobsController extends Controller
                 ? $this->paginate($request)
                 : $this->paginateByTag($request, $request->query('tag'));
 
-        $total = ! $request->query('tag')
+        $total = $request->query('tag')
                  ? $this->tags->count('recent:'.$request->query('tag'))
                  : $this->jobs->countRecent();
 
