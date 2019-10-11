@@ -64,6 +64,12 @@ export default [
     },
 
     {
+        path: '/recent-jobs/:jobId',
+        name: 'recent-jobs-preview',
+        component: require('./screens/recentJobs/job').default,
+    },
+
+    {
         path: '/failed',
         name: 'failed-jobs',
         component: require('./screens/failedJobs/index').default,

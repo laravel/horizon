@@ -93,6 +93,19 @@ class RecentJobsController extends Controller
     }
 
     /**
+     * Get a recent job instance.
+     *
+     * @param  string  $id
+     * @return mixed
+     */
+    public function show($id)
+    {
+        return (array) $this->jobs->getJobs([$id])->map(function ($job) {
+            return $this->decode($job);
+        })->first();
+    }
+
+    /**
      * Decode the given job.
      *
      * @param  object  $job
