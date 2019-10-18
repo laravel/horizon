@@ -36,7 +36,14 @@ class StopMonitoringTag
     {
         $tags->stopMonitoring($this->tag);
 
-        $jobs->deleteMonitored($tags->jobs($this->tag));
+        $tagJobs = $tags->paginate($this->tag);
+
+        while (count($tagJobs) !== 0) {
+            $jobs->deleteMonitored($tagJobs);
+
+            $offset = array_keys($tagJobs)[count($tagJobs) - 1] + 1;
+            $tagJobs = $tags->paginate($this->tag, $offset);
+        }
 
         $tags->forget($this->tag);
     }
