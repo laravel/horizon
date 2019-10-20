@@ -40,8 +40,18 @@
         <div class="row mt-4">
             <div class="col-2 sidebar">
                 <ul class="nav flex-column">
+                    @if(config('horizon.site_link'))
+                        <li class="nav-item">
+                            <a href="{{ config('horizon.site_link') }}" class="nav-link d-flex align-items-center pt-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M4.5 10l11-8v16z"/>
+                                </svg>
+                                <span>Back to Site</span>
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item">
-                        <router-link active-class="active" to="/dashboard" class="nav-link d-flex align-items-center pt-0">
+                        <router-link active-class="active" to="/dashboard" class="nav-link d-flex align-items-center {{ config('horizon.site_link') ? '' : 'pt-0' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path d="M0 3c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm2 2v12h16V5H2zm8 3l4 5H6l4-5z"></path>
                             </svg>

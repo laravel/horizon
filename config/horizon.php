@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Site Link
+    |--------------------------------------------------------------------------
+    |
+    | The URL set here will enable a new point in the sidebar of the Horizon
+    | dashboard which allows you to go back to your site, without having to
+    | modify the URL in the browsers' address bar or clicking back a few times.
+    |
+    */
+
+    'site_link' => url('/'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Route Middleware
     |--------------------------------------------------------------------------
     |
