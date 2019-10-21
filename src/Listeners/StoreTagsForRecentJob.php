@@ -38,7 +38,7 @@ class StoreTagsForRecentJob
         })->all();
 
         $this->tags->addTemporary(
-            config('horizon.trim.recent_failed', config('horizon.trim.recent', 60)),
+            config('horizon.trim.recent', 60),
             $event->payload->id(),
             $tags
         );
