@@ -4,21 +4,21 @@ namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
 
-class AssetsCommand extends Command
+class PublishCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'horizon:assets';
+    protected $signature = 'horizon:publish';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Re-publish the Horizon assets';
+    protected $description = 'Publish all of the Horizon resources';
 
     /**
      * Execute the console command.
