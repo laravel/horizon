@@ -1,10 +1,17 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.1...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.2...master)
 
 ### Changed
 - Dropped support for Laravel  5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
 - Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
+
+
+## [v3.4.2 (2019-10-21)](https://github.com/laravel/horizon/compare/v3.4.1...v3.4.2)
+
+### Fixed
+- Prevent 'memory exhausted' when deleting monitored tag ([#690](https://github.com/laravel/horizon/pull/690), [1532f9c](https://github.com/laravel/horizon/commit/1532f9c32d9739a1886357108fe5c4e1dc9b8e78))
+- Set same ttl for tags as same as recent jobs ([#692](https://github.com/laravel/horizon/pull/692))
 
 
 ## [v3.4.1 (2019-10-08)](https://github.com/laravel/horizon/compare/v3.4.0...v3.4.1)
