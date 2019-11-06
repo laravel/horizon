@@ -188,7 +188,7 @@
                         </router-link><br>
 
                         <small class="text-muted">
-                            Queue: {{job.queue}}
+                            Queue: {{job.queue}} | Attempts: {{ job.payload.attempts }}
                             <span v-if="job.payload.tags.length">| Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</span>
                         </small>
                     </td>
@@ -205,8 +205,12 @@
                             <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"></path>
                         </svg>
 
-                        <svg v-if="job.status == 'reserved' || job.status == 'pending'" class="fill-warning" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
+                        <svg v-if="job.status == 'pending'" class="fill-warning" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
                             <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
+                        </svg>
+
+                        <svg v-if="job.status == 'reserved'" class="fill-info spin" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
+                            <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
                         </svg>
 
                         <svg v-if="job.status == 'failed'" class="fill-danger" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
