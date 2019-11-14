@@ -1,10 +1,6 @@
 /vendor
 /laravel
 /node_modules
-composer.phar
+/phpunit.xml
 composer.lock
-.DS_Store
-Thumbs.db
-phpunit.xml
-/.idea
 .phpunit.result.cache
