@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.2...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.3...3.0)
+
+
+## [v3.4.3 (2019-11-19)](https://github.com/laravel/horizon/compare/v3.4.2...v3.4.3)
+
+### Changed
+- Set default 'tries' to 1 ([#704](https://github.com/laravel/horizon/pull/704))
 
 
 ## [v3.4.2 (2019-10-21)](https://github.com/laravel/horizon/compare/v3.4.1...v3.4.2)
