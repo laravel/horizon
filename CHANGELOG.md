@@ -1,10 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.2...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.3...master)
 
 ### Changed
 - Dropped support for Laravel  5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
 - Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
+
+
+## [v3.4.3 (2019-11-19)](https://github.com/laravel/horizon/compare/v3.4.2...v3.4.3)
+
+### Changed
+- Set default 'tries' to 1 ([#704](https://github.com/laravel/horizon/pull/704))
 
 
 ## [v3.4.2 (2019-10-21)](https://github.com/laravel/horizon/compare/v3.4.1...v3.4.2)
