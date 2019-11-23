@@ -13,7 +13,7 @@ use Laravel\Horizon\Contracts\Restartable;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\Terminable;
 use Laravel\Horizon\Events\SupervisorLooped;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Throwable;
 
 class Supervisor implements Pausable, Restartable, Terminable
@@ -311,7 +311,7 @@ class Supervisor implements Pausable, Restartable, Terminable
         } catch (Exception $e) {
             app(ExceptionHandler::class)->report($e);
         } catch (Throwable $e) {
-            app(ExceptionHandler::class)->report(new FatalThrowableError($e));
+            app(ExceptionHandler::class)->report(new FlattenException($e));
         }
     }
 
