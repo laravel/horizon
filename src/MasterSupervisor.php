@@ -15,7 +15,6 @@ use Laravel\Horizon\Contracts\Restartable;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\Terminable;
 use Laravel\Horizon\Events\MasterSupervisorLooped;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
 
 class MasterSupervisor implements Pausable, Restartable, Terminable
@@ -246,10 +245,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
             $this->persist();
 
             event(new MasterSupervisorLooped($this));
-        } catch (Exception $e) {
-            app(ExceptionHandler::class)->report($e);
         } catch (Throwable $e) {
-            app(ExceptionHandler::class)->report(new FatalThrowableError($e));
+            app(ExceptionHandler::class)->report($e);
         }
     }
 
