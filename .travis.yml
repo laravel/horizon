@@ -11,13 +11,10 @@ php:
 
 env:
   matrix:
-    - LARAVEL=^6.0
     - LARAVEL=^7.0
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: LARAVEL=^7.0
 
 before_install:
   - phpenv config-rm xdebug.ini || true
