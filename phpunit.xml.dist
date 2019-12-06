@@ -24,4 +24,7 @@
             <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
+    <php>
+        <server name="REDIS_CLIENT" value="predis"/>
+    </php>
 </phpunit>

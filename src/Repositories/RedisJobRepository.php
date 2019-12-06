@@ -259,18 +259,16 @@ class RedisJobRepository implements JobRepository
 
             $time = str_replace(',', '.', microtime(true));
 
-            $pipe->hmset(
-                $payload->id(), [
-                    'id' => $payload->id(),
-                    'connection' => $connection,
-                    'queue' => $queue,
-                    'name' => $payload->decoded['displayName'],
-                    'status' => 'pending',
-                    'payload' => $payload->value,
-                    'created_at' => $time,
-                    'updated_at' => $time,
-                ]
-            );
+            $pipe->hmset($payload->id(), [
+                'id' => $payload->id(),
+                'connection' => $connection,
+                'queue' => $queue,
+                'name' => $payload->decoded['displayName'],
+                'status' => 'pending',
+                'payload' => $payload->value,
+                'created_at' => $time,
+                'updated_at' => $time,
+            ]);
 
             $pipe->expireat(
                 $payload->id(), Chronos::now()->addMinutes($this->recentJobExpires)->getTimestamp()

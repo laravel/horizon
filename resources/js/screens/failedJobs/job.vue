@@ -108,7 +108,8 @@
              * @returns {string}
              */
             prettyPrintJob(data) {
-                return data.command ? phpunserialize(data.command) : data;
+                return data.command && !data.command.includes('CallQueuedClosure')
+                    ? phpunserialize(data.command) : data;
             }
         }
     }

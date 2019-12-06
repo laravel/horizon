@@ -6,6 +6,7 @@ use Exception;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\IntegrationTest;
+use Throwable;
 
 class RedisJobRepositoryTest extends IntegrationTest
 {
@@ -31,16 +32,28 @@ class RedisJobRepositoryTest extends IntegrationTest
 
     public function test_it_saves_microseconds_as_a_float_and_disregards_the_locale()
     {
+        $originalLocale = setlocale(LC_NUMERIC, 0);
+
         setlocale(LC_NUMERIC, 'fr_FR');
 
-        $repository = $this->app->make(JobRepository::class);
-        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+        try {
+            $repository = $this->app->make(JobRepository::class);
+            $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
 
-        $repository->pushed('redis', 'default', $payload);
-        $repository->reserved('redis', 'default', $payload);
+            $repository->pushed('redis', 'default', $payload);
+            $repository->reserved('redis', 'default', $payload);
 
-        $result = $repository->getRecent()[0];
+            $result = $repository->getRecent()[0];
 
-        $this->assertStringNotContainsString(',', $result->reserved_at);
+            $this->assertStringNotContainsString(',', $result->reserved_at);
+        } catch (Exception $e) {
+            setlocale(LC_NUMERIC, $originalLocale);
+
+            throw $e;
+        } catch (Throwable $e) {
+            setlocale(LC_NUMERIC, $originalLocale);
+
+            throw $e;
+        }
     }
 }
