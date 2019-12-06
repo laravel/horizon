@@ -81,7 +81,7 @@ class AutoScaler
 
             return [$queue => [
                 'size' => $size,
-                'time' =>  ($size * $this->metrics->runtimeForQueue($queue))
+                'time' =>  ($size * $this->metrics->runtimeForQueue($queue)),
             ]];
         });
     }
@@ -105,7 +105,7 @@ class AutoScaler
                       $supervisor->options->autoScaling()) {
                 return [
                     $queue =>  $timeToClear['size'] ?
-                        $supervisor->options->maxProcesses : $supervisor->options->minProcesses
+                        $supervisor->options->maxProcesses : $supervisor->options->minProcesses,
                 ];
             }
 
