@@ -104,8 +104,9 @@ class AutoScaler
             } elseif ($timeToClearAll == 0 &&
                       $supervisor->options->autoScaling()) {
                 return [
-                    $queue =>  $timeToClear['size'] ?
-                        $supervisor->options->maxProcesses : $supervisor->options->minProcesses,
+                    $queue => $timeToClear['size']
+                                ? $supervisor->options->maxProcesses
+                                : $supervisor->options->minProcesses,
                 ];
             }
 
