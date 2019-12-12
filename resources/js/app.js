@@ -1,11 +1,9 @@
 import Vue from 'vue';
 import Base from './base';
-import _ from 'lodash';
 import axios from 'axios';
 import Routes from './routes';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
-import moment from 'moment-timezone';
 
 require('bootstrap');
 
