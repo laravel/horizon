@@ -9,6 +9,7 @@ use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Notifications\SendQueuedNotifications;
 use ReflectionClass;
+use ReflectionProperty;
 use stdClass;
 
 class Tags
@@ -107,7 +108,7 @@ class Tags
             $models[] = collect((new ReflectionClass($target))->getProperties())->map(function ($property) use ($target) {
                 $property->setAccessible(true);
 
-                $value = $property->getValue($target);
+                $value = static::getValue($property, $target);
 
                 if ($value instanceof Model) {
                     return [$value];
@@ -118,6 +119,17 @@ class Tags
         }
 
         return collect($models)->collapse()->unique();
+    }
+
+    protected static function getValue(ReflectionProperty $property, $target)
+    {
+        if (method_exists($property, 'isInitialized')) {
+            if(!$property->isInitialized($target)) {
+                return null;
+            }
+        }
+
+        return $property->getValue($target);
     }
 
     /**
