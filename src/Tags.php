@@ -121,12 +121,17 @@ class Tags
         return collect($models)->collapse()->unique();
     }
 
+    /**
+     * Get the value of the given ReflectionProperty.
+     *
+     * @param  \ReflectionProperty  $property
+     * @param  mixed  $target
+     */
     protected static function getValue(ReflectionProperty $property, $target)
     {
-        if (method_exists($property, 'isInitialized')) {
-            if (! $property->isInitialized($target)) {
-                return;
-            }
+        if (method_exists($property, 'isInitialized') &&
+            ! $property->isInitialized($target)) {
+            return;
         }
 
         return $property->getValue($target);
