@@ -124,7 +124,7 @@ class Tags
     protected static function getValue(ReflectionProperty $property, $target)
     {
         if (method_exists($property, 'isInitialized')) {
-            if(! $property->isInitialized($target)) {
+            if (! $property->isInitialized($target)) {
                 return null;
             }
         }
