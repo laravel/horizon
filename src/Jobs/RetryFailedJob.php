@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Jobs;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Contracts\Queue\Factory as Queue;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobId;
@@ -55,10 +56,26 @@ class RetryFailedJob
      */
     protected function preparePayload($id, $payload)
     {
-        return json_encode(array_merge(json_decode($payload, true), [
+        $payload = json_decode($payload, true);
+
+        return json_encode(array_merge($payload, [
             'id' => $id,
             'attempts' => 0,
             'retry_of' => $this->id,
+            'timeoutAt' => $this->prepareNewTimeout($payload),
         ]));
+    }
+
+    /**
+     * Prepare the timeout.
+     *
+     * @param  array  $payload
+     * @return int|null
+     */
+    protected function prepareNewTimeout($payload)
+    {
+        return $payload['timeoutAt']
+                        ? Chronos::now()->addSeconds(ceil($payload['timeoutAt'] - $payload['pushedAt']))->getTimestamp()
+                        : null;
     }
 }

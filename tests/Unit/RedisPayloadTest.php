@@ -15,6 +15,8 @@ use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentCollection;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentModel;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithTagsMethod;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeListener;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithProperties;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithTypedProperties;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeModel;
 use Laravel\Horizon\Tests\UnitTest;
 use Mockery;
@@ -92,6 +94,31 @@ class RedisPayloadTest extends UnitTest
         $this->assertEquals([
             'listenerTag1', 'listenerTag2', 'eventTag1', 'eventTag2',
         ], $JobPayload->decoded['tags']);
+    }
+
+    public function test_tags_are_correctly_determined_for_listeners()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $job = new CallQueuedListener(FakeListenerWithProperties::class, 'handle', [new FakeEventWithModel(42)]);
+
+        $JobPayload->prepare($job);
+
+        $this->assertEquals([FakeModel::class.':42'], $JobPayload->decoded['tags']);
+    }
+
+    /**
+     * @requires PHP 7.4
+     */
+    public function test_tags_are_correctly_determined_for_listeners_with_property_types()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $job = new CallQueuedListener(FakeListenerWithTypedProperties::class, 'handle', [new FakeEventWithModel(21)]);
+
+        $JobPayload->prepare($job);
+
+        $this->assertEquals([FakeModel::class.':21'], $JobPayload->decoded['tags']);
     }
 
     public function test_listener_and_event_tags_can_merge_auto_tag_events()
