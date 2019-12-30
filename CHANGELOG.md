@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.4...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.5...3.0)
+
+
+## [v3.4.5 (2019-12-23)](https://github.com/laravel/horizon/compare/v3.4.4...v3.4.5)
+
+### Fixed
+- Fix php 7.4 tagged model typed props ([#732](https://github.com/laravel/horizon/pull/732), [025f953](https://github.com/laravel/horizon/commit/025f953b4902a9b0b172e6d5fe19d0809701259e))
+
+### Removed
+- Remove unused functions ([#722](https://github.com/laravel/horizon/pull/722))
 
 
 ## [v3.4.4 (2019-12-10)](https://github.com/laravel/horizon/compare/v3.4.3...v3.4.4)
