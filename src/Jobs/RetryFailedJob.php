@@ -70,7 +70,7 @@ class RetryFailedJob
      * Prepare the timeout.
      *
      * @param  array  $payload
-     * @return integer|null
+     * @return int|null
      */
     protected function prepareNewTimeout($payload)
     {
