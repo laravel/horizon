@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.5...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.6...3.0)
+
+
+## [v3.4.6 (2019-12-30)](https://github.com/laravel/horizon/compare/v3.4.5...v3.4.6)
+
+### Changed
+- Reset the retryUntil value ([#736](https://github.com/laravel/horizon/pull/736))
 
 
 ## [v3.4.5 (2019-12-23)](https://github.com/laravel/horizon/compare/v3.4.4...v3.4.5)
