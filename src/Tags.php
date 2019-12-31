@@ -54,7 +54,7 @@ class Tags
     {
         return collect(
             [static::extractListener($job), static::extractEvent($job),
-        ])->map(function ($job) {
+            ])->map(function ($job) {
             return static::for($job);
         })->collapse()->unique()->toArray();
     }
