@@ -19,7 +19,7 @@ class RetryFailedJob
     /**
      * Create a new job instance.
      *
-     * @param  string  $id;
+     * @param  string  $id
      * @return void
      */
     public function __construct($id)
