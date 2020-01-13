@@ -87,4 +87,12 @@ interface TagRepository
      * @return void
      */
     public function forget($tag);
+
+    /**
+     * Trim the job IDs from the given tags.
+     *
+     * @param  array  $tags
+     * @return void
+     */
+    public function trim(array $tags);
 }

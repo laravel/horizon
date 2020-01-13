@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\TagRepository;
 
@@ -96,7 +97,7 @@ class RedisTagRepository implements TagRepository
     {
         $this->connection()->pipeline(function ($pipe) use ($minutes, $id, $tags) {
             foreach ($tags as $tag) {
-                $pipe->zadd($tag, $id, $id);
+                $pipe->zadd($tag, str_replace(',', '.', microtime(true) * -1), $id);
 
                 $pipe->expire($tag, $minutes * 60);
             }
@@ -171,6 +172,23 @@ class RedisTagRepository implements TagRepository
     public function forget($tag)
     {
         $this->connection()->del($tag);
+    }
+
+    /**
+     * Trim the job IDs from the given tags.
+     *
+     * @param  array  $tags
+     * @return void
+     */
+    public function trim(array $tags)
+    {
+        $this->connection()->pipeline(function ($pipe) use ($tags) {
+            $score = Chronos::now()->subMinutes(2880)->getTimestamp() * -1;
+
+            foreach ($tags as $tag) {
+                $pipe->zremrangebyscore($tag, $score, '+inf');
+            }
+        });
     }
 
     /**

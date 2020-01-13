@@ -40,5 +40,7 @@ class StoreTagsForFailedJob
         $this->tags->addTemporary(
             2880, $event->payload->id(), $tags
         );
+
+        $this->tags->trim($tags);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
@@ -41,5 +42,25 @@ class FailedJobTest extends IntegrationTest
         $ttl = Redis::connection('horizon')->pttl('failed:first');
         $this->assertNotNull($ttl);
         $this->assertGreaterThan(0, $ttl);
+    }
+
+    public function test_failed_job_tags_are_trimmed()
+    {
+        $first = Queue::push(new Jobs\FailingJob);
+        $this->work();
+        $score = (Redis::connection('horizon')->zscore('failed:first', $first));
+
+        // Wait until next second
+        usleep(1000 * 1000 * (ceil(microtime(true)) + $score));
+
+        // Wait until the first job TTL is expired
+        Chronos::setTestNow(Chronos::now()->addMinutes(2880));
+        $second = Queue::push(new Jobs\FailingJob);
+        $this->work();
+
+        $ids = resolve(TagRepository::class)->jobs('failed:first');
+        $this->assertEquals([$second], $ids);
+
+        Chronos::setTestNow();
     }
 }
