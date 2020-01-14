@@ -31,6 +31,7 @@ class RedisHorizonCommandQueue implements HorizonCommandQueue
      * @param  string  $name
      * @param  string  $command
      * @param  array  $options
+     * @return void
      */
     public function push($name, $command, array $options = [])
     {

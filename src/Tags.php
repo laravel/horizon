@@ -53,8 +53,8 @@ class Tags
     protected static function tagsForListener($job)
     {
         return collect(
-            [static::extractListener($job), static::extractEvent($job),
-        ])->map(function ($job) {
+            [static::extractListener($job), static::extractEvent($job)]
+        )->map(function ($job) {
             return static::for($job);
         })->collapse()->unique()->toArray();
     }
@@ -105,7 +105,9 @@ class Tags
         $models = [];
 
         foreach ($targets as $target) {
-            $models[] = collect((new ReflectionClass($target))->getProperties())->map(function ($property) use ($target) {
+            $models[] = collect(
+                (new ReflectionClass($target))->getProperties()
+            )->map(function ($property) use ($target) {
                 $property->setAccessible(true);
 
                 $value = static::getValue($property, $target);
