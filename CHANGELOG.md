@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.6...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.7...3.0)
+
+
+## [v3.4.7 (2020-01-14)](https://github.com/laravel/horizon/compare/v3.4.6...v3.4.7)
+
+### Fixed
+- Revert filtering by tag ([#741](https://github.com/laravel/horizon/pull/741))
 
 
 ## [v3.4.6 (2019-12-30)](https://github.com/laravel/horizon/compare/v3.4.5...v3.4.6)
