@@ -39,6 +39,13 @@
 
         methods: {
             /**
+             * Opens the modal.
+             */
+            open() {
+                $('#alertModal').modal('show');
+            },
+
+            /**
              * Close the modal.
              */
             close(){

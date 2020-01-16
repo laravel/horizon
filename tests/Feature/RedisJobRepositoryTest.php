@@ -3,6 +3,8 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Exception;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\IntegrationTest;
@@ -55,5 +57,31 @@ class RedisJobRepositoryTest extends IntegrationTest
 
             throw $e;
         }
+    }
+
+    public function test_it_removes_recent_jobs_when_queue_is_purged()
+    {
+        $completedJobOne = Queue::pushOn('email-processing', new Jobs\BasicJob);
+        $completedJobTwo = Queue::pushOn('email-processing', new Jobs\BasicJob);
+        $pendingJobOne = Queue::pushOn('email-processing', new Jobs\BasicJob);
+        $pendingJobTwo = Queue::pushOn('email-processing', new Jobs\BasicJob);
+        $pendingJobThree = Queue::pushOn('email-processing', new Jobs\BasicJob);
+
+        $repository = resolve(JobRepository::class);
+
+        $repository->completed(new JobPayload(json_encode(['id' => $completedJobOne])));
+        $repository->completed(new JobPayload(json_encode(['id' => $completedJobTwo])));
+
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => $pendingJobOne, 'displayName' => 'first'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => $pendingJobTwo, 'displayName' => 'second'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => $pendingJobThree, 'displayName' => 'third'])));
+
+        $repository->purge('email-processing');
+
+        $recent = collect($repository->getRecent());
+        $this->assertEquals(2, $recent->count());
+
+        $this->assertNotNull($recent->firstWhere('id', $completedJobOne));
+        $this->assertNotNull($recent->firstWhere('id', $completedJobTwo));
     }
 }
