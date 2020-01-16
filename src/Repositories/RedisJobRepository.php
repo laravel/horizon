@@ -604,7 +604,7 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
-     * Delete pending jobs for a queue from the recent jobs
+     * Delete pending jobs for a queue from the recent jobs.
      *
      * @param  string  $queue
      * @return void

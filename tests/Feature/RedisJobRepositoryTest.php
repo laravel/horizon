@@ -4,7 +4,6 @@ namespace Laravel\Horizon\Tests\Feature;
 
 use Exception;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\IntegrationTest;
