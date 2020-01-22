@@ -36,7 +36,7 @@
             loadTags() {
                 this.ready = false;
 
-                this.$http.get('/' + Horizon.path + '/api/monitoring')
+                this.$http.get(Horizon.basePath + '/api/monitoring')
                     .then(response => {
                         this.tags = response.data;
 
@@ -66,7 +66,7 @@
                     return;
                 }
 
-                this.$http.post('/' + Horizon.path + '/api/monitoring', {'tag': this.newTag})
+                this.$http.post(Horizon.basePath + '/api/monitoring', {'tag': this.newTag})
                     .then(response => {
                         $('#addTagModal').modal('hide');
 
@@ -92,7 +92,7 @@
              * Stop monitoring the given tag.
              */
             stopMonitoring(tag) {
-                this.$http.delete('/' + Horizon.path + '/api/monitoring/' + encodeURIComponent(tag))
+                this.$http.delete(Horizon.basePath + '/api/monitoring/' + encodeURIComponent(tag))
                     .then(() => {
                         this.tags = _.reject(this.tags, existing => existing.tag == tag)
                     })
