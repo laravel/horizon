@@ -21,10 +21,19 @@ window.Popper = require('popper.js').default;
 
 Vue.prototype.$http = axios.create();
 
+window.Horizon.basePath = '/' + window.Horizon.path;
+
+let routerBasePath = window.Horizon.basePath + '/';
+
+if (window.Horizon.path === '' || window.Horizon.path === '/') {
+    routerBasePath = '/';
+    window.Horizon.basePath = '';
+}
+
 const router = new VueRouter({
     routes: Routes,
     mode: 'history',
-    base: '/' + window.Horizon.path + '/',
+    base: routerBasePath,
 });
 
 Vue.component('vue-json-pretty', VueJsonPretty);
