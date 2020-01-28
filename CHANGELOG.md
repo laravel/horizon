@@ -1,10 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.7...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.5.0...master)
 
 ### Changed
 - Dropped support for Laravel 5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
 - Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
+
+
+## [v3.5.0 (2020-01-28)](https://github.com/laravel/horizon/compare/v3.4.7...v3.5.0)
+
+### Added
+- Allow Horizon to be used on a subdomain without a subfolder ([#749](https://github.com/laravel/horizon/pull/749))
 
 
 ## [v3.4.7 (2020-01-14)](https://github.com/laravel/horizon/compare/v3.4.6...v3.4.7)
