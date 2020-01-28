@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.4.7...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.5.0...3.0)
+
+
+## [v3.5.0 (2020-01-28)](https://github.com/laravel/horizon/compare/v3.4.7...v3.5.0)
+
+### Added
+- Allow Horizon to be used on a subdomain without a subfolder ([#749](https://github.com/laravel/horizon/pull/749))
 
 
 ## [v3.4.7 (2020-01-14)](https://github.com/laravel/horizon/compare/v3.4.6...v3.4.7)
