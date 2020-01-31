@@ -172,6 +172,7 @@
                         </router-link><br>
 
                         <small class="text-muted">
+                            <router-link :to="{name: 'recent-jobs-preview', params: {jobId: job.id}}">View detail</router-link> |
                             Queue: {{job.queue}}
                             <span v-if="job.payload.tags.length">| Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</span>
                         </small>

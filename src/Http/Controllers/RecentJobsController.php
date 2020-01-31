@@ -46,4 +46,24 @@ class RecentJobsController extends Controller
             'total' => $this->jobs->countRecent(),
         ];
     }
+
+    public function show($id)
+    {
+        return (array) $this->jobs->getJobs([$id])->map(function ($job) {
+            return $this->decode($job);
+        })->first();
+    }
+
+    /**
+     * Decode the given job.
+     *
+     * @param  object  $job
+     * @return object
+     */
+    protected function decode($job)
+    {
+        $job->payload = json_decode($job->payload);
+
+        return $job;
+    }
 }
