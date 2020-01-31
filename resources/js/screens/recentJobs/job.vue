@@ -12,7 +12,6 @@
         data() {
             return {
                 ready: false,
-                retrying: false,
                 job: {}
             };
         },
