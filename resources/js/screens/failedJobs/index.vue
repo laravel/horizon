@@ -200,8 +200,8 @@
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th>Runtime</th>
                     <th>Failed At</th>
+                    <th>Runtime</th>
                     <th class="text-right">Retry</th>
                 </tr>
                 </thead>
@@ -229,11 +229,11 @@
                     </td>
 
                     <td class="table-fit">
-                        <span>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(2))+'s' : '-' }}</span>
-                    </td>
-
-                    <td class="table-fit">
                         {{ readableTimestamp(job.failed_at) }}
+                    </td>
+                    
+                    <td class="table-fit">
+                        <span>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(2))+'s' : '-' }}</span>
                     </td>
 
                     <td class="text-right table-fit">
