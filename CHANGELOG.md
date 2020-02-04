@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.5.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.6.0...3.0)
+
+
+## [v3.6.0 (2020-02-04)](https://github.com/laravel/horizon/compare/v3.5.0...v3.6.0)
+
+### Added
+- Ability to view job details in recent jobs overview ([#751](https://github.com/laravel/horizon/pull/751))
+- Another way for tags displaying & collapsible panels ([#754](https://github.com/laravel/horizon/pull/754))
 
 
 ## [v3.5.0 (2020-01-28)](https://github.com/laravel/horizon/compare/v3.4.7...v3.5.0)
