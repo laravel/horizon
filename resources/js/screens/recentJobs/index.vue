@@ -173,7 +173,10 @@
                         <span v-if="job.status != 'failed'" :title="job.name">{{jobBaseName(job.name)}}</span>
                         <router-link v-if="job.status === 'failed'" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
                             {{ jobBaseName(job.name) }}
-                        </router-link><br>
+                        </router-link>
+
+                        <small class="badge badge-primary badge-sm" v-if="job.delayed">Delayed Job</small>
+                        <br>
 
                         <small class="text-muted">
                             <router-link :to="{name: 'recent-jobs-preview', params: {jobId: job.id}}">View detail</router-link> |

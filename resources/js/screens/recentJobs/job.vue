@@ -81,9 +81,14 @@
                     <div class="col-md-2"><strong>Queue</strong></div>
                     <div class="col">{{job.queue}}</div>
                 </div>
+                <div class="row mb-2" v-if="job.delayed">
+                    <div class="col-md-2"><strong>Delayed Until</strong></div>
+                    <div class="col">{{readableTimestamp(job.delayed)}}</div>
+                </div>
                 <div class="row">
                     <div class="col-md-2"><strong>Completed At</strong></div>
-                    <div class="col">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" else>-</div>
                 </div>
             </div>
         </div>
