@@ -27,7 +27,7 @@ mix.options({
     .sass('resources/sass/app-dark.scss', 'public')
     .version()
     .copy('resources/img', 'public/img')
-    .copy('public', '../../horizontest/public/vendor/horizon')
+    .copy('public', '../../public/vendor/horizon')
     .webpackConfig({
         resolve: {
             symlinks: false,
