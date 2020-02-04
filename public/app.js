@@ -62081,11 +62081,7 @@ var render = function() {
                                         }
                                       }
                                     },
-                                    [
-                                      _vm._v(
-                                        "Load New\n                        Entries"
-                                      )
-                                    ]
+                                    [_vm._v("Load New Entries")]
                                   )
                                 : _vm._e()
                             ]),
@@ -62131,15 +62127,6 @@ var render = function() {
                               ]
                             )
                           : _vm._e(),
-                        _vm._v(" "),
-                        job.delayed
-                          ? _c(
-                              "small",
-                              { staticClass: "badge badge-primary badge-sm" },
-                              [_vm._v("Delayed Job")]
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
                         _c("br"),
                         _vm._v(" "),
                         _c(
@@ -62166,27 +62153,14 @@ var render = function() {
                             job.payload.tags.length
                               ? _c("span", [
                                   _vm._v(
-                                    "\n                            | Tags: " +
+                                    "| Tags: " +
                                       _vm._s(
                                         job.payload.tags &&
                                           job.payload.tags.length
-                                          ? job.payload.tags
-                                              .slice(0, 3)
-                                              .join(", ")
+                                          ? job.payload.tags.join(", ")
                                           : ""
                                       )
-                                  ),
-                                  job.payload.tags.length > 3
-                                    ? _c("span", [
-                                        _vm._v(
-                                          " (" +
-                                            _vm._s(
-                                              job.payload.tags.length - 3
-                                            ) +
-                                            " more)"
-                                        )
-                                      ])
-                                    : _vm._e()
+                                  )
                                 ])
                               : _vm._e()
                           ],
@@ -62386,19 +62360,7 @@ var render = function() {
         [
           !_vm.ready ? _c("h5", [_vm._v("Job Preview")]) : _vm._e(),
           _vm._v(" "),
-          _vm.ready ? _c("h5", [_vm._v(_vm._s(_vm.job.name))]) : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "a",
-            {
-              attrs: {
-                "data-toggle": "collapse",
-                href: "#collapseDetails",
-                role: "button"
-              }
-            },
-            [_vm._v("\n                Collapse\n            ")]
-          )
+          _vm.ready ? _c("h5", [_vm._v(_vm._s(_vm.job.name))]) : _vm._e()
         ]
       ),
       _vm._v(" "),
@@ -62435,54 +62397,41 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _vm.ready
-        ? _c(
-            "div",
-            {
-              staticClass: "card-body card-bg-secondary collapse show",
-              attrs: { id: "collapseDetails" }
-            },
-            [
-              _c("div", { staticClass: "row mb-2" }, [
-                _vm._m(0),
-                _vm._v(" "),
-                _c("div", { staticClass: "col" }, [_vm._v(_vm._s(_vm.job.id))])
-              ]),
+        ? _c("div", { staticClass: "card-body card-bg-secondary" }, [
+            _c("div", { staticClass: "row mb-2" }, [
+              _vm._m(0),
               _vm._v(" "),
-              _c("div", { staticClass: "row mb-2" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c("div", { staticClass: "col" }, [
-                  _vm._v(_vm._s(_vm.job.queue))
-                ])
-              ]),
+              _c("div", { staticClass: "col" }, [_vm._v(_vm._s(_vm.job.id))])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row mb-2" }, [
+              _vm._m(1),
               _vm._v(" "),
-              _vm.job.delayed
-                ? _c("div", { staticClass: "row mb-2" }, [
-                    _vm._m(2),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [
-                      _vm._v(_vm._s(_vm.readableTimestamp(_vm.job.delayed)))
-                    ])
-                  ])
-                : _vm._e(),
+              _c("div", { staticClass: "col" }, [_vm._v(_vm._s(_vm.job.queue))])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row mb-2" }, [
+              _vm._m(2),
               _vm._v(" "),
-              _c("div", { staticClass: "row" }, [
-                _vm._m(3),
-                _vm._v(" "),
-                _vm.job.completed_at
-                  ? _c("div", { staticClass: "col" }, [
-                      _vm._v(
-                        _vm._s(_vm.readableTimestamp(_vm.job.completed_at))
-                      )
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("div", { staticClass: "col", attrs: { else: "" } }, [
-                  _vm._v("-")
-                ])
+              _c("div", { staticClass: "col" }, [
+                _vm._v(
+                  _vm._s(
+                    _vm.job.payload.tags && _vm.job.payload.tags.length
+                      ? _vm.job.payload.tags.join(", ")
+                      : ""
+                  )
+                )
               ])
-            ]
-          )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("div", { staticClass: "col" }, [
+                _vm._v(_vm._s(_vm.readableTimestamp(_vm.job.completed_at)))
+              ])
+            ])
+          ])
         : _vm._e()
     ]),
     _vm._v(" "),
@@ -62492,31 +62441,12 @@ var render = function() {
           _vm._v(" "),
           _c(
             "div",
-            {
-              staticClass: "card-body code-bg text-white collapse show",
-              attrs: { id: "collapseData" }
-            },
+            { staticClass: "card-body code-bg text-white" },
             [
               _c("vue-json-pretty", {
                 attrs: { data: _vm.prettyPrintJob(_vm.job.payload.data) }
               })
             ],
-            1
-          )
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    _vm.ready && _vm.job.payload.tags.length
-      ? _c("div", { staticClass: "card mt-4" }, [
-          _vm._m(5),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "card-body code-bg text-white collapse show",
-              attrs: { id: "collapseTags" }
-            },
-            [_c("vue-json-pretty", { attrs: { data: _vm.job.payload.tags } })],
             1
           )
         ])
@@ -62545,7 +62475,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-2" }, [
-      _c("strong", [_vm._v("Delayed Until")])
+      _c("strong", [_vm._v("Tags")])
     ])
   },
   function() {
@@ -62566,48 +62496,7 @@ var staticRenderFns = [
         staticClass:
           "card-header d-flex align-items-center justify-content-between"
       },
-      [
-        _c("h5", [_vm._v("Data")]),
-        _vm._v(" "),
-        _c(
-          "a",
-          {
-            attrs: {
-              "data-toggle": "collapse",
-              href: "#collapseData",
-              role: "button"
-            }
-          },
-          [_vm._v("\n                Collapse\n            ")]
-        )
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass:
-          "card-header d-flex align-items-center justify-content-between"
-      },
-      [
-        _c("h5", [_vm._v("Tags")]),
-        _vm._v(" "),
-        _c(
-          "a",
-          {
-            attrs: {
-              "data-toggle": "collapse",
-              href: "#collapseTags",
-              role: "button"
-            }
-          },
-          [_vm._v("\n                Collapse\n            ")]
-        )
-      ]
+      [_c("h5", [_vm._v("Data")])]
     )
   }
 ]
