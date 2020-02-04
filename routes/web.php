@@ -28,6 +28,7 @@ Route::prefix('api')->group(function () {
 
     // Job Routes...
     Route::get('/jobs/recent', 'RecentJobsController@index')->name('horizon.recent-jobs.index');
+    Route::get('/jobs/recent/{id}', 'RecentJobsController@show')->name('horizon.recent-jobs.show');
     Route::get('/jobs/failed', 'FailedJobsController@index')->name('horizon.failed-jobs.index');
     Route::get('/jobs/failed/{id}', 'FailedJobsController@show')->name('horizon.failed-jobs.show');
     Route::post('/jobs/retry/{id}', 'RetryController@store')->name('horizon.retry-jobs.show');
