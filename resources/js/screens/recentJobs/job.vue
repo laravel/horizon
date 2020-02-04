@@ -58,10 +58,6 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 v-if="!ready">Job Preview</h5>
                 <h5 v-if="ready">{{job.name}}</h5>
-
-                <a data-toggle="collapse" href="#collapseDetails" role="button">
-                    Collapse
-                </a>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -72,7 +68,7 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary collapse show" id="collapseDetails" v-if="ready">
+            <div class="card-body card-bg-secondary" v-if="ready">
                 <div class="row mb-2">
                     <div class="col-md-2"><strong>ID</strong></div>
                     <div class="col">{{job.id}}</div>
@@ -80,6 +76,10 @@
                 <div class="row mb-2">
                     <div class="col-md-2"><strong>Queue</strong></div>
                     <div class="col">{{job.queue}}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Tags</strong></div>
+                    <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-2"><strong>Completed At</strong></div>
@@ -92,28 +92,10 @@
         <div class="card mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>Data</h5>
-
-                <a data-toggle="collapse" href="#collapseData" role="button">
-                    Collapse
-                </a>
             </div>
 
-            <div class="card-body code-bg text-white collapse show" id="collapseData">
+            <div class="card-body code-bg text-white">
                 <vue-json-pretty :data="prettyPrintJob(job.payload.data)"></vue-json-pretty>
-            </div>
-        </div>
-
-        <div class="card mt-4" v-if="ready && job.payload.tags.length">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Tags</h5>
-
-                <a data-toggle="collapse" href="#collapseTags" role="button">
-                    Collapse
-                </a>
-            </div>
-
-            <div class="card-body code-bg text-white collapse show" id="collapseTags">
-                <vue-json-pretty :data="job.payload.tags"></vue-json-pretty>
             </div>
         </div>
     </div>
