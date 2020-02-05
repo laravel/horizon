@@ -81,6 +81,10 @@
                     <div class="col-md-2"><strong>Queue</strong></div>
                     <div class="col">{{job.queue}}</div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Pushed At</strong></div>
+                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+                </div>
                 <div class="row mb-2" v-if="job.delayed">
                     <div class="col-md-2"><strong>Delayed Until</strong></div>
                     <div class="col">{{readableTimestamp(job.delayed)}}</div>
