@@ -11,8 +11,7 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) {
-}
+} catch (e) {}
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
@@ -46,12 +45,12 @@ Vue.component('alert', require('./components/Alert.vue').default);
 
 Vue.mixin(Base);
 
-Vue.directive('tooltip', function(el, binding){
+Vue.directive('tooltip', function (el, binding) {
     $(el).tooltip({
         title: binding.value,
         placement: binding.arg,
-        trigger: 'hover'
-    })
+        trigger: 'hover',
+    });
 });
 
 new Vue({
