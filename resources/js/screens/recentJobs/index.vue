@@ -1,6 +1,4 @@
 <script type="text/ecmascript-6">
-    import $ from 'jquery';
-
     export default {
         /**
          * The component's data.
@@ -175,7 +173,7 @@
                             {{ jobBaseName(job.name) }}
                         </router-link>
 
-                        <small class="badge badge-primary text-white badge-sm" v-if="job.delayed">Delayed</small>
+                        <small class="badge badge-primary text-white badge-sm" v-tooltip:top="readableTimestamp(job.delayed)" v-if="job.delayed">Delayed</small>
                         <br>
 
                         <small class="text-muted">

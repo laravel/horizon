@@ -38,7 +38,7 @@ class RecentJobsController extends Controller
         $jobs = $this->jobs->getRecent($request->query('starting_at', -1))->map(function ($job) {
             $job->payload = json_decode($job->payload);
 
-            $job->delayed = optional(unserialize($job->payload->data->command))->delay ? true : false;
+            $job->delayed = strtotime(optional(unserialize($job->payload->data->command))->delay);
 
             return $job;
         })->values();
