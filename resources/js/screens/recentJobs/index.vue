@@ -175,7 +175,7 @@
                             {{ jobBaseName(job.name) }}
                         </router-link>
 
-                        <small class="badge badge-primary badge-sm" v-if="job.delayed">Delayed Job</small>
+                        <small class="badge badge-primary text-white badge-sm" v-if="job.delayed">Delayed</small>
                         <br>
 
                         <small class="text-muted">
