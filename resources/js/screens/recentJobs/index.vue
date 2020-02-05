@@ -173,7 +173,7 @@
                             {{ jobBaseName(job.name) }}
                         </router-link>
 
-                        <small class="badge badge-primary text-white badge-sm" v-tooltip:top="readableTimestamp(job.delayed)" v-if="job.delayed">Delayed</small>
+                        <small class="badge badge-secondary badge-sm" v-tooltip:top="`Delayed for ${readableHumanTimestamp(job.delayed)}`" v-if="job.delayed && (job.status == 'reserved' || job.status == 'pending')">Delayed</small>
                         <br>
 
                         <small class="text-muted">
