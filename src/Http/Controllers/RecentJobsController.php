@@ -38,8 +38,6 @@ class RecentJobsController extends Controller
         $jobs = $this->jobs->getRecent($request->query('starting_at', -1))->map(function ($job) {
             $job->payload = json_decode($job->payload);
 
-            $job->delayed = strtotime(optional(unserialize($job->payload->data->command))->delay);
-
             return $job;
         })->values();
 
@@ -65,8 +63,6 @@ class RecentJobsController extends Controller
     protected function decode($job)
     {
         $job->payload = json_decode($job->payload);
-
-        $job->delayed = strtotime(optional(unserialize($job->payload->data->command))->delay);
 
         return $job;
     }
