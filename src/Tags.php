@@ -119,7 +119,7 @@ class Tags
         $models = [];
 
         foreach ($targets as $target) {
-            if($target instanceof static::$notificationTagEnvelopeClass) {
+            if(static::$notificationTagEnvelopeClass && $target instanceof static::$notificationTagEnvelopeClass) {
                 $target = $target->job->notification;
             }
             $models[] = collect(
