@@ -91,21 +91,26 @@ class Tags
                 return [
                     static::$notificationTagEnvelopeClass ?
                         new static::$notificationTagEnvelopeClass($job) :
-                        static::$notificationTagEnvelopeClass = new class ($job){
+                        static::$notificationTagEnvelopeClass = new class($job) {
                             public $job;
-                            public function __construct($job){
+
+                            public function __construct($job)
+                            {
                                 $this->job = $job;
                             }
-                            public function tags(){
+
+                            public function tags()
+                            {
                                 return method_exists($this->job->notification, 'tags') ?
                                     $this->job->notification->tags($this->job) : [];
                             }
-                        }
+                        },
                 ];
             default:
                 return [$job];
         }
     }
+
     private static $notificationTagEnvelopeClass;
 
     /**
@@ -119,7 +124,7 @@ class Tags
         $models = [];
 
         foreach ($targets as $target) {
-            if(static::$notificationTagEnvelopeClass && $target instanceof static::$notificationTagEnvelopeClass) {
+            if (static::$notificationTagEnvelopeClass && $target instanceof static::$notificationTagEnvelopeClass) {
                 $target = $target->job->notification;
             }
             $models[] = collect(
