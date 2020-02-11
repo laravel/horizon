@@ -88,11 +88,25 @@ class Tags
             case $job instanceof SendQueuedMailable:
                 return [$job->mailable];
             case $job instanceof SendQueuedNotifications:
-                return [$job->notification];
+                return [
+                    static::$notificationTagEnvelopeClass ?
+                        new static::$notificationTagEnvelopeClass($job) :
+                        static::$notificationTagEnvelopeClass = new class ($job){
+                            public $job;
+                            public function __construct($job){
+                                $this->job = $job;
+                            }
+                            public function tags(){
+                                return method_exists($this->job->notification, 'tags') ?
+                                    $this->job->notification->tags($this->job) : [];
+                            }
+                        }
+                ];
             default:
                 return [$job];
         }
     }
+    private static $notificationTagEnvelopeClass;
 
     /**
      * Get the models from the given object.
@@ -105,6 +119,9 @@ class Tags
         $models = [];
 
         foreach ($targets as $target) {
+            if($target instanceof static::$notificationTagEnvelopeClass) {
+                $target = $target->job->notification;
+            }
             $models[] = collect(
                 (new ReflectionClass($target))->getProperties()
             )->map(function ($property) use ($target) {
