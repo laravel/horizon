@@ -1,6 +1,4 @@
 <script type="text/ecmascript-6">
-    import $ from 'jquery';
-
     export default {
         /**
          * The component's data.

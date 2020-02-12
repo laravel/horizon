@@ -1,5 +1,6 @@
 <script type="text/ecmascript-6">
     import phpunserialize from 'phpunserialize'
+    import moment from "moment-timezone";
 
     export default {
         components: {
@@ -14,6 +15,20 @@
                 ready: false,
                 job: {}
             };
+        },
+
+        computed: {
+            unserialized() {
+                return phpunserialize(this.job.payload.data.command);
+            },
+
+            delayed() {
+                if(this.unserialized && this.unserialized.delay){
+                    return moment.utc(this.unserialized.delay.date).local().format('YYYY-MM-DD HH:mm:ss');
+                }
+
+                return null;
+            },
         },
 
 
@@ -81,9 +96,18 @@
                     <div class="col-md-2"><strong>Queue</strong></div>
                     <div class="col">{{job.queue}}</div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Pushed At</strong></div>
+                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+                </div>
+                <div class="row mb-2" v-if="delayed">
+                    <div class="col-md-2"><strong>Delayed Until</strong></div>
+                    <div class="col">{{delayed}}</div>
+                </div>
                 <div class="row">
                     <div class="col-md-2"><strong>Completed At</strong></div>
-                    <div class="col">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" else>-</div>
                 </div>
             </div>
         </div>
