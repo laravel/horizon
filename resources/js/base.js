@@ -44,6 +44,6 @@ export default {
          */
         readableTimestamp(timestamp) {
             return this.formatDate(timestamp).format('YYYY-MM-DD HH:mm:ss');
-        }
+        },
     },
 };
