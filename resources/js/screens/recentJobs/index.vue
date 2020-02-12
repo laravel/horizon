@@ -166,16 +166,17 @@
                 </thead>
 
                 <tbody>
-                <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
-                    <td colspan="100" class="text-center card-bg-secondary py-1">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
-                            Entries</a></small>
+                    <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
+                        <td colspan="100" class="text-center card-bg-secondary py-1">
+                            <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
+                                Entries</a></small>
 
-                        <small v-if="loadingNewEntries">Loading...</small>
-                    </td>
-                </tr>
+                            <small v-if="loadingNewEntries">Loading...</small>
+                        </td>
+                    </tr>
 
-                <tr v-for="job in jobs" :key="job.id" :job="job" is="job-row"></tr>
+                    <tr v-for="job in jobs" :key="job.id" :job="job" is="job-row">
+                    </tr>
                 </tbody>
             </table>
 
