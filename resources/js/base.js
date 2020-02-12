@@ -45,12 +45,5 @@ export default {
         readableTimestamp(timestamp) {
             return this.formatDate(timestamp).format('YYYY-MM-DD HH:mm:ss');
         },
-
-        /**
-         * Convert to human readable timestamp e.g. "18 minutes".
-         */
-        readableHumanTimestamp(timestamp) {
-            return this.formatDate(timestamp).fromNow(true);
-        },
     },
 };
