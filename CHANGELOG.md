@@ -1,6 +1,23 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.5.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.6.1...master)
+
+### Changed
+- Dropped support for Laravel 5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
+- Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
+
+
+## [v3.6.1 (2020-02-12)](https://github.com/laravel/horizon/compare/v3.6.0...v3.6.1)
+
+### Fixed
+- Fix wrong value for failedJobs periods ([#757](https://github.com/laravel/horizon/pull/757))
+
+
+## [v3.6.0 (2020-02-04)](https://github.com/laravel/horizon/compare/v3.5.0...v3.6.0)
+
+### Added
+- Ability to view job details in recent jobs overview ([#751](https://github.com/laravel/horizon/pull/751))
+- Another way for tags displaying & collapsible panels ([#754](https://github.com/laravel/horizon/pull/754))
 
 
 ## [v3.5.0 (2020-01-28)](https://github.com/laravel/horizon/compare/v3.4.7...v3.5.0)

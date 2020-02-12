@@ -5,22 +5,16 @@ services:
   - redis-server
 
 php:
-  - 7.1
   - 7.2
   - 7.3
   - 7.4
 
 env:
   matrix:
-    - LARAVEL=5.7.*
-    - LARAVEL=5.8.*
-    - LARAVEL=^6.0
+    - LARAVEL=^7.0
 
 matrix:
   fast_finish: true
-  exclude:
-    - php: 7.1
-      env: LARAVEL=^6.0
 
 before_install:
   - phpenv config-rm xdebug.ini || true

@@ -224,7 +224,7 @@
                         <br>
 
                         <small class="text-muted">
-                            Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
+                            Queue: {{job.queue}} | Attempts: {{ job.payload.attempts }} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
                         </small>
                     </td>
 

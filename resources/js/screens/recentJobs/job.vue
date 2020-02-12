@@ -42,6 +42,9 @@
         },
 
         methods: {
+            /**
+             * Load a job by the given ID.
+             */
             loadJob(id) {
                 this.ready = false;
 
@@ -55,9 +58,6 @@
 
             /**
              * Pretty print serialized job.
-             *
-             * @param data
-             * @returns {string}
              */
             prettyPrintJob(data) {
                 return data.command && !data.command.includes('CallQueuedClosure')

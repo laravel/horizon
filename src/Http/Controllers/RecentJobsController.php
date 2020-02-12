@@ -47,6 +47,12 @@ class RecentJobsController extends Controller
         ];
     }
 
+    /**
+     * Get the details of a recent job by ID.
+     *
+     * @param  string  $id
+     * @return array
+     */
     public function show($id)
     {
         return (array) $this->jobs->getJobs([$id])->map(function ($job) {
