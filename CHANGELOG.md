@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.6.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.6.1...3.0)
+
+
+## [v3.6.1 (2020-02-12)](https://github.com/laravel/horizon/compare/v3.6.0...v3.6.1)
+
+### Fixed
+- Fix wrong value for failedJobs periods ([#757](https://github.com/laravel/horizon/pull/757))
 
 
 ## [v3.6.0 (2020-02-04)](https://github.com/laravel/horizon/compare/v3.5.0...v3.6.0)
