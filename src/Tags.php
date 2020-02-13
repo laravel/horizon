@@ -41,7 +41,7 @@ class Tags
     {
         return $job instanceof CallQueuedListener
                     ? static::tagsForListener($job)
-                    : static::explicitTags(static::targetsFor($job),$job);
+                    : static::explicitTags(static::targetsFor($job), $job);
     }
 
     /**
