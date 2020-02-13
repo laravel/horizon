@@ -41,7 +41,7 @@ class Tags
     {
         return $job instanceof CallQueuedListener
                     ? static::tagsForListener($job)
-                    : static::explicitTags(static::targetsFor($job));
+                    : static::explicitTags(static::targetsFor($job),$job);
     }
 
     /**
@@ -62,13 +62,14 @@ class Tags
     /**
      * Determine tags for the given job.
      *
-     * @param  array  $jobs
+     * @param array $jobs
+     * @param $queuedJob
      * @return mixed
      */
-    protected static function explicitTags(array $jobs)
+    protected static function explicitTags(array $jobs, $queuedJob)
     {
-        return collect($jobs)->map(function ($job) {
-            return method_exists($job, 'tags') ? $job->tags() : [];
+        return collect($jobs)->map(function ($job) use ($queuedJob) {
+            return method_exists($job, 'tags') ? $job->tags($queuedJob) : [];
         })->collapse()->unique()->all();
     }
 
