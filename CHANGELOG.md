@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.6.1...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.0...3.0)
+
+
+## [v3.7.0 (2020-02-14)](https://github.com/laravel/horizon/compare/v3.6.1...v3.7.0)
+
+### Added
+- Ability to see if a job is delayed ([#755](https://github.com/laravel/horizon/pull/755))
+- Allow trimming of completed jobs ([#720](https://github.com/laravel/horizon/pull/720))
 
 
 ## [v3.6.1 (2020-02-12)](https://github.com/laravel/horizon/compare/v3.6.0...v3.6.1)
