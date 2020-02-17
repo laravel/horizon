@@ -1,57 +1,3 @@
-<script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize'
-
-    export default {
-        components: {
-            'stack-trace': require('./../../components/Stacktrace').default
-        },
-
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                job: {}
-            };
-        },
-
-
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            this.loadJob(this.$route.params.jobId);
-
-            document.title = "Horizon - Job Detail";
-        },
-
-        methods: {
-            /**
-             * Load a job by the given ID.
-             */
-            loadJob(id) {
-                this.ready = false;
-
-                this.$http.get(Horizon.basePath + '/api/jobs/recent/' + id)
-                    .then(response => {
-                        this.job = response.data;
-
-                        this.ready = true;
-                    });
-            },
-
-            /**
-             * Pretty print serialized job.
-             */
-            prettyPrintJob(data) {
-                return data.command && !data.command.includes('CallQueuedClosure')
-                    ? phpunserialize(data.command) : data;
-            }
-        }
-    }
-</script>
-
 <template>
     <div>
         <div class="card">
@@ -77,13 +23,26 @@
                     <div class="col-md-2"><strong>ID</strong></div>
                     <div class="col">{{job.id}}</div>
                 </div>
+
                 <div class="row mb-2">
                     <div class="col-md-2"><strong>Queue</strong></div>
                     <div class="col">{{job.queue}}</div>
                 </div>
+
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Pushed At</strong></div>
+                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+                </div>
+
+                <div class="row mb-2" v-if="delayed">
+                    <div class="col-md-2"><strong>Delayed Until</strong></div>
+                    <div class="col">{{delayed}}</div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-2"><strong>Completed At</strong></div>
-                    <div class="col">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" else>-</div>
                 </div>
             </div>
         </div>
@@ -118,3 +77,72 @@
         </div>
     </div>
 </template>
+
+<script type="text/ecmascript-6">
+    import phpunserialize from 'phpunserialize'
+    import moment from "moment-timezone";
+
+    export default {
+        components: {
+            'stack-trace': require('./../../components/Stacktrace').default
+        },
+
+        /**
+         * The component's data.
+         */
+        data() {
+            return {
+                ready: false,
+                job: {}
+            };
+        },
+
+        computed: {
+            unserialized() {
+                return phpunserialize(this.job.payload.data.command);
+            },
+
+            delayed() {
+                if(this.unserialized && this.unserialized.delay){
+                    return moment.utc(this.unserialized.delay.date).local().format('YYYY-MM-DD HH:mm:ss');
+                }
+
+                return null;
+            },
+        },
+
+
+        /**
+         * Prepare the component.
+         */
+        mounted() {
+            this.loadJob(this.$route.params.jobId);
+
+            document.title = "Horizon - Job Detail";
+        },
+
+        methods: {
+            /**
+             * Load a job by the given ID.
+             */
+            loadJob(id) {
+                this.ready = false;
+
+                this.$http.get(Horizon.basePath + '/api/jobs/' + id)
+                    .then(response => {
+                        this.job = response.data;
+
+                        this.ready = true;
+                    });
+            },
+
+            /**
+             * Pretty print serialized job.
+             */
+            prettyPrintJob(data) {
+                return data.command && !data.command.includes('CallQueuedClosure')
+                    ? phpunserialize(data.command) : data;
+            }
+        }
+    }
+</script>

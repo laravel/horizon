@@ -6,6 +6,12 @@
 - Dropped support for Laravel 5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
 - Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
 
+## [v3.7.0 (2020-02-14)](https://github.com/laravel/horizon/compare/v3.6.1...v3.7.0)
+
+### Added
+- Ability to see if a job is delayed ([#755](https://github.com/laravel/horizon/pull/755))
+- Allow trimming of completed jobs ([#720](https://github.com/laravel/horizon/pull/720))
+
 
 ## [v3.6.1 (2020-02-12)](https://github.com/laravel/horizon/compare/v3.6.0...v3.6.1)
 

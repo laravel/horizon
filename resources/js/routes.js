@@ -58,14 +58,20 @@ export default [
     },
 
     {
-        path: '/recent-jobs',
-        name: 'recent-jobs',
+        path: '/jobs/:type',
+        name: 'jobs',
         component: require('./screens/recentJobs/index').default,
     },
 
     {
-        path: '/recent-jobs/:jobId',
-        name: 'recent-jobs-preview',
+        path: '/jobs/pending/:jobId',
+        name: 'pending-jobs-preview',
+        component: require('./screens/recentJobs/job').default,
+    },
+
+    {
+        path: '/jobs/completed/:jobId',
+        name: 'completed-jobs-preview',
         component: require('./screens/recentJobs/job').default,
     },
 
