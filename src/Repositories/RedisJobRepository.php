@@ -454,7 +454,7 @@ class RedisJobRepository implements JobRepository
             $pipe->hmset(
                 $payload->id(), [
                     'status' => 'completed',
-                    'completed_at' => str_replace(',', '.', microtime(true))
+                    'completed_at' => str_replace(',', '.', microtime(true)),
                 ]
             );
 

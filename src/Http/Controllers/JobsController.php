@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Laravel\Horizon\Contracts\JobRepository;
 
 class JobsController extends Controller
