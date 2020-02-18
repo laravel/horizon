@@ -43,18 +43,18 @@ class RedisJobRepository implements JobRepository
     public $recentJobExpires;
 
     /**
+     * The number of minutes until pending jobs should be purged.
+     *
+     * @var int
+     */
+    public $pendingJobExpires;    
+
+    /**
      * The number of minutes until completed jobs should be purged.
      *
      * @var int
      */
     public $completedJobExpires;
-
-    /**
-     * The number of minutes until pending jobs should be purged.
-     *
-     * @var int
-     */
-    public $pendingJobExpires;
 
     /**
      * The number of minutes until failed jobs should be purged.
@@ -80,8 +80,8 @@ class RedisJobRepository implements JobRepository
     {
         $this->redis = $redis;
         $this->recentJobExpires = config('horizon.trim.recent', 60);
-        $this->completedJobExpires = config('horizon.trim.completed', 60);
         $this->pendingJobExpires = config('horizon.trim.pending', 60);
+        $this->completedJobExpires = config('horizon.trim.completed', 60);
         $this->failedJobExpires = config('horizon.trim.failed', 10080);
         $this->recentFailedJobExpires = config('horizon.trim.recent_failed', $this->failedJobExpires);
         $this->monitoredJobExpires = config('horizon.trim.monitored', 10080);
