@@ -1,6 +1,4 @@
 <script type="text/ecmascript-6">
-    import $ from 'jquery';
-
     export default {
         props: ['type', 'message', 'autoClose', 'confirmationProceed', 'confirmationCancel'],
 

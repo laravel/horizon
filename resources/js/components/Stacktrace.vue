@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import _ from "lodash"
+    import _take from "lodash/take"
 
     export default {
         props: ['trace'],
@@ -16,7 +16,7 @@
 
         computed: {
             lines(){
-                return this.showAll ? _.take(this.trace, 1000) : _.take(this.trace, this.minimumLines);
+                return this.showAll ? _take(this.trace, 1000) : _take(this.trace, this.minimumLines);
             }
         }
     }
