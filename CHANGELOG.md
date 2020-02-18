@@ -1,12 +1,5 @@
 # Release Notes
 
-<<<<<<< HEAD
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.6.1...master)
-
-### Changed
-- Dropped support for Laravel 5.8 ([8216c34](https://github.com/laravel/horizon/commit/8216c34736564998380f97252c117716020aee0a))
-- Bumped minimum Symfony dependencies to 4.3 ([2eb9d6d](https://github.com/laravel/horizon/commit/2eb9d6d77acd5e8b42da0a8146c9e8d8105fbd8a))
-=======
 ## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.1...3.0)
 
 
@@ -15,7 +8,6 @@
 ### Fixed
 - Use 'default' connection as a default redis connection ([#765](https://github.com/laravel/horizon/pull/765))
 
->>>>>>> 42f565649fa778a9a2b1c995df932871f89afa35
 
 ## [v3.7.0 (2020-02-14)](https://github.com/laravel/horizon/compare/v3.6.1...v3.7.0)
 
