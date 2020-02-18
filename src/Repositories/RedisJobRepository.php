@@ -47,7 +47,7 @@ class RedisJobRepository implements JobRepository
      *
      * @var int
      */
-    public $pendingJobExpires;    
+    public $pendingJobExpires;
 
     /**
      * The number of minutes until completed jobs should be purged.
