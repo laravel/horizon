@@ -535,14 +535,14 @@ class RedisJobRepository implements JobRepository
             );
 
             $pipe->zremrangebyscore(
-                'completed_jobs',
-                Chronos::now()->subMinutes($this->completedJobExpires)->getTimestamp() * -1,
+                'pending_jobs',
+                Chronos::now()->subMinutes($this->pendingJobExpires)->getTimestamp() * -1,
                 '+inf'
             );
 
             $pipe->zremrangebyscore(
-                'pending_jobs',
-                Chronos::now()->subMinutes($this->pendingJobExpires)->getTimestamp() * -1,
+                'completed_jobs',
+                Chronos::now()->subMinutes($this->completedJobExpires)->getTimestamp() * -1,
                 '+inf'
             );
         });
