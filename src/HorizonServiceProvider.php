@@ -127,7 +127,7 @@ class HorizonServiceProvider extends ServiceProvider
             __DIR__.'/../config/horizon.php', 'horizon'
         );
 
-        Horizon::use(config('horizon.use'));
+        Horizon::use(config('horizon.use', 'default'));
     }
 
     /**
