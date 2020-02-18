@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.0...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.1...3.0)
+
+
+## [v3.7.1 (2020-02-18)](https://github.com/laravel/horizon/compare/v3.7.0...v3.7.1)
+
+### Fixed
+- Use 'default' connection as a default redis connection ([#765](https://github.com/laravel/horizon/pull/765))
 
 
 ## [v3.7.0 (2020-02-14)](https://github.com/laravel/horizon/compare/v3.6.1...v3.7.0)
