@@ -7,8 +7,6 @@
                 {{ jobBaseName(job.name) }}
             </router-link>
 
-            {{ job.id }}
-
             <small class="badge badge-secondary badge-sm"
                     v-tooltip:top="`Delayed for ${delayed}`"
                     v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
