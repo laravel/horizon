@@ -175,6 +175,7 @@
                     </router-link><br>
 
                     <small class="text-muted">
+                        <router-link :to="{name: 'recent-jobs-preview', params: {jobId: job.id}}">View detail</router-link> | 
                         Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
                     </small>
                 </td>
