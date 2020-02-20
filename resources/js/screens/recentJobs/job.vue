@@ -103,8 +103,12 @@
             },
 
             delayed() {
-                if(this.unserialized && this.unserialized.delay){
-                    return moment.utc(this.unserialized.delay.date).local().format('YYYY-MM-DD HH:mm:ss');
+                let unserialized = phpunserialize(this.job.payload.data.command);
+
+                if (unserialized && unserialized.delay) {
+                    return moment.tz(unserialized.delay.date, unserialized.delay.timezone)
+                        .local()
+                        .format('YYYY-MM-DD HH:mm:ss');
                 }
 
                 return null;
