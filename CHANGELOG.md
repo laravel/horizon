@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.1...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...3.0)
+
+
+## [v3.7.2 (2020-02-25)](https://github.com/laravel/horizon/compare/v3.7.1...v3.7.2)
+
+### Fixed
+- Use provided timezone for delay due ([aa69357](https://github.com/laravel/horizon/commit/aa6935737c093c9abae26f7ebe16980b4b7803e9))
 
 
 ## [v3.7.1 (2020-02-18)](https://github.com/laravel/horizon/compare/v3.7.0...v3.7.1)
