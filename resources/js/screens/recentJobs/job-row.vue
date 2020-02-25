@@ -50,7 +50,11 @@
 
         computed: {
             unserialized() {
-                return phpunserialize(this.job.payload.data.command);
+                try {
+                    return phpunserialize(this.job.payload.data.command);
+                }catch(err){
+                    //
+                }
             },
 
             delayed() {

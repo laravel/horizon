@@ -103,7 +103,13 @@
             },
 
             delayed() {
-                let unserialized = phpunserialize(this.job.payload.data.command);
+                let unserialized;
+
+                try {
+                    unserialized = phpunserialize(this.job.payload.data.command);
+                }catch(err){
+                    //
+                }
 
                 if (unserialized && unserialized.delay) {
                     return moment.tz(unserialized.delay.date, unserialized.delay.timezone)
