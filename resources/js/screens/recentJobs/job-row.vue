@@ -58,8 +58,9 @@
             },
 
             delayed() {
-                if (this.unserialized && this.unserialized.delay){
-                    return moment.utc(this.unserialized.delay.date).fromNow(true);
+                if (this.unserialized && this.unserialized.delay) {
+                    return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
+                        .fromNow(true);
                 }
 
                 return null;
