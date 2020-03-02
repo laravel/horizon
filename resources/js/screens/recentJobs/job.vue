@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-md-2"><strong>Completed At</strong></div>
                     <div class="col" v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</div>
-                    <div class="col" else>-</div>
+                    <div class="col" v-else>-</div>
                 </div>
             </div>
         </div>
