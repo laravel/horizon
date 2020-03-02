@@ -6,7 +6,7 @@ With every upgrade, make sure to publish Horizon's assets:
 
 ## Upgrading To 4.0 From 3.x
 
-### Minimum Laravel Bersion
+### Minimum Laravel Version
 
 PR: https://github.com/laravel/horizon/pull/710
 
