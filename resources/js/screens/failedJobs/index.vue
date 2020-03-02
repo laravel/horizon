@@ -114,6 +114,8 @@
                         setTimeout(() => {
                             this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
                         }, 5000);
+                    }).catch(error => {
+                        this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
                     });
             },
 
