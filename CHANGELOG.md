@@ -2,6 +2,15 @@
 
 ## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...master)
 
+### Added
+- Add 'view details' to tag-jobs screen ([#775](https://github.com/laravel/horizon/pull/775))
+- Add separate screen for completed jobs ([#767](https://github.com/laravel/horizon/pull/767))
+
+### Changed
+- Bumped minimum dependencies to Laravel 7.0 and Symfony 5.0 ([#710](https://github.com/laravel/horizon/pull/710))
+- Changed default Redis prefix ([#643](https://github.com/laravel/horizon/pull/643))
+- Suggest predis instead of requiring it ([#531](https://github.com/laravel/horizon/pull/531))
+
 
 ## [v3.7.2 (2020-02-25)](https://github.com/laravel/horizon/compare/v3.7.1...v3.7.2)
 
