@@ -7,7 +7,7 @@
 - Add separate screen for completed jobs ([#767](https://github.com/laravel/horizon/pull/767))
 
 ### Changed
-- Bumped minimum dependencies to Laravel 7.0 and Symfony 5.0 ([#710](https://github.com/laravel/horizon/pull/710))
+- Bumped minimum dependencies to Laravel 7.0 ([#710](https://github.com/laravel/horizon/pull/710))
 - Changed default Redis prefix ([#643](https://github.com/laravel/horizon/pull/643))
 - Suggest predis instead of requiring it ([#531](https://github.com/laravel/horizon/pull/531))
 
