@@ -1,6 +1,31 @@
 # Upgrade Guide
 
-## Upgrading To 3.0 From 2.0
+With every upgrade, make sure to re-publish Horizon's assets:
+
+    php artisan horizon:assets
+
+## Upgrading To 4.0 From 3.x
+
+### Minimum Laravel version
+
+PR: https://github.com/laravel/horizon/pull/710
+
+Laravel 7.0 is now the minimum supported version of the framework and you should upgrade to continue using Horizon.
+
+### Predis No Longer Required
+
+PR: https://github.com/laravel/horizon/pull/531
+
+Because Predis is no longer maintained, it's no longer a required dependency. If you want to continue to use Predis, you should explicitly require it in your `composer.json` file.
+
+### Default Predis Prefix
+
+PR: https://github.com/laravel/horizon/pull/643
+
+The default Predis prefix now starts with the app name. If you want the old prefix to continue be set you should explicitly set `HORIZON_PREFIX="horizon:"` in your `.env` file.
+
+
+## Upgrading To 3.0 From 2.x
 
 ### Minimum Laravel version
 
