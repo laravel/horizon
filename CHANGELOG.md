@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...master)
 
 
 ## [v3.7.2 (2020-02-25)](https://github.com/laravel/horizon/compare/v3.7.1...v3.7.2)
