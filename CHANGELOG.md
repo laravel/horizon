@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...4.x)
 
 ### Added
 - Add 'view details' to tag-jobs screen ([#775](https://github.com/laravel/horizon/pull/775))
