@@ -4,8 +4,8 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
-use RuntimeException;
 use Illuminate\Support\Facades\File;
+use RuntimeException;
 
 class Horizon
 {
