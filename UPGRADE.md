@@ -2,7 +2,7 @@
 
 With every upgrade, make sure to publish Horizon's assets:
 
-    php artisan horizon:assets
+    php artisan horizon:publish
 
 ## Upgrading To 4.0 From 3.x
 
@@ -23,6 +23,12 @@ Because Predis is no longer maintained, it's no longer a required dependency. If
 PR: https://github.com/laravel/horizon/pull/643
 
 The default Predis prefix now starts with the app name. If you would like to continue using the old prefix, you should add `HORIZON_PREFIX="horizon:"` to your `.env` file.
+
+### Horizon assets command renamed
+
+PR: https://github.com/laravel/horizon/pull/696
+
+The `horizon:assets` command has been renamed to `horizon:publish` to be similar to other first party packages.
 
 ## Upgrading To 3.0 From 2.x
 
