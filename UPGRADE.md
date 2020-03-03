@@ -24,7 +24,7 @@ PR: https://github.com/laravel/horizon/pull/643
 
 The default Predis prefix now starts with the app name. If you would like to continue using the old prefix, you should add `HORIZON_PREFIX="horizon:"` to your `.env` file.
 
-### Horizon assets command renamed
+### Horizon Assets Command
 
 PR: https://github.com/laravel/horizon/pull/696
 
