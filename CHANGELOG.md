@@ -1,7 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.0.0...master)
-
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.0.1...master)
 
 ## [v4.0.1 (2020-03-05)](https://github.com/laravel/horizon/compare/v4.0.0...v4.0.1)
 
