@@ -3,6 +3,12 @@
 ## [Unreleased](https://github.com/laravel/horizon/compare/v4.0.0...master)
 
 
+## [v4.0.1 (2020-03-05)](https://github.com/laravel/horizon/compare/v4.0.0...v4.0.1)
+
+### Fixed
+- Add margin to retries table and make exceptions stacktrace responsive ([ff625c5](https://github.com/laravel/horizon/commit/ff625c5255cf7bfa186634b660b5ee844d6fe4b7))
+
+
 ## [v4.0.0 (2020-03-03)](https://github.com/laravel/horizon/compare/v3.7.2...v4.0.0)
 
 ### Added
