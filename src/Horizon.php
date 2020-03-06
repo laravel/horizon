@@ -173,7 +173,7 @@ class Horizon
     }
 
     /**
-     * Check if assets are up-to-date.
+     * Determine if Horizon's published assets are up-to-date.
      *
      * @return bool
      *
@@ -184,7 +184,7 @@ class Horizon
         $publishedPath = public_path('vendor/horizon/mix-manifest.json');
 
         if (! File::exists($publishedPath)) {
-            throw new RuntimeException('The Horizon assets are not published. Please run: php artisan horizon:publish');
+            throw new RuntimeException('Horizon assets are not published. Please run: php artisan horizon:publish');
         }
 
         return File::get($publishedPath) === File::get(__DIR__.'/../public/mix-manifest.json');
