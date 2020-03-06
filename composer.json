@@ -14,7 +14,7 @@
         "ext-json": "*",
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "cakephp/chronos": "^1.0",
+        "cakephp/chronos": "^2.0",
         "illuminate/contracts": "^7.0",
         "illuminate/queue": "^7.0",
         "illuminate/support": "^7.0",
