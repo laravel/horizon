@@ -115,7 +115,7 @@ class Horizon
     /**
      * Specifies that Horizon should use the dark theme.
      *
-     * @param  boolean  $on
+     * @param  bool  $on
      * @return static
      */
     public static function night($on = true)
