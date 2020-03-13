@@ -109,6 +109,38 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Metrics
+    |--------------------------------------------------------------------------
+    |
+    | Here you can configure how many snapshots should be kept to display in
+    | the metrics graph. You should use this in conjunction with the
+    | `horizon:snapshot` schedule to define how long of a timespan
+    | you want to see in the metrics.
+    |
+    */
+
+    'metrics' => [
+        'trim_snapshots' => [
+            'job' => 24,
+            'queue' => 24,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Theme
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define which theme Horizon should load.
+    |
+    | Supported: "light", "dark"
+    |
+    */
+
+    'theme' => 'light',
+
+    /*
+    |--------------------------------------------------------------------------
     | Fast Termination
     |--------------------------------------------------------------------------
     |
