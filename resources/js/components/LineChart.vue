@@ -62,6 +62,6 @@
 
 <template>
     <div style="position: relative;">
-        <canvas ref="canvas" height="70"></canvas>
+        <canvas ref="canvas" height="120"></canvas>
     </div>
 </template>

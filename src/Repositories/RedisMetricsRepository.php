@@ -274,7 +274,7 @@ class RedisMetricsRepository implements MetricsRepository
         );
 
         $this->connection()->zremrangebyrank(
-            'snapshot:'.$key, 0, -25
+            'snapshot:'.$key, 0, -abs(1 + config('horizon.metrics.trim_snapshots.job', 24))
         );
     }
 
@@ -298,7 +298,7 @@ class RedisMetricsRepository implements MetricsRepository
         );
 
         $this->connection()->zremrangebyrank(
-            'snapshot:'.$key, 0, -25
+            'snapshot:'.$key, 0, -abs(1 + config('horizon.metrics.trim_snapshots.queue', 24))
         );
     }
 

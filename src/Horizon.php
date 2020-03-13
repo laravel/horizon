@@ -59,6 +59,11 @@ class Horizon
         'Metrics', 'Locks', 'Processes',
     ];
 
+    public function __construct()
+    {
+        static::$useDarkTheme = config('horizon.theme') === 'dark';
+    }
+
     /**
      * Determine if the given request can access the Horizon dashboard.
      *
@@ -108,11 +113,12 @@ class Horizon
     /**
      * Specifies that Horizon should use the dark theme.
      *
+     * @param  boolean  $on
      * @return static
      */
-    public static function night()
+    public static function night($on = true)
     {
-        static::$useDarkTheme = true;
+        static::$useDarkTheme = $on;
 
         return new static;
     }
