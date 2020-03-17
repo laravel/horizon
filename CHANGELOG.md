@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.0.1...4.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.0.2...4.x)
+
+
+## [v4.0.2 (2020-03-17)](https://github.com/laravel/horizon/compare/v4.0.1...v4.0.2)
+
+### Changed
+- Show warning when manifest is outdated ([#783](https://github.com/laravel/horizon/pull/783))
 
 
 ## [v4.0.1 (2020-03-05)](https://github.com/laravel/horizon/compare/v4.0.0...v4.0.1)
