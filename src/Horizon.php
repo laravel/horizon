@@ -4,6 +4,8 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\File;
+use RuntimeException;
 
 class Horizon
 {
@@ -168,5 +170,23 @@ class Horizon
         static::$smsNumber = $number;
 
         return new static;
+    }
+
+    /**
+     * Determine if Horizon's published assets are up-to-date.
+     *
+     * @return bool
+     *
+     * @throws \RuntimeException
+     */
+    public static function assetsAreCurrent()
+    {
+        $publishedPath = public_path('vendor/horizon/mix-manifest.json');
+
+        if (! File::exists($publishedPath)) {
+            throw new RuntimeException('Horizon assets are not published. Please run: php artisan horizon:publish');
+        }
+
+        return File::get($publishedPath) === File::get(__DIR__.'/../public/mix-manifest.json');
     }
 }
