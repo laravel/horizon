@@ -61,6 +61,11 @@ class Horizon
         'Metrics', 'Locks', 'Processes',
     ];
 
+    /**
+     * Create a new Horizon configuration instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
         static::$useDarkTheme = config('horizon.theme') === 'dark';
