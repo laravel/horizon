@@ -169,13 +169,11 @@
 
             <tr v-for="job in jobs" :key="job.id">
                 <td>
-                    <span v-if="job.status != 'failed'" :title="job.name">{{jobBaseName(job.name)}}</span>
-                    <router-link v-if="job.status === 'failed'" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
+                    <router-link :title="job.name" :to="{ name: $route.params.type+'-jobs-preview', params: { jobId: job.id }}">
                         {{ jobBaseName(job.name) }}
                     </router-link><br>
 
                     <small class="text-muted">
-                        <router-link :to="{name: 'recent-jobs-preview', params: {jobId: job.id}}">View detail</router-link> | 
                         Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
                     </small>
                 </td>
