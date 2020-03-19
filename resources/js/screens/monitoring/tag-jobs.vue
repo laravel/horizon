@@ -171,12 +171,25 @@
                 <td>
                     <router-link :title="job.name" :to="{ name: $route.params.type+'-jobs-preview', params: { jobId: job.id }}">
                         {{ jobBaseName(job.name) }}
-                    </router-link><br>
+                    </router-link>
+
+                    <small class="badge badge-secondary badge-sm"
+                            v-tooltip:top="`Delayed for ${delayed}`"
+                            v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
+                        Delayed
+                    </small>
+
+                    <br>
 
                     <small class="text-muted">
-                        Queue: {{job.queue}} | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
+                        Queue: {{job.queue}}
+
+                        <span v-if="job.payload.tags.length">
+                            | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.slice(0,3).join(', ') : '' }}<span v-if="job.payload.tags.length > 3"> ({{ job.payload.tags.length - 3 }} more)</span>
+                        </span>
                     </small>
-                </td>
+                </td>>
+                
                 <td class="table-fit">
                     {{ readableTimestamp(job.payload.pushedAt) }}
                 </td>
