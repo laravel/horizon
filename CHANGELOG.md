@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.0.2...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.1.0...master)
+
+
+## [v4.1.0 (2020-03-24)](https://github.com/laravel/horizon/compare/v4.0.2...v4.1.0)
+
+### Added
+- Add metrics options and dark mode config ([#795](https://github.com/laravel/horizon/pull/795))
+
+### Fixed
+- Align design with Pending/Completed jobs screen ([#802](https://github.com/laravel/horizon/pull/802))
 
 
 ## [v4.0.2 (2020-03-17)](https://github.com/laravel/horizon/compare/v4.0.1...v4.0.2)

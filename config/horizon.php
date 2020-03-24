@@ -6,6 +6,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Theme
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define which theme Horizon should load. Horizon currently
+    | provides a light theme and a dark theme, and you may provide one of
+    | those two values in order to determine which theme will get used.
+    |
+    | Supported: "light", "dark"
+    |
+    */
+
+    'theme' => 'light',
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Domain
     |--------------------------------------------------------------------------
     |
@@ -105,6 +120,24 @@ return [
         'recent_failed' => 10080,
         'failed' => 10080,
         'monitored' => 10080,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Metrics
+    |--------------------------------------------------------------------------
+    |
+    | Here you can configure how many snapshots should be kept to display in
+    | the metrics graph. This will get used in combination with Horizon's
+    | `horizon:snapshot` schedule to define how long to retain metrics.
+    |
+    */
+
+    'metrics' => [
+        'trim_snapshots' => [
+            'job' => 24,
+            'queue' => 24,
+        ],
     ],
 
     /*

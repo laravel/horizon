@@ -62,6 +62,16 @@ class Horizon
     ];
 
     /**
+     * Create a new Horizon configuration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        static::$useDarkTheme = config('horizon.theme') === 'dark';
+    }
+
+    /**
      * Determine if the given request can access the Horizon dashboard.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -110,11 +120,12 @@ class Horizon
     /**
      * Specifies that Horizon should use the dark theme.
      *
+     * @param  bool  $on
      * @return static
      */
-    public static function night()
+    public static function night($on = true)
     {
-        static::$useDarkTheme = true;
+        static::$useDarkTheme = $on;
 
         return new static;
     }
