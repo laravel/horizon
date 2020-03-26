@@ -58,7 +58,7 @@ class HorizonCommand extends Command
             $this->line('Shutting down...');
 
             return $master->terminate();
-        }
+        };
         pcntl_signal(SIGINT, $termFunc);
         pcntl_signal(SIGTERM, $termFunc);
 
