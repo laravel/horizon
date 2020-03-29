@@ -4,7 +4,7 @@ With every upgrade, make sure to publish Horizon's assets:
 
     php artisan horizon:publish
 
-## Upgrading To 4.0 From 3.x
+## Upgrading To 4.0 From 3.x and dynamic view
 
 ### Minimum Laravel Version
 
