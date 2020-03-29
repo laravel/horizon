@@ -13,7 +13,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('horizon::layout', [
+        $view = config('horizon.view')?config('horizon.view'):'horizon::layout';
+        return view($view, [
             'cssFile' => Horizon::$useDarkTheme ? 'app-dark.css' : 'app.css',
             'horizonScriptVariables' => Horizon::scriptVariables(),
             'assetsAreCurrent' => Horizon::assetsAreCurrent(),
