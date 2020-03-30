@@ -54,13 +54,14 @@ class HorizonCommand extends Command
 
         pcntl_async_signals(true);
 
-        $termFunc = function () use ($master) {
+        $terminate = function () use ($master) {
             $this->line('Shutting down...');
 
             return $master->terminate();
         };
-        pcntl_signal(SIGINT, $termFunc);
-        pcntl_signal(SIGTERM, $termFunc);
+
+        pcntl_signal(SIGINT, $terminate);
+        pcntl_signal(SIGTERM, $terminate);
 
         $master->monitor();
     }
