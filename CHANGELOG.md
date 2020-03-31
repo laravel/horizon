@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.1.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.2.0...master)
+
+
+## [v4.2.0 (2020-03-31)](https://github.com/laravel/horizon/compare/v4.1.0...v4.2.0)
+
+### Added
+- Support ramsey/uuid v4 ([#807](https://github.com/laravel/horizon/pull/807))
+
+### Fixed
+- Fix for job rows on monitoring tags screen ([#814](https://github.com/laravel/horizon/pull/814), [066ada5](https://github.com/laravel/horizon/commit/066ada5e52f18f1ebec7909f838d43aa2a6cf065))
 
 
 ## [v4.1.0 (2020-03-24)](https://github.com/laravel/horizon/compare/v4.0.2...v4.1.0)
