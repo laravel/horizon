@@ -33,6 +33,10 @@
         <td v-if="$parent.type == 'jobs'" class="table-fit">
             <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
         </td>
+
+        <td v-if="$parent.type == 'failed'" class="table-fit">
+            {{ readableTimestamp(job.failed_at) }}
+        </td>
     </tr>
 </template>
 
