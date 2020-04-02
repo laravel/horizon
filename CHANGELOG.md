@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.2.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.2.1...master)
+
+
+## [v4.2.1 (2020-04-02)](https://github.com/laravel/horizon/compare/v4.2.0...v4.2.1)
+
+### Fixed
+- Revert dark mode breaking change ([fdfbd5b](https://github.com/laravel/horizon/commit/fdfbd5b2f7bb1dfdf2e40518b263337c07b6b22c))
 
 
 ## [v4.2.0 (2020-03-31)](https://github.com/laravel/horizon/compare/v4.1.0...v4.2.0)

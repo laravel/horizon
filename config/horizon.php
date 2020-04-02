@@ -6,21 +6,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Theme
-    |--------------------------------------------------------------------------
-    |
-    | Here you can define which theme Horizon should load. Horizon currently
-    | provides a light theme and a dark theme, and you may provide one of
-    | those two values in order to determine which theme will get used.
-    |
-    | Supported: "light", "dark"
-    |
-    */
-
-    'theme' => 'light',
-
-    /*
-    |--------------------------------------------------------------------------
     | Horizon Domain
     |--------------------------------------------------------------------------
     |
