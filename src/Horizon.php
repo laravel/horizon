@@ -68,7 +68,7 @@ class Horizon
      */
     public function __construct()
     {
-        if(is_null(static::$useDarkTheme)) {
+        if (is_null(static::$useDarkTheme)) {
             static::$useDarkTheme = config('horizon.theme') === 'dark';
         }
     }
