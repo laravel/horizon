@@ -49,7 +49,7 @@ class Horizon
      *
      * @var bool
      */
-    public static $useDarkTheme = false;
+    public static $useDarkTheme;
 
     /**
      * The database configuration methods.
@@ -60,6 +60,18 @@ class Horizon
         'Jobs', 'Supervisors', 'CommandQueue', 'Tags',
         'Metrics', 'Locks', 'Processes',
     ];
+
+    /**
+     * Create a new Horizon configuration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        if(is_null(static::$useDarkTheme)) {
+            static::$useDarkTheme = config('horizon.theme') === 'dark';
+        }
+    }
 
     /**
      * Determine if the given request can access the Horizon dashboard.
@@ -110,11 +122,12 @@ class Horizon
     /**
      * Specifies that Horizon should use the dark theme.
      *
+     * @param  bool  $on
      * @return static
      */
-    public static function night()
+    public static function night($on = true)
     {
-        static::$useDarkTheme = true;
+        static::$useDarkTheme = $on;
 
         return new static;
     }
