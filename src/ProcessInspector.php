@@ -86,7 +86,7 @@ class ProcessInspector
     public function monitoredMastersWithSupervisors()
     {
         return collect(app(MasterSupervisorRepository::class)->all())->filter(function ($master) {
-            return !empty($this->exec->run("pgrep -P " . data_get($master, 'pid')));
+            return ! empty($this->exec->run('pgrep -P '.data_get($master, 'pid')));
         })
             ->values()
             ->all();
@@ -99,9 +99,9 @@ class ProcessInspector
      */
     public function mastersWithoutSupervisors()
     {
-        return collect($this->exec->run("pgrep -f [h]orizon$"))
+        return collect($this->exec->run('pgrep -f [h]orizon$'))
             ->filter(function ($pid) {
-                return empty($this->exec->run("pgrep -P {$pid}"));
+                return empty($this->exec->run('pgrep -P ' . $pid));
             })
             ->values()
             ->all();
