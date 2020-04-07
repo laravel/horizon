@@ -101,7 +101,7 @@ class ProcessInspector
     {
         return collect($this->exec->run('pgrep -f [h]orizon$'))
             ->filter(function ($pid) {
-                return empty($this->exec->run('pgrep -P ' . $pid));
+                return empty($this->exec->run('pgrep -P '.$pid));
             })
             ->values()
             ->all();
