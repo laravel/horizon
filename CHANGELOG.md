@@ -1,6 +1,54 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v3.7.2...3.0)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.2.1...4.x)
+
+
+## [v4.2.1 (2020-04-02)](https://github.com/laravel/horizon/compare/v4.2.0...v4.2.1)
+
+### Fixed
+- Revert dark mode breaking change ([fdfbd5b](https://github.com/laravel/horizon/commit/fdfbd5b2f7bb1dfdf2e40518b263337c07b6b22c))
+
+
+## [v4.2.0 (2020-03-31)](https://github.com/laravel/horizon/compare/v4.1.0...v4.2.0)
+
+### Added
+- Support ramsey/uuid v4 ([#807](https://github.com/laravel/horizon/pull/807))
+
+### Fixed
+- Fix for job rows on monitoring tags screen ([#814](https://github.com/laravel/horizon/pull/814), [066ada5](https://github.com/laravel/horizon/commit/066ada5e52f18f1ebec7909f838d43aa2a6cf065))
+
+
+## [v4.1.0 (2020-03-24)](https://github.com/laravel/horizon/compare/v4.0.2...v4.1.0)
+
+### Added
+- Add metrics options and dark mode config ([#795](https://github.com/laravel/horizon/pull/795))
+
+### Fixed
+- Align design with Pending/Completed jobs screen ([#802](https://github.com/laravel/horizon/pull/802))
+
+
+## [v4.0.2 (2020-03-17)](https://github.com/laravel/horizon/compare/v4.0.1...v4.0.2)
+
+### Changed
+- Show warning when manifest is outdated ([#783](https://github.com/laravel/horizon/pull/783))
+
+
+## [v4.0.1 (2020-03-05)](https://github.com/laravel/horizon/compare/v4.0.0...v4.0.1)
+
+### Fixed
+- Add margin to retries table and make exceptions stacktrace responsive ([ff625c5](https://github.com/laravel/horizon/commit/ff625c5255cf7bfa186634b660b5ee844d6fe4b7))
+
+
+## [v4.0.0 (2020-03-03)](https://github.com/laravel/horizon/compare/v3.7.2...v4.0.0)
+
+### Added
+- Add 'view details' to tag-jobs screen ([#775](https://github.com/laravel/horizon/pull/775))
+- Add separate screen for completed jobs ([#767](https://github.com/laravel/horizon/pull/767))
+
+### Changed
+- Bumped minimum dependencies to Laravel 7.0 ([#710](https://github.com/laravel/horizon/pull/710))
+- Changed default Redis prefix ([#643](https://github.com/laravel/horizon/pull/643))
+- Suggest predis instead of requiring it ([#531](https://github.com/laravel/horizon/pull/531))
 
 
 ## [v3.7.2 (2020-02-25)](https://github.com/laravel/horizon/compare/v3.7.1...v3.7.2)

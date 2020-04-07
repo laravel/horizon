@@ -63,7 +63,7 @@ class ProcessInspector
         $masterNames = array_flip(Arr::pluck($masters, 'name'));
 
         return collect(app(SupervisorRepository::class)->all())
-            ->filter(function($supervisor) use (&$masterNames) {
+            ->filter(function ($supervisor) use (&$masterNames) {
                 return isset($masterNames[data_get($supervisor, 'master')]);
             })
             ->pluck('pid')
@@ -85,9 +85,9 @@ class ProcessInspector
      */
     public function monitoredMastersWithSupervisors()
     {
-        return collect(app(MasterSupervisorRepository::class)->all())->filter(function($master) {
-                return !empty($this->exec->run("pgrep -P " . data_get($master, 'pid')));
-            })
+        return collect(app(MasterSupervisorRepository::class)->all())->filter(function ($master) {
+            return !empty($this->exec->run("pgrep -P " . data_get($master, 'pid')));
+        })
             ->values()
             ->all();
     }
@@ -100,7 +100,7 @@ class ProcessInspector
     public function mastersWithoutSupervisors()
     {
         return collect($this->exec->run("pgrep -f [h]orizon$"))
-            ->filter(function($pid) {
+            ->filter(function ($pid) {
                 return empty($this->exec->run("pgrep -P {$pid}"));
             })
             ->values()

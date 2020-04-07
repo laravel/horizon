@@ -103,7 +103,13 @@
             },
 
             delayed() {
-                let unserialized = phpunserialize(this.job.payload.data.command);
+                let unserialized;
+
+                try {
+                    unserialized = phpunserialize(this.job.payload.data.command);
+                }catch(err){
+                    //
+                }
 
                 if (unserialized && unserialized.delay) {
                     return moment.tz(unserialized.delay.date, unserialized.delay.timezone)
@@ -132,7 +138,7 @@
             loadJob(id) {
                 this.ready = false;
 
-                this.$http.get(Horizon.basePath + '/api/jobs/recent/' + id)
+                this.$http.get(Horizon.basePath + '/api/jobs/' + id)
                     .then(response => {
                         this.job = response.data;
 

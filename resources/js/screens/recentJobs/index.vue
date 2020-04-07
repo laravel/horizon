@@ -28,9 +28,11 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Recent Jobs";
+            document.title = this.$route.params.type == 'pending'
+                        ? 'Horizon - Pending Jobs'
+                        : 'Horizon - Completed Jobs';
 
-            this.loadJobs(this.$route.params.tag);
+            this.loadJobs();
 
             this.refreshJobsPeriodically();
         },
@@ -50,7 +52,7 @@
             '$route'() {
                 this.page = 1;
 
-                this.loadJobs(this.$route.params.tag);
+                this.loadJobs();
             }
         },
 
@@ -64,7 +66,7 @@
                     this.ready = false;
                 }
 
-                this.$http.get(Horizon.basePath + '/api/jobs/recent?starting_at=' + starting + '&limit=' + this.perPage)
+                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;
@@ -136,7 +138,8 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Recent Jobs</h5>
+                <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
+                <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
             </div>
 
             <div v-if="!ready"
@@ -159,9 +162,10 @@
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th>Queued At</th>
-                    <th>Runtime</th>
-                    <th class="text-right">Status</th>
+                    <th v-if="$route.params.type=='pending'" class="text-right">Queued At</th>
+                    <th v-if="$route.params.type=='completed'">Queued At</th>
+                    <th v-if="$route.params.type=='completed'">Completed At</th>
+                    <th v-if="$route.params.type=='completed'" class="text-right">Runtime</th>
                 </tr>
                 </thead>
 
