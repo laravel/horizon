@@ -33,9 +33,11 @@ class ProcessInspector
      */
     public function current()
     {
-        return array_diff(
-            $this->exec->run('pgrep -f [h]orizon'),
-            $this->exec->run('pgrep -f horizon:purge')
+        $supervisorBasename = MasterSupervisor::basename();
+
+        return array_merge(
+            $this->exec->run("pgrep -f '[h]orizon.*[ =]{$supervisorBasename}-'"),
+            $this->exec->run('pgrep -f [h]orizon$')
         );
     }
 
