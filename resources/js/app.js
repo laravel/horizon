@@ -45,7 +45,7 @@ Vue.component('alert', require('./components/Alert.vue').default);
 
 Vue.mixin(Base);
 
-Vue.directive('tooltip', function(el, binding) {
+Vue.directive('tooltip', function (el, binding) {
     $(el).tooltip({
         title: binding.value,
         placement: binding.arg,
