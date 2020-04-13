@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Jobs;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\Factory as Queue;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobId;
@@ -75,7 +75,7 @@ class RetryFailedJob
     protected function prepareNewTimeout($payload)
     {
         return $payload['timeoutAt']
-                        ? Chronos::now()->addSeconds(ceil($payload['timeoutAt'] - $payload['pushedAt']))->getTimestamp()
+                        ? CarbonImmutable::now()->addSeconds(ceil($payload['timeoutAt'] - $payload['pushedAt']))->getTimestamp()
                         : null;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
 use Laravel\Horizon\Events\SupervisorLooped;
@@ -20,7 +20,7 @@ class MonitorWaitTimes
     /**
      * The time at which we last checked if monitoring was due.
      *
-     * @var \Cake\Chronos\Chronos
+     * @var \Carbon\CarbonImmutable
      */
     public $lastMonitored;
 
@@ -77,7 +77,7 @@ class MonitorWaitTimes
         // lock to monitor the wait times. We only want a single supervisor to run
         // the checks on a given interval so that we don't fire too many events.
         if (! $this->lastMonitored) {
-            $this->lastMonitored = Chronos::now();
+            $this->lastMonitored = CarbonImmutable::now();
         }
 
         if (! $this->timeToMonitor()) {
@@ -87,7 +87,7 @@ class MonitorWaitTimes
         // Next we will update the monitor timestamp and attempt to acquire a lock to
         // check the wait times. We use Redis to do it in order to have the atomic
         // operation required. This will avoid any deadlocks or race conditions.
-        $this->lastMonitored = Chronos::now();
+        $this->lastMonitored = CarbonImmutable::now();
 
         return $this->metrics->acquireWaitTimeMonitorLock();
     }
@@ -99,6 +99,6 @@ class MonitorWaitTimes
      */
     protected function timeToMonitor()
     {
-        return Chronos::now()->subMinutes(1)->lte($this->lastMonitored);
+        return CarbonImmutable::now()->subMinutes(1)->lte($this->lastMonitored);
     }
 }

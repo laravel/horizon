@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
@@ -80,7 +80,7 @@ class QueueProcessingTest extends IntegrationTest
 
     public function test_stale_reserved_jobs_are_marked_as_pending_after_migrating()
     {
-        $id = Queue::later(Chronos::now()->addSeconds(0), new Jobs\BasicJob);
+        $id = Queue::later(CarbonImmutable::now()->addSeconds(0), new Jobs\BasicJob);
 
         Redis::connection('horizon')->hset($id, 'status', 'reserved');
 

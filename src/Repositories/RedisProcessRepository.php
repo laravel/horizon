@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\ProcessRepository;
 
@@ -48,7 +48,7 @@ class RedisProcessRepository implements ProcessRepository
      */
     public function orphaned($master, array $processIds)
     {
-        $time = Chronos::now()->getTimestamp();
+        $time = CarbonImmutable::now()->getTimestamp();
 
         $shouldRemove = array_diff($this->connection()->hkeys(
             $key = "{$master}:orphans"
@@ -74,7 +74,7 @@ class RedisProcessRepository implements ProcessRepository
      */
     public function orphanedFor($master, $seconds)
     {
-        $expiresAt = Chronos::now()->getTimestamp() - $seconds;
+        $expiresAt = CarbonImmutable::now()->getTimestamp() - $seconds;
 
         return collect($this->allOrphans($master))->filter(function ($recordedAt, $_) use ($expiresAt) {
             return $expiresAt > $recordedAt;

@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Event;
@@ -125,7 +125,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
         usleep(250 * 1000);
 
-        $supervisor->processes()[0]->restartAgainAt = Chronos::now()->subMinutes(10);
+        $supervisor->processes()[0]->restartAgainAt = CarbonImmutable::now()->subMinutes(10);
 
         // Make sure that the worker attempts restart...
         $restarted = false;

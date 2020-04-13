@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
@@ -172,13 +172,13 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         app(MasterSupervisorRepository::class)
                     ->forget($this->name);
 
-        $startedTerminating = Chronos::now();
+        $startedTerminating = CarbonImmutable::now();
 
         // Here we will wait until all of the child supervisors finish terminating and
         // then exit the process. We will keep track of a timeout value so that the
         // process does not get stuck in an infinite loop here waiting for these.
         while (count($this->supervisors->filter->isRunning())) {
-            if (Chronos::now()->subSeconds($longest)
+            if (CarbonImmutable::now()->subSeconds($longest)
                         ->gte($startedTerminating)) {
                 break;
             }

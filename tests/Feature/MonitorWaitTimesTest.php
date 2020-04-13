@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Contracts\MetricsRepository;
@@ -32,7 +32,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
         $listener = new MonitorWaitTimes(resolve(MetricsRepository::class), $redis);
-        $listener->lastMonitoredAt = Chronos::now()->subDays(1);
+        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
 
         $listener->handle(new SupervisorLooped(Mockery::mock(Supervisor::class)));
 
