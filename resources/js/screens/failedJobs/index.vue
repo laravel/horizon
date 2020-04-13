@@ -227,7 +227,7 @@
                         <small class="text-muted">
                             Queue: {{job.queue}}
                             | Attempts: {{ job.payload.attempts }}
-                            <span v-if="job.payload.tags && job.payload.tags.length">
+                            <span v-if="job.payload.tags && job.payload.tags.length" class="text-break">
                             | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
                             </span>
                         </small>
