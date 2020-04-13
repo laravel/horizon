@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Closure;
 use Countable;
 use Symfony\Component\Process\Process;
@@ -137,7 +137,7 @@ class ProcessPool implements Countable
     public function markForTermination(WorkerProcess $process)
     {
         $this->terminatingProcesses[] = [
-            'process' => $process, 'terminatedAt' => Chronos::now(),
+            'process' => $process, 'terminatedAt' => CarbonImmutable::now(),
         ];
     }
 
@@ -270,7 +270,7 @@ class ProcessPool implements Countable
         foreach ($this->terminatingProcesses as $process) {
             $timeout = $this->options->timeout;
 
-            if ($process['terminatedAt']->addSeconds($timeout)->lte(Chronos::now())) {
+            if ($process['terminatedAt']->addSeconds($timeout)->lte(CarbonImmutable::now())) {
                 $process['process']->stop();
             }
         }

@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Stopwatch;
@@ -116,13 +116,13 @@ class MetricsTest extends IntegrationTest
         $this->work();
 
         // Take initial snapshot and set initial timestamp...
-        Chronos::setTestNow($firstTimestamp = Chronos::now());
+        CarbonImmutable::setTestNow($firstTimestamp = CarbonImmutable::now());
         resolve(MetricsRepository::class)->snapshot();
 
         // Work another job and take another snapshot...
         Queue::push(new Jobs\BasicJob);
         $this->work();
-        Chronos::setTestNow(Chronos::now()->addSeconds(1));
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(1));
         resolve(MetricsRepository::class)->snapshot();
 
         $snapshots = resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class);
@@ -137,7 +137,7 @@ class MetricsTest extends IntegrationTest
             (object) [
                 'throughput' => 1,
                 'runtime' => 3,
-                'time' => Chronos::now()->getTimestamp(),
+                'time' => CarbonImmutable::now()->getTimestamp(),
             ],
         ], $snapshots);
 
@@ -154,7 +154,7 @@ class MetricsTest extends IntegrationTest
                 'throughput' => 1,
                 'runtime' => 3,
                 'wait' => 0,
-                'time' => Chronos::now()->getTimestamp(),
+                'time' => CarbonImmutable::now()->getTimestamp(),
             ],
         ], $snapshots);
     }
@@ -178,7 +178,7 @@ class MetricsTest extends IntegrationTest
         );
 
         // Adjust current time...
-        Chronos::setTestNow(Chronos::now()->addMinutes(2));
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addMinutes(2));
 
         $this->assertEquals(
             1, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
@@ -199,26 +199,26 @@ class MetricsTest extends IntegrationTest
         $stopwatch->shouldReceive('check')->andReturn(1);
         $this->app->instance(Stopwatch::class, $stopwatch);
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         // Run the jobs...
         for ($i = 0; $i < 30; $i++) {
             Queue::push(new Jobs\BasicJob);
             $this->work();
             resolve(MetricsRepository::class)->snapshot();
-            Chronos::setTestNow(Chronos::now()->addSeconds(1));
+            CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(1));
         }
 
         // Check the job snapshots...
         $snapshots = resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class);
         $this->assertCount(24, $snapshots);
-        $this->assertEquals(Chronos::now()->getTimestamp() - 1, $snapshots[23]->time);
+        $this->assertEquals(CarbonImmutable::now()->getTimestamp() - 1, $snapshots[23]->time);
 
         // Check the queue snapshots...
         $snapshots = resolve(MetricsRepository::class)->snapshotsForQueue('default');
         $this->assertCount(24, $snapshots);
-        $this->assertEquals(Chronos::now()->getTimestamp() - 1, $snapshots[23]->time);
+        $this->assertEquals(CarbonImmutable::now()->getTimestamp() - 1, $snapshots[23]->time);
 
-        Chronos::setTestNow();
+        CarbonImmutable::setTestNow();
     }
 }

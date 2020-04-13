@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Events\UnableToLaunchProcess;
 use Laravel\Horizon\Events\WorkerProcessRestarting;
@@ -61,7 +61,7 @@ class WorkerProcessTest extends IntegrationTest
 
         // Travel to the future...
         sleep(1);
-        Chronos::setTestNow(Chronos::now()->addMinutes(3));
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addMinutes(3));
         $this->assertFalse($workerProcess->coolingDown());
 
         // Should try to restart now...
@@ -70,6 +70,6 @@ class WorkerProcessTest extends IntegrationTest
         Event::assertDispatched(WorkerProcessRestarting::class);
         $this->assertCount(2, Event::dispatched(WorkerProcessRestarting::class));
 
-        Chronos::setTestNow();
+        CarbonImmutable::setTestNow();
     }
 }

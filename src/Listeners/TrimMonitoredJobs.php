@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Listeners;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Events\MasterSupervisorLooped;
 
@@ -11,7 +11,7 @@ class TrimMonitoredJobs
     /**
      * The last time the monitored jobs were trimmed.
      *
-     * @var \Cake\Chronos\Chronos
+     * @var \Carbon\CarbonImmutable
      */
     public $lastTrimmed;
 
@@ -35,13 +35,13 @@ class TrimMonitoredJobs
                 config('horizon.trim.monitored', 10080), 12
             ));
 
-            $this->lastTrimmed = Chronos::now()->subMinutes($this->frequency + 1);
+            $this->lastTrimmed = CarbonImmutable::now()->subMinutes($this->frequency + 1);
         }
 
-        if ($this->lastTrimmed->lte(Chronos::now()->subMinutes($this->frequency))) {
+        if ($this->lastTrimmed->lte(CarbonImmutable::now()->subMinutes($this->frequency))) {
             app(JobRepository::class)->trimMonitoredJobs();
 
-            $this->lastTrimmed = Chronos::now();
+            $this->lastTrimmed = CarbonImmutable::now();
         }
     }
 }

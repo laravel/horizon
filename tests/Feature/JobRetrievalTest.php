@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
@@ -57,7 +57,7 @@ class JobRetrievalTest extends IntegrationTest
         $ids[] = Queue::push(new Jobs\BasicJob);
 
         $repository = resolve(JobRepository::class);
-        Chronos::setTestNow(Chronos::now()->addHours(3));
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addHours(3));
 
         $this->assertEquals(5, Redis::connection('horizon')->zcard('recent_jobs'));
 
@@ -68,7 +68,7 @@ class JobRetrievalTest extends IntegrationTest
         $repository->completed(new JobPayload(json_encode(['id' => $ids[0]])));
         $this->assertGreaterThan(0, Redis::connection('horizon')->ttl($ids[0]));
 
-        Chronos::setTestNow();
+        CarbonImmutable::setTestNow();
     }
 
     public function test_paginating_large_job_results_gives_correct_amounts()

@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
@@ -37,7 +37,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     public function names()
     {
         return $this->connection()->zrevrangebyscore('masters', '+inf',
-            Chronos::now()->subSeconds(14)->getTimestamp()
+            CarbonImmutable::now()->subSeconds(14)->getTimestamp()
         );
     }
 
@@ -109,7 +109,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
             );
 
             $pipe->zadd('masters',
-                Chronos::now()->getTimestamp(), $master->name
+                CarbonImmutable::now()->getTimestamp(), $master->name
             );
 
             $pipe->expire('master:'.$master->name, 15);
@@ -145,7 +145,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     public function flushExpired()
     {
         $this->connection()->zremrangebyscore('masters', '-inf',
-            Chronos::now()->subSeconds(14)->getTimestamp()
+            CarbonImmutable::now()->subSeconds(14)->getTimestamp()
         );
     }
 

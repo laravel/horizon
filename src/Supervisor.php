@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
@@ -50,7 +50,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * The time at which auto-scaling last ran for this supervisor.
      *
-     * @var \Cake\Chronos\Chronos
+     * @var \Carbon\CarbonImmutable
      */
     public $lastAutoScaled;
 
@@ -332,10 +332,10 @@ class Supervisor implements Pausable, Restartable, Terminable
     protected function autoScale()
     {
         $this->lastAutoScaled = $this->lastAutoScaled ?:
-                    Chronos::now()->subSeconds($this->autoScaleCooldown + 1);
+                    CarbonImmutable::now()->subSeconds($this->autoScaleCooldown + 1);
 
-        if (Chronos::now()->subSeconds($this->autoScaleCooldown)->gte($this->lastAutoScaled)) {
-            $this->lastAutoScaled = Chronos::now();
+        if (CarbonImmutable::now()->subSeconds($this->autoScaleCooldown)->gte($this->lastAutoScaled)) {
+            $this->lastAutoScaled = CarbonImmutable::now();
 
             app(AutoScaler::class)->scale($this);
         }
