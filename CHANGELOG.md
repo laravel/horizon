@@ -3,6 +3,16 @@
 ## [Unreleased](https://github.com/laravel/horizon/compare/v4.2.1...4.x)
 
 
+## [v4.3.0 (2020-04-14)](https://github.com/laravel/horizon/compare/v4.2.1...v4.3.0)
+
+### Changed
+- Chronos 2.0 ([#824](https://github.com/laravel/horizon/pull/824))
+
+### Fixed
+- Fix Layout issues ([#821](https://github.com/laravel/horizon/pull/821))
+- Prevent `horizon:purge` from killing too many processes ([#820](https://github.com/laravel/horizon/pull/820))
+
+
 ## [v4.2.1 (2020-04-02)](https://github.com/laravel/horizon/compare/v4.2.0...v4.2.1)
 
 ### Fixed
