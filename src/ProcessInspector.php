@@ -52,14 +52,18 @@ class ProcessInspector
     }
 
     /**
-     * Get all of the process IDs that Horizon is actively monitoring and that are valid. For master processes "valid"
-     * means they have child processes (supervisors). For supervisors it means their parent processes (masters) exist.
+     * Get all of the process IDs that Horizon is actively monitoring and that are valid.
+     *
+     * For master processes "valid" means they have child processes (supervisors).
+     *
+     * For supervisors "valid" means their parent processes (masters) exist.
      *
      * @return array
      */
     public function validMonitoring()
     {
         $masters = $this->monitoredMastersWithSupervisors();
+
         $masterNames = array_flip(Arr::pluck($masters, 'name'));
 
         return collect(app(SupervisorRepository::class)->all())
@@ -79,7 +83,7 @@ class ProcessInspector
     }
 
     /**
-     * Get data of master processes that have child processes (supervisors) and are monitored by Horizon.
+     * Get the master processes that have child processes (supervisors) and are monitored by Horizon.
      *
      * @return array
      */
@@ -87,23 +91,18 @@ class ProcessInspector
     {
         return collect(app(MasterSupervisorRepository::class)->all())->filter(function ($master) {
             return ! empty($this->exec->run('pgrep -P '.data_get($master, 'pid')));
-        })
-            ->values()
-            ->all();
+        })->values()->all();
     }
 
     /**
-     * Get IDs of all master Horizon processes that don't have any supervisors.
+     * Get the IDs of all master Horizon processes that don't have any supervisors.
      *
      * @return array
      */
     public function mastersWithoutSupervisors()
     {
-        return collect($this->exec->run('pgrep -f [h]orizon$'))
-            ->filter(function ($pid) {
-                return empty($this->exec->run('pgrep -P '.$pid));
-            })
-            ->values()
-            ->all();
+        return collect($this->exec->run('pgrep -f [h]orizon$'))->filter(function ($pid) {
+            return empty($this->exec->run('pgrep -P '.$pid));
+        })->values()->all();
     }
 }
