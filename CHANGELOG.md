@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.2.1...4.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.3.1...4.x)
+
+
+## [v4.3.1 (2020-04-21)](https://github.com/laravel/horizon/compare/v4.3.0...v4.3.1)
+
+### Fixed
+- Revert "Prevent `horizon:purge` from killing too many processes" ([#831](https://github.com/laravel/horizon/pull/831))
 
 
 ## [v4.3.0 (2020-04-14)](https://github.com/laravel/horizon/compare/v4.2.1...v4.3.0)
