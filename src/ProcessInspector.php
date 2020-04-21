@@ -33,9 +33,10 @@ class ProcessInspector
      */
     public function current()
     {
-        $supervisorBasename = MasterSupervisor::basename();
-
-        return $this->exec->run("pgrep -f '[h]orizon.*[ =]{$supervisorBasename}-'");
+        return array_diff(
+            $this->exec->run('pgrep -f [h]orizon'),
+            $this->exec->run('pgrep -f horizon:purge')
+        );
     }
 
     /**
@@ -45,31 +46,17 @@ class ProcessInspector
      */
     public function orphaned()
     {
-        return array_diff(
-            array_merge($this->current(), $this->mastersWithoutSupervisors()),
-            $this->validMonitoring()
-        );
+        return array_diff($this->current(), $this->monitoring());
     }
 
     /**
-     * Get all of the process IDs that Horizon is actively monitoring and that are valid.
-     *
-     * For master processes "valid" means they have child processes (supervisors).
-     *
-     * For supervisors "valid" means their parent processes (masters) exist.
+     * Get all of the process IDs Horizon is actively monitoring.
      *
      * @return array
      */
-    public function validMonitoring()
+    public function monitoring()
     {
-        $masters = $this->monitoredMastersWithSupervisors();
-
-        $masterNames = array_flip(Arr::pluck($masters, 'name'));
-
         return collect(app(SupervisorRepository::class)->all())
-            ->filter(function ($supervisor) use (&$masterNames) {
-                return isset($masterNames[data_get($supervisor, 'master')]);
-            })
             ->pluck('pid')
             ->pipe(function ($processes) {
                 $processes->each(function ($process) use (&$processes) {
@@ -78,31 +65,8 @@ class ProcessInspector
 
                 return $processes;
             })
-            ->merge(Arr::pluck($masters, 'pid'))
-            ->all();
-    }
-
-    /**
-     * Get the master processes that have child processes (supervisors) and are monitored by Horizon.
-     *
-     * @return array
-     */
-    public function monitoredMastersWithSupervisors()
-    {
-        return collect(app(MasterSupervisorRepository::class)->all())->filter(function ($master) {
-            return ! empty($this->exec->run('pgrep -P '.data_get($master, 'pid')));
-        })->values()->all();
-    }
-
-    /**
-     * Get the IDs of all master Horizon processes that don't have any supervisors.
-     *
-     * @return array
-     */
-    public function mastersWithoutSupervisors()
-    {
-        return collect($this->exec->run('pgrep -f [h]orizon$'))->filter(function ($pid) {
-            return empty($this->exec->run('pgrep -P '.$pid));
-        })->values()->all();
+            ->merge(
+                Arr::pluck(app(MasterSupervisorRepository::class)->all(), 'pid')
+            )->all();
     }
 }

@@ -96,11 +96,9 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
      */
     public static function basename()
     {
-        $pathHash = substr(md5(__DIR__), 0, 4);
-
         return static::$nameResolver
-                        ? call_user_func(static::$nameResolver).'-'.$pathHash
-                        : Str::slug(gethostname()).'-'.$pathHash;
+                        ? call_user_func(static::$nameResolver)
+                        : Str::slug(gethostname());
     }
 
     /**
