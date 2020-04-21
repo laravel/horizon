@@ -151,7 +151,7 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
-     * Get a chunk of pending jobs.
+     * Get a chunk of completed jobs.
      *
      * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
