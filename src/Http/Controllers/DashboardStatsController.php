@@ -24,6 +24,7 @@ class DashboardStatsController extends Controller
             'queueWithMaxThroughput' => app(MetricsRepository::class)->queueWithMaximumThroughput(),
             'failedJobs' => app(JobRepository::class)->countRecentlyFailed(),
             'recentJobs' => app(JobRepository::class)->countRecent(),
+            'pendingJobs' => app(JobRepository::class)->countPending(),
             'status' => $this->currentStatus(),
             'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
             'periods' => [
