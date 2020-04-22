@@ -28,7 +28,7 @@ class PendingJobsController extends Controller
     }
 
     /**
-     * Get all of the recent jobs.
+     * Get all of the pending jobs.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
