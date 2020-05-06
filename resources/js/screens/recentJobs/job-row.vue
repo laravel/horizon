@@ -15,7 +15,9 @@
 
             <small class="text-muted">
                 Queue: {{job.queue}}
-
+                <span v-if="$route.params.type=='completed'" class="text-break">
+                    | Attempts: {{ job.payload.attempts }}
+                </span>
                 <span v-if="job.payload.tags.length" class="text-break">
                     | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.slice(0,3).join(', ') : '' }}<span v-if="job.payload.tags.length > 3"> ({{ job.payload.tags.length - 3 }} more)</span>
                 </span>
