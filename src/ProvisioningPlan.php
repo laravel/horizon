@@ -5,6 +5,7 @@ namespace Laravel\Horizon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Events\MasterSupervisorDeployed;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
 
 class ProvisioningPlan
@@ -96,6 +97,8 @@ class ProvisioningPlan
         foreach ($supervisors as $supervisor => $options) {
             $this->add($options);
         }
+
+        event(new MasterSupervisorDeployed($this->master));
     }
 
     /**
