@@ -69,7 +69,7 @@ class SupervisorOptions extends WorkerOptions
      * @param  string  $connection
      * @param  string  $queue
      * @param  string  $balance
-     * @param  int  $delay
+     * @param  int  $backoff
      * @param  int  $maxProcesses
      * @param  int  $minProcesses
      * @param  int  $memory
@@ -80,7 +80,7 @@ class SupervisorOptions extends WorkerOptions
      * @param  int  $nice
      */
     public function __construct($name, $connection, $queue = null, $balance = 'off',
-                                $delay = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
+                                $backoff = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
                                 $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
     {
         $this->name = $name;
@@ -91,7 +91,7 @@ class SupervisorOptions extends WorkerOptions
         $this->minProcesses = $minProcesses;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
 
-        parent::__construct($delay, $memory, $timeout, $sleep, $maxTries, $force);
+        parent::__construct($backoff, $memory, $timeout, $sleep, $maxTries, $force);
     }
 
     /**
@@ -168,7 +168,7 @@ class SupervisorOptions extends WorkerOptions
             'balance' => $this->balance,
             'connection' => $this->connection,
             'queue' => $this->queue,
-            'delay' => $this->delay,
+            'backoff' => $this->backoff,
             'force' => $this->force,
             'maxProcesses' => $this->maxProcesses,
             'minProcesses' => $this->minProcesses,

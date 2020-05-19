@@ -62,7 +62,7 @@ class RetryFailedJob
             'id' => $id,
             'attempts' => 0,
             'retry_of' => $this->id,
-            'timeoutAt' => $this->prepareNewTimeout($payload),
+            'retryUntil' => $this->prepareNewTimeout($payload),
         ]));
     }
 
@@ -74,8 +74,10 @@ class RetryFailedJob
      */
     protected function prepareNewTimeout($payload)
     {
-        return $payload['timeoutAt']
-                        ? CarbonImmutable::now()->addSeconds(ceil($payload['timeoutAt'] - $payload['pushedAt']))->getTimestamp()
+        $retryUntil = $payload['retryUntil'] ?? $payload['timeoutAt'] ?? null;
+
+        return $retryUntil
+                        ? CarbonImmutable::now()->addSeconds(ceil($retryUntil - $payload['pushedAt']))->getTimestamp()
                         : null;
     }
 }
