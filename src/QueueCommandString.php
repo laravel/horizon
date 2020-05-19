@@ -12,7 +12,7 @@ class QueueCommandString
      */
     public static function toWorkerOptionsString(SupervisorOptions $options)
     {
-        return sprintf('--name=%s --supervisor=%s %s ',
+        return sprintf('--name=%s --supervisor=%s %s',
             $options->workersName,
             $options->name,
             static::toOptionsString($options)
@@ -27,7 +27,7 @@ class QueueCommandString
      */
     public static function toSupervisorOptionsString(SupervisorOptions $options)
     {
-        return sprintf('--workers-name=%s --balance=%s --max-processes=%s --min-processes=%s --nice=%s %s ',
+        return sprintf('--workers-name=%s --balance=%s --max-processes=%s --min-processes=%s --nice=%s %s',
             $options->workersName,
             $options->balance,
             $options->maxProcesses,
