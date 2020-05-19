@@ -127,24 +127,35 @@ class SupervisorOptions
      * @param  bool  $force
      * @param  int  $nice
      */
-    public function __construct($name, $connection, $queue = null, $workersName = 'default', $balance = 'off',
-                                $backoff = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
-                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
+    public function __construct($name,
+                                $connection,
+                                $queue = null,
+                                $workersName = 'default',
+                                $balance = 'off',
+                                $backoff = 0,
+                                $maxProcesses = 1,
+                                $minProcesses = 1,
+                                $memory = 128,
+                                $timeout = 60,
+                                $sleep = 3,
+                                $maxTries = 0,
+                                $force = false,
+                                $nice = 0)
     {
         $this->name = $name;
-        $this->workersName = $workersName;
-        $this->nice = $nice;
-        $this->balance = $balance;
         $this->connection = $connection;
+        $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
+        $this->workersName = $workersName;
+        $this->balance = $balance;
+        $this->backoff = $backoff;
         $this->maxProcesses = $maxProcesses;
         $this->minProcesses = $minProcesses;
-        $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
-        $this->backoff = $backoff;
-        $this->sleep = $sleep;
-        $this->force = $force;
         $this->memory = $memory;
         $this->timeout = $timeout;
+        $this->sleep = $sleep;
         $this->maxTries = $maxTries;
+        $this->force = $force;
+        $this->nice = $nice;
     }
 
     /**

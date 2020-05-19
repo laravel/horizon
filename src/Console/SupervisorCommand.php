@@ -17,7 +17,7 @@ class SupervisorCommand extends Command
     protected $signature = 'horizon:supervisor
                             {name : The name of supervisor}
                             {connection : The name of the connection to work}
-                            {--workers-name=default : The name of the workers}
+                            {--workers-name=default : The name that should be assigned to the workers}
                             {--balance= : The balancing strategy the supervisor should apply}
                             {--balance= : The balancing strategy the supervisor should apply}
                             {--delay=0 : The number of seconds to delay failed jobs (Deprecated)}
