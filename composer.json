@@ -14,9 +14,9 @@
         "ext-json": "*",
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "illuminate/contracts": "^7.0",
-        "illuminate/queue": "^7.0",
-        "illuminate/support": "^7.0",
+        "illuminate/contracts": "^8.0",
+        "illuminate/queue": "^8.0",
+        "illuminate/support": "^8.0",
         "nesbot/carbon": "^2.17",
         "ramsey/uuid": "^3.5|^4.0",
         "symfony/process": "^5.0",
@@ -24,7 +24,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "orchestra/testbench": "^5.0",
+        "orchestra/testbench": "dev-master",
         "phpunit/phpunit": "^8.0",
         "predis/predis": "^1.1"
     },
