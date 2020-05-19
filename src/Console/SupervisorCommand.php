@@ -17,7 +17,6 @@ class SupervisorCommand extends Command
     protected $signature = 'horizon:supervisor
                             {name : The name of supervisor}
                             {connection : The name of the connection to work}
-                            {--workers-name=default : The name that should be assigned to the workers}
                             {--balance= : The balancing strategy the supervisor should apply}
                             {--balance= : The balancing strategy the supervisor should apply}
                             {--delay=0 : The number of seconds to delay failed jobs (Deprecated)}
@@ -31,7 +30,8 @@ class SupervisorCommand extends Command
                             {--queue= : The names of the queues to work}
                             {--sleep=3 : Number of seconds to sleep when no job is available}
                             {--timeout=60 : The number of seconds a child process can run}
-                            {--tries=0 : Number of times to attempt a job before logging it failed}';
+                            {--tries=0 : Number of times to attempt a job before logging it failed}
+                            {--workers-name=default : The name that should be assigned to the workers}';
 
     /**
      * The console command description.
