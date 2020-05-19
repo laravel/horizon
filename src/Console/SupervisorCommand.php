@@ -17,6 +17,8 @@ class SupervisorCommand extends Command
     protected $signature = 'horizon:supervisor
                             {name : The name of supervisor}
                             {connection : The name of the connection to work}
+                            {--workers-name=default : The name of the workers}
+                            {--balance= : The balancing strategy the supervisor should apply}
                             {--balance= : The balancing strategy the supervisor should apply}
                             {--delay=0 : The number of seconds to delay failed jobs (Deprecated)}
                             {--backoff=0 : The number of seconds to wait before retrying a job that encountered an uncaught exception}
@@ -108,6 +110,7 @@ class SupervisorCommand extends Command
             $this->argument('name'),
             $this->argument('connection'),
             $this->getQueue($this->argument('connection')),
+            $this->option('workers-name'),
             $this->option('balance'),
             $backoff,
             $this->option('max-processes'),

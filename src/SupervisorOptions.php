@@ -2,9 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Illuminate\Queue\WorkerOptions;
-
-class SupervisorOptions extends WorkerOptions
+class SupervisorOptions
 {
     /**
      * The name of the supervisor.
@@ -12,6 +10,13 @@ class SupervisorOptions extends WorkerOptions
      * @var string
      */
     public $name;
+
+    /**
+     * The name of the workers.
+     *
+     * @var string
+     */
+    public $workersName;
 
     /**
      * The queue connection that should be utilized.
@@ -63,11 +68,54 @@ class SupervisorOptions extends WorkerOptions
     public $directory;
 
     /**
+     * The number of seconds to wait before retrying a job that encountered an uncaught exception.
+     *
+     * @var int
+     */
+    public $backoff;
+
+    /**
+     * The maximum amount of RAM the worker may consume.
+     *
+     * @var int
+     */
+    public $memory;
+
+    /**
+     * The maximum number of seconds a child worker may run.
+     *
+     * @var int
+     */
+    public $timeout;
+
+    /**
+     * The number of seconds to wait in between polling the queue.
+     *
+     * @var int
+     */
+    public $sleep;
+
+    /**
+     * The maximum amount of times a job may be attempted.
+     *
+     * @var int
+     */
+    public $maxTries;
+
+    /**
+     * Indicates if the worker should run in maintenance mode.
+     *
+     * @var bool
+     */
+    public $force;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
      * @param  string  $connection
      * @param  string  $queue
+     * @param  string  $workersName
      * @param  string  $balance
      * @param  int  $backoff
      * @param  int  $maxProcesses
@@ -79,19 +127,24 @@ class SupervisorOptions extends WorkerOptions
      * @param  bool  $force
      * @param  int  $nice
      */
-    public function __construct($name, $connection, $queue = null, $balance = 'off',
+    public function __construct($name, $connection, $queue = null, $workersName = 'default', $balance = 'off',
                                 $backoff = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
                                 $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
     {
         $this->name = $name;
+        $this->workersName = $workersName;
         $this->nice = $nice;
         $this->balance = $balance;
         $this->connection = $connection;
         $this->maxProcesses = $maxProcesses;
         $this->minProcesses = $minProcesses;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
-
-        parent::__construct($backoff, $memory, $timeout, $sleep, $maxTries, $force);
+        $this->backoff = $backoff;
+        $this->sleep = $sleep;
+        $this->force = $force;
+        $this->memory = $memory;
+        $this->timeout = $timeout;
+        $this->maxTries = $maxTries;
     }
 
     /**
@@ -176,6 +229,7 @@ class SupervisorOptions extends WorkerOptions
             'memory' => $this->memory,
             'nice' => $this->nice,
             'name' => $this->name,
+            'workersName' => $this->workersName,
             'sleep' => $this->sleep,
             'timeout' => $this->timeout,
         ];
