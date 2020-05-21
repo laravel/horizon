@@ -43,9 +43,6 @@
         }
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "dev-develop"
-        },
         "laravel": {
             "providers": [
                 "Laravel\\Horizon\\HorizonServiceProvider"
