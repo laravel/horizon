@@ -24,7 +24,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "orchestra/testbench": "dev-master",
+        "orchestra/testbench": "^6.0",
         "phpunit/phpunit": "^8.0",
         "predis/predis": "^1.1"
     },
@@ -44,7 +44,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "5.x-dev"
+            "dev-master": "dev-develop"
         },
         "laravel": {
             "providers": [
