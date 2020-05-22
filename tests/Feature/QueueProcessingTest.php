@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Events\JobReserved;
 use Laravel\Horizon\Events\JobsMigrated;
+use Laravel\Horizon\Tests\Feature\Jobs\BasicJob;
 use Laravel\Horizon\Tests\IntegrationTest;
 
 class QueueProcessingTest extends IntegrationTest
@@ -92,5 +93,21 @@ class QueueProcessingTest extends IntegrationTest
         $this->work();
 
         $this->assertSame('pending', $status);
+    }
+
+    public function test_overriding_job_payload_using_createPayloadUsing_method_on_the_queue_returns_the_full_payload()
+    {
+        Queue::createPayloadUsing(function ($connection, $queue, $payload) {
+            $this->assertArrayHasKey('tags', $payload);
+            $this->assertArrayHasKey('type', $payload);
+            $this->assertArrayHasKey('pushedAt', $payload);
+            //$this->assertArrayHasKey('retry_of', $payload);
+
+            return $payload;
+        });
+
+        Queue::push(new Jobs\BasicJob);
+
+        Queue::push(BasicJob::class);
     }
 }

@@ -14,13 +14,6 @@ use Laravel\Horizon\Events\JobsMigrated;
 class RedisQueue extends BaseQueue
 {
     /**
-     * The job that last pushed to queue via the "push" method.
-     *
-     * @var object|string
-     */
-    protected $lastPushed;
-
-    /**
      * Get the number of queue jobs that are ready to process.
      *
      * @param  string|null  $queue
@@ -29,21 +22,6 @@ class RedisQueue extends BaseQueue
     public function readyNow($queue = null)
     {
         return $this->getConnection()->llen($this->getQueue($queue));
-    }
-
-    /**
-     * Push a new job onto the queue.
-     *
-     * @param  object|string  $job
-     * @param  mixed  $data
-     * @param  string|null  $queue
-     * @return mixed
-     */
-    public function push($job, $data = '', $queue = null)
-    {
-        $this->lastPushed = $job;
-
-        return parent::push($job, $data, $queue);
     }
 
     /**
@@ -56,8 +34,6 @@ class RedisQueue extends BaseQueue
      */
     public function pushRaw($payload, $queue = null, array $options = [])
     {
-        $payload = (new JobPayload($payload))->prepare($this->lastPushed)->value;
-
         return tap(parent::pushRaw($payload, $queue, $options), function () use ($queue, $payload) {
             $this->event($this->getQueue($queue), new JobPushed($payload));
         });
@@ -74,9 +50,9 @@ class RedisQueue extends BaseQueue
      */
     public function later($delay, $job, $data = '', $queue = null)
     {
-        $payload = (new JobPayload($this->createPayload($job, $queue, $data)))->prepare($job)->value;
+        $payload = $this->createPayload($job, $queue, $data);
 
-        return tap(parent::laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
+        return tap($this->laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
             $this->event($this->getQueue($queue), new JobPushed($payload));
         });
     }
@@ -137,6 +113,55 @@ class RedisQueue extends BaseQueue
         parent::deleteAndRelease($queue, $job, $delay);
 
         $this->event($this->getQueue($queue), new JobReleased($job->getReservedJob()));
+    }
+
+    protected function createStringPayload($job, $queue, $data)
+    {
+        $payload = (new JobPayload('[]'))->prepare($job);
+
+        return $this->withCreatePayloadHooks($queue, [
+            'uuid' => (string) Str::uuid(),
+            'displayName' => is_string($job) ? explode('@', $job)[0] : null,
+            'job' => $job,
+            'maxTries' => null,
+            'maxExceptions' => null,
+            'delay' => null,
+            'timeout' => null,
+            'data' => $data,
+            'tags' => $payload['tags'],
+            'type' => $payload['type'],
+            'pushedAt' => $payload['pushedAt']
+        ]);
+    }
+
+    protected function createObjectPayload($job, $queue)
+    {
+        $jobPayload = (new JobPayload('[]'))->prepare($job);
+
+        $payload = $this->withCreatePayloadHooks($queue, [
+            'uuid' => (string) Str::uuid(),
+            'displayName' => $this->getDisplayName($job),
+            'job' => 'Illuminate\Queue\CallQueuedHandler@call',
+            'maxTries' => $job->tries ?? null,
+            'maxExceptions' => $job->maxExceptions ?? null,
+            'delay' => $this->getJobRetryDelay($job),
+            'timeout' => $job->timeout ?? null,
+            'timeoutAt' => $this->getJobExpiration($job),
+            'data' => [
+                'commandName' => $job,
+                'command' => $job,
+            ],
+            'tags' => $jobPayload->tags(),
+            'type' => $jobPayload['type'],
+            'pushedAt' => $jobPayload['pushedAt']
+        ]);
+
+        return array_merge($payload, [
+            'data' => [
+                'commandName' => get_class($job),
+                'command' => serialize(clone $job),
+            ],
+        ]);
     }
 
     /**
