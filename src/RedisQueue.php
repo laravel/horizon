@@ -130,7 +130,7 @@ class RedisQueue extends BaseQueue
             'data' => $data,
             'tags' => $payload['tags'],
             'type' => $payload['type'],
-            'pushedAt' => $payload['pushedAt']
+            'pushedAt' => $payload['pushedAt'],
         ]);
     }
 
@@ -153,7 +153,7 @@ class RedisQueue extends BaseQueue
             ],
             'tags' => $jobPayload->tags(),
             'type' => $jobPayload['type'],
-            'pushedAt' => $jobPayload['pushedAt']
+            'pushedAt' => $jobPayload['pushedAt'],
         ]);
 
         return array_merge($payload, [
