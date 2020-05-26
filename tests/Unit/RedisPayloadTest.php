@@ -31,7 +31,7 @@ class RedisPayloadTest extends UnitTest
         $JobPayload->prepare(new BroadcastEvent(new StdClass));
         $this->assertSame('broadcast', $JobPayload->decoded['type']);
 
-        $JobPayload->prepare(new CallQueuedListener('Class', 'method', [new StdClass]));
+        $JobPayload->prepare(new CallQueuedListener('stdClass', 'method', [new StdClass]));
         $this->assertSame('event', $JobPayload->decoded['type']);
 
         $JobPayload->prepare(new SendQueuedMailable(Mockery::mock(Mailable::class)));
