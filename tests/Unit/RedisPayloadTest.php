@@ -134,6 +134,17 @@ class RedisPayloadTest extends UnitTest
         ], $JobPayload->decoded['tags']);
     }
 
+    public function test_tags_are_added_to_existing()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1, 'tags' => ['mytag']]));
+
+        $job = new CallQueuedListener(FakeListenerWithProperties::class, 'handle', [new FakeEventWithModel(42)]);
+
+        $JobPayload->prepare($job);
+
+        $this->assertEquals(['mytag', FakeModel::class.':42'], $JobPayload->decoded['tags']);
+    }
+
     public function test_jobs_can_have_tags_method_to_override_auto_tagging()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
