@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Repositories;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\TagRepository;
 

@@ -158,7 +158,7 @@
         </div>
 
 
-        <div class="card mt-4" v-if="ready && batch.failedJobIds.length">
+        <div class="card mt-4" v-if="ready && failedJobs.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>Failed Jobs</h5>
             </div>

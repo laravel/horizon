@@ -61316,7 +61316,7 @@ var render = function() {
         : _vm._e()
     ]),
     _vm._v(" "),
-    _vm.ready && _vm.batch.failedJobIds.length
+    _vm.ready && _vm.failedJobs.length
       ? _c("div", { staticClass: "card mt-4" }, [
           _vm._m(11),
           _vm._v(" "),
