@@ -45,7 +45,7 @@ class JobPayload implements ArrayAccess
      */
     public function id()
     {
-        return $this->decoded['id'];
+        return $this->decoded['uuid'] ?? $this->decoded['id'];
     }
 
     /**
@@ -125,7 +125,7 @@ class JobPayload implements ArrayAccess
     {
         return array_merge(
             $this->decoded['tags'] ?? [],
-            is_string($job) ? [] : Tags::for($job)
+            ! $job || is_string($job) ? [] : Tags::for($job)
         );
     }
 

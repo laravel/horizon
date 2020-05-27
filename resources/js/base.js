@@ -16,6 +16,13 @@ export default {
         },
 
         /**
+         * Format the given date with respect to timezone.
+         */
+        formatDateIso(date) {
+            return moment(date).add(new Date().getTimezoneOffset() / 60);
+        },
+
+        /**
          * Extract the job base name.
          */
         jobBaseName(name) {

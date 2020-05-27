@@ -150,6 +150,14 @@
                     <div class="col-md-2"><strong>Tags</strong></div>
                     <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                 </div>
+                <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
+                    <div class="col-md-2"><strong>Batch</strong></div>
+                    <div class="col">
+                        <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
+                            {{ prettyPrintJob(job.payload.data).batchId }}
+                        </router-link>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-2"><strong>Failed At</strong></div>
                     <div class="col">{{readableTimestamp(job.failed_at)}}</div>
