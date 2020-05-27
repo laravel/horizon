@@ -56,7 +56,7 @@ class BatchesController extends Controller
     }
 
     /**
-     * Retry the given batch
+     * Retry the given batch.
      *
      * @param  string  $id
      * @return array
@@ -72,7 +72,7 @@ class BatchesController extends Controller
 
                 return isset($payload->retry_of);
             })->each(function ($job) {
-                dispatch(new RetryFailedJob($job->id));;
+                dispatch(new RetryFailedJob($job->id));
             });
     }
 
