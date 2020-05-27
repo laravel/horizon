@@ -2157,7 +2157,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       ready: false,
       retrying: false,
-      batch: {}
+      batch: {},
+      failedJobs: []
     };
   },
 
@@ -2191,7 +2192,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.$http.get(Horizon.basePath + '/api/batches/' + this.$route.params.batchId).then(function (response) {
-        _this2.batch = response.data;
+        _this2.batch = response.data.batch;
+        _this2.failedJobs = response.data.failedJobs;
         _this2.ready = true;
       });
     },
@@ -61323,7 +61325,7 @@ var render = function() {
             _vm._v(" "),
             _c(
               "tbody",
-              _vm._l(_vm.batch.failedJobIds, function(failedId) {
+              _vm._l(_vm.failedJobs, function(failedJob) {
                 return _c("tr", [
                   _c(
                     "td",
@@ -61334,21 +61336,45 @@ var render = function() {
                           attrs: {
                             to: {
                               name: "failed-jobs-preview",
-                              params: { jobId: failedId }
+                              params: { jobId: failedJob.id }
                             }
                           }
                         },
                         [
                           _vm._v(
                             "\n                        " +
-                              _vm._s(failedId) +
+                              _vm._s(_vm.jobBaseName(failedJob.name)) +
                               "\n                    "
                           )
                         ]
                       )
                     ],
                     1
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "table-fit" }, [
+                    _c("span", [
+                      _vm._v(
+                        _vm._s(
+                          failedJob.failed_at
+                            ? String(
+                                (
+                                  failedJob.failed_at - failedJob.reserved_at
+                                ).toFixed(2)
+                              ) + "s"
+                            : "-"
+                        )
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-right table-fit" }, [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.readableTimestamp(failedJob.failed_at)) +
+                        "\n                "
+                    )
+                  ])
                 ])
               }),
               0
@@ -61464,7 +61490,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [_c("tr", [_c("th", [_vm._v("ID")])])])
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Job")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Runtime")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Failed At")])
+      ])
+    ])
   }
 ]
 render._withStripped = true

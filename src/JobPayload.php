@@ -45,7 +45,7 @@ class JobPayload implements ArrayAccess
      */
     public function id()
     {
-        return $this->decoded['id'];
+        return $this->decoded['uuid'] ?? $this->decoded['id'];
     }
 
     /**

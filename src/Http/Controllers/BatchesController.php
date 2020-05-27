@@ -52,7 +52,15 @@ class BatchesController extends Controller
      */
     public function show($id)
     {
-        return $this->batches->find($id);
+        $batch = $this->batches->find($id);
+
+        $failedJobs = app(JobRepository::class)
+            ->getJobs($batch->failedJobIds);
+
+        return [
+            'batch' => $batch,
+            'failedJobs' => $failedJobs,
+        ];
     }
 
     /**

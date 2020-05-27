@@ -7,7 +7,8 @@
             return {
                 ready: false,
                 retrying: false,
-                batch: {}
+                batch: {},
+                failedJobs : []
             };
         },
 
@@ -42,7 +43,8 @@
 
                 this.$http.get(Horizon.basePath + '/api/batches/' + this.$route.params.batchId)
                     .then(response => {
-                        this.batch = response.data;
+                        this.batch = response.data.batch;
+                        this.failedJobs = response.data.failedJobs;
 
                         this.ready = true;
                     });
@@ -164,17 +166,27 @@
             <table class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Job</th>
+                    <th>Runtime</th>
+                    <th class="text-right">Failed At</th>
                 </tr>
                 </thead>
 
                 <tbody>
 
-                <tr v-for="failedId in batch.failedJobIds">
+                <tr v-for="failedJob in failedJobs">
                     <td>
-                        <router-link :to="{ name: 'failed-jobs-preview', params: { jobId: failedId }}">
-                            {{failedId}}
+                        <router-link :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
+                            {{ jobBaseName(failedJob.name) }}
                         </router-link>
+                    </td>
+
+                    <td class="table-fit">
+                        <span>{{ failedJob.failed_at ? String((failedJob.failed_at - failedJob.reserved_at).toFixed(2))+'s' : '-' }}</span>
+                    </td>
+
+                    <td class="text-right table-fit">
+                        {{ readableTimestamp(failedJob.failed_at) }}
                     </td>
                 </tr>
                 </tbody>
