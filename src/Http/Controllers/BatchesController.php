@@ -75,5 +75,4 @@ class BatchesController extends Controller
                 dispatch(new RetryFailedJob($job->id));
             });
     }
-
 }
