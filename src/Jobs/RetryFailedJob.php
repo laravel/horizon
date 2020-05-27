@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\Factory as Queue;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\JobId;
 
 class RetryFailedJob
 {
@@ -41,7 +42,7 @@ class RetryFailedJob
         }
 
         $queue->connection($job->connection)->pushRaw(
-            $this->preparePayload($id = Str::orderedUuid(), $job->payload), $job->queue
+            $this->preparePayload($id = JobId::generate(), $job->payload), $job->queue
         );
 
         $jobs->storeRetryReference($this->id, $id);
@@ -60,7 +61,7 @@ class RetryFailedJob
 
         return json_encode(array_merge($payload, [
             'id' => $id,
-            'uuid' => $id,
+            'uuid' => Str::orderedUuid(),
             'attempts' => 0,
             'retry_of' => $this->id,
             'retryUntil' => $this->prepareNewTimeout($payload),
