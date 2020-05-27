@@ -45,7 +45,7 @@ class BatchesController extends Controller
     }
 
     /**
-     * Get the details of a recent job by ID.
+     * Get the details of a batch by ID.
      *
      * @param  string  $id
      * @return array
