@@ -76,6 +76,7 @@ class RedisQueue extends BaseQueue
     protected function createPayloadArray($job, $queue, $data = '')
     {
         $payload = parent::createPayloadArray($job, $queue, $data);
+
         $payload['id'] = $payload['uuid'];
 
         return $payload;
