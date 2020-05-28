@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Bus\BatchRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Jobs\RetryFailedJob;
@@ -37,7 +38,13 @@ class BatchesController extends Controller
      */
     public function index(Request $request)
     {
-        $batches = $this->batches->get(50, $request->query('before_id') ?: null);
+        try {
+            $batches = $this->batches->get(50, $request->query('before_id') ?: null);
+        } catch (QueryException $e) {
+            return [
+                'batches' => [],
+            ];
+        }
 
         return [
             'batches' => $batches,
