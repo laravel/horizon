@@ -175,14 +175,4 @@ class RedisQueue extends BaseQueue
             );
         }
     }
-
-    /**
-     * Get a random ID string.
-     *
-     * @return string
-     */
-    protected function getRandomId()
-    {
-        return JobId::generate();
-    }
 }
