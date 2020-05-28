@@ -86,4 +86,16 @@ export default [
         name: 'failed-jobs-preview',
         component: require('./screens/failedJobs/job').default,
     },
+
+    {
+        path: '/batches',
+        name: 'batches',
+        component: require('./screens/batches/index').default,
+    },
+
+    {
+        path: '/batches/:batchId',
+        name: 'batches-preview',
+        component: require('./screens/batches/preview').default,
+    },
 ];
