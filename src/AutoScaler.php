@@ -130,21 +130,68 @@ class AutoScaler
 
         if (ceil($workers) > $poolProcesses &&
             $this->wouldNotExceedMaxProcesses($supervisor)) {
-            $pool->scale($poolProcesses + 1);
+            $pool->scale($poolProcesses + $this->numberOfUpscalingProcesses($supervisor, $poolProcesses, $workers));
         } elseif (ceil($workers) < $poolProcesses &&
-                  $poolProcesses > $supervisor->options->minProcesses) {
-            $pool->scale($poolProcesses - 1);
+            $poolProcesses > $supervisor->options->minProcesses) {
+            $pool->scale($poolProcesses - $this->numberOfDownscalingProcesses($supervisor, $poolProcesses, $workers));
         }
     }
 
     /**
-     * Determine if adding another process would exceed max process limit.
+     * Determine if adding a given number of processes would exceed max process limit.
      *
      * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @param  int  $processes
+     *
      * @return bool
      */
-    protected function wouldNotExceedMaxProcesses(Supervisor $supervisor)
+    protected function wouldNotExceedMaxProcesses(Supervisor $supervisor, $processes = 1)
     {
-        return ($supervisor->totalProcessCount() + 1) <= $supervisor->options->maxProcesses;
+        return ($supervisor->totalProcessCount() + $processes) <= $supervisor->options->maxProcesses;
+    }
+
+    /**
+     * Get the number of processes the auto-scaler may scale up.
+     *
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @param  int  $poolProcesses
+     * @param  int  $workers
+     */
+    protected function numberOfUpscalingProcesses(Supervisor $supervisor, int $poolProcesses, $workers)
+    {
+        $difference = ceil($workers) - $poolProcesses;
+
+        /** scaling up to a configured percentage of the possible processes. */
+        $possibleScale = ceil($difference * (config('horizon.scale.factor', 20) / 100));
+
+        /** when exceeding max processes we will add processes up to the max number */
+        if (!$this->wouldNotExceedMaxProcesses($supervisor, $possibleScale)) {
+            $possibleScale = $supervisor->options->maxProcesses - $supervisor->totalProcessCount();
+        }
+
+        return $possibleScale > 1 ? min(config('horizon.scale.limit', 1), $possibleScale) : 1;
+    }
+
+    /**
+     * Get the number of processes the auto-scaler may scale down.
+     *
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @param  int  $poolProcesses
+     * @param  int  $workers
+     * @return int
+     */
+    protected function numberOfDownscalingProcesses(Supervisor $supervisor, int $poolProcesses, $workers)
+    {
+        $difference = $poolProcesses - ceil($workers);
+
+        /** scaling down to a configured percentage of the possible processes. */
+        $possibleScale = ceil($difference * (config('horizon.scale.factor', 20) / 100));
+
+        /** when the min number of processes would be reached we will scale down to the min number of processes */
+        if ($poolProcesses - $possibleScale < $supervisor->options->minProcesses) {
+            $possibleScale = $supervisor->totalProcessCount() - $supervisor->options->minProcesses;
+        }
+
+        return $possibleScale > 1 ? min(config('horizon.scale.limit', 1), $possibleScale) : 1;
     }
 }

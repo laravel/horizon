@@ -153,6 +153,20 @@ return [
 
     'memory_limit' => 64,
 
+    /**
+    |--------------------------------------------------------------------------
+    | Queue Worker Scale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the queue worker scale settings used by your application
+    | in all environments. These setting will let you limit the number of processes scaled at a time
+    | and speed factor on how many processes will start at a time (Percentage of the total number jobs).
+     */
+    'scale' => [
+        'limit' => 1,
+        'factor' => 20,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Queue Worker Configuration

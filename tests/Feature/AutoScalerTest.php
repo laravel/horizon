@@ -148,6 +148,80 @@ class AutoScalerTest extends IntegrationTest
         $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
     }
 
+    public function test_scaler_will_scale_faster_to_a_proper_balance_on_each_iteration_when_scale_limit_is_increased()
+    {
+        config(['horizon.scale.factor' => 100]);
+        config(['horizon.scale.limit' => 5]);
+
+        [$scaler, $supervisor] = $this->with_scaling_scenario(35, [
+            'first' => ['current' => 10, 'size' => 100, 'runtime' => 10],
+            'second' => ['current' => 25, 'size' => 5, 'runtime' => 10],
+        ], ['minProcesses' => 2]);
+
+        $this->assertEquals(10, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(25, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(15, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(20, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(20, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(15, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(25, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(10, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(30, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(5, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(33, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
+
+        // Asset scaler stays at target values...
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(33, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
+    }
+
+    public function test_scaler_will_scales_a_percentage_of_available_processes_to_a_proper_balance_on_each_iteration()
+    {
+        config(['horizon.scale.factor' => 50]);
+        config(['horizon.scale.limit' => 10]);
+
+        [$scaler, $supervisor] = $this->with_scaling_scenario(35, [
+            'first' => ['current' => 10, 'size' => 100, 'runtime' => 10],
+            'second' => ['current' => 25, 'size' => 5, 'runtime' => 10],
+        ], ['minProcesses' => 2]);
+
+        $this->assertEquals(10, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(25, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(20, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(15, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(27, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(8, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(30, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(5, $supervisor->processPools['second']->totalProcessCount());
+    }
+
     protected function with_scaling_scenario($maxProcesses, array $pools, array $extraOptions = [])
     {
         // Mock dependencies...
