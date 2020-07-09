@@ -75,6 +75,20 @@ class SupervisorOptions
     public $backoff;
 
     /**
+     * The maximum number of jobs to run.
+     *
+     * @var int
+     */
+    public $maxJobs;
+
+    /**
+     * The maximum number of seconds a worker may live.
+     *
+     * @var int
+     */
+    public $maxTime;
+
+    /**
      * The maximum amount of RAM the worker may consume.
      *
      * @var int
@@ -118,6 +132,8 @@ class SupervisorOptions
      * @param  string  $workersName
      * @param  string  $balance
      * @param  int  $backoff
+     * @param  int  $maxTime
+     * @param  int  $maxJobs
      * @param  int  $maxProcesses
      * @param  int  $minProcesses
      * @param  int  $memory
@@ -133,6 +149,8 @@ class SupervisorOptions
                                 $workersName = 'default',
                                 $balance = 'off',
                                 $backoff = 0,
+                                $maxTime = 0,
+                                $maxJobs = 0,
                                 $maxProcesses = 1,
                                 $minProcesses = 1,
                                 $memory = 128,
@@ -148,6 +166,8 @@ class SupervisorOptions
         $this->workersName = $workersName;
         $this->balance = $balance;
         $this->backoff = $backoff;
+        $this->maxTime = $maxTime;
+        $this->maxJobs = $maxJobs;
         $this->maxProcesses = $maxProcesses;
         $this->minProcesses = $minProcesses;
         $this->memory = $memory;
@@ -237,6 +257,8 @@ class SupervisorOptions
             'maxProcesses' => $this->maxProcesses,
             'minProcesses' => $this->minProcesses,
             'maxTries' => $this->maxTries,
+            'maxTime' => $this->maxTime,
+            'maxJobs' => $this->maxJobs,
             'memory' => $this->memory,
             'nice' => $this->nice,
             'name' => $this->name,
