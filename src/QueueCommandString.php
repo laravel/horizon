@@ -46,9 +46,9 @@ class QueueCommandString
      */
     public static function toOptionsString(SupervisorOptions $options, $paused = false)
     {
-        $string = sprintf('--backoff=%s --memory=%s --queue="%s" --sleep=%s --timeout=%s --tries=%s',
-            $options->backoff, $options->memory, $options->queue,
-            $options->sleep, $options->timeout, $options->maxTries
+        $string = sprintf('--backoff=%s --max-time=%s --max-jobs=%s --memory=%s --queue="%s" --sleep=%s --timeout=%s --tries=%s',
+            $options->backoff, $options->maxTime, $options->maxJobs, $options->memory,
+            $options->queue, $options->sleep, $options->timeout, $options->maxTries
         );
 
         if ($options->force) {

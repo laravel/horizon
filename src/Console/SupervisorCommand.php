@@ -18,9 +18,10 @@ class SupervisorCommand extends Command
                             {name : The name of supervisor}
                             {connection : The name of the connection to work}
                             {--balance= : The balancing strategy the supervisor should apply}
-                            {--balance= : The balancing strategy the supervisor should apply}
                             {--delay=0 : The number of seconds to delay failed jobs (Deprecated)}
                             {--backoff=0 : The number of seconds to wait before retrying a job that encountered an uncaught exception}
+                            {--max-jobs=0 : The number of jobs to process before stopping a child process}
+                            {--max-time=0 : The maximum number of seconds a child process should run}
                             {--force : Force the worker to run even in maintenance mode}
                             {--max-processes=1 : The maximum number of total workers to start}
                             {--min-processes=1 : The minimum number of workers to assign per queue}
@@ -113,6 +114,8 @@ class SupervisorCommand extends Command
             $this->option('workers-name'),
             $this->option('balance'),
             $backoff,
+            $this->option('max-time'),
+            $this->option('max-jobs'),
             $this->option('max-processes'),
             $this->option('min-processes'),
             $this->option('memory'),
