@@ -128,6 +128,8 @@ class JobPayload implements ArrayAccess
                 return [];
             case array_key_exists('tags', $this->decoded):
                 return $this->decoded['tags'];
+            case !array_key_exists('tags', $this->decoded):
+                return [];
             default:
                 return Tags::for($job);
         }
