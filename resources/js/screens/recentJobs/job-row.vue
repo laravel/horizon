@@ -52,15 +52,20 @@
             unserialized() {
                 try {
                     return phpunserialize(this.job.payload.data.command);
-                }catch(err){
+                } catch(err) {
                     //
                 }
             },
 
             delayed() {
                 if (this.unserialized && this.unserialized.delay) {
-                    return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
-                        .fromNow(true);
+                    let timezone = this.unserialized.delay.timezone;
+                    let pushedAt = moment.tz(this.job.payload.pushedAt * 1000, timezone);
+                    let delayedUntil = moment.tz(this.unserialized.delay.date, timezone);
+
+                    var duration = moment.duration(pushedAt.diff(delayedUntil));
+
+                    return duration.humanize();
                 }
 
                 return null;
