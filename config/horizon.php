@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 return [
 
     /*
@@ -30,6 +28,19 @@ return [
 
     'path' => 'horizon',
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Base Path
+    |--------------------------------------------------------------------------
+    |
+    | This is the base path that Horizon will sit under. This is helpful
+    | if you need to use Horizon in a subdirectory on the server. The default
+    | is empty so that Horizon will run from the root directory on the server.
+    |
+    */
+    'base_path' => '',
+
     /*
     |--------------------------------------------------------------------------
     | Horizon Redis Connection
@@ -54,10 +65,7 @@ return [
     |
     */
 
-    'prefix' => env(
-        'HORIZON_PREFIX',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_horizon:'
-    ),
+    'prefix' => env('HORIZON_PREFIX', 'horizon:'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +78,7 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+     'middleware' => ['web'],
 
     /*
     |--------------------------------------------------------------------------
@@ -100,14 +108,13 @@ return [
 
     'trim' => [
         'recent' => 60,
-        'pending' => 60,
         'completed' => 60,
         'recent_failed' => 10080,
         'failed' => 10080,
         'monitored' => 10080,
     ],
 
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Metrics
     |--------------------------------------------------------------------------
@@ -124,6 +131,8 @@ return [
             'queue' => 24,
         ],
     ],
+
+    /*
 
     /*
     |--------------------------------------------------------------------------

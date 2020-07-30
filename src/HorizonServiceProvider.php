@@ -7,6 +7,7 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Connectors\RedisConnector;
+use Laravelista\LumenVendorPublish\VendorPublishCommand;
 
 class HorizonServiceProvider extends ServiceProvider
 {
@@ -50,11 +51,11 @@ class HorizonServiceProvider extends ServiceProvider
     {
         Route::group([
             'domain' => config('horizon.domain', null),
-            'prefix' => config('horizon.path'),
-            'namespace' => 'Laravel\Horizon\Http\Controllers',
-            'middleware' => config('horizon.middleware', 'web'),
+            'prefix'     => config('horizon.path'),
+            'namespace'  => 'Laravel\Horizon\Http\Controllers',
+            'middleware' => config('horizon.middleware'),
         ], function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+            require __DIR__ . '/../routes/web.php';
         });
     }
 
@@ -123,6 +124,7 @@ class HorizonServiceProvider extends ServiceProvider
      */
     protected function configure()
     {
+        //$this->app->configure('horizon');
         $this->mergeConfigFrom(
             __DIR__.'/../config/horizon.php', 'horizon'
         );
@@ -135,7 +137,7 @@ class HorizonServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function offerPublishing()
+       protected function offerPublishing()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -171,13 +173,13 @@ class HorizonServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Console\ContinueCommand::class,
-                Console\HorizonCommand::class,
                 Console\InstallCommand::class,
+                Console\AssetsCommand::class,
+                Console\HorizonCommand::class,
                 Console\ListCommand::class,
-                Console\PauseCommand::class,
-                Console\PublishCommand::class,
                 Console\PurgeCommand::class,
+                Console\PauseCommand::class,
+                Console\ContinueCommand::class,
                 Console\StatusCommand::class,
                 Console\SupervisorCommand::class,
                 Console\SupervisorsCommand::class,
@@ -185,6 +187,7 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\TimeoutCommand::class,
                 Console\WorkCommand::class,
             ]);
+            $this->commands(VendorPublishCommand::class);
         }
 
         $this->commands([Console\SnapshotCommand::class]);

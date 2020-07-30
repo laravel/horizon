@@ -4,7 +4,7 @@
     <!-- Meta Information -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+{{--    <meta name="csrf-token" content="{{ csrf_token() }}">--}}
     <link rel="shortcut icon" href="{{ asset('/vendor/horizon/img/favicon.png') }}">
 
     <title>Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</title>
@@ -64,7 +64,7 @@
                             <span>Metrics</span>
                         </router-link>
                     </li>
-                    <li class="nav-item">
+                 <li class="nav-item">
                         <router-link active-class="active" to="/jobs/pending" class="nav-link d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
@@ -80,8 +80,7 @@
                             <span>Completed Jobs</span>
                         </router-link>
                     </li>
-                    <li class="nav-item">
-                        <router-link active-class="active" to="/failed" class="nav-link d-flex align-items-center">
+                    <li class="nav-item">                        <router-link active-class="active" to="/failed" class="nav-link d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"></path>
                             </svg>
@@ -92,12 +91,6 @@
             </div>
 
             <div class="col-10">
-                @if (! $assetsAreCurrent)
-                    <div class="alert alert-warning">
-                        The published Horizon assets are not up-to-date with the installed version. To update, run:<br/><code>php artisan horizon:publish</code>
-                    </div>
-                @endif
-
                 <router-view></router-view>
             </div>
         </div>

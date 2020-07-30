@@ -1,5 +1,5 @@
 {
-    "name": "laravel/horizon",
+        "name": "laravel/horizon",
     "description": "Dashboard and code-driven configuration for Laravel queues.",
     "keywords": ["laravel", "queue"],
     "license": "MIT",
@@ -31,13 +31,16 @@
     "suggest": {
         "ext-redis": "Required to use the Redis PHP driver.",
         "predis/predis": "Required when not using the Redis PHP driver (^1.1)."
-    },
-    "autoload": {
+    },    
+	"autoload": {
         "psr-4": {
             "Laravel\\Horizon\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
-    "autoload-dev": {
+ "autoload-dev": {
         "psr-4": {
             "Laravel\\Horizon\\Tests\\": "tests/"
         }

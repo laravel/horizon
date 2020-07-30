@@ -126,8 +126,13 @@ class Horizon
      */
     public static function scriptVariables()
     {
+        $path = config('horizon.path');
+        $basePath = trim(config('horizon.base_path'), '/');
+        if ($basePath != '') {
+            $path = $basePath . DIRECTORY_SEPARATOR . $path;
+        }
         return [
-            'path' => config('horizon.path'),
+            'path' => $path,
         ];
     }
 
