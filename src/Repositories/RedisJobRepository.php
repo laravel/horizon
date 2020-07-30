@@ -447,7 +447,7 @@ class RedisJobRepository implements JobRepository
             $this->updateRetryInformationOnParent($payload, $failed);
         }
 
-        $this->connection()->pipeline(function ($pipe) use ($payload, $failed) {
+        $this->connection()->pipeline(function ($pipe) use ($payload) {
             $this->storeJobReference($pipe, 'completed_jobs', $payload);
             $this->removeJobReference($pipe, 'pending_jobs', $payload);
 
