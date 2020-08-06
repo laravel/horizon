@@ -165,23 +165,25 @@ return [
     */
 
     'environments' => [
-        'production' => [
+        'default' => [
             'supervisor-1' => [
                 'connection' => 'redis',
                 'queue' => ['default'],
                 'balance' => 'simple',
-                'processes' => 10,
+                'processes' => 1,
                 'tries' => 1,
+            ],
+        ],
+
+        'production' => [
+            'supervisor-1' => [
+                'processes' => 10,
             ],
         ],
 
         'local' => [
             'supervisor-1' => [
-                'connection' => 'redis',
-                'queue' => ['default'],
-                'balance' => 'simple',
                 'processes' => 3,
-                'tries' => 1,
             ],
         ],
     ],
