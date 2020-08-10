@@ -164,17 +164,17 @@ return [
     |
     */
 
-    'environments' => [
-        'default' => [
-            'supervisor-1' => [
-                'connection' => 'redis',
-                'queue' => ['default'],
-                'balance' => 'simple',
-                'processes' => 1,
-                'tries' => 1,
-            ],
+    'defaults' => [
+        'supervisor-1' => [
+            'connection' => 'redis',
+            'queue' => ['default'],
+            'balance' => 'simple',
+            'processes' => 1,
+            'tries' => 1,
         ],
+    ],
 
+    'environments' => [
         'production' => [
             'supervisor-1' => [
                 'processes' => 10,

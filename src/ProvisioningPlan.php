@@ -36,11 +36,12 @@ class ProvisioningPlan
      *
      * @param  string  $master
      * @param  array  $plan
+     * @param  array  $defaults
      * @return void
      */
-    public function __construct($master, array $plan)
+    public function __construct($master, array $plan, array $defaults = [])
     {
-        $this->plan = $this->applyDefaultOptions($plan);
+        $this->plan = $this->applyDefaultOptions($plan, $defaults);
         $this->master = $master;
 
         $this->parsed = $this->toSupervisorOptions();
@@ -54,21 +55,20 @@ class ProvisioningPlan
      */
     public static function get($master)
     {
-        return new static($master, config('horizon.environments'));
+        return new static($master, config('horizon.environments'), config('horizon.defaults', []));
     }
 
     /**
      * Apply the default supervisor options to each environment.
      *
      * @param  array  $plan
+     * @param  array  $defaults
      * @return array
      */
-    protected function applyDefaultOptions(array $plan)
+    protected function applyDefaultOptions(array $plan, array $defaults = [])
     {
-        $default = $plan['default'] ?? [];
-
-        return collect($plan)->forget('default')->map(function ($plan) use ($default) {
-            return array_replace_recursive($default, $plan);
+        return collect($plan)->map(function ($plan) use ($defaults) {
+            return array_replace_recursive($defaults, $plan);
         })->all();
     }
 
