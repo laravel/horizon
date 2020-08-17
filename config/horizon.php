@@ -155,6 +155,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Autoscaling
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the autoscaling settings used by your application.
+    |
+    */
+
+    'autoscaling' => [
+        /*
+         * The cooldown between autoscaling iterations in seconds.
+         */
+        'cooldown' => 3,
+
+        /*
+         * The maximum number of processes to increase/decrease per iteration.
+         */
+        'max_shift' => 1,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Worker Configuration
     |--------------------------------------------------------------------------
     |

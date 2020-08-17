@@ -126,25 +126,28 @@ class AutoScaler
     {
         $supervisor->pruneTerminatingProcesses();
 
-        $poolProcesses = $pool->totalProcessCount();
+        $totalProcessCount = $pool->totalProcessCount();
 
-        if (ceil($workers) > $poolProcesses &&
-            $this->wouldNotExceedMaxProcesses($supervisor)) {
-            $pool->scale($poolProcesses + 1);
-        } elseif (ceil($workers) < $poolProcesses &&
-                  $poolProcesses > $supervisor->options->minProcesses) {
-            $pool->scale($poolProcesses - 1);
+        $desiredProcessCount = ceil($workers);
+
+        if ($desiredProcessCount > $totalProcessCount) {
+            $pool->scale(
+                min($totalProcessCount + $this->maxShift(), $supervisor->options->maxProcesses)
+            );
+        } elseif ($desiredProcessCount < $totalProcessCount) {
+            $pool->scale(
+                max($totalProcessCount - $this->maxShift(), $supervisor->options->minProcesses)
+            );
         }
     }
 
     /**
-     * Determine if adding another process would exceed max process limit.
+     * The maximum number of processes to increase/decrease per iteration.
      *
-     * @param  \Laravel\Horizon\Supervisor  $supervisor
-     * @return bool
+     * @return int
      */
-    protected function wouldNotExceedMaxProcesses(Supervisor $supervisor)
+    protected function maxShift(): int
     {
-        return ($supervisor->totalProcessCount() + 1) <= $supervisor->options->maxProcesses;
+        return config('horizon.autoscaling.max_shift', 1);
     }
 }
