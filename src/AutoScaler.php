@@ -131,12 +131,16 @@ class AutoScaler
         $desiredProcessCount = ceil($workers);
 
         if ($desiredProcessCount > $totalProcessCount) {
+            $maxUpShift = min($supervisor->options->maxProcesses - $supervisor->totalProcessCount(), $this->maxShift());
+
             $pool->scale(
-                min($totalProcessCount + $this->maxShift(), $supervisor->options->maxProcesses)
+                min($totalProcessCount + $maxUpShift, $supervisor->options->maxProcesses, $desiredProcessCount)
             );
         } elseif ($desiredProcessCount < $totalProcessCount) {
+            $maxDownShift = min($supervisor->totalProcessCount() - $supervisor->options->minProcesses, $this->maxShift());
+
             $pool->scale(
-                max($totalProcessCount - $this->maxShift(), $supervisor->options->minProcesses)
+                max($totalProcessCount - $maxDownShift, $supervisor->options->minProcesses, $desiredProcessCount)
             );
         }
     }
