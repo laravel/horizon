@@ -411,7 +411,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      *
      * @return int
      */
-    protected function autoScaleCooldown(): int
+    public function autoScaleCooldown(): int
     {
         return config('horizon.autoscaling.cooldown', 3);
     }
