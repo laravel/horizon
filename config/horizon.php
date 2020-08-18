@@ -163,14 +163,7 @@ return [
     */
 
     'autoscaling' => [
-        /*
-         * The cooldown between autoscaling iterations in seconds.
-         */
         'cooldown' => 3,
-
-        /*
-         * The maximum number of processes to increase/decrease per iteration.
-         */
         'max_shift' => 1,
     ],
 
