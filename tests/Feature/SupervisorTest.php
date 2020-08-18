@@ -421,6 +421,64 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
     }
 
+    public function test_auto_scale_cooldown_returns_value_from_config()
+    {
+        $options = $this->supervisorOptions();
+        $options->autoScale = true;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        config(['horizon.autoscaling.cooldown' => 5]);
+
+        $this->assertSame(5, $supervisor->autoScaleCooldown());
+    }
+
+    public function test_auto_scale_cooldown_returns_default_value_if_cooldown_is_not_specified_in_the_config()
+    {
+        $options = $this->supervisorOptions();
+        $options->autoScale = true;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        config(['horizon.autoscaling' => null]);
+
+        $this->assertSame(3, $supervisor->autoScaleCooldown());
+    }
+
+    public function test_auto_scaler_is_not_called_on_loop_during_cooldown()
+    {
+        $options = $this->supervisorOptions();
+        $options->autoScale = true;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        config(['horizon.autoscaling.cooldown' => 5]);
+
+        // Start the supervisor...
+        $supervisor->scale(1);
+
+        $baseTime = CarbonImmutable::create();
+
+        $this->assertNull($supervisor->lastAutoScaled);
+
+        $supervisor->lastAutoScaled = null;
+        CarbonImmutable::setTestNow($baseTime);
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime));
+
+        $supervisor->lastAutoScaled = $baseTime;
+        CarbonImmutable::setTestNow($baseTime->addSeconds($supervisor->autoScaleCooldown() - 0.01));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime));
+
+        $supervisor->lastAutoScaled = $baseTime;
+        CarbonImmutable::setTestNow($baseTime->addSeconds($supervisor->autoScaleCooldown()));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime->addSeconds($supervisor->autoScaleCooldown())));
+
+        $supervisor->lastAutoScaled = $baseTime;
+        CarbonImmutable::setTestNow($baseTime->addSeconds($supervisor->autoScaleCooldown() + 0.01));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime->addSeconds($supervisor->autoScaleCooldown())));
+    }
+
     public function test_supervisor_with_duplicate_name_cant_be_started()
     {
         $this->expectException(Exception::class);
