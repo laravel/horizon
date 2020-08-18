@@ -454,29 +454,29 @@ class SupervisorTest extends IntegrationTest
         // Start the supervisor...
         $supervisor->scale(1);
 
-        $baseTime = CarbonImmutable::create();
+        $time = CarbonImmutable::create();
 
         $this->assertNull($supervisor->lastAutoScaled);
 
         $supervisor->lastAutoScaled = null;
-        CarbonImmutable::setTestNow($baseTime);
+        CarbonImmutable::setTestNow($time);
         $supervisor->loop();
-        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime));
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time));
 
-        $supervisor->lastAutoScaled = $baseTime;
-        CarbonImmutable::setTestNow($baseTime->addSeconds($supervisor->autoScaleCooldown() - 0.01));
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->autoScaleCooldown() - 0.01));
         $supervisor->loop();
-        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime));
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time));
 
-        $supervisor->lastAutoScaled = $baseTime;
-        CarbonImmutable::setTestNow($baseTime->addSeconds($supervisor->autoScaleCooldown()));
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->autoScaleCooldown()));
         $supervisor->loop();
-        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime->addSeconds($supervisor->autoScaleCooldown())));
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->autoScaleCooldown())));
 
-        $supervisor->lastAutoScaled = $baseTime;
-        CarbonImmutable::setTestNow($baseTime->addSeconds($supervisor->autoScaleCooldown() + 0.01));
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->autoScaleCooldown() + 0.01));
         $supervisor->loop();
-        $this->assertTrue($supervisor->lastAutoScaled->eq($baseTime->addSeconds($supervisor->autoScaleCooldown())));
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->autoScaleCooldown())));
     }
 
     public function test_supervisor_with_duplicate_name_cant_be_started()
