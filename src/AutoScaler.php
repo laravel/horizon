@@ -146,7 +146,7 @@ class AutoScaler
     }
 
     /**
-     * The maximum number of processes to increase/decrease per iteration.
+     * The maximum number of processes to increase or decrease per one scaling.
      *
      * @return int
      */
