@@ -150,7 +150,7 @@ class AutoScaler
      *
      * @return int
      */
-    protected function maxShift(): int
+    public function maxShift(): int
     {
         return config('horizon.autoscaling.max_shift', 1);
     }
