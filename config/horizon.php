@@ -169,8 +169,8 @@ return [
             'connection' => 'redis',
             'queue' => ['default'],
             'balance' => 'auto',
-            'tries' => 1,
             'maxProcesses' => 1,
+            'tries' => 1,
         ],
     ],
 
