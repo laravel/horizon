@@ -55,13 +55,6 @@ class Supervisor implements Pausable, Restartable, Terminable
     public $lastAutoScaled;
 
     /**
-     * The number of seconds to wait in between auto-scaling attempts.
-     *
-     * @var int
-     */
-    public $autoScaleCooldown = 3;
-
-    /**
      * The output handler.
      *
      * @var \Closure|null
@@ -332,9 +325,9 @@ class Supervisor implements Pausable, Restartable, Terminable
     protected function autoScale()
     {
         $this->lastAutoScaled = $this->lastAutoScaled ?:
-                    CarbonImmutable::now()->subSeconds($this->autoScaleCooldown + 1);
+                    CarbonImmutable::now()->subSeconds($this->options->balanceCooldown + 1);
 
-        if (CarbonImmutable::now()->subSeconds($this->autoScaleCooldown)->gte($this->lastAutoScaled)) {
+        if (CarbonImmutable::now()->subSeconds($this->options->balanceCooldown)->gte($this->lastAutoScaled)) {
             $this->lastAutoScaled = CarbonImmutable::now();
 
             app(AutoScaler::class)->scale($this);

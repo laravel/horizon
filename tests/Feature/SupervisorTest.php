@@ -421,6 +421,40 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
     }
 
+    public function test_auto_scaler_is_not_called_on_loop_during_cooldown()
+    {
+        $options = $this->supervisorOptions();
+        $options->autoScale = true;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        // Start the supervisor...
+        $supervisor->scale(1);
+
+        $time = CarbonImmutable::create();
+
+        $this->assertNull($supervisor->lastAutoScaled);
+
+        $supervisor->lastAutoScaled = null;
+        CarbonImmutable::setTestNow($time);
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time));
+
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown - 0.01));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time));
+
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->options->balanceCooldown)));
+
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown + 0.01));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->options->balanceCooldown)));
+    }
+
     public function test_supervisor_with_duplicate_name_cant_be_started()
     {
         $this->expectException(Exception::class);

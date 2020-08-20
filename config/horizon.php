@@ -168,8 +168,8 @@ return [
         'supervisor-1' => [
             'connection' => 'redis',
             'queue' => ['default'],
-            'balance' => 'simple',
-            'processes' => 1,
+            'balance' => 'auto',
+            'maxProcesses' => 1,
             'tries' => 1,
         ],
     ],
@@ -177,13 +177,15 @@ return [
     'environments' => [
         'production' => [
             'supervisor-1' => [
-                'processes' => 10,
+                'maxProcesses' => 10,
+                'balanceCooldown' => 1,
+                'autoScaleMaxShift' => 5,
             ],
         ],
 
         'local' => [
             'supervisor-1' => [
-                'processes' => 3,
+                'maxProcesses' => 3,
             ],
         ],
     ],

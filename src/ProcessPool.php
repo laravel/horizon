@@ -68,7 +68,7 @@ class ProcessPool implements Countable
      */
     public function scale($processes)
     {
-        $processes = max(0, $processes);
+        $processes = max(0, (int) $processes);
 
         if ($processes === count($this->processes)) {
             return;
