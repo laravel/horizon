@@ -178,8 +178,8 @@ return [
         'production' => [
             'supervisor-1' => [
                 'maxProcesses' => 10,
-                'balanceCooldown' => 1,
-                'autoScaleMaxShift' => 5,
+                'balanceCooldown' => 3,
+                'balanceMaxShift' => 1,
             ],
         ],
 

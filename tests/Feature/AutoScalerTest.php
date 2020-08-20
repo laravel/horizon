@@ -189,7 +189,7 @@ class AutoScalerTest extends IntegrationTest
             'second' => ['current' => 75, 'size' => 300, 'runtime' => 75],
         ]);
 
-        $supervisor->options->autoScaleMaxShift = 10;
+        $supervisor->options->balanceMaxShift = 10;
 
         $scaler->scale($supervisor);
 

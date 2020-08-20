@@ -30,7 +30,7 @@ class SupervisorCommand extends Command
                             {--timeout=60 : The number of seconds a child process can run}
                             {--tries=0 : Number of times to attempt a job before logging it failed}
                             {--balance-cooldown=3 : The number of seconds to wait in between auto-scaling attempts}
-                            {--auto-scale-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}';
+                            {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}';
 
     /**
      * The console command description.
@@ -116,7 +116,7 @@ class SupervisorCommand extends Command
             $this->option('force'),
             $this->option('nice'),
             $this->option('balance-cooldown'),
-            $this->option('auto-scale-max-shift')
+            $this->option('balance-max-shift')
         );
     }
 
