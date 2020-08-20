@@ -131,27 +131,31 @@ class AutoScaler
         $desiredProcessCount = ceil($workers);
 
         if ($desiredProcessCount > $totalProcessCount) {
-            $maxUpShift = min($supervisor->options->maxProcesses - $supervisor->totalProcessCount(), $this->maxShift());
+            $maxUpShift = min(
+                $supervisor->options->maxProcesses - $supervisor->totalProcessCount(),
+                $supervisor->options->autoScaleMaxShift
+            );
 
             $pool->scale(
-                min($totalProcessCount + $maxUpShift, $supervisor->options->maxProcesses, $desiredProcessCount)
+                min(
+                    $totalProcessCount + $maxUpShift,
+                    $supervisor->options->maxProcesses,
+                    $desiredProcessCount
+                )
             );
         } elseif ($desiredProcessCount < $totalProcessCount) {
-            $maxDownShift = min($supervisor->totalProcessCount() - $supervisor->options->minProcesses, $this->maxShift());
+            $maxDownShift = min(
+                $supervisor->totalProcessCount() - $supervisor->options->minProcesses,
+                $supervisor->options->autoScaleMaxShift
+            );
 
             $pool->scale(
-                max($totalProcessCount - $maxDownShift, $supervisor->options->minProcesses, $desiredProcessCount)
+                max(
+                    $totalProcessCount - $maxDownShift,
+                    $supervisor->options->minProcesses,
+                    $desiredProcessCount
+                )
             );
         }
-    }
-
-    /**
-     * The maximum number of processes to increase or decrease per one scaling.
-     *
-     * @return int
-     */
-    public function maxShift(): int
-    {
-        return config('horizon.autoscaling.max_shift', 1);
     }
 }

@@ -36,9 +36,10 @@ class SupervisorCommandString
      */
     public static function toOptionsString(SupervisorOptions $options)
     {
-        return sprintf('%s --balance=%s --max-processes=%s --min-processes=%s --nice=%s',
+        return sprintf('%s --balance=%s --max-processes=%s --min-processes=%s --nice=%s --balance-cooldown=%s --auto-scale-max-shift=%s',
             QueueCommandString::toOptionsString($options), $options->balance,
-            $options->maxProcesses, $options->minProcesses, $options->nice
+            $options->maxProcesses, $options->minProcesses, $options->nice,
+            $options->balanceCooldown, $options->autoScaleMaxShift
         );
     }
 

@@ -182,20 +182,6 @@ class AutoScalerTest extends IntegrationTest
         return [$scaler, $supervisor];
     }
 
-    public function test_max_shift_returns_default_value_if_max_shift_is_not_specified_in_config()
-    {
-        config(['horizon.autoscaling' => null]);
-
-        $this->assertSame(1, app(AutoScaler::class)->maxShift());
-    }
-
-    public function test_max_shift_returns_value_from_config()
-    {
-        config(['horizon.autoscaling.max_shift' => 20]);
-
-        $this->assertSame(20, app(AutoScaler::class)->maxShift());
-    }
-
     public function test_scaler_considers_max_shift_and_attempts_to_get_closer_to_proper_balance_on_each_iteration()
     {
         [$scaler, $supervisor] = $this->with_scaling_scenario(150, [
@@ -203,7 +189,7 @@ class AutoScalerTest extends IntegrationTest
             'second' => ['current' => 75, 'size' => 300, 'runtime' => 75],
         ]);
 
-        config(['horizon.autoscaling.max_shift' => 10]);
+        $supervisor->options->autoScaleMaxShift = 10;
 
         $scaler->scale($supervisor);
 

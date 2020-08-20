@@ -63,6 +63,20 @@ class SupervisorOptions extends WorkerOptions
     public $directory;
 
     /**
+     * The number of seconds to wait in between auto-scaling attempts.
+     *
+     * @var int
+     */
+    public $balanceCooldown = 3;
+
+    /**
+     * The maximum number of processes to increase or decrease per one scaling.
+     *
+     * @var int
+     */
+    public $autoScaleMaxShift = 1;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
@@ -78,10 +92,13 @@ class SupervisorOptions extends WorkerOptions
      * @param  int  $maxTries
      * @param  bool  $force
      * @param  int  $nice
+     * @param  int  $balanceCooldown
+     * @param  int  $autoScaleMaxShift
      */
     public function __construct($name, $connection, $queue = null, $balance = 'off',
                                 $delay = 0, $maxProcesses = 1, $minProcesses = 1, $memory = 128,
-                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0)
+                                $timeout = 60, $sleep = 3, $maxTries = 0, $force = false, $nice = 0,
+                                $balanceCooldown = 3, $autoScaleMaxShift = 1)
     {
         $this->name = $name;
         $this->nice = $nice;
@@ -90,6 +107,8 @@ class SupervisorOptions extends WorkerOptions
         $this->maxProcesses = $maxProcesses;
         $this->minProcesses = $minProcesses;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
+        $this->balanceCooldown = $balanceCooldown;
+        $this->autoScaleMaxShift = $autoScaleMaxShift;
 
         parent::__construct($delay, $memory, $timeout, $sleep, $maxTries, $force);
     }
@@ -178,6 +197,8 @@ class SupervisorOptions extends WorkerOptions
             'name' => $this->name,
             'sleep' => $this->sleep,
             'timeout' => $this->timeout,
+            'balanceCooldown' => $this->balanceCooldown,
+            'autoScaleMaxShift' => $this->autoScaleMaxShift,
         ];
     }
 
