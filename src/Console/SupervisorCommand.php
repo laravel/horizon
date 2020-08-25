@@ -18,7 +18,10 @@ class SupervisorCommand extends Command
                             {name : The name of supervisor}
                             {connection : The name of the connection to work}
                             {--balance= : The balancing strategy the supervisor should apply}
-                            {--delay=0 : Amount of time to delay failed jobs}
+                            {--delay=0 : The number of seconds to delay failed jobs (Deprecated)}
+                            {--backoff=0 : The number of seconds to wait before retrying a job that encountered an uncaught exception}
+                            {--max-jobs=0 : The number of jobs to process before stopping a child process}
+                            {--max-time=0 : The maximum number of seconds a child process should run}
                             {--force : Force the worker to run even in maintenance mode}
                             {--max-processes=1 : The maximum number of total workers to start}
                             {--min-processes=1 : The minimum number of workers to assign per queue}
@@ -30,7 +33,8 @@ class SupervisorCommand extends Command
                             {--timeout=60 : The number of seconds a child process can run}
                             {--tries=0 : Number of times to attempt a job before logging it failed}
                             {--balance-cooldown=3 : The number of seconds to wait in between auto-scaling attempts}
-                            {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}';
+                            {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}
+                            {--workers-name=default : The name that should be assigned to the workers}';
 
     /**
      * The console command description.
@@ -101,12 +105,19 @@ class SupervisorCommand extends Command
      */
     protected function supervisorOptions()
     {
+        $backoff = $this->hasOption('backoff')
+                    ? $this->option('backoff')
+                    : $this->option('delay');
+
         return new SupervisorOptions(
             $this->argument('name'),
             $this->argument('connection'),
             $this->getQueue($this->argument('connection')),
+            $this->option('workers-name'),
             $this->option('balance'),
-            $this->option('delay'),
+            $backoff,
+            $this->option('max-time'),
+            $this->option('max-jobs'),
             $this->option('max-processes'),
             $this->option('min-processes'),
             $this->option('memory'),

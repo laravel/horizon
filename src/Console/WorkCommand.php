@@ -13,7 +13,11 @@ class WorkCommand extends BaseWorkCommand
      */
     protected $signature = 'horizon:work
                             {connection? : The name of the queue connection to work}
-                            {--delay=0 : Amount of time to delay failed jobs}
+                            {--name=default : The name of the worker}
+                            {--delay=0 : The number of seconds to delay failed jobs (Deprecated)}
+                            {--backoff=0 : The number of seconds to wait before retrying a job that encountered an uncaught exception}
+                            {--max-jobs=0 : The number of jobs to process before stopping}
+                            {--max-time=0 : The maximum number of seconds the worker should run}
                             {--daemon : Run the worker in daemon mode (Deprecated)}
                             {--force : Force the worker to run even in maintenance mode}
                             {--memory=128 : The memory limit in megabytes}

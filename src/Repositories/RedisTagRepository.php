@@ -79,7 +79,7 @@ class RedisTagRepository implements TagRepository
     {
         $this->connection()->pipeline(function ($pipe) use ($id, $tags) {
             foreach ($tags as $tag) {
-                $pipe->zadd($tag, $id, $id);
+                $pipe->zadd($tag, str_replace(',', '.', microtime(true)), $id);
             }
         });
     }
@@ -96,7 +96,7 @@ class RedisTagRepository implements TagRepository
     {
         $this->connection()->pipeline(function ($pipe) use ($minutes, $id, $tags) {
             foreach ($tags as $tag) {
-                $pipe->zadd($tag, $id, $id);
+                $pipe->zadd($tag, str_replace(',', '.', microtime(true)), $id);
 
                 $pipe->expire($tag, $minutes * 60);
             }
