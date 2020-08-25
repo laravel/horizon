@@ -137,7 +137,6 @@ class SupervisorOptions
      */
     public $force;
 
-
     /**
      * Create a new worker options instance.
      *
