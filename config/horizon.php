@@ -172,6 +172,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 1,
+                'nice' => 0,
             ],
         ],
 
@@ -182,6 +183,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 1,
+                'nice' => 0,
             ],
         ],
     ],
