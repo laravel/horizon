@@ -23,7 +23,7 @@ class SupervisorCommand extends Command
                             {--max-processes=1 : The maximum number of total workers to start}
                             {--min-processes=1 : The minimum number of workers to assign per queue}
                             {--memory=128 : The memory limit in megabytes}
-                            {--nice=0 : The process priority}
+                            {--nice=0 : Increment to the process niceness}
                             {--paused : Start the supervisor in a paused state}
                             {--queue= : The names of the queues to work}
                             {--sleep=3 : Number of seconds to sleep when no job is available}

@@ -49,7 +49,7 @@ class SupervisorOptions extends WorkerOptions
     public $minProcesses = 1;
 
     /**
-     * The process priority.
+     * Increment to the process niceness.
      *
      * @var int
      */
