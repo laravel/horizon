@@ -24,13 +24,6 @@ class HorizonCommand extends Command
     protected $description = 'Start a master supervisor in the foreground';
 
     /**
-     * Indicates whether the command should be shown in the Artisan command list.
-     *
-     * @var bool
-     */
-    protected $hidden = true;
-
-    /**
      * Execute the console command.
      *
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
