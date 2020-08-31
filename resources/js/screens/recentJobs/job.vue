@@ -150,8 +150,12 @@
              * Pretty print serialized job.
              */
             prettyPrintJob(data) {
-                return data.command && !data.command.includes('CallQueuedClosure')
-                    ? phpunserialize(data.command) : data;
+                try {
+                    return data.command && !data.command.includes('CallQueuedClosure')
+                        ? phpunserialize(data.command) : data;
+                } catch (err) {
+                    return data;
+                }
             }
         }
     }
