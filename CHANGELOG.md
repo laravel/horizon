@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.3.3...develop)
+## [Unreleased](https://github.com/laravel/horizon/compare/v4.3.4...develop)
+
+
+## [v4.3.4 (2020-09-01)](https://github.com/laravel/horizon/compare/v4.3.3...v4.3.4)
+
+### Changed
+- Unhide horizon command  ([#878](https://github.com/laravel/horizon/pull/878))
+
+### Fixed
+- Try catch serialization error ([57903ed](https://github.com/laravel/horizon/commit/57903edbf845e3d401a9d188199d89f2ed203ff1))
 
 
 ## [v4.3.3 (2020-05-26)](https://github.com/laravel/horizon/compare/v4.3.2...v4.3.3)
