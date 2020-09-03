@@ -54,6 +54,13 @@ class SupervisorOptions
     public $minProcesses = 1;
 
     /**
+     * The parent process identifier.
+     *
+     * @var int
+     */
+    public $parentId = 0;
+
+    /**
      * The process priority.
      *
      * @var int
@@ -158,6 +165,7 @@ class SupervisorOptions
      * @param  int  $nice
      * @param  int  $balanceCooldown
      * @param  int  $balanceMaxShift
+     * @param  int  $parentId
      */
     public function __construct($name,
                                 $connection,
@@ -176,7 +184,8 @@ class SupervisorOptions
                                 $force = false,
                                 $nice = 0,
                                 $balanceCooldown = 3,
-                                $balanceMaxShift = 1)
+                                $balanceMaxShift = 1,
+                                $parentId = 0)
     {
         $this->name = $name;
         $this->connection = $connection;
@@ -196,6 +205,7 @@ class SupervisorOptions
         $this->nice = $nice;
         $this->balanceCooldown = $balanceCooldown;
         $this->balanceMaxShift = $balanceMaxShift;
+        $this->parentId = 0;
     }
 
     /**

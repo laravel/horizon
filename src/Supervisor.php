@@ -281,6 +281,8 @@ class Supervisor implements Pausable, Restartable, Terminable
     public function loop()
     {
         try {
+            $this->ensureParentIsRunning();
+
             $this->processPendingSignals();
 
             $this->processPendingCommands();
@@ -302,6 +304,18 @@ class Supervisor implements Pausable, Restartable, Terminable
             event(new SupervisorLooped($this));
         } catch (Throwable $e) {
             app(ExceptionHandler::class)->report($e);
+        }
+    }
+
+    /**
+     * Ensure the parent process is still running.
+     *
+     * @return void
+     */
+    protected function ensureParentIsRunning()
+    {
+        if ($this->options->parentId > 1 && posix_getppid() <= 1) {
+            $this->terminate();
         }
     }
 

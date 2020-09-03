@@ -176,6 +176,8 @@ class ProvisioningPlan
             return [Str::camel($key) => $value];
         })->all();
 
+        $options['parentId'] = getmypid();
+
         return SupervisorOptions::fromArray(
             Arr::add($options, 'name', $this->master.":{$supervisor}")
         );
