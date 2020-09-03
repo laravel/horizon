@@ -35,7 +35,7 @@ class SupervisorCommand extends Command
                             {--balance-cooldown=3 : The number of seconds to wait in between auto-scaling attempts}
                             {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}
                             {--workers-name=default : The name that should be assigned to the workers}
-                            {--parent-id=0 : The parent process id}';
+                            {--parent-id=0 : The parent process ID}';
 
     /**
      * The console command description.
