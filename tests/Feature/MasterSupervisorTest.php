@@ -93,7 +93,7 @@ class MasterSupervisorTest extends IntegrationTest
         $command = (object) json_decode($commands[0], true);
 
         $this->assertCount(0, $master->supervisors);
-        $this->assertEquals(AddSupervisor::class, $command->command);
+        $this->assertSame(AddSupervisor::class, $command->command);
         $this->assertSame('default', $command->options['queue']);
     }
 
@@ -148,7 +148,7 @@ class MasterSupervisorTest extends IntegrationTest
 
         $command = resolve(Commands\FakeMasterCommand::class);
 
-        $this->assertEquals(1, $command->processCount);
+        $this->assertSame(1, $command->processCount);
         $this->assertEquals($master, $command->master);
         $this->assertEquals(['foo' => 'bar'], $command->options);
     }

@@ -28,18 +28,18 @@ class JobRetrievalTest extends IntegrationTest
         // Test getting all jobs...
         $this->assertCount(5, $recent);
         $this->assertEquals($ids[4], $recent->first()->id);
-        $this->assertEquals(Jobs\BasicJob::class, $recent->first()->name);
-        $this->assertEquals(0, $recent->first()->index);
+        $this->assertSame(Jobs\BasicJob::class, $recent->first()->name);
+        $this->assertSame(0, $recent->first()->index);
         $this->assertEquals($ids[0], $recent->last()->id);
-        $this->assertEquals(4, $recent->last()->index);
+        $this->assertSame(4, $recent->last()->index);
 
         // Test pagination...
         $recent = $repository->getRecent(1);
         $this->assertCount(3, $recent);
         $this->assertEquals($ids[2], $recent->first()->id);
-        $this->assertEquals(2, $recent->first()->index);
+        $this->assertSame(2, $recent->first()->index);
         $this->assertEquals($ids[0], $recent->last()->id);
-        $this->assertEquals(4, $recent->last()->index);
+        $this->assertSame(4, $recent->last()->index);
 
         // Test no results...
         $recent = $repository->getRecent(4);
@@ -59,10 +59,10 @@ class JobRetrievalTest extends IntegrationTest
         $repository = resolve(JobRepository::class);
         Chronos::setTestNow(Chronos::now()->addHours(3));
 
-        $this->assertEquals(5, Redis::connection('horizon')->zcard('recent_jobs'));
+        $this->assertSame(5, Redis::connection('horizon')->zcard('recent_jobs'));
 
         $repository->trimRecentJobs();
-        $this->assertEquals(0, Redis::connection('horizon')->zcard('recent_jobs'));
+        $this->assertSame(0, Redis::connection('horizon')->zcard('recent_jobs'));
 
         // Assert job record has a TTL...
         $repository->completed(new JobPayload(json_encode(['id' => $ids[0]])));

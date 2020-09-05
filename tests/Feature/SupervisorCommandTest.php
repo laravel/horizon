@@ -34,7 +34,7 @@ class SupervisorCommandTest extends IntegrationTest
         $this->app->instance(SupervisorFactory::class, $factory = new FakeSupervisorFactory);
         $this->artisan('horizon:supervisor', ['name' => 'foo', 'connection' => 'redis', '--nice' => 10]);
 
-        $this->assertEquals(10, $this->myNiceness());
+        $this->assertSame(10, $this->myNiceness());
     }
 
     private function myNiceness()
