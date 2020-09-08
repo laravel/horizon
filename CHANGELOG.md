@@ -1,6 +1,25 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.3.4...develop)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.0.0...develop)
+
+
+## [v5.0.0 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.4...v5.0.0)
+
+### Added
+- Add support for setting workers name ([#840](https://github.com/laravel/horizon/pull/840))
+- Support batches ([#844](https://github.com/laravel/horizon/pull/844))
+- Support worker max-time and max-jobs ([#860](https://github.com/laravel/horizon/pull/860))
+- Implement default environment ([#869](https://github.com/laravel/horizon/pull/869))
+- Make autoscaling rate configurable ([#874](https://github.com/laravel/horizon/pull/874), [9af71de](https://github.com/laravel/horizon/commit/9af71dea8edc1b3045439c59437b522e7df63277))
+
+### Changed
+- Switch from Chronos to Carbon ([#826](https://github.com/laravel/horizon/pull/826))
+- Rename `retryUntil` to `backoff` ([6d00eb9](https://github.com/laravel/horizon/commit/6d00eb9b80a599d3ac403108b7a8d65629af2c59))
+- Bump minimum PHP version to PHP 7.3 ([ca9ddda](https://github.com/laravel/horizon/commit/ca9dddacdf1b08ef5ba494d1a954c79a52c7ab9a))
+- Merge tags from payload ([#843](https://github.com/laravel/horizon/pull/843))
+
+### Fixed
+- Check if parent is still running ([#881](https://github.com/laravel/horizon/pull/881))
 
 
 ## [v4.3.4 (2020-09-01)](https://github.com/laravel/horizon/compare/v4.3.3...v4.3.4)
