@@ -9,7 +9,7 @@ With every upgrade, make sure to publish Horizon's assets:
 
 ### Minimum PHP Version
 
-PHP 7.x is now the minimum required version.
+PHP 7.3 is now the minimum required version.
 
 ### Minimum Laravel Version
 
