@@ -3,7 +3,7 @@
 ## [Unreleased](https://github.com/laravel/horizon/compare/v5.0.0...develop)
 
 
-## [v5.0.0 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.4...v5.0.0)
+## [v5.0.0 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.5...v5.0.0)
 
 ### Added
 - Add support for setting workers name ([#840](https://github.com/laravel/horizon/pull/840))
@@ -20,6 +20,12 @@
 
 ### Fixed
 - Check if parent is still running ([#881](https://github.com/laravel/horizon/pull/881))
+
+
+## [v4.3.5 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.4...v4.3.5)
+
+### Fixed
+- Add try/catch for failed-jobs ([#880](https://github.com/laravel/horizon/pull/880))
 
 
 ## [v4.3.4 (2020-09-01)](https://github.com/laravel/horizon/compare/v4.3.3...v4.3.4)
