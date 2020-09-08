@@ -17,7 +17,7 @@ class RedisJobRepositoryTest extends IntegrationTest
 
         $repository->failed(new Exception('Failed Job'), 'redis', 'default', $payload);
 
-        $this->assertEquals(1, $repository->findFailed(1)->id);
+        $this->assertSame('1', $repository->findFailed(1)->id);
     }
 
     public function test_it_will_not_find_a_failed_job_if_the_job_has_not_failed()

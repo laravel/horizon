@@ -23,21 +23,21 @@ class QueueProcessingTest extends IntegrationTest
     {
         Queue::push(new Jobs\BasicJob);
         $this->work();
-        $this->assertEquals(0, $this->monitoredJobs('first'));
-        $this->assertEquals(0, $this->monitoredJobs('second'));
+        $this->assertSame(0, $this->monitoredJobs('first'));
+        $this->assertSame(0, $this->monitoredJobs('second'));
     }
 
     public function test_pending_jobs_are_stored_in_pending_job_database()
     {
         $id = Queue::push(new Jobs\BasicJob);
-        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame(1, $this->recentJobs());
         $this->assertSame('pending', Redis::connection('horizon')->hget($id, 'status'));
     }
 
     public function test_pending_delayed_jobs_are_stored_in_pending_job_database()
     {
         $id = Queue::later(1, new Jobs\BasicJob);
-        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame(1, $this->recentJobs());
         $this->assertSame('pending', Redis::connection('horizon')->hget($id, 'status'));
     }
 

@@ -20,8 +20,8 @@ class MonitoringTest extends IntegrationTest
 
         dispatch(new MonitorTag('second'));
         $monitored = $repository->monitoring();
-        $this->assertTrue(in_array('first', $monitored));
-        $this->assertTrue(in_array('second', $monitored));
+        $this->assertContains('first', $monitored);
+        $this->assertContains('second', $monitored);
         $this->assertCount(2, $monitored);
     }
 
@@ -52,7 +52,7 @@ class MonitoringTest extends IntegrationTest
         dispatch(new MonitorTag('first'));
         $id = Queue::push(new Jobs\BasicJob);
         $this->work();
-        $this->assertEquals(1, $this->monitoredJobs('first'));
+        $this->assertSame(1, $this->monitoredJobs('first'));
         $this->assertGreaterThan(0, Redis::connection('horizon')->ttl($id));
     }
 
@@ -62,7 +62,7 @@ class MonitoringTest extends IntegrationTest
         Queue::push(new Jobs\BasicJob);
         $this->work();
         dispatch(new StopMonitoringTag('first'));
-        $this->assertEquals(0, $this->monitoredJobs('first'));
+        $this->assertSame(0, $this->monitoredJobs('first'));
     }
 
     public function test_all_completed_jobs_are_removed_from_database_when_their_tag_is_no_longer_monitored()
@@ -76,6 +76,6 @@ class MonitoringTest extends IntegrationTest
         $this->work();
 
         dispatch(new StopMonitoringTag('first'));
-        $this->assertEquals(0, $this->monitoredJobs('first'));
+        $this->assertSame(0, $this->monitoredJobs('first'));
     }
 }
