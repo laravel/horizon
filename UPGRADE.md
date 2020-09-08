@@ -21,11 +21,11 @@ PR: https://github.com/laravel/horizon/pull/826
 
 The internal usage of Chronos has been replaced by Carbon to be more in line with the rest of the Laravel ecosystem.
 
-### `retryUntil` deprecated
+### `timeoutAt` & `delay` flags deprecated
 
 PR: https://github.com/laravel/horizon/commit/6d00eb9b80a599d3ac403108b7a8d65629af2c59
 
-`retryUntil` has been deprecated in favor of `backoff`.
+`timeoutAt` has been deprecated in favor of `retryUntil` & `delay` has been deprecated in favor of `backoff`. See the related Laravel PR here: https://github.com/laravel/framework/pull/32728
 
 
 ## Upgrading To 4.0 From 3.x

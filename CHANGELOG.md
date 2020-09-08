@@ -14,7 +14,7 @@
 
 ### Changed
 - Switch from Chronos to Carbon ([#826](https://github.com/laravel/horizon/pull/826))
-- Rename `retryUntil` to `backoff` ([6d00eb9](https://github.com/laravel/horizon/commit/6d00eb9b80a599d3ac403108b7a8d65629af2c59))
+- Rename `timeoutAt` to `retryUntil` & `delay` to `backoff` ([6d00eb9](https://github.com/laravel/horizon/commit/6d00eb9b80a599d3ac403108b7a8d65629af2c59))
 - Bump minimum PHP version to PHP 7.3 ([ca9ddda](https://github.com/laravel/horizon/commit/ca9dddacdf1b08ef5ba494d1a954c79a52c7ab9a))
 - Merge tags from payload ([#843](https://github.com/laravel/horizon/pull/843))
 
