@@ -20,7 +20,7 @@ class QueueClearController extends Controller
     public function __invoke(RedisJobRepository $jobRepository, QueueManager $manager, Request $request)
     {
         $jobRepository->purge($queue = $request->input('queue'));
-        
+
         $connection = Arr::first(config('horizon.defaults'))['connection'] ?? 'redis';
         $manager->connection($connection)->clear($queue);
     }

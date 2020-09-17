@@ -17,7 +17,7 @@ class QueueClearControllerTest extends AbstractControllerTest
         Mockery::mock(RedisQueue::class)
             ->shouldReceive('clear')
             ->withArgs(['email-processing']);
-        
+
         $this->actingAs(new Fakes\User)
             ->post('/horizon/api/clearQueue', ['queue' => 'email-processing']);
     }
