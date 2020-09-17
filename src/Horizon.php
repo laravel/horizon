@@ -5,6 +5,7 @@ namespace Laravel\Horizon;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\File;
+use Laravel\Horizon\RedisQueue;
 use RuntimeException;
 
 class Horizon
@@ -128,6 +129,7 @@ class Horizon
     {
         return [
             'path' => config('horizon.path'),
+            'supportsClear' => method_exists(RedisQueue::class, 'clear'),
         ];
     }
 

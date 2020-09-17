@@ -301,7 +301,7 @@
                     <th>Queue</th>
                     <th>Processes</th>
                     <th>Jobs</th>
-                    <th>Clear</th>
+                    <th v-if="Horizon.supportsClear">Clear</th>
                     <th class="text-right">Wait</th>
                 </tr>
                 </thead>
@@ -313,7 +313,7 @@
                     </td>
                     <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
                     <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
-                    <td>
+                    <td v-if="Horizon.supportsClear">
                         <button class="btn btn-outline-danger" title="Clear queued jobs" :disabled="purge.queue === queue.name" @click="confirmClearQueue(queue)">
 
                             <svg class="icon fill-danger" viewBox="0 0 20 20">
