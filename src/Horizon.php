@@ -5,7 +5,6 @@ namespace Laravel\Horizon;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\File;
-use Laravel\Horizon\RedisQueue;
 use RuntimeException;
 
 class Horizon
