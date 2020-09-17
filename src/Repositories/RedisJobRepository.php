@@ -689,6 +689,27 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+      * Delete pending and reserved jobs for a queue.
+      *
+      * @param  string  $queue
+      * @return void
+      */
+     public function purge($queue)
+     {
+        $ids = collect(range(0, ceil($this->nextJobId() / 50)))->transform(function ($_, $index) use ($queue) {
+            return $this->getRecent($index === 0 ? null : $index * 50)->filter(function ($recent) use ($queue) {
+                return in_array($recent->status, ['pending', 'reserved']) && $recent->queue === $queue;
+            });
+        })->flatten(1)->pluck('id')->all();
+
+        $this->connection()->pipeline(function ($pipe) use ($ids) {
+            $pipe->zrem('recent_jobs', $ids);
+            $pipe->zrem('pending_jobs', $ids);
+            $pipe->del($ids);
+        });
+     }
+
+    /**
      * Get the Redis connection instance.
      *
      * @return \Illuminate\Redis\Connections\Connection
