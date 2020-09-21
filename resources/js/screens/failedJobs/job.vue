@@ -161,9 +161,9 @@
                 <div class="row mb-2" v-if="job.payload.retry_of">
                     <div class="col-md-2"><strong>Retry of ID</strong></div>
                     <div class="col">
-                        <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
+                        <a :href="Horizon.basePath + '/failed/'+job.payload.retry_of">
                             {{ job.payload.retry_of }}
-                        </router-link>
+                        </a>
                     </div>
                 </div>
                 <div class="row mb-2">
