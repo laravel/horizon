@@ -161,7 +161,7 @@
                 <div class="row mb-2" v-if="job.payload.retry_of">
                     <div class="col-md-2"><strong>Retry of ID</strong></div>
                     <div class="col">
-                        <a :href="Horizon.basePath + '/failed/'+job.payload.retry_of">
+                        <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
                             {{ job.payload.retry_of }}
                         </a>
                     </div>
