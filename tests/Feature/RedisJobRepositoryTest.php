@@ -56,4 +56,28 @@ class RedisJobRepositoryTest extends IntegrationTest
             throw $e;
         }
     }
+
+    public function test_it_removes_recent_jobs_when_queue_is_purged()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 1, 'displayName' => 'first'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 2, 'displayName' => 'second'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 3, 'displayName' => 'third'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 4, 'displayName' => 'fourth'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 5, 'displayName' => 'fifth'])));
+
+        $repository->completed(new JobPayload(json_encode(['id' => 1, 'displayName' => 'first'])));
+        $repository->completed(new JobPayload(json_encode(['id' => 2, 'displayName' => 'second'])));
+
+        $this->assertEquals(3, $repository->purge('email-processing'));
+        $this->assertEquals(2, $repository->countRecent());
+        $this->assertEquals(0, $repository->countPending());
+        $this->assertEquals(2, $repository->countCompleted());
+
+        $recent = collect($repository->getRecent());
+        $this->assertNotNull($recent->firstWhere('id', 1));
+        $this->assertNotNull($recent->firstWhere('id', 2));
+        $this->assertCount(2, $repository->getJobs([1, 2, 3, 4, 5]));
+    }
 }
