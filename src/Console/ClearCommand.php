@@ -50,6 +50,7 @@ class ClearCommand extends Command
         $jobRepository->purge($queue = $this->getQueue($connection));
 
         $count = $manager->connection($connection)->clear($queue);
+
         $this->line('<info>Cleared '.$count.' jobs from the ['.$queue.'] queue</info> ');
 
         return 0;

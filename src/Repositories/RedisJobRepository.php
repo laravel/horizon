@@ -697,8 +697,13 @@ class RedisJobRepository implements JobRepository
      */
     public function purge($queue)
     {
-        return $this->connection()->eval(LuaScripts::purge(), 2,
-            'recent_jobs', 'pending_jobs', config('horizon.prefix'), $queue
+        return $this->connection()->eval(
+            LuaScripts::purge(),
+            2,
+            'recent_jobs',
+            'pending_jobs',
+            config('horizon.prefix'),
+            $queue
         );
     }
 
