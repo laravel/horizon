@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
+use Laravel\Horizon\LuaScripts;
 
 class RedisJobRepository implements JobRepository
 {
@@ -686,6 +687,24 @@ class RedisJobRepository implements JobRepository
         $this->connection()->zrem('failed_jobs', $id);
 
         $this->connection()->del($id);
+    }
+
+    /**
+     * Delete pending and reserved jobs for a queue.
+     *
+     * @param  string  $queue
+     * @return int
+     */
+    public function purge($queue)
+    {
+        return $this->connection()->eval(
+            LuaScripts::purge(),
+            2,
+            'recent_jobs',
+            'pending_jobs',
+            config('horizon.prefix'),
+            $queue
+        );
     }
 
     /**

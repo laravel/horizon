@@ -1,6 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.0.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.1.0...master)
+
+
+## [v5.1.0 (2020-09-22)](https://github.com/laravel/horizon/compare/v5.0.0...v5.1.0)
+
+### Added
+- Add ability to see if a failed job is retried and/or a retry ([573e6a8](https://github.com/laravel/horizon/commit/573e6a88dcf0b2798db444b20cde8e9ac4357ee3))
+- Add Horizon command to clear queue ([#892](https://github.com/laravel/horizon/pull/892), [05e3a1c](https://github.com/laravel/horizon/commit/05e3a1cc374010e8ffc98c94f9dcd32d93eaaee7))
+
+### Fixed
+- Rename variable to match route ([4822955](https://github.com/laravel/horizon/commit/48229555075d3f46d782d77794705c60c9c7b379))
 
 
 ## [v5.0.0 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.5...v5.0.0)

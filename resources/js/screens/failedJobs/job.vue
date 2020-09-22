@@ -151,6 +151,22 @@
                     <div class="col">{{job.queue}}</div>
                 </div>
                 <div class="row mb-2">
+                    <div class="col-md-2"><strong>Attempts</strong></div>
+                    <div class="col">{{job.payload.attempts}}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Retries</strong></div>
+                    <div class="col">{{job.retried_by.length}}</div>
+                </div>
+                <div class="row mb-2" v-if="job.payload.retry_of">
+                    <div class="col-md-2"><strong>Retry of ID</strong></div>
+                    <div class="col">
+                         <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
+                            {{ job.payload.retry_of }}
+                        </a>
+                    </div>
+                </div>
+                <div class="row mb-2">
                     <div class="col-md-2"><strong>Tags</strong></div>
                     <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                 </div>
