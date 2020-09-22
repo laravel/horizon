@@ -121,6 +121,19 @@
 
 
             /**
+             * Remove the given failed job.
+             */
+            remove(id) {
+                this.$http.delete(Horizon.basePath + '/api/jobs/failed/' + id)
+                    .then((response) => {
+                        this.jobs = _.reject(this.jobs, job => job.id == id)
+                    }).catch(error => {
+                        //
+                    });
+            },
+
+
+            /**
              * Determine if the given job is currently retrying.
              */
             isRetrying(id) {
@@ -220,7 +233,7 @@
                     <th>Job</th>
                     <th>Runtime</th>
                     <th>Failed At</th>
-                    <th class="text-right">Retry</th>
+                    <th class="text-right">Actions</th>
                 </tr>
                 </thead>
 
@@ -271,9 +284,14 @@
                     </td>
 
                     <td class="text-right table-fit">
-                        <a href="#" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
+                        <a href="#" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)" title="Retry job">
                             <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;" :class="{spin: isRetrying(job.id)}">
                                 <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
+                            </svg>
+                        </a>
+                        <a href="#" @click.prevent="remove(job.id)" title="Remove job">
+                            <svg class="fill-danger" viewBox="0 0 20 20" style="width: 1.2rem; height: 1.2rem;">
+                                <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z"/>
                             </svg>
                         </a>
                     </td>

@@ -106,6 +106,19 @@ class FailedJobsController extends Controller
     }
 
     /**
+     * Delete a failed job instance.
+     *
+     * @param string $id
+     * @return mixed
+     */
+    public function delete($id)
+    {
+        return $this->jobs->deleteFailed($id) == 0
+            ? response(null, 404)
+            : response()->noContent();
+    }
+
+    /**
      * Decode the given job.
      *
      * @param  object  $job

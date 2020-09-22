@@ -145,7 +145,8 @@ svg.icon {
 }
 
 button:hover {
-    .fill-primary {
+    .fill-primary,
+    .fill-danger {
         fill: #fff;
     }
 }
