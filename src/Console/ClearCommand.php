@@ -39,16 +39,16 @@ class ClearCommand extends Command
             return 1;
         }
 
-        if (!method_exists(RedisQueue::class, 'clear')) {
+        if (! method_exists(RedisQueue::class, 'clear')) {
             $this->line('<error>Clearing queues is not supported on this version of Laravel</error>');
-            
+
             return 1;
         }
 
         $connection = Arr::first($this->laravel['config']->get('horizon.defaults'))['connection'] ?? 'redis';
 
         $jobRepository->purge($queue = $this->getQueue($connection));
-        
+
         $count = $manager->connection($connection)->clear($queue);
         $this->line('<info>Cleared '.$count.' jobs from the ['.$queue.'] queue</info> ');
 
