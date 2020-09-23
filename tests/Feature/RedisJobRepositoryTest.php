@@ -80,4 +80,30 @@ class RedisJobRepositoryTest extends IntegrationTest
         $this->assertNotNull($recent->firstWhere('id', 2));
         $this->assertCount(2, $repository->getJobs([1, 2, 3, 4, 5]));
     }
+
+    public function test_it_will_delete_a_failed_job()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->failed(new Exception('Failed Job'), 'redis', 'default', $payload);
+
+        $result = $repository->deleteFailed(1);
+
+        $this->assertSame(1, $result);
+        $this->assertNull($repository->findFailed(1));
+    }
+
+    public function test_it_will_not_delete_a_job_if_the_job_has_not_failed()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+
+        $result = $repository->deleteFailed(1);
+
+        $this->assertSame(0, $result);
+        $this->assertSame('1', $repository->getRecent()[0]->id);
+    }
 }
