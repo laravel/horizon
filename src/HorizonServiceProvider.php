@@ -173,6 +173,7 @@ class HorizonServiceProvider extends ServiceProvider
             $this->commands([
                 Console\ClearCommand::class,
                 Console\ContinueCommand::class,
+                Console\ForgetFailedCommand::class,
                 Console\HorizonCommand::class,
                 Console\InstallCommand::class,
                 Console\ListCommand::class,

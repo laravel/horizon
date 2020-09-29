@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.1.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.2.0...master)
+
+
+## [v5.2.0 (2020-09-29)](https://github.com/laravel/horizon/compare/v5.1.0...v5.2.0)
+
+### Added
+- Add `horizon:forget` command to delete a failed job ([#896](https://github.com/laravel/horizon/pull/896))
+
+### Fixed
+- Fix check deleting failed job is actually failed ([#894](https://github.com/laravel/horizon/pull/894))
 
 
 ## [v5.1.0 (2020-09-22)](https://github.com/laravel/horizon/compare/v5.0.0...v5.1.0)
