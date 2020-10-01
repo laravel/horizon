@@ -24,10 +24,7 @@
                         yAxes: [
                             {
                                 ticks: {
-                                    beginAtZero: true,
-                                    callback: function (value, index, values) {
-                                        return `${value} secs`;
-                                    },
+                                    beginAtZero: true
                                 },
                                 gridLines: {
                                     display: true
