@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.2.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.2.1...5.x)
+
+
+## [v5.2.1 (2020-10-06)](https://github.com/laravel/horizon/compare/v5.2.0...v5.2.1)
+
+### Changed
+- Add secs to y-axis ticks' for clarity ([#903](https://github.com/laravel/horizon/pull/903))
 
 
 ## [v5.2.0 (2020-09-29)](https://github.com/laravel/horizon/compare/v5.1.0...v5.2.0)
