@@ -145,9 +145,9 @@ return [
     | Memory Limit (MB)
     |--------------------------------------------------------------------------
     |
-    | This value describes the maximum amount of memory the Horizon worker
-    | may consume before it is terminated and restarted. You should set
-    | this value according to the resources available to your server.
+    | This value describes the maximum amount of memory the Horizon master
+    | supervisor may consume before it is terminated and restarted. For
+    | configuring this limit on the workers, refer the next section.
     |
     */
 
@@ -172,6 +172,7 @@ return [
             'maxProcesses' => 1,
             'tries' => 1,
             'nice' => 0,
+            'memory' => 128,
         ],
     ],
 
