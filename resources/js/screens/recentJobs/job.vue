@@ -120,8 +120,12 @@
                     //
                 }
 
-                if (unserialized && unserialized.delay) {
+                if (unserialized && unserialized.delay && unserialized.delay.date) {
                     return moment.tz(unserialized.delay.date, unserialized.delay.timezone)
+                        .local()
+                        .format('YYYY-MM-DD HH:mm:ss');
+                } else if (unserialized && unserialized.delay) {
+                    return this.formatDate(this.job.payload.pushedAt).add(unserialized.delay, 'seconds')
                         .local()
                         .format('YYYY-MM-DD HH:mm:ss');
                 }
