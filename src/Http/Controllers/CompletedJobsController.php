@@ -43,7 +43,7 @@ class CompletedJobsController extends Controller
 
         return [
             'jobs' => $jobs,
-            'total' => $this->jobs->countRecent(),
+            'total' => $this->jobs->countCompleted(),
         ];
     }
 
