@@ -147,7 +147,7 @@ return [
     |
     | This value describes the maximum amount of memory the Horizon master
     | supervisor may consume before it is terminated and restarted. For
-    | configuring this limit on the workers, refer the next section.
+    | configuring these limits on your workers, see the next section.
     |
     */
 
@@ -170,9 +170,9 @@ return [
             'queue' => ['default'],
             'balance' => 'auto',
             'maxProcesses' => 1,
+            'memory' => 128,
             'tries' => 1,
             'nice' => 0,
-            'memory' => 128,
         ],
     ],
 
