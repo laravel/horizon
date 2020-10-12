@@ -19,8 +19,8 @@ class ClearCommand extends Command
      * @var string
      */
     protected $signature = 'horizon:clear
-                            {--force : Force the operation to run when in production}
-                            {--queue= : The name of the queue to clear}';
+                            {--queue= : The name of the queue to clear}
+                            {--force : Force the operation to run when in production}';
 
     /**
      * The console command description.
