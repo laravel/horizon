@@ -19,7 +19,8 @@ class ClearCommand extends Command
      * @var string
      */
     protected $signature = 'horizon:clear
-                            {--queue= : The name of the queue to clear}';
+                            {--queue= : The name of the queue to clear}
+                            {--force : Force the operation to run when in production}';
 
     /**
      * The console command description.
@@ -65,7 +66,8 @@ class ClearCommand extends Command
     protected function getQueue($connection)
     {
         return $this->option('queue') ?: $this->laravel['config']->get(
-            "queue.connections.{$connection}.queue", 'default'
+            "queue.connections.{$connection}.queue",
+            'default'
         );
     }
 }
