@@ -106,6 +106,11 @@
                         The published Horizon assets are not up-to-date with the installed version. To update, run:<br/><code>php artisan horizon:publish</code>
                     </div>
                 @endif
+                @if ($isDownForMaintenance)
+                    <div class="alert alert-warning">
+                        You are currently down for maintenance. Queued jobs might not be handled during this period.
+                    </div>
+                @endif
 
                 <router-view></router-view>
             </div>
