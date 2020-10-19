@@ -28,7 +28,7 @@ class CompletedJobsController extends Controller
     }
 
     /**
-     * Get all of the recent jobs.
+     * Get all of the completed jobs.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
