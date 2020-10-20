@@ -1,6 +1,18 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.2.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.3.0...5.x)
+
+
+## [v5.3.0 (2020-10-20)](https://github.com/laravel/horizon/compare/v5.2.1...v5.3.0)
+
+### Added
+- Add maintenance notice on dashboard ([#911](https://github.com/laravel/horizon/pull/911))
+
+### Fixed
+- Fix delayed until on pending jobs screen ([#907](https://github.com/laravel/horizon/pull/907))
+- Add missing force option to `horizon:clear` ([#909](https://github.com/laravel/horizon/pull/909))
+- Fix misleading memory limit config ([#908](https://github.com/laravel/horizon/pull/908))
+- Fix completed jobs count ([#910](https://github.com/laravel/horizon/pull/910))
 
 
 ## [v5.2.1 (2020-10-06)](https://github.com/laravel/horizon/compare/v5.2.0...v5.2.1)
