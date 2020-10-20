@@ -58,8 +58,11 @@
             },
 
             delayed() {
-                if (this.unserialized && this.unserialized.delay) {
+                if (this.unserialized && this.unserialized.delay && this.unserialized.delay.date) {
                     return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
+                        .fromNow(true);
+                } else if (this.unserialized && this.unserialized.delay) {
+                    return this.formatDate(this.job.payload.pushedAt).add(this.unserialized.delay, 'seconds')
                         .fromNow(true);
                 }
 

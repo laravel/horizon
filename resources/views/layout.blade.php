@@ -107,6 +107,12 @@
                     </div>
                 @endif
 
+                @if ($isDownForMaintenance)
+                    <div class="alert alert-warning">
+                        This application is in "maintenance mode". Queued jobs may not be processed unless your worker is using the "force" flag.
+                    </div>
+                @endif
+
                 <router-view></router-view>
             </div>
         </div>
