@@ -310,8 +310,11 @@
                     <td>{{ superVisorDisplayName(supervisor.name, worker.name) }}</td>
                     <td>{{ countProcesses(supervisor.processes) }}</td>
                     <td>{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
-                    <td class="text-right">
+                    <td class="text-right" v-if="supervisor.options.balance">
                         ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                    </td>
+                    <td class="text-right" v-else>
+                        (Disabled)
                     </td>
                 </tr>
                 </tbody>
