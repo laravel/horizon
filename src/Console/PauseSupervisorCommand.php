@@ -46,7 +46,7 @@ class PauseSupervisorCommand extends Command
         $this->info("Sending USR2 Signal To Process: {$processId}");
 
         if (! posix_kill($processId, SIGUSR2)) {
-            $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+            $this->error("Failed to send USR2 signal to process: {$processId} (".posix_strerror(posix_get_last_error()).')');
         }
     }
 }
