@@ -46,7 +46,7 @@ class ContinueSupervisorCommand extends Command
         $this->info("Sending CONT Signal To Process: {$processId}");
 
         if (! posix_kill($processId, SIGCONT)) {
-            $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+            $this->error("Failed to send CONT signal to process: {$processId} (".posix_strerror(posix_get_last_error()).')');
         }
     }
 }
