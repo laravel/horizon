@@ -157,7 +157,7 @@
                     <div class="modal-header">Monitor New Tag</div>
 
                     <div class="modal-body">
-                        <input type="text" class="form-control" placeholder="App\User:6352"
+                        <input type="text" class="form-control" placeholder="App\Models\User:6352"
                                v-on:keyup.enter="monitorNewTag"
                                v-model="newTag"
                                id="newTagInput">

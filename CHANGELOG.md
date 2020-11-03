@@ -1,6 +1,19 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.3.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.4.0...master)
+
+
+## [v5.4.0 (2020-11-03)](https://github.com/laravel/horizon/compare/v5.3.0...v5.4.0)
+
+### Added
+- Add commands to pause and continue supervisors ([#914](https://github.com/laravel/horizon/pull/914))
+- Support PHP 8 ([#917](https://github.com/laravel/horizon/pull/917))
+
+### Changed
+- Improve wording of error message ([#918](https://github.com/laravel/horizon/pull/918))
+
+### Fixed
+- Fix balance false display on dashboard ([88c84ac](https://github.com/laravel/horizon/commit/88c84acd10198b661fa77600187b59cd6505272e))
 
 
 ## [v5.3.0 (2020-10-20)](https://github.com/laravel/horizon/compare/v5.2.1...v5.3.0)
