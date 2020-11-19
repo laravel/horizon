@@ -172,6 +172,7 @@ class ProvisioningPlan
             $key = $key === 'tries' ? 'max_tries' : $key;
             $key = $key === 'processes' ? 'max_processes' : $key;
             $value = $key === 'queue' && is_array($value) ? implode(',', $value) : $value;
+            $value = $key === 'backoff' && is_array($value) ? implode(',', $value) : $value;
 
             return [Str::camel($key) => $value];
         })->all();
