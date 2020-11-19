@@ -210,6 +210,7 @@
                                 </svg>
 
                                 <h4 class="mb-0 ml-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</h4>
+                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} paused)</small>
                             </div>
                         </div>
                     </div>

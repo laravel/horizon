@@ -25,6 +25,7 @@ class DashboardStatsController extends Controller
             'failedJobs' => app(JobRepository::class)->countRecentlyFailed(),
             'recentJobs' => app(JobRepository::class)->countRecent(),
             'status' => $this->currentStatus(),
+            'pausedMasters' => $this->countPausedMasters(),
             'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
             'periods' => [
                 'failedJobs' => config('horizon.trim.recent_failed', config('horizon.trim.failed')),
@@ -58,8 +59,24 @@ class DashboardStatsController extends Controller
             return 'inactive';
         }
 
-        return collect($masters)->contains(function ($master) {
+        return collect($masters)->every(function ($master) {
             return $master->status === 'paused';
         }) ? 'paused' : 'running';
+    }
+
+    /**
+     * Get paused masters.
+     *
+     * @return int
+     */
+    protected function countPausedMasters()
+    {
+        if (! $masters = app(MasterSupervisorRepository::class)->all()) {
+            return 0;
+        }
+
+        return collect($masters)->filter(function ($master) {
+            return $master->status === 'paused';
+        })->count();
     }
 }
