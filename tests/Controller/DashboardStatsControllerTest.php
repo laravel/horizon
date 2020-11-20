@@ -74,7 +74,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         $masters = Mockery::mock(MasterSupervisorRepository::class);
         $masters->shouldReceive('all')->andReturn([
             (object) [
-                'status' => 'running',
+                'status' => 'paused',
             ],
             (object) [
                 'status' => 'paused',
@@ -87,6 +87,27 @@ class DashboardStatsControllerTest extends AbstractControllerTest
 
         $response->assertJson([
             'status' => 'paused',
+        ]);
+    }
+
+    public function test_paused_status_isnt_reflected_if_not_all_master_supervisors_are_paused()
+    {
+        $masters = Mockery::mock(MasterSupervisorRepository::class);
+        $masters->shouldReceive('all')->andReturn([
+            (object) [
+                'status' => 'running',
+            ],
+            (object) [
+                'status' => 'paused',
+            ],
+        ]);
+        $this->app->instance(MasterSupervisorRepository::class, $masters);
+
+        $response = $this->actingAs(new Fakes\User)
+            ->get('/horizon/api/stats');
+
+        $response->assertJson([
+            'status' => 'running',
         ]);
     }
 }
