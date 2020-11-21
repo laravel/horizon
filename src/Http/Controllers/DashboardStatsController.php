@@ -18,19 +18,19 @@ class DashboardStatsController extends Controller
     public function index()
     {
         return [
-            'jobsPerMinute' => app(MetricsRepository::class)->jobsProcessedPerMinute(),
-            'processes' => $this->totalProcessCount(),
-            'queueWithMaxRuntime' => app(MetricsRepository::class)->queueWithMaximumRuntime(),
-            'queueWithMaxThroughput' => app(MetricsRepository::class)->queueWithMaximumThroughput(),
             'failedJobs' => app(JobRepository::class)->countRecentlyFailed(),
-            'recentJobs' => app(JobRepository::class)->countRecent(),
-            'status' => $this->currentStatus(),
-            'pausedMasters' => $this->countPausedMasters(),
-            'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
+            'jobsPerMinute' => app(MetricsRepository::class)->jobsProcessedPerMinute(),
+            'pausedMasters' => $this->totalPausedMasters(),
             'periods' => [
                 'failedJobs' => config('horizon.trim.recent_failed', config('horizon.trim.failed')),
                 'recentJobs' => config('horizon.trim.recent'),
             ],
+            'processes' => $this->totalProcessCount(),
+            'queueWithMaxRuntime' => app(MetricsRepository::class)->queueWithMaximumRuntime(),
+            'queueWithMaxThroughput' => app(MetricsRepository::class)->queueWithMaximumThroughput(),
+            'recentJobs' => app(JobRepository::class)->countRecent(),
+            'status' => $this->currentStatus(),
+            'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
         ];
     }
 
@@ -65,11 +65,11 @@ class DashboardStatsController extends Controller
     }
 
     /**
-     * Get paused masters.
+     * Get the number of master supervisors that are currently paused.
      *
      * @return int
      */
-    protected function countPausedMasters()
+    protected function totalPausedMasters()
     {
         if (! $masters = app(MasterSupervisorRepository::class)->all()) {
             return 0;
