@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.4.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.5.0...master)
+
+
+## [v5.5.0 (2020-11-24)](https://github.com/laravel/horizon/compare/v5.4.0...v5.5.0)
+
+### Added
+- Ability to see which masters are paused and only show paused if everything is paused ([#929](https://github.com/laravel/horizon/pull/929), [f9b5aea](https://github.com/laravel/horizon/commit/f9b5aea1c25518c4def4ce3b33a937b1972cd2a4))
+
+### Changed
+- Accept array format for exponential backoff ([#926](https://github.com/laravel/horizon/pull/926))
 
 
 ## [v5.4.0 (2020-11-03)](https://github.com/laravel/horizon/compare/v5.3.0...v5.4.0)

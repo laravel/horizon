@@ -210,6 +210,7 @@
                                 </svg>
 
                                 <h4 class="mb-0 ml-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</h4>
+                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} paused)</small>
                             </div>
                         </div>
                     </div>
@@ -293,6 +294,14 @@
         <div class="card mt-4" v-for="worker in workers" :key="worker.name">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>{{ worker.name }}</h5>
+
+                <svg v-if="worker.status == 'running'" class="fill-success" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
+                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"></path>
+                </svg>
+
+                <svg v-if="worker.status == 'paused'" class="fill-warning" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
+                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
+                </svg>
             </div>
 
             <table class="table table-hover table-sm mb-0">

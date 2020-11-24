@@ -98,4 +98,21 @@ class ProvisioningPlanTest extends IntegrationTest
 
         $this->assertSame(20, $results['local']['supervisor-2']->maxProcesses);
     }
+
+    public function test_backoff_is_translated_to_string_form()
+    {
+        $plan = [
+            'local' => [
+                'supervisor-2' => [
+                    'connection' => 'redis',
+                    'queue' => 'local-supervisor-2-queue',
+                    'backoff' => [30, 60],
+                ],
+            ],
+        ];
+
+        $results = (new ProvisioningPlan(MasterSupervisor::name(), $plan))->toSupervisorOptions();
+
+        $this->assertSame('30,60', $results['local']['supervisor-2']->backoff);
+    }
 }

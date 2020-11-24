@@ -91,7 +91,7 @@ class SupervisorOptions
     /**
      * The number of seconds to wait before retrying a job that encountered an uncaught exception.
      *
-     * @var int
+     * @var string
      */
     public $backoff;
 
