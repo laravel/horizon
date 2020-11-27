@@ -113,9 +113,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you can configure how many snapshots should be kept to display in
-    | the metrics graph and how often they can be stored.
-    | This will get used in combination with Horizon's `horizon:snapshot`
-    | schedule to define how long to retain metrics.
+    | the metrics graph. This will get used in combination with Horizon's
+    | `horizon:snapshot` schedule to define how long to retain metrics.
     |
     */
 
@@ -124,7 +123,6 @@ return [
             'job' => 24,
             'queue' => 24,
         ],
-        'snapshot_lock' => 300,
     ],
 
     /*
