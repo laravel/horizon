@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.5.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.0...master)
+
+
+## [v5.6.0 (2020-12-01)](https://github.com/laravel/horizon/compare/v5.5.0...v5.6.0)
+
+### Added
+- Metrics snapshot config proposal and fix for race condition ([#936](https://github.com/laravel/horizon/pull/936), [59221e9](https://github.com/laravel/horizon/commit/59221e9b60eeb1e04f8bedb4954e9f1a24188959))
 
 
 ## [v5.5.0 (2020-11-24)](https://github.com/laravel/horizon/compare/v5.4.0...v5.5.0)
