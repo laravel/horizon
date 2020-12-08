@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.0...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.1...master)
+
+
+## [v5.6.1 (2020-12-08)](https://github.com/laravel/horizon/compare/v5.6.0...v5.6.1)
+
+### Changed
+- Use enqueueUsing when pushing delayed jobs ([#939](https://github.com/laravel/horizon/pull/939))
 
 
 ## [v5.6.0 (2020-12-01)](https://github.com/laravel/horizon/compare/v5.5.0...v5.6.0)
