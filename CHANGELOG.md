@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.2...5.x)
+
+
+## [v5.6.2 (2020-12-15)](https://github.com/laravel/horizon/compare/v5.6.1...v5.6.2)
+
+### Fixed
+- Fix missing tag check in payload ([#945](https://github.com/laravel/horizon/pull/945))
 
 
 ## [v5.6.1 (2020-12-08)](https://github.com/laravel/horizon/compare/v5.6.0...v5.6.1)
