@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.2...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.3...5.x)
+
+
+## [v5.6.3 (2020-12-22)](https://github.com/laravel/horizon/compare/v5.6.2...v5.6.3)
+
+### Changed
+- Considering queue config parameter 'after_commit' ([#948](https://github.com/laravel/horizon/pull/948))
 
 
 ## [v5.6.2 (2020-12-15)](https://github.com/laravel/horizon/compare/v5.6.1...v5.6.2)
