@@ -70,7 +70,7 @@ class Horizon
     public static function check($request)
     {
         return (static::$authUsing ?: function () {
-            return app()->environment('local');
+            return app()->environment(config('horizon.local_env'));
         })($request);
     }
 
