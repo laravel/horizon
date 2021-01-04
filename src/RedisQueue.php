@@ -41,9 +41,17 @@ class RedisQueue extends BaseQueue
      */
     public function push($job, $data = '', $queue = null)
     {
-        $this->lastPushed = $job;
+        return $this->enqueueUsing(
+            $job,
+            $this->createPayload($job, $this->getQueue($queue), $data),
+            $queue,
+            null,
+            function ($payload, $queue) use ($job) {
+                $this->lastPushed = $job;
 
-        return parent::push($job, $data, $queue);
+                return $this->pushRaw($payload, $queue);
+            }
+        );
     }
 
     /**
