@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.3...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.4...5.x)
+
+
+## [v5.6.4 (2021-01-05)](https://github.com/laravel/horizon/compare/v5.6.3...v5.6.4)
+
+### Fixed
+- Set `lastPushed` when executing the delayed enqueue closure ([#951](https://github.com/laravel/horizon/pull/951))
 
 
 ## [v5.6.3 (2020-12-22)](https://github.com/laravel/horizon/compare/v5.6.2...v5.6.3)
