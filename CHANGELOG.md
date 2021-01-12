@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.4...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.5...5.x)
+
+
+## [v5.6.5 (2021-01-12)](https://github.com/laravel/horizon/compare/v5.6.4...v5.6.5)
+
+### Fixed
+- Bump minimum Laravel version ([#954](https://github.com/laravel/horizon/pull/954))
 
 
 ## [v5.6.4 (2021-01-05)](https://github.com/laravel/horizon/compare/v5.6.3...v5.6.4)
