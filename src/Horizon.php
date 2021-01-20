@@ -103,7 +103,9 @@ class Horizon
         }
 
         config(['database.redis.horizon' => array_merge($config, [
-            'options' => ['prefix' => config('horizon.prefix') ?: 'horizon:'],
+            'options' => array_merge($config['options'] ?? [], [
+                'prefix' => config('horizon.prefix') ?: 'horizon:',
+            ]),
         ])]);
     }
 
