@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.5...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.6...5.x)
+
+
+## [v5.6.6 (2021-02-09)](https://github.com/laravel/horizon/compare/v5.6.5...v5.6.6)
+
+### Fixed
+- Add fallback font ([#964](https://github.com/laravel/horizon/pull/964))
 
 
 ## [v5.6.5 (2021-01-12)](https://github.com/laravel/horizon/compare/v5.6.4...v5.6.5)
