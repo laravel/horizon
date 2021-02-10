@@ -278,14 +278,27 @@
                 </thead>
 
                 <tbody>
-                <tr v-for="queue in workload">
-                    <td>
-                        <span>{{ queue.name.replace(/,/g, ', ') }}</span>
-                    </td>
-                    <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
-                    <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
-                    <td class="text-right">{{ humanTime(queue.wait) }}</td>
-                </tr>
+                <template v-for="queue in workload">
+                    <tr>
+                        <td :class="{'font-weight-bold': queue.split_queues}">
+                            <span>{{ queue.name.replace(/,/g, ', ') }}</span>
+                        </td>
+                        <td :class="{'font-weight-bold': queue.split_queues}">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                        <td :class="{'font-weight-bold': queue.split_queues}">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
+                        <td :class="{'font-weight-bold': queue.split_queues}" class="text-right">{{ humanTime(queue.wait) }}</td>
+                    </tr>
+                    <tr v-for="split_queue in queue.split_queues">
+                        <td>
+                            <svg class="icon info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"/>
+                            </svg>
+                            <span>{{ split_queue.name.replace(/,/g, ', ') }}</span>
+                        </td>
+                        <td>-</td>
+                        <td>{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
+                        <td class="text-right">{{ humanTime(split_queue.wait) }}</td>
+                    </tr>
+                </template>
                 </tbody>
             </table>
         </div>
