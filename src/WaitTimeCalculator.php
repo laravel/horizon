@@ -80,7 +80,7 @@ class WaitTimeCalculator
     }
 
     /**
-     * Calculate the time to clear for the given in queue in seconds distributed over the given amount of processes.
+     * Calculate the time to clear for the given queue in seconds distributed over the given amount of processes.
      *
      * @param  string  $connection
      * @param  string  $queue
@@ -123,7 +123,7 @@ class WaitTimeCalculator
      * @param  string  $queue
      * @return float
      */
-    public function timeToClearFor($connection, $queue)
+    protected function timeToClearFor($connection, $queue)
     {
         $size = $this->queue->connection($connection)->readyNow($queue);
 
