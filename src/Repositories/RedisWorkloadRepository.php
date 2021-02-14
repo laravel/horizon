@@ -69,6 +69,7 @@ class RedisWorkloadRepository implements WorkloadRepository
         return collect($this->waitTime->calculate())
             ->map(function ($waitTime, $queue) use ($processes) {
                 [$connection, $queueName] = explode(':', $queue, 2);
+
                 $totalProcesses = $processes[$queue] ?? 0;
 
                 $length = ! Str::contains($queue, ',')

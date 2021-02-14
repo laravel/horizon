@@ -80,6 +80,36 @@ class WaitTimeCalculator
     }
 
     /**
+     * Get all of the queue names.
+     *
+     * @param  \Illuminate\Support\Collection  $supervisors
+     * @param  string|null  $queue
+     * @return \Illuminate\Support\Collection
+     */
+    protected function queueNames($supervisors, $queue = null)
+    {
+        $queues = $supervisors->map(function ($supervisor) {
+            return array_keys($supervisor->processes);
+        })->collapse()->unique()->values();
+
+        return $queue ? $queues->intersect([$queue]) : $queues;
+    }
+
+    /**
+     * Get the total process count for a given queue.
+     *
+     * @param  \Illuminate\Support\Collection  $allSupervisors
+     * @param  string  $queue
+     * @return int
+     */
+    protected function totalProcessesFor($allSupervisors, $queue)
+    {
+        return $allSupervisors->sum(function ($supervisor) use ($queue) {
+            return $supervisor->processes[$queue] ?? 0;
+        });
+    }
+
+    /**
      * Calculate the time to clear for the given queue in seconds distributed over the given amount of processes.
      *
      * @param  string  $connection
@@ -101,22 +131,6 @@ class WaitTimeCalculator
     }
 
     /**
-     * Get all of the queue names.
-     *
-     * @param  \Illuminate\Support\Collection  $supervisors
-     * @param  string|null  $queue
-     * @return \Illuminate\Support\Collection
-     */
-    protected function queueNames($supervisors, $queue = null)
-    {
-        $queues = $supervisors->map(function ($supervisor) {
-            return array_keys($supervisor->processes);
-        })->collapse()->unique()->values();
-
-        return $queue ? $queues->intersect([$queue]) : $queues;
-    }
-
-    /**
      * Get the total time to clear (in milliseconds) for a given queue.
      *
      * @param  string  $connection
@@ -128,19 +142,5 @@ class WaitTimeCalculator
         $size = $this->queue->connection($connection)->readyNow($queue);
 
         return $size * $this->metrics->runtimeForQueue($queue);
-    }
-
-    /**
-     * Get the total process count for a given queue.
-     *
-     * @param  \Illuminate\Support\Collection  $allSupervisors
-     * @param  string  $queue
-     * @return int
-     */
-    protected function totalProcessesFor($allSupervisors, $queue)
-    {
-        return $allSupervisors->sum(function ($supervisor) use ($queue) {
-            return $supervisor->processes[$queue] ?? 0;
-        });
     }
 }
