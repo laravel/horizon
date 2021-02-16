@@ -70,17 +70,28 @@ class RedisWorkloadRepository implements WorkloadRepository
             ->map(function ($waitTime, $queue) use ($processes) {
                 [$connection, $queueName] = explode(':', $queue, 2);
 
+                $totalProcesses = $processes[$queue] ?? 0;
+
                 $length = ! Str::contains($queue, ',')
-                    ? $this->queue->connection($connection)->readyNow($queueName)
-                    : collect(explode(',', $queueName))->sum(function ($queueName) use ($connection) {
-                        return $this->queue->connection($connection)->readyNow($queueName);
+                    ? collect([$queueName => $this->queue->connection($connection)->readyNow($queueName)])
+                    : collect(explode(',', $queueName))->mapWithKeys(function ($queueName) use ($connection) {
+                        return [$queueName => $this->queue->connection($connection)->readyNow($queueName)];
                     });
+
+                $splitQueues = Str::contains($queue, ',') ? $length->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait) {
+                    return [
+                        'name' => $queueName,
+                        'length' => $length,
+                        'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, $queueName, $totalProcesses),
+                    ];
+                }) : null;
 
                 return [
                     'name' => $queueName,
-                    'length' => $length,
+                    'length' => $length->sum(),
                     'wait' => $waitTime,
-                    'processes' => $processes[$queue] ?? 0,
+                    'processes' => $totalProcesses,
+                    'split_queues' => $splitQueues,
                 ];
             })->values()->toArray();
     }
