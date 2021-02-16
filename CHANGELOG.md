@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.6.6...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.0...5.x)
+
+
+## [v5.7.0 (2021-02-16)](https://github.com/laravel/horizon/compare/v5.6.6...v5.7.0)
+
+### Added
+- Show workload also per queue when balancing is disabled ([#966](https://github.com/laravel/horizon/pull/966), [b4e8c6a](https://github.com/laravel/horizon/commit/b4e8c6a460d34efe2843c0d943c0cdea20fb0bba))
 
 
 ## [v5.6.6 (2021-02-09)](https://github.com/laravel/horizon/compare/v5.6.5...v5.6.6)
