@@ -39,12 +39,12 @@ class JobMetricsController extends Controller
     /**
      * Get metrics for a given job.
      *
-     * @param  string  $slug
+     * @param  string  $id
      * @return \Illuminate\Support\Collection
      */
-    public function show($slug)
+    public function show($id)
     {
-        return collect($this->metrics->snapshotsForJob($slug))->map(function ($record) {
+        return collect($this->metrics->snapshotsForJob($id))->map(function ($record) {
             $record->runtime = round($record->runtime / 1000, 3);
             $record->throughput = (int) $record->throughput;
 

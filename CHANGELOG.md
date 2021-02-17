@@ -1,6 +1,190 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v4.1.0...4.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.0...5.x)
+
+
+## [v5.7.0 (2021-02-16)](https://github.com/laravel/horizon/compare/v5.6.6...v5.7.0)
+
+### Added
+- Show workload also per queue when balancing is disabled ([#966](https://github.com/laravel/horizon/pull/966), [b4e8c6a](https://github.com/laravel/horizon/commit/b4e8c6a460d34efe2843c0d943c0cdea20fb0bba))
+
+
+## [v5.6.6 (2021-02-09)](https://github.com/laravel/horizon/compare/v5.6.5...v5.6.6)
+
+### Fixed
+- Add fallback font ([#964](https://github.com/laravel/horizon/pull/964))
+
+
+## [v5.6.5 (2021-01-12)](https://github.com/laravel/horizon/compare/v5.6.4...v5.6.5)
+
+### Fixed
+- Bump minimum Laravel version ([#954](https://github.com/laravel/horizon/pull/954))
+
+
+## [v5.6.4 (2021-01-05)](https://github.com/laravel/horizon/compare/v5.6.3...v5.6.4)
+
+### Fixed
+- Set `lastPushed` when executing the delayed enqueue closure ([#951](https://github.com/laravel/horizon/pull/951))
+
+
+## [v5.6.3 (2020-12-22)](https://github.com/laravel/horizon/compare/v5.6.2...v5.6.3)
+
+### Changed
+- Considering queue config parameter 'after_commit' ([#948](https://github.com/laravel/horizon/pull/948))
+
+
+## [v5.6.2 (2020-12-15)](https://github.com/laravel/horizon/compare/v5.6.1...v5.6.2)
+
+### Fixed
+- Fix missing tag check in payload ([#945](https://github.com/laravel/horizon/pull/945))
+
+
+## [v5.6.1 (2020-12-08)](https://github.com/laravel/horizon/compare/v5.6.0...v5.6.1)
+
+### Changed
+- Use enqueueUsing when pushing delayed jobs ([#939](https://github.com/laravel/horizon/pull/939))
+
+
+## [v5.6.0 (2020-12-01)](https://github.com/laravel/horizon/compare/v5.5.0...v5.6.0)
+
+### Added
+- Metrics snapshot config proposal and fix for race condition ([#936](https://github.com/laravel/horizon/pull/936), [59221e9](https://github.com/laravel/horizon/commit/59221e9b60eeb1e04f8bedb4954e9f1a24188959))
+
+
+## [v5.5.0 (2020-11-24)](https://github.com/laravel/horizon/compare/v5.4.0...v5.5.0)
+
+### Added
+- Ability to see which masters are paused and only show paused if everything is paused ([#929](https://github.com/laravel/horizon/pull/929), [f9b5aea](https://github.com/laravel/horizon/commit/f9b5aea1c25518c4def4ce3b33a937b1972cd2a4))
+
+### Changed
+- Accept array format for exponential backoff ([#926](https://github.com/laravel/horizon/pull/926))
+
+
+## [v5.4.0 (2020-11-03)](https://github.com/laravel/horizon/compare/v5.3.0...v5.4.0)
+
+### Added
+- Add commands to pause and continue supervisors ([#914](https://github.com/laravel/horizon/pull/914))
+- Support PHP 8 ([#917](https://github.com/laravel/horizon/pull/917))
+
+### Changed
+- Improve wording of error message ([#918](https://github.com/laravel/horizon/pull/918))
+
+### Fixed
+- Fix balance false display on dashboard ([88c84ac](https://github.com/laravel/horizon/commit/88c84acd10198b661fa77600187b59cd6505272e))
+
+
+## [v5.3.0 (2020-10-20)](https://github.com/laravel/horizon/compare/v5.2.1...v5.3.0)
+
+### Added
+- Add maintenance notice on dashboard ([#911](https://github.com/laravel/horizon/pull/911))
+
+### Fixed
+- Fix delayed until on pending jobs screen ([#907](https://github.com/laravel/horizon/pull/907))
+- Add missing force option to `horizon:clear` ([#909](https://github.com/laravel/horizon/pull/909))
+- Fix misleading memory limit config ([#908](https://github.com/laravel/horizon/pull/908))
+- Fix completed jobs count ([#910](https://github.com/laravel/horizon/pull/910))
+
+
+## [v5.2.1 (2020-10-06)](https://github.com/laravel/horizon/compare/v5.2.0...v5.2.1)
+
+### Changed
+- Add secs to y-axis ticks' for clarity ([#903](https://github.com/laravel/horizon/pull/903))
+
+
+## [v5.2.0 (2020-09-29)](https://github.com/laravel/horizon/compare/v5.1.0...v5.2.0)
+
+### Added
+- Add `horizon:forget` command to delete a failed job ([#896](https://github.com/laravel/horizon/pull/896))
+
+### Fixed
+- Fix check deleting failed job is actually failed ([#894](https://github.com/laravel/horizon/pull/894))
+
+
+## [v5.1.0 (2020-09-22)](https://github.com/laravel/horizon/compare/v5.0.0...v5.1.0)
+
+### Added
+- Add ability to see if a failed job is retried and/or a retry ([573e6a8](https://github.com/laravel/horizon/commit/573e6a88dcf0b2798db444b20cde8e9ac4357ee3))
+- Add Horizon command to clear queue ([#892](https://github.com/laravel/horizon/pull/892), [05e3a1c](https://github.com/laravel/horizon/commit/05e3a1cc374010e8ffc98c94f9dcd32d93eaaee7))
+
+### Fixed
+- Rename variable to match route ([4822955](https://github.com/laravel/horizon/commit/48229555075d3f46d782d77794705c60c9c7b379))
+
+
+## [v5.0.0 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.5...v5.0.0)
+
+### Added
+- Add support for setting workers name ([#840](https://github.com/laravel/horizon/pull/840))
+- Support batches ([#844](https://github.com/laravel/horizon/pull/844))
+- Support worker max-time and max-jobs ([#860](https://github.com/laravel/horizon/pull/860))
+- Implement default environment ([#869](https://github.com/laravel/horizon/pull/869))
+- Make autoscaling rate configurable ([#874](https://github.com/laravel/horizon/pull/874), [9af71de](https://github.com/laravel/horizon/commit/9af71dea8edc1b3045439c59437b522e7df63277))
+
+### Changed
+- Switch from Chronos to Carbon ([#826](https://github.com/laravel/horizon/pull/826))
+- Rename `timeoutAt` to `retryUntil` & `delay` to `backoff` ([6d00eb9](https://github.com/laravel/horizon/commit/6d00eb9b80a599d3ac403108b7a8d65629af2c59))
+- Bump minimum PHP version to PHP 7.3 ([ca9ddda](https://github.com/laravel/horizon/commit/ca9dddacdf1b08ef5ba494d1a954c79a52c7ab9a))
+- Merge tags from payload ([#843](https://github.com/laravel/horizon/pull/843))
+
+### Fixed
+- Check if parent is still running ([#881](https://github.com/laravel/horizon/pull/881))
+
+
+## [v4.3.5 (2020-09-08)](https://github.com/laravel/horizon/compare/v4.3.4...v4.3.5)
+
+### Fixed
+- Add try/catch for failed-jobs ([#880](https://github.com/laravel/horizon/pull/880))
+
+
+## [v4.3.4 (2020-09-01)](https://github.com/laravel/horizon/compare/v4.3.3...v4.3.4)
+
+### Changed
+- Unhide horizon command  ([#878](https://github.com/laravel/horizon/pull/878))
+
+### Fixed
+- Try catch serialization error ([57903ed](https://github.com/laravel/horizon/commit/57903edbf845e3d401a9d188199d89f2ed203ff1))
+
+
+## [v4.3.3 (2020-05-26)](https://github.com/laravel/horizon/compare/v4.3.2...v4.3.3)
+
+### Fixed
+- Trigger MasterSupervisorDeployed event ([#839](https://github.com/laravel/horizon/pull/839))
+
+
+## [v4.3.2 (2020-04-28)](https://github.com/laravel/horizon/compare/v4.3.1...v4.3.2)
+
+### Fixed
+- Fix pending jobs count ([#832](https://github.com/laravel/horizon/pull/832))
+
+
+## [v4.3.1 (2020-04-21)](https://github.com/laravel/horizon/compare/v4.3.0...v4.3.1)
+
+### Fixed
+- Revert "Prevent `horizon:purge` from killing too many processes" ([#831](https://github.com/laravel/horizon/pull/831))
+
+
+## [v4.3.0 (2020-04-14)](https://github.com/laravel/horizon/compare/v4.2.1...v4.3.0)
+
+### Changed
+- Chronos 2.0 ([#824](https://github.com/laravel/horizon/pull/824))
+
+### Fixed
+- Fix Layout issues ([#821](https://github.com/laravel/horizon/pull/821))
+- Prevent `horizon:purge` from killing too many processes ([#820](https://github.com/laravel/horizon/pull/820))
+
+
+## [v4.2.1 (2020-04-02)](https://github.com/laravel/horizon/compare/v4.2.0...v4.2.1)
+
+### Fixed
+- Revert dark mode breaking change ([fdfbd5b](https://github.com/laravel/horizon/commit/fdfbd5b2f7bb1dfdf2e40518b263337c07b6b22c))
+
+
+## [v4.2.0 (2020-03-31)](https://github.com/laravel/horizon/compare/v4.1.0...v4.2.0)
+
+### Added
+- Support ramsey/uuid v4 ([#807](https://github.com/laravel/horizon/pull/807))
+
+### Fixed
+- Fix for job rows on monitoring tags screen ([#814](https://github.com/laravel/horizon/pull/814), [066ada5](https://github.com/laravel/horizon/commit/066ada5e52f18f1ebec7909f838d43aa2a6cf065))
 
 
 ## [v4.1.0 (2020-03-24)](https://github.com/laravel/horizon/compare/v4.0.2...v4.1.0)

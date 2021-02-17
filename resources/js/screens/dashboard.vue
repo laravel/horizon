@@ -210,6 +210,7 @@
                                 </svg>
 
                                 <h4 class="mb-0 ml-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</h4>
+                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} paused)</small>
                             </div>
                         </div>
                     </div>
@@ -229,11 +230,12 @@
                     <div class="w-25 border-right">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">MAX WAIT TIME</small>
-                            <small v-if="stats.max_wait_queue">({{ stats.max_wait_queue }})</small>
 
-                            <h4 class="mt-4">
+                            <h4 class="mt-4 mb-0">
                                 {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
                             </h4>
+
+                            <small class="mt-1" v-if="stats.max_wait_queue">({{ stats.max_wait_queue }})</small>
                         </div>
                     </div>
 
@@ -277,14 +279,29 @@
                 </thead>
 
                 <tbody>
-                <tr v-for="queue in workload">
-                    <td>
-                        <span>{{ queue.name.replace(/,/g, ', ') }}</span>
-                    </td>
-                    <td>{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
-                    <td>{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
-                    <td class="text-right">{{ humanTime(queue.wait) }}</td>
-                </tr>
+                    <template v-for="queue in workload">
+                        <tr>
+                            <td :class="{'font-weight-bold': queue.split_queues}">
+                                <span>{{ queue.name.replace(/,/g, ', ') }}</span>
+                            </td>
+                            <td :class="{'font-weight-bold': queue.split_queues}">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                            <td :class="{'font-weight-bold': queue.split_queues}">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
+                            <td :class="{'font-weight-bold': queue.split_queues}" class="text-right">{{ humanTime(queue.wait) }}</td>
+                        </tr>
+
+                        <tr v-for="split_queue in queue.split_queues">
+                            <td>
+                                <svg class="icon info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"/>
+                                </svg>
+
+                                <span>{{ split_queue.name.replace(/,/g, ', ') }}</span>
+                            </td>
+                            <td>-</td>
+                            <td>{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
+                            <td class="text-right">{{ humanTime(split_queue.wait) }}</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -293,6 +310,14 @@
         <div class="card mt-4" v-for="worker in workers" :key="worker.name">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>{{ worker.name }}</h5>
+
+                <svg v-if="worker.status == 'running'" class="fill-success" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
+                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"></path>
+                </svg>
+
+                <svg v-if="worker.status == 'paused'" class="fill-warning" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
+                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
+                </svg>
             </div>
 
             <table class="table table-hover table-sm mb-0">
@@ -310,8 +335,11 @@
                     <td>{{ superVisorDisplayName(supervisor.name, worker.name) }}</td>
                     <td>{{ countProcesses(supervisor.processes) }}</td>
                     <td>{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
-                    <td class="text-right">
+                    <td class="text-right" v-if="supervisor.options.balance">
                         ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
+                    </td>
+                    <td class="text-right" v-else>
+                        (Disabled)
                     </td>
                 </tr>
                 </tbody>

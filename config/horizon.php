@@ -6,21 +6,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Theme
-    |--------------------------------------------------------------------------
-    |
-    | Here you can define which theme Horizon should load. Horizon currently
-    | provides a light theme and a dark theme, and you may provide one of
-    | those two values in order to determine which theme will get used.
-    |
-    | Supported: "light", "dark"
-    |
-    */
-
-    'theme' => 'light',
-
-    /*
-    |--------------------------------------------------------------------------
     | Horizon Domain
     |--------------------------------------------------------------------------
     |
@@ -165,9 +150,9 @@ return [
     | Memory Limit (MB)
     |--------------------------------------------------------------------------
     |
-    | This value describes the maximum amount of memory the Horizon worker
-    | may consume before it is terminated and restarted. You should set
-    | this value according to the resources available to your server.
+    | This value describes the maximum amount of memory the Horizon master
+    | supervisor may consume before it is terminated and restarted. For
+    | configuring these limits on your workers, see the next section.
     |
     */
 
@@ -184,24 +169,30 @@ return [
     |
     */
 
+    'defaults' => [
+        'supervisor-1' => [
+            'connection' => 'redis',
+            'queue' => ['default'],
+            'balance' => 'auto',
+            'maxProcesses' => 1,
+            'memory' => 128,
+            'tries' => 1,
+            'nice' => 0,
+        ],
+    ],
+
     'environments' => [
         'production' => [
             'supervisor-1' => [
-                'connection' => 'redis',
-                'queue' => ['default'],
-                'balance' => 'simple',
-                'processes' => 10,
-                'tries' => 1,
+                'maxProcesses' => 10,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
             ],
         ],
 
         'local' => [
             'supervisor-1' => [
-                'connection' => 'redis',
-                'queue' => ['default'],
-                'balance' => 'simple',
-                'processes' => 3,
-                'tries' => 1,
+                'maxProcesses' => 3,
             ],
         ],
     ],

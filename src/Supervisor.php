@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
@@ -50,16 +50,9 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * The time at which auto-scaling last ran for this supervisor.
      *
-     * @var \Cake\Chronos\Chronos
+     * @var \Carbon\CarbonImmutable
      */
     public $lastAutoScaled;
-
-    /**
-     * The number of seconds to wait in between auto-scaling attempts.
-     *
-     * @var int
-     */
-    public $autoScaleCooldown = 3;
 
     /**
      * The output handler.
@@ -288,6 +281,8 @@ class Supervisor implements Pausable, Restartable, Terminable
     public function loop()
     {
         try {
+            $this->ensureParentIsRunning();
+
             $this->processPendingSignals();
 
             $this->processPendingCommands();
@@ -313,6 +308,18 @@ class Supervisor implements Pausable, Restartable, Terminable
     }
 
     /**
+     * Ensure the parent process is still running.
+     *
+     * @return void
+     */
+    protected function ensureParentIsRunning()
+    {
+        if ($this->options->parentId > 1 && posix_getppid() <= 1) {
+            $this->terminate();
+        }
+    }
+
+    /**
      * Handle any pending commands for the supervisor.
      *
      * @return void
@@ -332,10 +339,10 @@ class Supervisor implements Pausable, Restartable, Terminable
     protected function autoScale()
     {
         $this->lastAutoScaled = $this->lastAutoScaled ?:
-                    Chronos::now()->subSeconds($this->autoScaleCooldown + 1);
+                    CarbonImmutable::now()->subSeconds($this->options->balanceCooldown + 1);
 
-        if (Chronos::now()->subSeconds($this->autoScaleCooldown)->gte($this->lastAutoScaled)) {
-            $this->lastAutoScaled = Chronos::now();
+        if (CarbonImmutable::now()->subSeconds($this->options->balanceCooldown)->gte($this->lastAutoScaled)) {
+            $this->lastAutoScaled = CarbonImmutable::now();
 
             app(AutoScaler::class)->scale($this);
         }

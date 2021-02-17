@@ -5,6 +5,7 @@ namespace Laravel\Horizon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Events\MasterSupervisorDeployed;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
 
 class ProvisioningPlan
@@ -35,11 +36,12 @@ class ProvisioningPlan
      *
      * @param  string  $master
      * @param  array  $plan
+     * @param  array  $defaults
      * @return void
      */
-    public function __construct($master, array $plan)
+    public function __construct($master, array $plan, array $defaults = [])
     {
-        $this->plan = $plan;
+        $this->plan = $this->applyDefaultOptions($plan, $defaults);
         $this->master = $master;
 
         $this->parsed = $this->toSupervisorOptions();
@@ -53,7 +55,21 @@ class ProvisioningPlan
      */
     public static function get($master)
     {
-        return new static($master, config('horizon.environments'));
+        return new static($master, config('horizon.environments'), config('horizon.defaults', []));
+    }
+
+    /**
+     * Apply the default supervisor options to each environment.
+     *
+     * @param  array  $plan
+     * @param  array  $defaults
+     * @return array
+     */
+    protected function applyDefaultOptions(array $plan, array $defaults = [])
+    {
+        return collect($plan)->map(function ($plan) use ($defaults) {
+            return array_replace_recursive($defaults, $plan);
+        })->all();
     }
 
     /**
@@ -96,6 +112,8 @@ class ProvisioningPlan
         foreach ($supervisors as $supervisor => $options) {
             $this->add($options);
         }
+
+        event(new MasterSupervisorDeployed($this->master));
     }
 
     /**
@@ -154,9 +172,12 @@ class ProvisioningPlan
             $key = $key === 'tries' ? 'max_tries' : $key;
             $key = $key === 'processes' ? 'max_processes' : $key;
             $value = $key === 'queue' && is_array($value) ? implode(',', $value) : $value;
+            $value = $key === 'backoff' && is_array($value) ? implode(',', $value) : $value;
 
             return [Str::camel($key) => $value];
         })->all();
+
+        $options['parentId'] = getmypid();
 
         return SupervisorOptions::fromArray(
             Arr::add($options, 'name', $this->master.":{$supervisor}")

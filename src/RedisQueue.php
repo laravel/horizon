@@ -41,9 +41,17 @@ class RedisQueue extends BaseQueue
      */
     public function push($job, $data = '', $queue = null)
     {
-        $this->lastPushed = $job;
+        return $this->enqueueUsing(
+            $job,
+            $this->createPayload($job, $this->getQueue($queue), $data),
+            $queue,
+            null,
+            function ($payload, $queue) use ($job) {
+                $this->lastPushed = $job;
 
-        return parent::push($job, $data, $queue);
+                return $this->pushRaw($payload, $queue);
+            }
+        );
     }
 
     /**
@@ -56,11 +64,30 @@ class RedisQueue extends BaseQueue
      */
     public function pushRaw($payload, $queue = null, array $options = [])
     {
-        $payload = (new JobPayload($payload))->prepare($this->lastPushed)->value;
+        $payload = (new JobPayload($payload))->prepare($this->lastPushed);
 
-        return tap(parent::pushRaw($payload, $queue, $options), function () use ($queue, $payload) {
-            $this->event($this->getQueue($queue), new JobPushed($payload));
-        });
+        parent::pushRaw($payload->value, $queue, $options);
+
+        $this->event($this->getQueue($queue), new JobPushed($payload->value));
+
+        return $payload->id();
+    }
+
+    /**
+     * Create a payload string from the given job and data.
+     *
+     * @param  string  $job
+     * @param  string  $queue
+     * @param  mixed  $data
+     * @return array
+     */
+    protected function createPayloadArray($job, $queue, $data = '')
+    {
+        $payload = parent::createPayloadArray($job, $queue, $data);
+
+        $payload['id'] = $payload['uuid'];
+
+        return $payload;
     }
 
     /**
@@ -75,6 +102,20 @@ class RedisQueue extends BaseQueue
     public function later($delay, $job, $data = '', $queue = null)
     {
         $payload = (new JobPayload($this->createPayload($job, $queue, $data)))->prepare($job)->value;
+
+        if (method_exists($this, 'enqueueUsing')) {
+            return $this->enqueueUsing(
+                $job,
+                $payload,
+                $queue,
+                $delay,
+                function ($payload, $queue, $delay) {
+                    return tap(parent::laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
+                        $this->event($this->getQueue($queue), new JobPushed($payload));
+                    });
+                }
+            );
+        }
 
         return tap(parent::laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
             $this->event($this->getQueue($queue), new JobPushed($payload));
@@ -155,15 +196,5 @@ class RedisQueue extends BaseQueue
                 $event->connection($this->getConnectionName())->queue($queue)
             );
         }
-    }
-
-    /**
-     * Get a random ID string.
-     *
-     * @return string
-     */
-    protected function getRandomId()
-    {
-        return JobId::generate();
     }
 }

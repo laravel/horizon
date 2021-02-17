@@ -22,24 +22,24 @@ class AutoScalerTest extends IntegrationTest
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(11, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(9, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(11, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(9, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(12, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(8, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(12, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(8, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(13, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(7, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(13, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(7, $supervisor->processPools['second']->totalProcessCount());
 
-        // Asset scaler stays at target values...
+        // Assert scaler stays at target values...
         $scaler->scale($supervisor);
 
-        $this->assertEquals(13, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(7, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(13, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(7, $supervisor->processPools['second']->totalProcessCount());
     }
 
     public function test_balance_stays_even_when_queue_is_empty()
@@ -51,23 +51,23 @@ class AutoScalerTest extends IntegrationTest
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(4, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(4, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(4, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(4, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(3, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(3, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(3, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(3, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(2, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(1, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
     }
 
     public function test_balancer_assigns_more_processes_on_busy_queue()
@@ -80,27 +80,27 @@ class AutoScalerTest extends IntegrationTest
         $scaler->scale($supervisor);
         $scaler->scale($supervisor);
 
-        $this->assertEquals(3, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(3, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
         $scaler->scale($supervisor);
 
-        $this->assertEquals(5, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(5, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
         $scaler->scale($supervisor);
 
-        $this->assertEquals(7, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(7, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
         $scaler->scale($supervisor);
         $scaler->scale($supervisor);
 
-        $this->assertEquals(9, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(1, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(9, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
     }
 
     public function test_balancing_a_single_queue_assigns_it_the_min_workers_with_empty_queue()
@@ -110,7 +110,7 @@ class AutoScalerTest extends IntegrationTest
         ]);
 
         $scaler->scale($supervisor);
-        $this->assertEquals(1, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['first']->totalProcessCount());
     }
 
     public function test_scaler_will_not_scale_past_max_process_threshold_under_high_load()
@@ -122,8 +122,8 @@ class AutoScalerTest extends IntegrationTest
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(10, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(10, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(10, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(10, $supervisor->processPools['second']->totalProcessCount());
     }
 
     public function test_scaler_will_not_scale_below_minimum_worker_threshold()
@@ -139,13 +139,13 @@ class AutoScalerTest extends IntegrationTest
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(3, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(3, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['second']->totalProcessCount());
 
         $scaler->scale($supervisor);
 
-        $this->assertEquals(3, $supervisor->processPools['first']->totalProcessCount());
-        $this->assertEquals(2, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(3, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['second']->totalProcessCount());
     }
 
     protected function with_scaling_scenario($maxProcesses, array $pools, array $extraOptions = [])
@@ -180,5 +180,42 @@ class AutoScalerTest extends IntegrationTest
         });
 
         return [$scaler, $supervisor];
+    }
+
+    public function test_scaler_considers_max_shift_and_attempts_to_get_closer_to_proper_balance_on_each_iteration()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(150, [
+            'first' => ['current' => 75, 'size' => 600, 'runtime' => 75],
+            'second' => ['current' => 75, 'size' => 300, 'runtime' => 75],
+        ]);
+
+        $supervisor->options->balanceMaxShift = 10;
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(85, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(65, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(95, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(55, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(100, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(50, $supervisor->processPools['second']->totalProcessCount());
+
+        // Assert scaler stays at target values...
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(100, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(50, $supervisor->processPools['second']->totalProcessCount());
+
+        // Assert scaler still stays at target values...
+        $scaler->scale($supervisor);
+
+        $this->assertEquals(100, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertEquals(50, $supervisor->processPools['second']->totalProcessCount());
     }
 }

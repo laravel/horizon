@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Facades\Event;
@@ -52,7 +52,7 @@ class SupervisorTest extends IntegrationTest
     public function test_supervisor_can_start_worker_process_with_given_options()
     {
         Queue::push(new Jobs\BasicJob);
-        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame(1, $this->recentJobs());
 
         $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
 
@@ -66,8 +66,8 @@ class SupervisorTest extends IntegrationTest
         $this->assertCount(1, $supervisor->processes());
 
         $host = MasterSupervisor::name();
-        $this->assertEquals(
-            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue="default" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+        $this->assertSame(
+            'exec '.$this->phpBinary.' worker.php redis --name=default --supervisor='.$host.':name --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="default" --sleep=3 --timeout=60 --tries=0',
             $supervisor->processes()[0]->getCommandLine()
         );
     }
@@ -84,13 +84,13 @@ class SupervisorTest extends IntegrationTest
 
         $host = MasterSupervisor::name();
 
-        $this->assertEquals(
-            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue="first" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+        $this->assertSame(
+            'exec '.$this->phpBinary.' worker.php redis --name=default --supervisor='.$host.':name --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="first" --sleep=3 --timeout=60 --tries=0',
             $supervisor->processes()[0]->getCommandLine()
         );
 
-        $this->assertEquals(
-            'exec '.$this->phpBinary.' worker.php redis --delay=0 --memory=128 --queue="second" --sleep=3 --timeout=60 --tries=0 --supervisor='.$host.':name',
+        $this->assertSame(
+            'exec '.$this->phpBinary.' worker.php redis --name=default --supervisor='.$host.':name --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="second" --sleep=3 --timeout=60 --tries=0',
             $supervisor->processes()[1]->getCommandLine()
         );
     }
@@ -98,7 +98,7 @@ class SupervisorTest extends IntegrationTest
     public function test_recent_jobs_are_correctly_maintained()
     {
         $id = Queue::push(new Jobs\BasicJob);
-        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame(1, $this->recentJobs());
 
         $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
 
@@ -106,7 +106,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
 
         $this->wait(function () {
-            $this->assertEquals(1, $this->recentJobs());
+            $this->assertSame(1, $this->recentJobs());
         });
 
         $this->wait(function () use ($id) {
@@ -125,7 +125,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
         usleep(250 * 1000);
 
-        $supervisor->processes()[0]->restartAgainAt = Chronos::now()->subMinutes(10);
+        $supervisor->processes()[0]->restartAgainAt = CarbonImmutable::now()->subMinutes(10);
 
         // Make sure that the worker attempts restart...
         $restarted = false;
@@ -163,8 +163,8 @@ class SupervisorTest extends IntegrationTest
 
         $record = resolve(SupervisorRepository::class)->find($supervisor->name);
         $this->assertSame('running', $record->status);
-        $this->assertEquals(2, collect($record->processes)->sum());
-        $this->assertEquals(2, $record->processes['redis:default,another']);
+        $this->assertSame(2, collect($record->processes)->sum());
+        $this->assertSame(2, $record->processes['redis:default,another']);
         $this->assertTrue(isset($record->pid));
         $this->assertSame('redis', $record->options['connection']);
 
@@ -253,7 +253,7 @@ class SupervisorTest extends IntegrationTest
         Queue::push(new Jobs\BasicJob);
         usleep(1100 * 1000);
 
-        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame(1, $this->recentJobs());
 
         $supervisor->continue();
         $this->assertTrue($supervisor->processPools[0]->working);
@@ -312,7 +312,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->scale(0);
         usleep(500 * 1000);
 
-        $this->assertEquals(0, $supervisor->pruneAndGetTotalProcesses());
+        $this->assertSame(0, $supervisor->pruneAndGetTotalProcesses());
     }
 
     public function test_terminating_processes_that_are_stuck_are_hard_stopped()
@@ -370,7 +370,7 @@ class SupervisorTest extends IntegrationTest
 
         $command = resolve(Commands\FakeCommand::class);
 
-        $this->assertEquals(1, $command->processCount);
+        $this->assertSame(1, $command->processCount);
         $this->assertEquals($supervisor, $command->supervisor);
         $this->assertEquals(['foo' => 'bar'], $command->options);
     }
@@ -392,12 +392,12 @@ class SupervisorTest extends IntegrationTest
 
         $supervisor->loop();
 
-        $this->assertEquals(2, $supervisor->totalProcessCount());
+        $this->assertSame(2, $supervisor->totalProcessCount());
 
         Queue::push(new Jobs\BasicJob);
         usleep(500 * 1000);
 
-        $this->assertEquals(1, $this->recentJobs());
+        $this->assertSame(1, $this->recentJobs());
     }
 
     public function test_auto_scaler_is_called_on_loop_when_auto_scaling()
@@ -421,6 +421,40 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
     }
 
+    public function test_auto_scaler_is_not_called_on_loop_during_cooldown()
+    {
+        $options = $this->supervisorOptions();
+        $options->autoScale = true;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        // Start the supervisor...
+        $supervisor->scale(1);
+
+        $time = CarbonImmutable::create();
+
+        $this->assertNull($supervisor->lastAutoScaled);
+
+        $supervisor->lastAutoScaled = null;
+        CarbonImmutable::setTestNow($time);
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time));
+
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown - 0.01));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time));
+
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->options->balanceCooldown)));
+
+        $supervisor->lastAutoScaled = $time;
+        CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown + 0.01));
+        $supervisor->loop();
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->options->balanceCooldown)));
+    }
+
     public function test_supervisor_with_duplicate_name_cant_be_started()
     {
         $this->expectException(Exception::class);
@@ -442,7 +476,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
 
         $this->wait(function () use ($supervisor) {
-            $this->assertEquals(3, $supervisor->totalSystemProcessCount());
+            $this->assertSame(3, $supervisor->totalSystemProcessCount());
         });
     }
 
@@ -454,21 +488,21 @@ class SupervisorTest extends IntegrationTest
         $supervisor->scale(3);
 
         $this->wait(function () use ($supervisor) {
-            $this->assertEquals(0, $supervisor->totalSystemProcessCount());
+            $this->assertSame(0, $supervisor->totalSystemProcessCount());
         });
 
         $supervisor->working = false;
         $supervisor->loop();
 
         $this->wait(function () use ($supervisor) {
-            $this->assertEquals(0, $supervisor->totalSystemProcessCount());
+            $this->assertSame(0, $supervisor->totalSystemProcessCount());
         });
 
         $supervisor->working = true;
         $supervisor->loop();
 
         $this->wait(function () use ($supervisor) {
-            $this->assertEquals(3, $supervisor->totalSystemProcessCount());
+            $this->assertSame(3, $supervisor->totalSystemProcessCount());
         });
     }
 

@@ -75,15 +75,7 @@ class WaitTimeCalculator
 
             [$connection, $queueName] = explode(':', $queue, 2);
 
-            $timeToClear = ! Str::contains($queueName, ',')
-                ? $this->timeToClearFor($connection, $queueName)
-                : collect(explode(',', $queueName))->sum(function ($queueName) use ($connection) {
-                    return $this->timeToClearFor($connection, $queueName);
-                });
-
-            return $totalProcesses === 0
-                    ? [$queue => round($timeToClear / 1000)]
-                    : [$queue => round(($timeToClear / $totalProcesses) / 1000)];
+            return [$queue => $this->calculateTimeToClear($connection, $queueName, $totalProcesses)];
         })->sort()->reverse()->all();
     }
 
@@ -104,20 +96,6 @@ class WaitTimeCalculator
     }
 
     /**
-     * Get the total time to clear (in milliseconds) for a given queue.
-     *
-     * @param  string  $connection
-     * @param  string  $queue
-     * @return float
-     */
-    protected function timeToClearFor($connection, $queue)
-    {
-        $size = $this->queue->connection($connection)->readyNow($queue);
-
-        return $size * $this->metrics->runtimeForQueue($queue);
-    }
-
-    /**
      * Get the total process count for a given queue.
      *
      * @param  \Illuminate\Support\Collection  $allSupervisors
@@ -129,5 +107,40 @@ class WaitTimeCalculator
         return $allSupervisors->sum(function ($supervisor) use ($queue) {
             return $supervisor->processes[$queue] ?? 0;
         });
+    }
+
+    /**
+     * Calculate the time to clear for the given queue in seconds distributed over the given amount of processes.
+     *
+     * @param  string  $connection
+     * @param  string  $queue
+     * @param  int  $totalProcesses
+     * @return int
+     */
+    public function calculateTimeToClear($connection, $queue, $totalProcesses)
+    {
+        $timeToClear = ! Str::contains($queue, ',')
+            ? $this->timeToClearFor($connection, $queue)
+            : collect(explode(',', $queue))->sum(function ($queueName) use ($connection) {
+                return $this->timeToClearFor($connection, $queueName);
+            });
+
+        return $totalProcesses === 0
+            ? round($timeToClear / 1000)
+            : round(($timeToClear / $totalProcesses) / 1000);
+    }
+
+    /**
+     * Get the total time to clear (in milliseconds) for a given queue.
+     *
+     * @param  string  $connection
+     * @param  string  $queue
+     * @return float
+     */
+    protected function timeToClearFor($connection, $queue)
+    {
+        $size = $this->queue->connection($connection)->readyNow($queue);
+
+        return $size * $this->metrics->runtimeForQueue($queue);
     }
 }

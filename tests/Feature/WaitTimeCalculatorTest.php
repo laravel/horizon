@@ -101,8 +101,8 @@ class WaitTimeCalculatorTest extends IntegrationTest
             $calculator->calculate('redis:test-queue-2')
         );
 
-        $this->assertEquals(
-            40,
+        $this->assertSame(
+            40.0,
             $calculator->calculateFor('redis:test-queue-2')
         );
     }

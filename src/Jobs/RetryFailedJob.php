@@ -2,10 +2,10 @@
 
 namespace Laravel\Horizon\Jobs;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\Factory as Queue;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\JobRepository;
-use Laravel\Horizon\JobId;
 
 class RetryFailedJob
 {
@@ -41,7 +41,7 @@ class RetryFailedJob
         }
 
         $queue->connection($job->connection)->pushRaw(
-            $this->preparePayload($id = JobId::generate(), $job->payload), $job->queue
+            $this->preparePayload($id = Str::uuid(), $job->payload), $job->queue
         );
 
         $jobs->storeRetryReference($this->id, $id);
@@ -60,9 +60,10 @@ class RetryFailedJob
 
         return json_encode(array_merge($payload, [
             'id' => $id,
+            'uuid' => $id,
             'attempts' => 0,
             'retry_of' => $this->id,
-            'timeoutAt' => $this->prepareNewTimeout($payload),
+            'retryUntil' => $this->prepareNewTimeout($payload),
         ]));
     }
 
@@ -74,8 +75,10 @@ class RetryFailedJob
      */
     protected function prepareNewTimeout($payload)
     {
-        return $payload['timeoutAt']
-                        ? Chronos::now()->addSeconds(ceil($payload['timeoutAt'] - $payload['pushedAt']))->getTimestamp()
+        $retryUntil = $payload['retryUntil'] ?? $payload['timeoutAt'] ?? null;
+
+        return $retryUntil
+                        ? CarbonImmutable::now()->addSeconds(ceil($retryUntil - $payload['pushedAt']))->getTimestamp()
                         : null;
     }
 }

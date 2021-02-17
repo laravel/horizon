@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Stopwatch;
@@ -19,7 +19,7 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $this->assertEquals(2, resolve(MetricsRepository::class)->throughput());
+        $this->assertSame(2, resolve(MetricsRepository::class)->throughput());
     }
 
     public function test_throughput_is_stored_per_job_class()
@@ -34,9 +34,9 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $this->assertEquals(4, resolve(MetricsRepository::class)->throughput());
-        $this->assertEquals(3, resolve(MetricsRepository::class)->throughputForJob(Jobs\BasicJob::class));
-        $this->assertEquals(1, resolve(MetricsRepository::class)->throughputForJob(Jobs\ConditionallyFailingJob::class));
+        $this->assertSame(4, resolve(MetricsRepository::class)->throughput());
+        $this->assertSame(3, resolve(MetricsRepository::class)->throughputForJob(Jobs\BasicJob::class));
+        $this->assertSame(1, resolve(MetricsRepository::class)->throughputForJob(Jobs\ConditionallyFailingJob::class));
     }
 
     public function test_throughput_is_stored_per_queue()
@@ -51,8 +51,8 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $this->assertEquals(4, resolve(MetricsRepository::class)->throughput());
-        $this->assertEquals(4, resolve(MetricsRepository::class)->throughputForQueue('default'));
+        $this->assertSame(4, resolve(MetricsRepository::class)->throughput());
+        $this->assertSame(4, resolve(MetricsRepository::class)->throughputForQueue('default'));
     }
 
     public function test_average_runtime_is_stored_per_job_class_in_milliseconds()
@@ -68,7 +68,7 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $this->assertEquals(1.5, resolve(MetricsRepository::class)->runtimeForJob(Jobs\BasicJob::class));
+        $this->assertSame(1.5, resolve(MetricsRepository::class)->runtimeForJob(Jobs\BasicJob::class));
     }
 
     public function test_average_runtime_is_stored_per_queue_in_milliseconds()
@@ -84,7 +84,7 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $this->assertEquals(1.5, resolve(MetricsRepository::class)->runtimeForQueue('default'));
+        $this->assertSame(1.5, resolve(MetricsRepository::class)->runtimeForQueue('default'));
     }
 
     public function test_list_of_all_jobs_with_metric_information_is_maintained()
@@ -97,8 +97,8 @@ class MetricsTest extends IntegrationTest
 
         $jobs = resolve(MetricsRepository::class)->measuredJobs();
         $this->assertCount(2, $jobs);
-        $this->assertTrue(in_array(Jobs\ConditionallyFailingJob::class, $jobs));
-        $this->assertTrue(in_array(Jobs\BasicJob::class, $jobs));
+        $this->assertContains(Jobs\ConditionallyFailingJob::class, $jobs);
+        $this->assertContains(Jobs\BasicJob::class, $jobs);
     }
 
     public function test_snapshot_of_metrics_performance_can_be_stored()
@@ -116,13 +116,13 @@ class MetricsTest extends IntegrationTest
         $this->work();
 
         // Take initial snapshot and set initial timestamp...
-        Chronos::setTestNow($firstTimestamp = Chronos::now());
+        CarbonImmutable::setTestNow($firstTimestamp = CarbonImmutable::now());
         resolve(MetricsRepository::class)->snapshot();
 
         // Work another job and take another snapshot...
         Queue::push(new Jobs\BasicJob);
         $this->work();
-        Chronos::setTestNow(Chronos::now()->addSeconds(1));
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(1));
         resolve(MetricsRepository::class)->snapshot();
 
         $snapshots = resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class);
@@ -137,7 +137,7 @@ class MetricsTest extends IntegrationTest
             (object) [
                 'throughput' => 1,
                 'runtime' => 3,
-                'time' => Chronos::now()->getTimestamp(),
+                'time' => CarbonImmutable::now()->getTimestamp(),
             ],
         ], $snapshots);
 
@@ -154,7 +154,7 @@ class MetricsTest extends IntegrationTest
                 'throughput' => 1,
                 'runtime' => 3,
                 'wait' => 0,
-                'time' => Chronos::now()->getTimestamp(),
+                'time' => CarbonImmutable::now()->getTimestamp(),
             ],
         ], $snapshots);
     }
@@ -173,22 +173,22 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $this->assertEquals(
-            2, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
+        $this->assertSame(
+            2.0, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
         );
 
         // Adjust current time...
-        Chronos::setTestNow(Chronos::now()->addMinutes(2));
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addMinutes(2));
 
-        $this->assertEquals(
-            1, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
+        $this->assertSame(
+            1.0, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
         );
 
         // take snapshot and ensure count is reset...
         resolve(MetricsRepository::class)->snapshot();
 
-        $this->assertEquals(
-            0, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
+        $this->assertSame(
+            0.0, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
         );
     }
 
@@ -199,26 +199,26 @@ class MetricsTest extends IntegrationTest
         $stopwatch->shouldReceive('check')->andReturn(1);
         $this->app->instance(Stopwatch::class, $stopwatch);
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         // Run the jobs...
         for ($i = 0; $i < 30; $i++) {
             Queue::push(new Jobs\BasicJob);
             $this->work();
             resolve(MetricsRepository::class)->snapshot();
-            Chronos::setTestNow(Chronos::now()->addSeconds(1));
+            CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(1));
         }
 
         // Check the job snapshots...
         $snapshots = resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class);
         $this->assertCount(24, $snapshots);
-        $this->assertEquals(Chronos::now()->getTimestamp() - 1, $snapshots[23]->time);
+        $this->assertSame(CarbonImmutable::now()->getTimestamp() - 1, $snapshots[23]->time);
 
         // Check the queue snapshots...
         $snapshots = resolve(MetricsRepository::class)->snapshotsForQueue('default');
         $this->assertCount(24, $snapshots);
-        $this->assertEquals(Chronos::now()->getTimestamp() - 1, $snapshots[23]->time);
+        $this->assertSame(CarbonImmutable::now()->getTimestamp() - 1, $snapshots[23]->time);
 
-        Chronos::setTestNow();
+        CarbonImmutable::setTestNow();
     }
 }

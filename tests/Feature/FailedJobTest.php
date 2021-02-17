@@ -14,7 +14,7 @@ class FailedJobTest extends IntegrationTest
     {
         $id = Queue::push(new Jobs\FailingJob);
         $this->work();
-        $this->assertEquals(1, $this->failedJobs());
+        $this->assertSame(1, $this->failedJobs());
         $this->assertGreaterThan(0, Redis::connection('horizon')->ttl($id));
 
         $job = resolve(JobRepository::class)->getJobs([$id])[0];
@@ -22,8 +22,8 @@ class FailedJobTest extends IntegrationTest
         $this->assertTrue(isset($job->exception));
         $this->assertTrue(isset($job->failed_at));
         $this->assertSame('failed', $job->status);
-        $this->assertTrue(is_numeric($job->failed_at));
-        $this->assertEquals(Jobs\FailingJob::class, $job->name);
+        $this->assertIsNumeric($job->failed_at);
+        $this->assertSame(Jobs\FailingJob::class, $job->name);
     }
 
     public function test_tags_for_failed_jobs_are_stored_in_redis()

@@ -31,9 +31,9 @@ class ProvisioningPlanTest extends IntegrationTest
 
         $this->assertCount(1, $commands);
         $command = (object) json_decode($commands[0], true);
-        $this->assertEquals(AddSupervisor::class, $command->command);
+        $this->assertSame(AddSupervisor::class, $command->command);
         $this->assertSame('first', $command->options['queue']);
-        $this->assertEquals(20, $command->options['maxProcesses']);
+        $this->assertSame(20, $command->options['maxProcesses']);
     }
 
     public function test_supervisors_are_added_by_wildcard()
@@ -57,9 +57,9 @@ class ProvisioningPlanTest extends IntegrationTest
 
         $this->assertCount(1, $commands);
         $command = (object) json_decode($commands[0], true);
-        $this->assertEquals(AddSupervisor::class, $command->command);
+        $this->assertSame(AddSupervisor::class, $command->command);
         $this->assertSame('first', $command->options['queue']);
-        $this->assertEquals(20, $command->options['maxProcesses']);
+        $this->assertSame(20, $command->options['maxProcesses']);
     }
 
     public function test_plan_is_converted_into_array_of_supervisor_options()
@@ -90,12 +90,29 @@ class ProvisioningPlanTest extends IntegrationTest
 
         $results = (new ProvisioningPlan(MasterSupervisor::name(), $plan))->toSupervisorOptions();
 
-        $this->assertEquals(MasterSupervisor::name().':supervisor-1', $results['production']['supervisor-1']->name);
+        $this->assertSame(MasterSupervisor::name().':supervisor-1', $results['production']['supervisor-1']->name);
         $this->assertSame('redis', $results['production']['supervisor-1']->connection);
         $this->assertSame('default', $results['production']['supervisor-1']->queue);
         $this->assertTrue($results['production']['supervisor-1']->balance);
         $this->assertTrue($results['production']['supervisor-1']->autoScale);
 
-        $this->assertEquals(20, $results['local']['supervisor-2']->maxProcesses);
+        $this->assertSame(20, $results['local']['supervisor-2']->maxProcesses);
+    }
+
+    public function test_backoff_is_translated_to_string_form()
+    {
+        $plan = [
+            'local' => [
+                'supervisor-2' => [
+                    'connection' => 'redis',
+                    'queue' => 'local-supervisor-2-queue',
+                    'backoff' => [30, 60],
+                ],
+            ],
+        ];
+
+        $results = (new ProvisioningPlan(MasterSupervisor::name(), $plan))->toSupervisorOptions();
+
+        $this->assertSame('30,60', $results['local']['supervisor-2']->backoff);
     }
 }

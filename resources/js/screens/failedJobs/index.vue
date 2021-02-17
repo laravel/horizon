@@ -137,6 +137,22 @@
 
 
             /**
+             * Determine if the given job was retried.
+             */
+            wasRetried(job) {
+                return job.retried_by && job.retried_by.length;
+            },
+
+
+            /**
+             * Determine if the given job is a retry.
+             */
+            isRetry(job) {
+                return job.payload.retry_of;
+            },
+
+
+            /**
              * Refresh the jobs every period of time.
              */
             refreshJobsPeriodically() {
@@ -222,12 +238,25 @@
                         <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
                             {{ jobBaseName(job.name) }}
                         </router-link>
+
+                        <small class="badge badge-secondary badge-sm"
+                               v-tooltip:top="`Total retries: ${job.retried_by.length}`"
+                               v-if="wasRetried(job)">
+                            Retried
+                        </small>
+
                         <br>
 
                         <small class="text-muted">
                             Queue: {{job.queue}}
                             | Attempts: {{ job.payload.attempts }}
-                            <span v-if="job.payload.tags && job.payload.tags.length">
+                            <span v-if="isRetry(job)">
+                            | Retry of
+                            <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
+                                {{ job.payload.retry_of.split('-')[0] }}
+                            </router-link>
+                            </span>
+                            <span v-if="job.payload.tags && job.payload.tags.length" class="text-break">
                             | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}
                             </span>
                         </small>

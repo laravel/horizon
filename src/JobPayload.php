@@ -45,7 +45,7 @@ class JobPayload implements ArrayAccess
      */
     public function id()
     {
-        return $this->decoded['id'];
+        return $this->decoded['uuid'] ?? $this->decoded['id'];
     }
 
     /**
@@ -123,14 +123,10 @@ class JobPayload implements ArrayAccess
      */
     protected function determineTags($job)
     {
-        switch (true) {
-            case is_string($job):
-                return [];
-            case array_key_exists('tags', $this->decoded):
-                return $this->decoded['tags'];
-            default:
-                return Tags::for($job);
-        }
+        return array_merge(
+            $this->decoded['tags'] ?? [],
+            ! $job || is_string($job) ? [] : Tags::for($job)
+        );
     }
 
     /**

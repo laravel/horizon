@@ -126,25 +126,36 @@ class AutoScaler
     {
         $supervisor->pruneTerminatingProcesses();
 
-        $poolProcesses = $pool->totalProcessCount();
+        $totalProcessCount = $pool->totalProcessCount();
 
-        if (ceil($workers) > $poolProcesses &&
-            $this->wouldNotExceedMaxProcesses($supervisor)) {
-            $pool->scale($poolProcesses + 1);
-        } elseif (ceil($workers) < $poolProcesses &&
-                  $poolProcesses > $supervisor->options->minProcesses) {
-            $pool->scale($poolProcesses - 1);
+        $desiredProcessCount = ceil($workers);
+
+        if ($desiredProcessCount > $totalProcessCount) {
+            $maxUpShift = min(
+                $supervisor->options->maxProcesses - $supervisor->totalProcessCount(),
+                $supervisor->options->balanceMaxShift
+            );
+
+            $pool->scale(
+                min(
+                    $totalProcessCount + $maxUpShift,
+                    $supervisor->options->maxProcesses,
+                    $desiredProcessCount
+                )
+            );
+        } elseif ($desiredProcessCount < $totalProcessCount) {
+            $maxDownShift = min(
+                $supervisor->totalProcessCount() - $supervisor->options->minProcesses,
+                $supervisor->options->balanceMaxShift
+            );
+
+            $pool->scale(
+                max(
+                    $totalProcessCount - $maxDownShift,
+                    $supervisor->options->minProcesses,
+                    $desiredProcessCount
+                )
+            );
         }
-    }
-
-    /**
-     * Determine if adding another process would exceed max process limit.
-     *
-     * @param  \Laravel\Horizon\Supervisor  $supervisor
-     * @return bool
-     */
-    protected function wouldNotExceedMaxProcesses(Supervisor $supervisor)
-    {
-        return ($supervisor->totalProcessCount() + 1) <= $supervisor->options->maxProcesses;
     }
 }

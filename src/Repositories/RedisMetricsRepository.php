@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Repositories;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
@@ -266,7 +266,7 @@ class RedisMetricsRepository implements MetricsRepository
         $data = $this->baseSnapshotData($key = 'job:'.$job);
 
         $this->connection()->zadd(
-            'snapshot:'.$key, $time = Chronos::now()->getTimestamp(), json_encode([
+            'snapshot:'.$key, $time = CarbonImmutable::now()->getTimestamp(), json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
                 'time' => $time,
@@ -289,7 +289,7 @@ class RedisMetricsRepository implements MetricsRepository
         $data = $this->baseSnapshotData($key = 'queue:'.$queue);
 
         $this->connection()->zadd(
-            'snapshot:'.$key, $time = Chronos::now()->getTimestamp(), json_encode([
+            'snapshot:'.$key, $time = CarbonImmutable::now()->getTimestamp(), json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
                 'wait' => app(WaitTimeCalculator::class)->calculateFor($queue),
@@ -335,7 +335,7 @@ class RedisMetricsRepository implements MetricsRepository
                     ?: $this->storeSnapshotTimestamp();
 
         return max(
-            (Chronos::now()->getTimestamp() - $lastSnapshotAt) / 60, 1
+            (CarbonImmutable::now()->getTimestamp() - $lastSnapshotAt) / 60, 1
         );
     }
 
@@ -346,7 +346,7 @@ class RedisMetricsRepository implements MetricsRepository
      */
     protected function storeSnapshotTimestamp()
     {
-        return tap(Chronos::now()->getTimestamp(), function ($timestamp) {
+        return tap(CarbonImmutable::now()->getTimestamp(), function ($timestamp) {
             $this->connection()->set('last_snapshot_at', $timestamp);
         });
     }

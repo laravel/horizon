@@ -28,7 +28,7 @@ class PendingJobsController extends Controller
     }
 
     /**
-     * Get all of the recent jobs.
+     * Get all of the pending jobs.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -43,7 +43,7 @@ class PendingJobsController extends Controller
 
         return [
             'jobs' => $jobs,
-            'total' => $this->jobs->countRecent(),
+            'total' => $this->jobs->countPending(),
         ];
     }
 

@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Closure;
 use Laravel\Horizon\Events\UnableToLaunchProcess;
 use Laravel\Horizon\Events\WorkerProcessRestarting;
@@ -27,7 +27,7 @@ class WorkerProcess
     /**
      * The time at which the cooldown period will be over.
      *
-     * @var \Cake\Chronos\Chronos
+     * @var \Carbon\CarbonImmutable
      */
     public $restartAgainAt;
 
@@ -159,14 +159,14 @@ class WorkerProcess
 
         if ($this->restartAgainAt) {
             $this->restartAgainAt = ! $this->process->isRunning()
-                            ? Chronos::now()->addMinute()
+                            ? CarbonImmutable::now()->addMinute()
                             : null;
 
             if (! $this->process->isRunning()) {
                 event(new UnableToLaunchProcess($this));
             }
         } else {
-            $this->restartAgainAt = Chronos::now()->addSecond();
+            $this->restartAgainAt = CarbonImmutable::now()->addSecond();
         }
     }
 
@@ -178,7 +178,7 @@ class WorkerProcess
     public function coolingDown()
     {
         return isset($this->restartAgainAt) &&
-               Chronos::now()->lt($this->restartAgainAt);
+               CarbonImmutable::now()->lt($this->restartAgainAt);
     }
 
     /**

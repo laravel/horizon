@@ -51,8 +51,8 @@ class MonitoringControllerTest extends AbstractControllerTest
         $results = $response->original['jobs'];
 
         $this->assertCount(25, $results);
-        $this->assertEquals(49, $results[0]->id);
-        $this->assertEquals(25, $results[24]->id);
+        $this->assertSame('49', $results[0]->id);
+        $this->assertSame('25', $results[24]->id);
 
         // Paginate second set...
         $response = $this->actingAs(new Fakes\User)
@@ -61,10 +61,10 @@ class MonitoringControllerTest extends AbstractControllerTest
         $results = $response->original['jobs'];
 
         $this->assertCount(25, $results);
-        $this->assertEquals(24, $results[0]->id);
-        $this->assertEquals(0, $results[24]->id);
-        $this->assertEquals(25, $results[0]->index);
-        $this->assertEquals(49, $results[24]->index);
+        $this->assertSame('24', $results[0]->id);
+        $this->assertSame('0', $results[24]->id);
+        $this->assertSame('25', $results[0]->index);
+        $this->assertSame(49, $results[24]->index);
     }
 
     public function test_can_paginate_where_jobs_dont_exist()

@@ -28,7 +28,7 @@ class CompletedJobsController extends Controller
     }
 
     /**
-     * Get all of the recent jobs.
+     * Get all of the completed jobs.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -43,7 +43,7 @@ class CompletedJobsController extends Controller
 
         return [
             'jobs' => $jobs,
-            'total' => $this->jobs->countRecent(),
+            'total' => $this->jobs->countCompleted(),
         ];
     }
 
