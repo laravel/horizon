@@ -64552,7 +64552,7 @@ var render = function() {
           _vm._v(" "),
           _vm.$route.params.type == "pending" && _vm.jobs.length > 0
             ? _c("span", {
-                staticClass: "badge badge-secondary",
+                staticClass: "badge badge-secondary text-black-50",
                 domProps: { textContent: _vm._s(_vm.totalJobs) }
               })
             : _vm._e()

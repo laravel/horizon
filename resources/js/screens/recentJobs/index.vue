@@ -144,7 +144,7 @@
                 <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
                 <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
 
-                <span v-if="$route.params.type == 'pending' && jobs.length > 0" class="badge badge-secondary" v-text="totalJobs"></span>
+                <span v-if="$route.params.type == 'pending' && jobs.length > 0" class="badge badge-secondary text-black-50" v-text="totalJobs"></span>
             </div>
 
             <div v-if="!ready"
