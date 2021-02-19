@@ -13,6 +13,7 @@
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
+                totalJobs: 0,
                 jobs: []
             };
         },
@@ -74,6 +75,8 @@
                             this.jobs = response.data.jobs;
 
                             this.totalPages = Math.ceil(response.data.total / this.perPage);
+
+                            this.totalJobs = response.data.total;
                         }
 
                         this.ready = true;
@@ -140,6 +143,8 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
                 <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
+
+                <span v-if="$route.params.type == 'pending' && jobs.length > 0" class="badge badge-secondary" v-text="totalJobs"></span>
             </div>
 
             <div v-if="!ready"
