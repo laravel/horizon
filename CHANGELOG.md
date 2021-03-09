@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.1...5.x)
+
+
+## [v5.7.1 (2021-03-09)](https://github.com/laravel/horizon/compare/v5.7.0...v5.7.1)
+
+### Fixed
+- Add `--rest` flag to WorkCommand ([fcb9843](https://github.com/laravel/horizon/commit/fcb98431ff4ba0a59ab99f1c6bebe8b7115f328a))
 
 
 ## [v5.7.0 (2021-02-16)](https://github.com/laravel/horizon/compare/v5.6.6...v5.7.0)
