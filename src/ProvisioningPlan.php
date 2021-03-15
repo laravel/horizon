@@ -179,7 +179,7 @@ class ProvisioningPlan
         })->all();
 
         if (isset($options['minProcesses']) && $options['minProcesses'] === 0) {
-            throw new Exception("The value of [{$supervisor}.minProcesses] must be more than 0.");
+            throw new Exception("The value of [{$supervisor}.minProcesses] must be greater than 0.");
         }
 
         $options['parentId'] = getmypid();
