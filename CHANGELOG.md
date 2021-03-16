@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.2...5.x)
+
+
+## [v5.7.2 (2021-03-16)](https://github.com/laravel/horizon/compare/v5.7.1...v5.7.2)
+
+### Changed
+- Throw exception when minProcesses is set to zero ([#988](https://github.com/laravel/horizon/pull/988), [831a5a8](https://github.com/laravel/horizon/commit/831a5a8690595688e2aa396b6215ef682e4280f6))
+
+### Fixed
+- Fix checking parent id ([#989](https://github.com/laravel/horizon/pull/989))
 
 
 ## [v5.7.1 (2021-03-09)](https://github.com/laravel/horizon/compare/v5.7.0...v5.7.1)
