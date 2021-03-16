@@ -23,6 +23,8 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerResources();
         $this->defineAssetPublishing();
+        $this->offerPublishing();
+        $this->registerCommands();
     }
 
     /**
@@ -81,56 +83,6 @@ class HorizonServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the custom queue connectors for Horizon.
-     *
-     * @return void
-     */
-    protected function registerQueueConnectors()
-    {
-        $this->app->resolving(QueueManager::class, function ($manager) {
-            $manager->addConnector('redis', function () {
-                return new RedisConnector($this->app['redis']);
-            });
-        });
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        if (! defined('HORIZON_PATH')) {
-            define('HORIZON_PATH', realpath(__DIR__.'/../'));
-        }
-
-        $this->app->bind(Console\WorkCommand::class, function ($app) {
-            return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
-        });
-
-        $this->configure();
-        $this->offerPublishing();
-        $this->registerServices();
-        $this->registerCommands();
-        $this->registerQueueConnectors();
-    }
-
-    /**
-     * Setup the configuration for Horizon.
-     *
-     * @return void
-     */
-    protected function configure()
-    {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/horizon.php', 'horizon'
-        );
-
-        Horizon::use(config('horizon.use', 'default'));
-    }
-
-    /**
      * Setup the resource publishing groups for Horizon.
      *
      * @return void
@@ -145,20 +97,6 @@ class HorizonServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/horizon.php' => config_path('horizon.php'),
             ], 'horizon-config');
-        }
-    }
-
-    /**
-     * Register Horizon's services in the container.
-     *
-     * @return void
-     */
-    protected function registerServices()
-    {
-        foreach ($this->serviceBindings as $key => $value) {
-            is_numeric($key)
-                    ? $this->app->singleton($value)
-                    : $this->app->singleton($key, $value);
         }
     }
 
@@ -192,5 +130,67 @@ class HorizonServiceProvider extends ServiceProvider
         }
 
         $this->commands([Console\SnapshotCommand::class]);
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        if (! defined('HORIZON_PATH')) {
+            define('HORIZON_PATH', realpath(__DIR__.'/../'));
+        }
+
+        $this->app->bind(Console\WorkCommand::class, function ($app) {
+            return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
+        });
+
+        $this->configure();
+        $this->registerServices();
+        $this->registerQueueConnectors();
+    }
+
+    /**
+     * Setup the configuration for Horizon.
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/horizon.php', 'horizon'
+        );
+
+        Horizon::use(config('horizon.use', 'default'));
+    }
+
+    /**
+     * Register Horizon's services in the container.
+     *
+     * @return void
+     */
+    protected function registerServices()
+    {
+        foreach ($this->serviceBindings as $key => $value) {
+            is_numeric($key)
+                    ? $this->app->singleton($value)
+                    : $this->app->singleton($key, $value);
+        }
+    }
+
+    /**
+     * Register the custom queue connectors for Horizon.
+     *
+     * @return void
+     */
+    protected function registerQueueConnectors()
+    {
+        $this->app->resolving(QueueManager::class, function ($manager) {
+            $manager->addConnector('redis', function () {
+                return new RedisConnector($this->app['redis']);
+            });
+        });
     }
 }
