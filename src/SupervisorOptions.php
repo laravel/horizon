@@ -205,7 +205,7 @@ class SupervisorOptions
         $this->nice = $nice;
         $this->balanceCooldown = $balanceCooldown;
         $this->balanceMaxShift = $balanceMaxShift;
-        $this->parentId = 0;
+        $this->parentId = $parentId;
     }
 
     /**
@@ -297,6 +297,7 @@ class SupervisorOptions
             'timeout' => $this->timeout,
             'balanceCooldown' => $this->balanceCooldown,
             'balanceMaxShift' => $this->balanceMaxShift,
+            'parentId' => $this->parentId,
         ];
     }
 

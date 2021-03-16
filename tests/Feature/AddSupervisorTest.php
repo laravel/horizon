@@ -28,7 +28,7 @@ class AddSupervisorTest extends IntegrationTest
         $this->assertCount(1, $master->supervisors);
 
         $this->assertSame(
-            'exec '.$phpBinary.' artisan horizon:supervisor my-supervisor redis --workers-name=default --balance=off --max-processes=1 --min-processes=1 --nice=0 --balance-cooldown=3 --balance-max-shift=1 --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="default" --sleep=3 --timeout=60 --tries=0',
+            'exec '.$phpBinary.' artisan horizon:supervisor my-supervisor redis --workers-name=default --balance=off --max-processes=1 --min-processes=1 --nice=0 --balance-cooldown=3 --balance-max-shift=1 --parent-id=0 --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="default" --sleep=3 --timeout=60 --tries=0',
             $master->supervisors->first()->process->getCommandLine()
         );
     }
