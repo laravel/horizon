@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon;
 
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
@@ -176,6 +177,10 @@ class ProvisioningPlan
 
             return [Str::camel($key) => $value];
         })->all();
+
+        if (isset($options['minProcesses']) && $options['minProcesses'] < 1) {
+            throw new Exception("The value of [{$supervisor}.minProcesses] must be greater than 0.");
+        }
 
         $options['parentId'] = getmypid();
 
