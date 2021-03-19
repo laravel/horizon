@@ -131,13 +131,6 @@ class SupervisorOptions
     public $sleep;
 
     /**
-     * The number of seconds to rest between jobs.
-     *
-     * @var int
-     */
-    public $rest;
-
-    /**
      * The maximum amount of times a job may be attempted.
      *
      * @var int
@@ -150,6 +143,13 @@ class SupervisorOptions
      * @var bool
      */
     public $force;
+
+    /**
+     * The number of seconds to rest between jobs.
+     *
+     * @var int
+     */
+    public $rest;
 
     /**
      * Create a new worker options instance.
@@ -167,13 +167,13 @@ class SupervisorOptions
      * @param  int  $memory
      * @param  int  $timeout
      * @param  int  $sleep
-     * @param  int  $rest
      * @param  int  $maxTries
      * @param  bool  $force
      * @param  int  $nice
      * @param  int  $balanceCooldown
      * @param  int  $balanceMaxShift
      * @param  int  $parentId
+     * @param  int  $rest
      */
     public function __construct($name,
                                 $connection,
@@ -188,13 +188,13 @@ class SupervisorOptions
                                 $memory = 128,
                                 $timeout = 60,
                                 $sleep = 3,
-                                $rest = 0,
                                 $maxTries = 0,
                                 $force = false,
                                 $nice = 0,
                                 $balanceCooldown = 3,
                                 $balanceMaxShift = 1,
-                                $parentId = 0)
+                                $parentId = 0,
+                                $rest = 0)
     {
         $this->name = $name;
         $this->connection = $connection;
@@ -209,13 +209,13 @@ class SupervisorOptions
         $this->memory = $memory;
         $this->timeout = $timeout;
         $this->sleep = $sleep;
-        $this->rest = $rest;
         $this->maxTries = $maxTries;
         $this->force = $force;
         $this->nice = $nice;
         $this->balanceCooldown = $balanceCooldown;
         $this->balanceMaxShift = $balanceMaxShift;
         $this->parentId = $parentId;
+        $this->rest = $rest;
     }
 
     /**
@@ -304,11 +304,11 @@ class SupervisorOptions
             'name' => $this->name,
             'workersName' => $this->workersName,
             'sleep' => $this->sleep,
-            'rest' => $this->rest,
             'timeout' => $this->timeout,
             'balanceCooldown' => $this->balanceCooldown,
             'balanceMaxShift' => $this->balanceMaxShift,
             'parentId' => $this->parentId,
+            'rest' => $this->rest,
         ];
     }
 
