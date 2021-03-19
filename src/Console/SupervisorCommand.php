@@ -30,6 +30,7 @@ class SupervisorCommand extends Command
                             {--paused : Start the supervisor in a paused state}
                             {--queue= : The names of the queues to work}
                             {--sleep=3 : Number of seconds to sleep when no job is available}
+                            {--rest=0 : Number of seconds to rest between jobs}
                             {--timeout=60 : The number of seconds a child process can run}
                             {--tries=0 : Number of times to attempt a job before logging it failed}
                             {--balance-cooldown=3 : The number of seconds to wait in between auto-scaling attempts}
@@ -124,6 +125,7 @@ class SupervisorCommand extends Command
             $this->option('memory'),
             $this->option('timeout'),
             $this->option('sleep'),
+            $this->option('rest'),
             $this->option('tries'),
             $this->option('force'),
             $this->option('nice'),

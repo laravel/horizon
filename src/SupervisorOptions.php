@@ -131,6 +131,13 @@ class SupervisorOptions
     public $sleep;
 
     /**
+     * The number of seconds to rest between jobs.
+     *
+     * @var int
+     */
+    public $rest;
+
+    /**
      * The maximum amount of times a job may be attempted.
      *
      * @var int
@@ -160,6 +167,7 @@ class SupervisorOptions
      * @param  int  $memory
      * @param  int  $timeout
      * @param  int  $sleep
+     * @param  int  $rest
      * @param  int  $maxTries
      * @param  bool  $force
      * @param  int  $nice
@@ -180,6 +188,7 @@ class SupervisorOptions
                                 $memory = 128,
                                 $timeout = 60,
                                 $sleep = 3,
+                                $rest = 0,
                                 $maxTries = 0,
                                 $force = false,
                                 $nice = 0,
@@ -200,6 +209,7 @@ class SupervisorOptions
         $this->memory = $memory;
         $this->timeout = $timeout;
         $this->sleep = $sleep;
+        $this->rest = $rest;
         $this->maxTries = $maxTries;
         $this->force = $force;
         $this->nice = $nice;
@@ -294,6 +304,7 @@ class SupervisorOptions
             'name' => $this->name,
             'workersName' => $this->workersName,
             'sleep' => $this->sleep,
+            'rest' => $this->rest,
             'timeout' => $this->timeout,
             'balanceCooldown' => $this->balanceCooldown,
             'balanceMaxShift' => $this->balanceMaxShift,
