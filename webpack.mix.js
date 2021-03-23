@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 const webpack = require('webpack');
+const path = require('path');
 
 /*
  |--------------------------------------------------------------------------
@@ -23,11 +24,11 @@ mix.options({
 })
     .setPublicPath('public')
     .js('resources/js/app.js', 'public')
+    .vue()
     .sass('resources/sass/app.scss', 'public')
     .sass('resources/sass/app-dark.scss', 'public')
     .version()
     .copy('resources/img', 'public/img')
-    .copy('public', '../../horizontest/public/vendor/horizon')
     .webpackConfig({
         resolve: {
             symlinks: false,

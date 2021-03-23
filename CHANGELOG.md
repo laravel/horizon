@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.2...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.3...master)
+
+
+## [v5.7.3 (2021-03-23)](https://github.com/laravel/horizon/compare/v5.7.2...v5.7.3)
+
+### Changed
+- Move booting of services ([#990](https://github.com/laravel/horizon/pull/990))
+- Clarify button purpose ([#991](https://github.com/laravel/horizon/pull/991))
 
 
 ## [v5.7.2 (2021-03-16)](https://github.com/laravel/horizon/compare/v5.7.1...v5.7.2)
