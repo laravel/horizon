@@ -145,6 +145,13 @@ class SupervisorOptions
     public $force;
 
     /**
+     * The number of seconds to rest between jobs.
+     *
+     * @var int
+     */
+    public $rest;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
@@ -166,6 +173,7 @@ class SupervisorOptions
      * @param  int  $balanceCooldown
      * @param  int  $balanceMaxShift
      * @param  int  $parentId
+     * @param  int  $rest
      */
     public function __construct($name,
                                 $connection,
@@ -185,7 +193,8 @@ class SupervisorOptions
                                 $nice = 0,
                                 $balanceCooldown = 3,
                                 $balanceMaxShift = 1,
-                                $parentId = 0)
+                                $parentId = 0,
+                                $rest = 0)
     {
         $this->name = $name;
         $this->connection = $connection;
@@ -206,6 +215,7 @@ class SupervisorOptions
         $this->balanceCooldown = $balanceCooldown;
         $this->balanceMaxShift = $balanceMaxShift;
         $this->parentId = $parentId;
+        $this->rest = $rest;
     }
 
     /**
@@ -298,6 +308,7 @@ class SupervisorOptions
             'balanceCooldown' => $this->balanceCooldown,
             'balanceMaxShift' => $this->balanceMaxShift,
             'parentId' => $this->parentId,
+            'rest' => $this->rest,
         ];
     }
 

@@ -35,7 +35,8 @@ class SupervisorCommand extends Command
                             {--balance-cooldown=3 : The number of seconds to wait in between auto-scaling attempts}
                             {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}
                             {--workers-name=default : The name that should be assigned to the workers}
-                            {--parent-id=0 : The parent process ID}';
+                            {--parent-id=0 : The parent process ID}
+                            {--rest=0 : Number of seconds to rest between jobs}';
 
     /**
      * The console command description.
@@ -129,7 +130,8 @@ class SupervisorCommand extends Command
             $this->option('nice'),
             $this->option('balance-cooldown'),
             $this->option('balance-max-shift'),
-            $this->option('parent-id')
+            $this->option('parent-id'),
+            $this->option('rest')
         );
     }
 

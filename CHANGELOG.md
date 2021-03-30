@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.3...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.4...master)
+
+
+## [v5.7.4 (2021-03-30)](https://github.com/laravel/horizon/compare/v5.7.3...v5.7.4)
+
+### Changed
+- Add Supervisor Rest Option ([#992](https://github.com/laravel/horizon/pull/992))
 
 
 ## [v5.7.3 (2021-03-23)](https://github.com/laravel/horizon/compare/v5.7.2...v5.7.3)
