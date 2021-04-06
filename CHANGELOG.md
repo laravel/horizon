@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.4...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.5...master)
+
+
+## [v5.7.5 (2021-04-06)](https://github.com/laravel/horizon/compare/v5.7.4...v5.7.5)
+
+### Fixed
+- Update syntax highlighting ([#1002](https://github.com/laravel/horizon/pull/1002))
+- Fix status for large batches ([58b71c1](https://github.com/laravel/horizon/commit/58b71c188cdbc3dc07ff0ab22861641200334b25))
 
 
 ## [v5.7.4 (2021-03-30)](https://github.com/laravel/horizon/compare/v5.7.3...v5.7.4)
