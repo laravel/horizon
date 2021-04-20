@@ -115,7 +115,7 @@ class FailedJobsController extends Controller
     {
         $job->payload = json_decode($job->payload);
 
-        $job->exception = mb_convert_encoding($job->exception, 'UTF-8', 'UTF-8');
+        $job->exception = mb_convert_encoding($job->exception, 'UTF-8');
 
         $job->retried_by = collect(json_decode($job->retried_by))
                     ->sortByDesc('retried_at')->values();
