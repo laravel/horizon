@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
 
@@ -114,6 +115,8 @@ class FailedJobsController extends Controller
     protected function decode($job)
     {
         $job->payload = json_decode($job->payload);
+
+        $job->exception = mb_convert_encoding($job->exception, 'UTF-8', 'UTF-8');
 
         $job->retried_by = collect(json_decode($job->retried_by))
                     ->sortByDesc('retried_at')->values();
