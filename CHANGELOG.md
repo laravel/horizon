@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.5...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.6...5.x)
+
+
+## [v5.7.6 (2021-04-27)](https://github.com/laravel/horizon/compare/v5.7.5...v5.7.6)
+
+### Fixed
+- Fix encoding ([ef0c45a](https://github.com/laravel/horizon/commit/ef0c45a6691744c3c8491cf6c096bbcefbaf129f), [9e3748e](https://github.com/laravel/horizon/commit/9e3748e4b9871a3ad5095b20873063a9647c959d))
 
 
 ## [v5.7.5 (2021-04-06)](https://github.com/laravel/horizon/compare/v5.7.4...v5.7.5)
