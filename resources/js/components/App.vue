@@ -1,8 +1,9 @@
 <script type="text/ecmascript-6">
     export default {
         props: [
-            'assetsAreCurrent', 'isDownForMaintenance', 'appName',
+            'appName', 'assetsAreCurrent', 'isDownForMaintenance'
         ],
+
         data() {
             return {
                 alert: {
