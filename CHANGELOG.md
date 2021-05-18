@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.6...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.7...5.x)
+
+
+## [v5.7.7 (2021-05-18)](https://github.com/laravel/horizon/compare/v5.7.6...v5.7.7)
+
+### Changed
+- Move contents of #horizon to separate component ([#1022](https://github.com/laravel/horizon/pull/1022))
 
 
 ## [v5.7.6 (2021-04-27)](https://github.com/laravel/horizon/compare/v5.7.5...v5.7.6)
