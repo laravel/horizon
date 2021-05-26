@@ -11,7 +11,7 @@ class AutoScaler
     /**
      * The queue factory implementation.
      *
-     * @var \Illuminate\Contracts\Queue\Factfory
+     * @var \Illuminate\Contracts\Queue\Factory
      */
     public $queue;
 
