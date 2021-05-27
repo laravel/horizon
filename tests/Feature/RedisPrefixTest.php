@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Facades\Config;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Tests\IntegrationTest;
 
