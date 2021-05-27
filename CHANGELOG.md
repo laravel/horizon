@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.7...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.8...5.x)
+
+
+## [v5.7.8 (2021-05-27)](https://github.com/laravel/horizon/compare/v5.7.7...v5.7.8)
+
+### Fixed
+- Revert app layout PR ([#1026](https://github.com/laravel/horizon/pull/1026))
 
 
 ## [v5.7.7 (2021-05-18)](https://github.com/laravel/horizon/compare/v5.7.6...v5.7.7)
