@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('api')->group(function () {
     // Dashboard Routes...
     Route::get('/stats', 'DashboardStatsController@index')->name('horizon.stats.index');
+    Route::get('/statistics', 'StatisticsController@index')->name('horizon.statistics.index');
 
     // Workload Routes...
     Route::get('/workload', 'WorkloadController@index')->name('horizon.workload.index');
