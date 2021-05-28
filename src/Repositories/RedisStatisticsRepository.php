@@ -34,7 +34,7 @@ class RedisStatisticsRepository
             throw new \Exception("Invalid type: $type");
         }
 
-        $keys = $this->connection()->keys("pending_jobs:index*");
+        $keys = $this->connection()->keys("$type:index*");
 
         return collect($keys)
             ->map(function ($key) {
