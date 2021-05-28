@@ -72,6 +72,13 @@ class RedisJobRepository implements JobRepository
     public $monitoredJobExpires;
 
     /**
+     * The number of minutes until index jobs should be purged.
+     *
+     * @var int
+     */
+    public $indexJobExpires;
+
+    /**
      * Create a new repository instance.
      *
      * @param  \Illuminate\Contracts\Redis\Factory  $redis
@@ -86,6 +93,7 @@ class RedisJobRepository implements JobRepository
         $this->failedJobExpires = config('horizon.trim.failed', 10080);
         $this->recentFailedJobExpires = config('horizon.trim.recent_failed', $this->failedJobExpires);
         $this->monitoredJobExpires = config('horizon.trim.monitored', 10080);
+        $this->indexJobExpires = config('horizon.trim.index', 20);
     }
 
     /**
@@ -579,6 +587,26 @@ class RedisJobRepository implements JobRepository
         $this->connection()->zremrangebyscore(
             'monitored_jobs', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp() * -1, '+inf'
         );
+    }
+
+    /**
+     * Trim the index job list.
+     *
+     * @return void
+     */
+    public function trimIndexJobs()
+    {
+        $keys = $this->connection()->keys('*index*');
+
+        collect($keys)->each(function (string $key) {
+            $prefix = config('horizon.prefix');
+
+            $keyForDelete = preg_match("/$prefix(.*)$/", $key, $matches) ? $matches[1] : $key;
+
+            $this->connection()->zremrangebyscore(
+                $keyForDelete, CarbonImmutable::now()->subSeconds($this->indexJobExpires)->getTimestamp() * -1, '+inf'
+            );
+        });
     }
 
     /**

@@ -46,6 +46,7 @@ trait EventMap
             Listeners\TrimRecentJobs::class,
             Listeners\TrimFailedJobs::class,
             Listeners\TrimMonitoredJobs::class,
+            Listeners\TrimIndexJobs::class,
             Listeners\ExpireSupervisors::class,
             Listeners\MonitorMasterSupervisorMemory::class,
         ],
