@@ -246,7 +246,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the number of minutes to count for a given type set.
      *
-     * @param  string  $type
+     * @param string $type
      * @return int
      */
     protected function minutesForType($type)
@@ -307,6 +307,11 @@ class RedisJobRepository implements JobRepository
         });
     }
 
+    public function generateIndexKey(string $prefix, JobPayload $payload): string
+    {
+        return "$prefix:index:" . $payload->decoded['displayName'];
+    }
+
     /**
      * Insert the job into storage.
      *
@@ -320,6 +325,8 @@ class RedisJobRepository implements JobRepository
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'recent_jobs', $payload);
             $this->storeJobReference($pipe, 'pending_jobs', $payload);
+
+            $this->storeJobReference($pipe, $this->generateIndexKey('pending_jobs', $payload), $payload);
 
             $time = str_replace(',', '.', microtime(true));
 
@@ -451,6 +458,9 @@ class RedisJobRepository implements JobRepository
         $this->connection()->pipeline(function ($pipe) use ($payload) {
             $this->storeJobReference($pipe, 'completed_jobs', $payload);
             $this->removeJobReference($pipe, 'pending_jobs', $payload);
+
+            $this->storeJobReference($pipe, $this->generateIndexKey('completed_jobs', $payload), $payload);
+            $this->removeJobReference($pipe, $this->generateIndexKey('pending_jobs', $payload), $payload);
 
             $pipe->hmset(
                 $payload->id(), [
@@ -610,6 +620,9 @@ class RedisJobRepository implements JobRepository
             $this->storeJobReference($pipe, 'recent_failed_jobs', $payload);
             $this->removeJobReference($pipe, 'pending_jobs', $payload);
             $this->removeJobReference($pipe, 'completed_jobs', $payload);
+
+            $this->storeJobReference($pipe, $this->generateIndexKey('failed_jobs', $payload), $payload);
+            $this->removeJobReference($pipe, $this->generateIndexKey('pending_jobs', $payload), $payload);
 
             $pipe->hmset(
                 $payload->id(), [
