@@ -30,11 +30,7 @@ class RedisStatisticsRepository
      */
     public function statisticsByType(string $type): array
     {
-        if (!in_array($type, ['pending_jobs', 'completed_jobs', 'failed_jobs'])) {
-            throw new \Exception("Invalid type: $type");
-        }
-
-        $keys = $this->connection()->keys("$type:index*");
+        $keys = $this->connection()->keys("{$type}_jobs:index*");
 
         return collect($keys)
             ->map(function ($key) {

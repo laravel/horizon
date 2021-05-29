@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Laravel\Horizon\Http\Controllers;
 
-
-use Illuminate\Http\Request;
 use Laravel\Horizon\Repositories\RedisStatisticsRepository;
 
 class StatisticsController extends Controller
@@ -16,17 +13,17 @@ class StatisticsController extends Controller
 
     public function __construct(RedisStatisticsRepository $repository)
     {
+        parent::__construct();
+
         $this->repository = $repository;
     }
 
     /**
-     * @param Request $request
+     * @param  string  $type
      * @return array
      */
-    public function index(Request $request): array
+    public function index($type)
     {
-        $type = $request->get('type');
-
         return $this->repository->statisticsByType($type);
     }
 }

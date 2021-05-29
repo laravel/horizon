@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('api')->group(function () {
     // Dashboard Routes...
     Route::get('/stats', 'DashboardStatsController@index')->name('horizon.stats.index');
-    Route::get('/statistics', 'StatisticsController@index')->name('horizon.statistics.index');
 
     // Workload Routes...
     Route::get('/workload', 'WorkloadController@index')->name('horizon.workload.index');
@@ -22,6 +21,8 @@ Route::prefix('api')->group(function () {
     // Job Metric Routes...
     Route::get('/metrics/jobs', 'JobMetricsController@index')->name('horizon.jobs-metrics.index');
     Route::get('/metrics/jobs/{id}', 'JobMetricsController@show')->name('horizon.jobs-metrics.show');
+
+    Route::get('/statistics/{type}', 'StatisticsController@index')->name('horizon.statistics.index');
 
     // Queue Metric Routes...
     Route::get('/metrics/queues', 'QueueMetricsController@index')->name('horizon.queues-metrics.index');

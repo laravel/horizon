@@ -73,6 +73,14 @@
                             </router-link>
                         </li>
                         <li class="nav-item">
+                            <router-link active-class="active" to="/statistics" class="nav-link d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M1 10h3v10H1V10zM6 0h3v20H6V0zm5 8h3v12h-3V8zm5-4h3v16h-3V4z"></path>
+                                </svg>
+                                <span>Statistics</span>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
                             <router-link active-class="active" to="/batches" class="nav-link d-flex align-items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path d="M1 1h18v2H1V1zm0 8h18v2H1V9zm0 8h18v2H1v-2zM1 5h18v2H1V5zm0 8h18v2H1v-2z"/>
