@@ -3532,7 +3532,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     /**
-     *ф.
+     * Load the jobs.
      */
     loadJobs: function loadJobs() {
       var _this = this;
