@@ -4,6 +4,8 @@ import axios from 'axios';
 import Routes from './routes';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
+import Autocomplete from '@trevoreyre/autocomplete-vue'
+import '@trevoreyre/autocomplete-vue/dist/style.css'
 
 window.Popper = require('popper.js').default;
 
@@ -22,6 +24,7 @@ if (token) {
 }
 
 Vue.use(VueRouter);
+Vue.use(Autocomplete);
 
 Vue.prototype.$http = axios.create();
 

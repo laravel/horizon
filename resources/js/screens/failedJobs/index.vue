@@ -1,5 +1,9 @@
 <script type="text/ecmascript-6">
+    import JobFilter from "../../components/JobFilter"
+
     export default {
+        components: { JobFilter },
+
         /**
          * The component's data.
          */
@@ -15,6 +19,7 @@
                 totalPages: 1,
                 jobs: [],
                 retryingJobs: [],
+                additionalQueryParams: {},
             };
         },
 
@@ -55,7 +60,7 @@
                     this.loadJobs();
                     this.refreshJobsPeriodically();
                 }, 500);
-            }
+            },
         },
 
 
@@ -69,8 +74,9 @@
                 }
 
                 var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
+                let additionalQuery = "&" + new URLSearchParams(this.additionalQueryParams).toString()
 
-                this.$http.get(Horizon.basePath + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+                this.$http.get(Horizon.basePath + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting + additionalQuery)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
                             return;
@@ -194,6 +200,8 @@
 
 <template>
     <div>
+        <JobFilter status="failed" @updated="additionalQueryParams = $event"></JobFilter>
+
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>Failed Jobs</h5>

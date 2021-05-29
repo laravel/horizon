@@ -1,5 +1,6 @@
 <script type="text/ecmascript-6">
     import JobRow from './job-row';
+    import JobFilter from "../../components/JobFilter"
 
     export default {
         /**
@@ -13,7 +14,8 @@
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
-                jobs: []
+                jobs: [],
+                additionalQueryParams: {},
             };
         },
 
@@ -21,7 +23,7 @@
          * Components
          */
         components: {
-            JobRow,
+            JobRow, JobFilter
         },
 
         /**
@@ -66,7 +68,9 @@
                     this.ready = false;
                 }
 
-                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage)
+                let additionalQuery = "&" + new URLSearchParams(this.additionalQueryParams).toString()
+
+                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage + additionalQuery)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
                             this.hasNewEntries = true;
@@ -136,6 +140,8 @@
 
 <template>
     <div>
+        <JobFilter :status="$route.params.type" @updated="additionalQueryParams = $event"></JobFilter>
+
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>

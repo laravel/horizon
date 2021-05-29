@@ -276,3 +276,26 @@ button:hover {
 .badge-sm {
     font-size: 0.75rem;
 }
+
+.datetime {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    width: 100%;
+    padding: 12px 18px;
+    background-color: #eee;
+    font-size: 13px;
+
+    &:focus {
+        border-color: rgba(0,0,0,.12);
+        background-color: #fff;
+        box-shadow: 0 2px 2px rgb(0 0 0 / 16%);
+    }
+
+    &:focus-visible {
+        border: none;
+    }
+}
+
+.autocomplete-input {
+    font-size: 13px !important;
+}
