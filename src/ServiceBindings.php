@@ -16,6 +16,7 @@ trait ServiceBindings
         Listeners\TrimRecentJobs::class,
         Listeners\TrimFailedJobs::class,
         Listeners\TrimMonitoredJobs::class,
+        Listeners\TrimIndexJobs::class,
         Lock::class,
         Stopwatch::class,
 
