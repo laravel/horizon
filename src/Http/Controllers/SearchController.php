@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Laravel\Horizon\Contracts\IndexedJobsRepository;
 
 class SearchController extends Controller
 {
-    public function searchJobsByName()
+    public function searchJobsByName(Request $request, IndexedJobsRepository $repository)
     {
-        return ['Kek', 'Lol', '4eburek'];
+        $status = $request->get('status');
+        $jobName = $request->get('name');
+
+        return $repository->getKeysByJobNameAndStatus($jobName, $status);
     }
 }
