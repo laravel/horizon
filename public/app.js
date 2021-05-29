@@ -2662,8 +2662,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       jobNameSearch: null,
       createdAtFromSearch: null,
-      createdAtToSearch: null,
-      test: null
+      createdAtToSearch: null
     };
   },
   methods: {
@@ -3179,13 +3178,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _components_JobFilter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/JobFilter */ "./resources/js/components/JobFilter.vue");
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  components: {
-    JobFilter: _components_JobFilter__WEBPACK_IMPORTED_MODULE_0__.default
-  },
-
   /**
    * The component's data.
    */
@@ -3200,8 +3193,7 @@ __webpack_require__.r(__webpack_exports__);
       perPage: 50,
       totalPages: 1,
       jobs: [],
-      retryingJobs: [],
-      additionalQueryParams: {}
+      retryingJobs: []
     };
   },
 
@@ -3256,8 +3248,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
-      var additionalQuery = "&" + new URLSearchParams(this.additionalQueryParams).toString();
-      this.$http.get(Horizon.basePath + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting + additionalQuery).then(function (response) {
+      this.$http.get(Horizon.basePath + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting).then(function (response) {
         if (!_this2.$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
           return;
         }
@@ -82977,356 +82968,342 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("JobFilter", {
-        attrs: { status: "failed" },
-        on: {
-          updated: function($event) {
-            _vm.additionalQueryParams = $event
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" }, [
-        _c(
-          "div",
-          {
-            staticClass:
-              "card-header d-flex align-items-center justify-content-between"
-          },
-          [
-            _c("h5", [_vm._v("Failed Jobs")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.tagSearchPhrase,
-                  expression: "tagSearchPhrase"
-                }
-              ],
-              staticClass: "form-control",
-              staticStyle: { width: "200px" },
-              attrs: { type: "text", placeholder: "Search Tags" },
-              domProps: { value: _vm.tagSearchPhrase },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.tagSearchPhrase = $event.target.value
-                }
+  return _c("div", [
+    _c("div", { staticClass: "card" }, [
+      _c(
+        "div",
+        {
+          staticClass:
+            "card-header d-flex align-items-center justify-content-between"
+        },
+        [
+          _c("h5", [_vm._v("Failed Jobs")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.tagSearchPhrase,
+                expression: "tagSearchPhrase"
               }
-            })
-          ]
-        ),
-        _vm._v(" "),
-        !_vm.ready
-          ? _c(
-              "div",
-              {
-                staticClass:
-                  "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
-              },
-              [
-                _c(
-                  "svg",
-                  {
-                    staticClass: "icon spin mr-2 fill-text-color",
-                    attrs: {
-                      xmlns: "http://www.w3.org/2000/svg",
-                      viewBox: "0 0 20 20"
-                    }
-                  },
-                  [
-                    _c("path", {
-                      attrs: {
-                        d:
-                          "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
-                      }
-                    })
-                  ]
-                ),
-                _vm._v(" "),
-                _c("span", [_vm._v("Loading...")])
-              ]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.ready && _vm.jobs.length == 0
-          ? _c(
-              "div",
-              {
-                staticClass:
-                  "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
-              },
-              [_c("span", [_vm._v("There aren't any failed jobs.")])]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.ready && _vm.jobs.length > 0
-          ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
-              _vm._m(0),
-              _vm._v(" "),
+            ],
+            staticClass: "form-control",
+            staticStyle: { width: "200px" },
+            attrs: { type: "text", placeholder: "Search Tags" },
+            domProps: { value: _vm.tagSearchPhrase },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.tagSearchPhrase = $event.target.value
+              }
+            }
+          })
+        ]
+      ),
+      _vm._v(" "),
+      !_vm.ready
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [
               _c(
-                "tbody",
+                "svg",
+                {
+                  staticClass: "icon spin mr-2 fill-text-color",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
                 [
-                  _vm.hasNewEntries
-                    ? _c(
-                        "tr",
-                        { key: "newEntries", staticClass: "dontanimate" },
-                        [
-                          _c(
-                            "td",
-                            {
-                              staticClass: "text-center card-bg-secondary py-1",
-                              attrs: { colspan: "100" }
-                            },
-                            [
-                              _c("small", [
-                                !_vm.loadingNewEntries
-                                  ? _c(
-                                      "a",
-                                      {
-                                        attrs: { href: "#" },
-                                        on: {
-                                          click: function($event) {
-                                            $event.preventDefault()
-                                            return _vm.loadNewEntries($event)
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("span", [_vm._v("Loading...")])
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length == 0
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+            },
+            [_c("span", [_vm._v("There aren't any failed jobs.")])]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length > 0
+        ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              [
+                _vm.hasNewEntries
+                  ? _c(
+                      "tr",
+                      { key: "newEntries", staticClass: "dontanimate" },
+                      [
+                        _c(
+                          "td",
+                          {
+                            staticClass: "text-center card-bg-secondary py-1",
+                            attrs: { colspan: "100" }
+                          },
+                          [
+                            _c("small", [
+                              !_vm.loadingNewEntries
+                                ? _c(
+                                    "a",
+                                    {
+                                      attrs: { href: "#" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.loadNewEntries($event)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Load New Entries")]
+                                  )
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _vm.loadingNewEntries
+                              ? _c("small", [_vm._v("Loading...")])
+                              : _vm._e()
+                          ]
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.jobs, function(job) {
+                  return _c("tr", { key: job.id }, [
+                    _c(
+                      "td",
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            attrs: {
+                              title: job.name,
+                              to: {
+                                name: "failed-jobs-preview",
+                                params: { jobId: job.id }
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                        " +
+                                _vm._s(_vm.jobBaseName(job.name)) +
+                                "\n                    "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _vm.wasRetried(job)
+                          ? _c(
+                              "small",
+                              {
+                                directives: [
+                                  {
+                                    name: "tooltip",
+                                    rawName: "v-tooltip:top",
+                                    value:
+                                      "Total retries: " + job.retried_by.length,
+                                    expression:
+                                      "`Total retries: ${job.retried_by.length}`",
+                                    arg: "top"
+                                  }
+                                ],
+                                staticClass: "badge badge-secondary badge-sm"
+                              },
+                              [
+                                _vm._v(
+                                  "\n                        Retried\n                    "
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "text-muted" }, [
+                          _vm._v(
+                            "\n                        Queue: " +
+                              _vm._s(job.queue) +
+                              "\n                        | Attempts: " +
+                              _vm._s(job.payload.attempts) +
+                              "\n                        "
+                          ),
+                          _vm.isRetry(job)
+                            ? _c(
+                                "span",
+                                [
+                                  _vm._v(
+                                    "\n                        | Retry of\n                        "
+                                  ),
+                                  _c(
+                                    "router-link",
+                                    {
+                                      attrs: {
+                                        title: job.name,
+                                        to: {
+                                          name: "failed-jobs-preview",
+                                          params: {
+                                            jobId: job.payload.retry_of
                                           }
                                         }
-                                      },
-                                      [_vm._v("Load New Entries")]
-                                    )
-                                  : _vm._e()
-                              ]),
-                              _vm._v(" "),
-                              _vm.loadingNewEntries
-                                ? _c("small", [_vm._v("Loading...")])
-                                : _vm._e()
-                            ]
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            " +
+                                          _vm._s(
+                                            job.payload.retry_of.split("-")[0]
+                                          ) +
+                                          "\n                        "
+                                      )
+                                    ]
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          job.payload.tags && job.payload.tags.length
+                            ? _c("span", { staticClass: "text-break" }, [
+                                _vm._v(
+                                  "\n                        | Tags: " +
+                                    _vm._s(
+                                      job.payload.tags &&
+                                        job.payload.tags.length
+                                        ? job.payload.tags.join(", ")
+                                        : ""
+                                    ) +
+                                    "\n                        "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _c("span", [
+                        _vm._v(
+                          _vm._s(
+                            job.failed_at
+                              ? String(
+                                  (job.failed_at - job.reserved_at).toFixed(2)
+                                ) + "s"
+                              : "-"
                           )
-                        ]
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "table-fit" }, [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(_vm.readableTimestamp(job.failed_at)) +
+                          "\n                "
                       )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm._l(_vm.jobs, function(job) {
-                    return _c("tr", { key: job.id }, [
-                      _c(
-                        "td",
-                        [
-                          _c(
-                            "router-link",
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-right table-fit" }, [
+                      !_vm.hasCompleted(job)
+                        ? _c(
+                            "a",
                             {
-                              attrs: {
-                                title: job.name,
-                                to: {
-                                  name: "failed-jobs-preview",
-                                  params: { jobId: job.id }
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.retry(job.id)
                                 }
                               }
                             },
                             [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(_vm.jobBaseName(job.name)) +
-                                  "\n                    "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _vm.wasRetried(job)
-                            ? _c(
-                                "small",
+                              _c(
+                                "svg",
                                 {
-                                  directives: [
-                                    {
-                                      name: "tooltip",
-                                      rawName: "v-tooltip:top",
-                                      value:
-                                        "Total retries: " +
-                                        job.retried_by.length,
-                                      expression:
-                                        "`Total retries: ${job.retried_by.length}`",
-                                      arg: "top"
-                                    }
-                                  ],
-                                  staticClass: "badge badge-secondary badge-sm"
+                                  staticClass: "fill-primary",
+                                  class: { spin: _vm.isRetrying(job.id) },
+                                  staticStyle: {
+                                    width: "1.5rem",
+                                    height: "1.5rem"
+                                  },
+                                  attrs: { viewBox: "0 0 20 20" }
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                        Retried\n                    "
-                                  )
+                                  _c("path", {
+                                    attrs: {
+                                      d:
+                                        "M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"
+                                    }
+                                  })
                                 ]
                               )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("small", { staticClass: "text-muted" }, [
-                            _vm._v(
-                              "\n                        Queue: " +
-                                _vm._s(job.queue) +
-                                "\n                        | Attempts: " +
-                                _vm._s(job.payload.attempts) +
-                                "\n                        "
-                            ),
-                            _vm.isRetry(job)
-                              ? _c(
-                                  "span",
-                                  [
-                                    _vm._v(
-                                      "\n                        | Retry of\n                        "
-                                    ),
-                                    _c(
-                                      "router-link",
-                                      {
-                                        attrs: {
-                                          title: job.name,
-                                          to: {
-                                            name: "failed-jobs-preview",
-                                            params: {
-                                              jobId: job.payload.retry_of
-                                            }
-                                          }
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "\n                            " +
-                                            _vm._s(
-                                              job.payload.retry_of.split("-")[0]
-                                            ) +
-                                            "\n                        "
-                                        )
-                                      ]
-                                    )
-                                  ],
-                                  1
-                                )
-                              : _vm._e(),
-                            _vm._v(" "),
-                            job.payload.tags && job.payload.tags.length
-                              ? _c("span", { staticClass: "text-break" }, [
-                                  _vm._v(
-                                    "\n                        | Tags: " +
-                                      _vm._s(
-                                        job.payload.tags &&
-                                          job.payload.tags.length
-                                          ? job.payload.tags.join(", ")
-                                          : ""
-                                      ) +
-                                      "\n                        "
-                                  )
-                                ])
-                              : _vm._e()
-                          ])
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "table-fit" }, [
-                        _c("span", [
-                          _vm._v(
-                            _vm._s(
-                              job.failed_at
-                                ? String(
-                                    (job.failed_at - job.reserved_at).toFixed(2)
-                                  ) + "s"
-                                : "-"
-                            )
+                            ]
                           )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "table-fit" }, [
-                        _vm._v(
-                          "\n                    " +
-                            _vm._s(_vm.readableTimestamp(job.failed_at)) +
-                            "\n                "
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-right table-fit" }, [
-                        !_vm.hasCompleted(job)
-                          ? _c(
-                              "a",
-                              {
-                                attrs: { href: "#" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.retry(job.id)
-                                  }
-                                }
-                              },
-                              [
-                                _c(
-                                  "svg",
-                                  {
-                                    staticClass: "fill-primary",
-                                    class: { spin: _vm.isRetrying(job.id) },
-                                    staticStyle: {
-                                      width: "1.5rem",
-                                      height: "1.5rem"
-                                    },
-                                    attrs: { viewBox: "0 0 20 20" }
-                                  },
-                                  [
-                                    _c("path", {
-                                      attrs: {
-                                        d:
-                                          "M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"
-                                      }
-                                    })
-                                  ]
-                                )
-                              ]
-                            )
-                          : _vm._e()
-                      ])
+                        : _vm._e()
                     ])
-                  })
-                ],
-                2
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.ready && _vm.jobs.length
-          ? _c(
-              "div",
-              { staticClass: "p-3 d-flex justify-content-between border-top" },
-              [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-secondary btn-md",
-                    attrs: { disabled: _vm.page == 1 },
-                    on: { click: _vm.previous }
-                  },
-                  [_vm._v("Previous")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-secondary btn-md",
-                    attrs: { disabled: _vm.page >= _vm.totalPages },
-                    on: { click: _vm.next }
-                  },
-                  [_vm._v("Next")]
-                )
-              ]
+                  ])
+                })
+              ],
+              2
             )
-          : _vm._e()
-      ])
-    ],
-    1
-  )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.ready && _vm.jobs.length
+        ? _c(
+            "div",
+            { staticClass: "p-3 d-flex justify-content-between border-top" },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary btn-md",
+                  attrs: { disabled: _vm.page == 1 },
+                  on: { click: _vm.previous }
+                },
+                [_vm._v("Previous")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary btn-md",
+                  attrs: { disabled: _vm.page >= _vm.totalPages },
+                  on: { click: _vm.next }
+                },
+                [_vm._v("Next")]
+              )
+            ]
+          )
+        : _vm._e()
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
