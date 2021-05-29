@@ -2,6 +2,8 @@
 
 namespace Laravel\Horizon;
 
+use Laravel\Horizon\Repositories\RedisIndexedJobsRepository;
+
 trait ServiceBindings
 {
     /**
@@ -16,6 +18,7 @@ trait ServiceBindings
         Listeners\TrimRecentJobs::class,
         Listeners\TrimFailedJobs::class,
         Listeners\TrimMonitoredJobs::class,
+        Listeners\TrimIndexJobs::class,
         Lock::class,
         Stopwatch::class,
 
@@ -27,5 +30,6 @@ trait ServiceBindings
         Contracts\SupervisorRepository::class => Repositories\RedisSupervisorRepository::class,
         Contracts\TagRepository::class => Repositories\RedisTagRepository::class,
         Contracts\WorkloadRepository::class => Repositories\RedisWorkloadRepository::class,
+        Contracts\IndexedJobsRepository::class => RedisIndexedJobsRepository::class,
     ];
 }

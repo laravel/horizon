@@ -55,7 +55,7 @@
                     this.loadJobs();
                     this.refreshJobsPeriodically();
                 }, 500);
-            }
+            },
         },
 
 
