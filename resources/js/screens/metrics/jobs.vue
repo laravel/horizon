@@ -24,7 +24,7 @@
 
         methods: {
             /**
-             *ф.
+             * Load the jobs.
              */
             loadJobs() {
                 this.ready = false;
