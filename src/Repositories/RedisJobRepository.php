@@ -598,13 +598,14 @@ class RedisJobRepository implements JobRepository
     {
         $keys = $this->connection()->keys('*index*');
 
-        collect($keys)->each(function (string $key) {
-            $prefix = config('horizon.prefix');
+        $prefix = config('horizon.prefix');
+
+        collect($keys)->each(function (string $key) use ($prefix) {
 
             $keyForDelete = preg_match("/$prefix(.*)$/", $key, $matches) ? $matches[1] : $key;
 
             $this->connection()->zremrangebyscore(
-                $keyForDelete, CarbonImmutable::now()->subSeconds($this->indexJobExpires)->getTimestamp() * -1, '+inf'
+                $keyForDelete, CarbonImmutable::now()->subMinutes($this->indexJobExpires)->getTimestamp() * -1, '+inf'
             );
         });
     }
