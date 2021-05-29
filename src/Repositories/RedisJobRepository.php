@@ -317,7 +317,7 @@ class RedisJobRepository implements JobRepository
 
     public function generateIndexKey(string $prefix, JobPayload $payload): string
     {
-        return $prefix . config('horizon.prefix_index') . $payload->decoded['displayName'];
+        return "{$prefix}:" . config('horizon.prefix_index') . $payload->decoded['displayName'];
     }
 
     /**

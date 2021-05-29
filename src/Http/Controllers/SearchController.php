@@ -15,12 +15,12 @@ class SearchController extends Controller
         $status = $request->get('status');
         $jobName = addslashes($request->get('name'));
 
-        return collect($repository->getKeysByJobNameAndStatus($jobName, $status))
+        return collect($repository->getKeysByJobNameAndStatus("*{$jobName}*", $status))
             ->slice(0, 5)
             ->map(function (string $key) {
                 $indexPrefix = config('horizon.prefix_index', 'index');
 
-                return Str::after($key, ":{$indexPrefix}:");
+                return Str::after($key, ":{$indexPrefix}");
             });
     }
 }
