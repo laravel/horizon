@@ -3242,10 +3242,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    setAdditionalParams: function setAdditionalParams(params) {
-      this.additionalQueryParams = params;
-    },
-
     /**
      * Load the jobs of the given tag.
      */
@@ -4067,6 +4063,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _job_row__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./job-row */ "./resources/js/screens/recentJobs/job-row.vue");
+/* harmony import */ var _components_JobFilter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/JobFilter */ "./resources/js/components/JobFilter.vue");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   /**
@@ -4080,7 +4078,8 @@ __webpack_require__.r(__webpack_exports__);
       page: 1,
       perPage: 50,
       totalPages: 1,
-      jobs: []
+      jobs: [],
+      additionalQueryParams: {}
     };
   },
 
@@ -4088,7 +4087,8 @@ __webpack_require__.r(__webpack_exports__);
    * Components
    */
   components: {
-    JobRow: _job_row__WEBPACK_IMPORTED_MODULE_0__.default
+    JobRow: _job_row__WEBPACK_IMPORTED_MODULE_0__.default,
+    JobFilter: _components_JobFilter__WEBPACK_IMPORTED_MODULE_1__.default
   },
 
   /**
@@ -4130,7 +4130,8 @@ __webpack_require__.r(__webpack_exports__);
         this.ready = false;
       }
 
-      this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage).then(function (response) {
+      var additionalQuery = "&" + new URLSearchParams(this.additionalQueryParams).toString();
+      this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage + additionalQuery).then(function (response) {
         if (!_this.$root.autoLoadsNewEntries && refreshing && _this.jobs.length && _.first(response.data.jobs).id !== _.first(_this.jobs).id) {
           _this.hasNewEntries = true;
         } else {
@@ -81584,12 +81585,12 @@ var render = function() {
         })
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-1" }, [
+      _c("div", { staticClass: "col-1 pt-2" }, [
         _c("label"),
         _vm._v(" "),
         _c(
           "button",
-          { staticClass: "btn btn-danger", on: { click: _vm.clear } },
+          { staticClass: "btn btn-danger mt-4", on: { click: _vm.clear } },
           [_vm._v("X")]
         )
       ])
@@ -82981,7 +82982,11 @@ var render = function() {
     [
       _c("JobFilter", {
         attrs: { status: "failed" },
-        on: { updated: _vm.setAdditionalParams }
+        on: {
+          updated: function($event) {
+            _vm.additionalQueryParams = $event
+          }
+        }
       }),
       _vm._v(" "),
       _c("div", { staticClass: "card" }, [
@@ -85010,182 +85015,197 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "card" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "card-header d-flex align-items-center justify-content-between"
-        },
-        [
-          _vm.$route.params.type == "pending"
-            ? _c("h5", [_vm._v("Pending Jobs")])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.$route.params.type == "completed"
-            ? _c("h5", [_vm._v("Completed Jobs")])
-            : _vm._e()
-        ]
-      ),
+  return _c(
+    "div",
+    [
+      _c("JobFilter", {
+        attrs: { status: _vm.$route.params.type },
+        on: {
+          updated: function($event) {
+            _vm.additionalQueryParams = $event
+          }
+        }
+      }),
       _vm._v(" "),
-      !_vm.ready
-        ? _c(
-            "div",
-            {
-              staticClass:
-                "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
-            },
-            [
-              _c(
-                "svg",
-                {
-                  staticClass: "icon spin mr-2 fill-text-color",
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("span", [_vm._v("Loading...")])
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.ready && _vm.jobs.length == 0
-        ? _c(
-            "div",
-            {
-              staticClass:
-                "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
-            },
-            [_c("span", [_vm._v("There aren't any jobs.")])]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.ready && _vm.jobs.length > 0
-        ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
-            _c("thead", [
-              _c("tr", [
-                _c("th", [_vm._v("Job")]),
-                _vm._v(" "),
-                _vm.$route.params.type == "pending"
-                  ? _c("th", { staticClass: "text-right" }, [
-                      _vm._v("Queued At")
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.$route.params.type == "completed"
-                  ? _c("th", [_vm._v("Queued At")])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.$route.params.type == "completed"
-                  ? _c("th", [_vm._v("Completed At")])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.$route.params.type == "completed"
-                  ? _c("th", { staticClass: "text-right" }, [_vm._v("Runtime")])
-                  : _vm._e()
-              ])
-            ]),
+      _c("div", { staticClass: "card" }, [
+        _c(
+          "div",
+          {
+            staticClass:
+              "card-header d-flex align-items-center justify-content-between"
+          },
+          [
+            _vm.$route.params.type == "pending"
+              ? _c("h5", [_vm._v("Pending Jobs")])
+              : _vm._e(),
             _vm._v(" "),
-            _c(
-              "tbody",
+            _vm.$route.params.type == "completed"
+              ? _c("h5", [_vm._v("Completed Jobs")])
+              : _vm._e()
+          ]
+        ),
+        _vm._v(" "),
+        !_vm.ready
+          ? _c(
+              "div",
+              {
+                staticClass:
+                  "d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+              },
               [
-                _vm.hasNewEntries
-                  ? _c(
-                      "tr",
-                      { key: "newEntries", staticClass: "dontanimate" },
-                      [
-                        _c(
-                          "td",
-                          {
-                            staticClass: "text-center card-bg-secondary py-1",
-                            attrs: { colspan: "100" }
-                          },
-                          [
-                            _c("small", [
-                              !_vm.loadingNewEntries
-                                ? _c(
-                                    "a",
-                                    {
-                                      attrs: { href: "#" },
-                                      on: {
-                                        click: function($event) {
-                                          $event.preventDefault()
-                                          return _vm.loadNewEntries($event)
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _vm._v(
-                                        "Load New\n                            Entries"
-                                      )
-                                    ]
-                                  )
-                                : _vm._e()
-                            ]),
-                            _vm._v(" "),
-                            _vm.loadingNewEntries
-                              ? _c("small", [_vm._v("Loading...")])
-                              : _vm._e()
-                          ]
-                        )
-                      ]
-                    )
-                  : _vm._e(),
+                _c(
+                  "svg",
+                  {
+                    staticClass: "icon spin mr-2 fill-text-color",
+                    attrs: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      viewBox: "0 0 20 20"
+                    }
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d:
+                          "M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"
+                      }
+                    })
+                  ]
+                ),
                 _vm._v(" "),
-                _vm._l(_vm.jobs, function(job) {
-                  return _c("job-row", {
-                    key: job.id,
-                    tag: "tr",
-                    attrs: { job: job }
-                  })
-                })
-              ],
-              2
+                _c("span", [_vm._v("Loading...")])
+              ]
             )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.ready && _vm.jobs.length
-        ? _c(
-            "div",
-            { staticClass: "p-3 d-flex justify-content-between border-top" },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-secondary btn-md",
-                  attrs: { disabled: _vm.page == 1 },
-                  on: { click: _vm.previous }
-                },
-                [_vm._v("Previous")]
-              ),
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.ready && _vm.jobs.length == 0
+          ? _c(
+              "div",
+              {
+                staticClass:
+                  "d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius"
+              },
+              [_c("span", [_vm._v("There aren't any jobs.")])]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.ready && _vm.jobs.length > 0
+          ? _c("table", { staticClass: "table table-hover table-sm mb-0" }, [
+              _c("thead", [
+                _c("tr", [
+                  _c("th", [_vm._v("Job")]),
+                  _vm._v(" "),
+                  _vm.$route.params.type == "pending"
+                    ? _c("th", { staticClass: "text-right" }, [
+                        _vm._v("Queued At")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.$route.params.type == "completed"
+                    ? _c("th", [_vm._v("Queued At")])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.$route.params.type == "completed"
+                    ? _c("th", [_vm._v("Completed At")])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.$route.params.type == "completed"
+                    ? _c("th", { staticClass: "text-right" }, [
+                        _vm._v("Runtime")
+                      ])
+                    : _vm._e()
+                ])
+              ]),
               _vm._v(" "),
               _c(
-                "button",
-                {
-                  staticClass: "btn btn-secondary btn-md",
-                  attrs: { disabled: _vm.page >= _vm.totalPages },
-                  on: { click: _vm.next }
-                },
-                [_vm._v("Next")]
+                "tbody",
+                [
+                  _vm.hasNewEntries
+                    ? _c(
+                        "tr",
+                        { key: "newEntries", staticClass: "dontanimate" },
+                        [
+                          _c(
+                            "td",
+                            {
+                              staticClass: "text-center card-bg-secondary py-1",
+                              attrs: { colspan: "100" }
+                            },
+                            [
+                              _c("small", [
+                                !_vm.loadingNewEntries
+                                  ? _c(
+                                      "a",
+                                      {
+                                        attrs: { href: "#" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.loadNewEntries($event)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "Load New\n                            Entries"
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e()
+                              ]),
+                              _vm._v(" "),
+                              _vm.loadingNewEntries
+                                ? _c("small", [_vm._v("Loading...")])
+                                : _vm._e()
+                            ]
+                          )
+                        ]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm._l(_vm.jobs, function(job) {
+                    return _c("job-row", {
+                      key: job.id,
+                      tag: "tr",
+                      attrs: { job: job }
+                    })
+                  })
+                ],
+                2
               )
-            ]
-          )
-        : _vm._e()
-    ])
-  ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.ready && _vm.jobs.length
+          ? _c(
+              "div",
+              { staticClass: "p-3 d-flex justify-content-between border-top" },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary btn-md",
+                    attrs: { disabled: _vm.page == 1 },
+                    on: { click: _vm.previous }
+                  },
+                  [_vm._v("Previous")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary btn-md",
+                    attrs: { disabled: _vm.page >= _vm.totalPages },
+                    on: { click: _vm.next }
+                  },
+                  [_vm._v("Next")]
+                )
+              ]
+            )
+          : _vm._e()
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

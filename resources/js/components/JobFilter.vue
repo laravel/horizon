@@ -72,9 +72,9 @@ export default {
                 <input class="datetime" type="datetime-local" v-model="createdAtToSearch" @change="fireEventUpdated">
             </div>
 
-            <div class="col-1">
+            <div class="col-1 pt-2">
                 <label></label>
-                <button class="btn btn-danger" @click="clear">X</button>
+                <button class="btn btn-danger mt-4" @click="clear">X</button>
             </div>
         </div>
     </div>

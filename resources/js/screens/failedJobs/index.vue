@@ -65,10 +65,6 @@
 
 
         methods: {
-            setAdditionalParams(params) {
-                this.additionalQueryParams = params
-            },
-
             /**
              * Load the jobs of the given tag.
              */
@@ -204,7 +200,7 @@
 
 <template>
     <div>
-        <JobFilter status="failed" @updated="setAdditionalParams"></JobFilter>
+        <JobFilter status="failed" @updated="additionalQueryParams = $event"></JobFilter>
 
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
