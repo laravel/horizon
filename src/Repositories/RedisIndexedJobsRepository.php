@@ -23,8 +23,13 @@ class RedisIndexedJobsRepository implements IndexedJobsRepository
 
     public function getKeysByJobNameAndStatus(string $jobName, string $status): array
     {
+        $jobs = $this->connection()->pipeline(function ($pipe) use ($jobName, $status) {
+            $prefix = $status . '_jobs';
+            $indexPrefix = config('horizon.prefix_index', 'index');
+            $pipe->keys("{$prefix}:{$indexPrefix}:*{$jobName}*");
+        });
 
-        return [];
+        return array_shift($jobs);
     }
 
     /**
