@@ -3,41 +3,34 @@
 namespace Laravel\Horizon\Repositories;
 
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Redis\Connections\Connection;
+use Laravel\Horizon\Contracts\StatisticsRepository;
 
-class RedisStatisticsRepository
+class RedisStatisticsRepository implements StatisticsRepository
 {
     /**
-     * The Redis connection instance.
-     *
-     * @var \Illuminate\Contracts\Redis\Factory
+     * @var RedisFactory
      */
     public $redis;
 
-    /**
-     * Create a new repository instance.
-     *
-     * @param \Illuminate\Contracts\Redis\Factory $redis
-     * @return void
-     */
     public function __construct(RedisFactory $redis)
     {
         $this->redis = $redis;
     }
 
-    /**
-     * @param string $type
-     * @return array
-     */
-    public function statisticsByType(string $type): array
+    public function byType(string $type): array
     {
-        $keys = $this->connection()->keys("{$type}_jobs:index*");
+        $prefix = config('horizon.prefix');
+        $prefixIndex = config('horizon.prefix_index');
+
+        $keys = $this->connection()->keys("{$type}_jobs:{$prefixIndex}*");
 
         return collect($keys)
-            ->map(function ($key) {
+            ->map(function ($key) use ($prefix, $prefixIndex) {
 
-                $class = preg_match('/index:(.*)$/', $key, $matches) ? $matches[1] : $key;
+                $class = preg_match("/{$prefixIndex}(.*)$/", $key, $matches) ? $matches[1] : $key;
 
-                $keyForCount = preg_match('/laravel_horizon:(.*)$/', $key, $matches) ? $matches[1] : $key;
+                $keyForCount = preg_match("/{$prefix}(.*)$/", $key, $matches) ? $matches[1] : $key;
 
                 return [
                     'class' => $class,
@@ -49,12 +42,7 @@ class RedisStatisticsRepository
             ->toArray();
     }
 
-    /**
-     * Get the Redis connection instance.
-     *
-     * @return \Illuminate\Redis\Connections\Connection
-     */
-    protected function connection()
+    protected function connection(): Connection
     {
         return $this->redis->connection('horizon');
     }

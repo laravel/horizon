@@ -2,28 +2,23 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
-use Laravel\Horizon\Repositories\RedisStatisticsRepository;
+use Laravel\Horizon\Contracts\StatisticsRepository;
 
 class StatisticsController extends Controller
 {
     /**
-     * @var RedisStatisticsRepository
+     * @var StatisticsRepository
      */
-    private $repository;
+    private $statistics;
 
-    public function __construct(RedisStatisticsRepository $repository)
+    public function __construct(StatisticsRepository $statistics)
     {
         parent::__construct();
 
-        $this->repository = $repository;
+        $this->statistics = $statistics;
     }
-
-    /**
-     * @param  string  $type
-     * @return array
-     */
-    public function index($type)
+    public function index(string $type): array
     {
-        return $this->repository->statisticsByType($type);
+        return $this->statistics->byType($type);
     }
 }
