@@ -6,7 +6,6 @@ export default {
             jobNameSearch: null,
             createdAtFromSearch: null,
             createdAtToSearch: null,
-            test: null,
         }
     },
     methods: {
