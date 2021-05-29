@@ -59,6 +59,8 @@ return [
         Str::slug(env('APP_NAME', 'laravel'), '_').'_horizon:'
     ),
 
+    'prefix_index' => env('HORIZON_PREFIX_INDEX', 'index:'),
+
     /*
     |--------------------------------------------------------------------------
     | Horizon Route Middleware

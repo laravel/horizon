@@ -51,6 +51,30 @@ export default [
         ],
     },
 
+    { path: '/statistics', redirect: '/statistics/pending' },
+
+    {
+        path: '/statistics/',
+        component: require('./screens/statistics/index').default,
+        children: [
+            {
+                path: 'pending',
+                name: 'statistics-pending',
+                component: require('./screens/statistics/jobs').default,
+            },
+            {
+                path: 'completed',
+                name: 'statistics-completed',
+                component: require('./screens/statistics/jobs').default,
+            },
+            {
+                path: 'failed',
+                name: 'statistics-failed',
+                component: require('./screens/statistics/jobs').default,
+            },
+        ],
+    },
+
     {
         path: '/metrics/:type/:slug',
         name: 'metrics-preview',
