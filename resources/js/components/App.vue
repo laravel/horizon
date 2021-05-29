@@ -73,6 +73,14 @@
                             </router-link>
                         </li>
                         <li class="nav-item">
+                            <router-link active-class="active" to="/statistics" class="nav-link d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 511.9 511.9">
+                                    <path d="M460.8 25.55c-28.2-.1-51.1 22.8-51.2 51 0 13.3 5.1 26.1 14.4 35.6l-93.5 187.1c-2-.3-4.1-.6-6.2-.6a51.07 51.07 0 0 0-19.3 3.8l-72.6-81.7c4.2-7.5 6.5-15.9 6.6-24.6 0-28.3-22.9-51.2-51.2-51.2s-51.2 22.9-51.2 51.2c.1 12.2 4.5 24 12.6 33.2l-88.9 155.5c-3-.6-6.1-.9-9.1-.9-28.3 0-51.2 22.9-51.2 51.2s22.9 51.2 51.2 51.2 51.2-22.9 51.2-51.2c-.1-12.2-4.5-24-12.6-33.2l88.8-155.5c9.5 1.9 19.4.9 28.3-2.9l72.6 81.7c-4.2 7.5-6.4 16-6.5 24.6-.1 28.3 22.8 51.3 51 51.4 28.3.1 51.3-22.8 51.4-51 0-13.3-5.1-26.2-14.4-35.8l93.5-187.1c2 .3 4.1.6 6.2.6 28.3 0 51.2-22.9 51.2-51.2s-22.8-51.2-51.1-51.2z"/>
+                                </svg>
+                                <span>Statistics</span>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
                             <router-link active-class="active" to="/batches" class="nav-link d-flex align-items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path d="M1 1h18v2H1V1zm0 8h18v2H1V9zm0 8h18v2H1v-2zM1 5h18v2H1V5zm0 8h18v2H1v-2z"/>
