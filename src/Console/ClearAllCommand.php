@@ -40,11 +40,11 @@ class ClearAllCommand extends Command
      */
     public function handle(RedisJobRepository $jobRepository, QueueManager $manager)
     {
-        if (!$this->confirmToProceed()) {
+        if (! $this->confirmToProceed()) {
             return 1;
         }
 
-        if (!method_exists(RedisQueue::class, 'clear')) {
+        if (! method_exists(RedisQueue::class, 'clear')) {
             $this->line('<error>Clearing queues is not supported on this version of Laravel</error>');
 
             return 1;
@@ -62,7 +62,7 @@ class ClearAllCommand extends Command
             $count += ($manager->connection($connection)->clear($queue));
         }
 
-        $this->line('<info>Cleared ' . $count . ' jobs</info>');
+        $this->line('<info>Cleared '.$count.' jobs</info>');
 
         return 0;
     }
