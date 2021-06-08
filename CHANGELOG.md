@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.8...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.9...master)
+
+
+## [v5.7.9 (2021-06-08)](https://github.com/laravel/horizon/compare/v5.7.8...v5.7.9)
+
+### Changed
+- Use env. to set config domain and path ([#1030](https://github.com/laravel/horizon/pull/1030))
 
 
 ## [v5.7.8 (2021-05-27)](https://github.com/laravel/horizon/compare/v5.7.7...v5.7.8)
