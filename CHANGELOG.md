@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.9...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.10...5.x)
+
+
+## [v5.7.10 (2021-08-03)](https://github.com/laravel/horizon/compare/v5.7.9...v5.7.10)
+
+### Changed
+- Unified asset publishing ([#1045](https://github.com/laravel/horizon/pull/1045))
 
 
 ## [v5.7.9 (2021-06-08)](https://github.com/laravel/horizon/compare/v5.7.8...v5.7.9)
