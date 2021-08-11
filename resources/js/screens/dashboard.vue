@@ -332,7 +332,12 @@
 
                 <tbody>
                 <tr v-for="supervisor in worker.supervisors">
-                    <td>{{ superVisorDisplayName(supervisor.name, worker.name) }}</td>
+                    <td>
+                        <svg v-if="supervisor.status == 'paused'" class="fill-warning mr-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
+                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
+                        </svg>
+                        {{ superVisorDisplayName(supervisor.name, worker.name) }}
+                    </td>
                     <td>{{ countProcesses(supervisor.processes) }}</td>
                     <td>{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
                     <td class="text-right" v-if="supervisor.options.balance">
