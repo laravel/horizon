@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.10...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.11...master)
+
+
+## [v5.7.11 (2021-08-17)](https://github.com/laravel/horizon/compare/v5.7.10...v5.7.11)
+
+### Changed
+- Show paused supervisors on dashboard ([#1052](https://github.com/laravel/horizon/pull/1052))
 
 
 ## [v5.7.10 (2021-08-03)](https://github.com/laravel/horizon/compare/v5.7.9...v5.7.10)
