@@ -194,7 +194,8 @@ class SupervisorOptions
                                 $balanceCooldown = 3,
                                 $balanceMaxShift = 1,
                                 $parentId = 0,
-                                $rest = 0)
+                                $rest = 0,
+                                $directory = null)
     {
         $this->name = $name;
         $this->connection = $connection;
@@ -216,6 +217,7 @@ class SupervisorOptions
         $this->balanceMaxShift = $balanceMaxShift;
         $this->parentId = $parentId;
         $this->rest = $rest;
+        $this->directory = $directory;
     }
 
     /**
@@ -309,6 +311,7 @@ class SupervisorOptions
             'balanceMaxShift' => $this->balanceMaxShift,
             'parentId' => $this->parentId,
             'rest' => $this->rest,
+            'directory' => $this->directory,
         ];
     }
 
