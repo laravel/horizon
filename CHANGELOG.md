@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.11...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.12...5.x)
+
+
+## [v5.7.12 (2021-08-31)](https://github.com/laravel/horizon/compare/v5.7.11...v5.7.12)
+
+### Changed
+- Improve completed jobs UI ([#1064](https://github.com/laravel/horizon/pull/1064))
 
 
 ## [v5.7.11 (2021-08-17)](https://github.com/laravel/horizon/compare/v5.7.10...v5.7.11)
