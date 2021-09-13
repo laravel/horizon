@@ -178,6 +178,10 @@
                         </router-link>
                     </div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Pushed At</strong></div>
+                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+                </div>
                 <div class="row">
                     <div class="col-md-2"><strong>Failed At</strong></div>
                     <div class="col">{{readableTimestamp(job.failed_at)}}</div>
