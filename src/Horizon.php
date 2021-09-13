@@ -92,6 +92,7 @@ class Horizon
      *
      * @param  string  $connection
      * @return void
+     *
      * @throws Exception
      */
     public static function use($connection)
