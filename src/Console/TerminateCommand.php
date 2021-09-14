@@ -32,7 +32,7 @@ class TerminateCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param  \Illuminate\Contracts\Cache\Factory $cache
+     * @param  \Illuminate\Contracts\Cache\Factory  $cache
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @return void
      */

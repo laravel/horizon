@@ -265,6 +265,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      * Ensure no other supervisors are running with the same name.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function ensureNoDuplicateSupervisors()

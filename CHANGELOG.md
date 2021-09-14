@@ -3,6 +3,15 @@
 ## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.12...master)
 
 
+## [v5.7.13 (2021-09-14)](https://github.com/laravel/horizon/compare/v5.7.12...v5.7.13)
+
+### Changed
+- Added pushed at to failedJobs ([#0](https://github.com/laravel/horizon/pull/1069))
+
+### Fixed
+- Check if `failedJob.reserved_at` is set before making time calculation ([#1067](https://github.com/laravel/horizon/pull/1067))
+
+
 ## [v5.7.12 (2021-08-31)](https://github.com/laravel/horizon/compare/v5.7.11...v5.7.12)
 
 ### Changed

@@ -217,6 +217,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
      * Ensure that this is the only master supervisor running for this machine.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function ensureNoOtherMasterSupervisors()

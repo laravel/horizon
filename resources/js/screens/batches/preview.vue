@@ -184,7 +184,7 @@
                     </td>
 
                     <td class="table-fit">
-                        <span>{{ failedJob.failed_at ? String((failedJob.failed_at - failedJob.reserved_at).toFixed(2))+'s' : '-' }}</span>
+                        <span>{{ failedJob.failed_at && failedJob.reserved_at ? String((failedJob.failed_at - failedJob.reserved_at).toFixed(2))+'s' : '-' }}</span>
                     </td>
 
                     <td class="text-right table-fit">
