@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.12...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.13...5.x)
 
 
 ## [v5.7.13 (2021-09-14)](https://github.com/laravel/horizon/compare/v5.7.12...v5.7.13)
