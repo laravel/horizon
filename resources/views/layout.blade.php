@@ -29,7 +29,14 @@
             </svg>
 
             <h4 class="mb-0 ml-2">
-                <strong>Laravel</strong> Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</h4>
+                @if (config('horizon.site_path'))
+                    <a href="{{ config('horizon.site_path') }}">
+                        <strong>Laravel</strong> Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}
+                    </a>
+                @else
+                    <strong>Laravel</strong> Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}
+                @endif
+            </h4>
 
             <button class="btn btn-outline-primary ml-auto" :class="{active: autoLoadsNewEntries}" v-on:click.prevent="autoLoadNewEntries" title="Auto Load Entries">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary">
