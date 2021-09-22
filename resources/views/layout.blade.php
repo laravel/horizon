@@ -29,12 +29,16 @@
             </svg>
 
             <h4 class="mb-0 ml-2">
-                @if (config('horizon.site_path'))
-                    <a href="{{ config('horizon.site_path') }}">
-                        <strong>Laravel</strong> Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}
-                    </a>
-                @else
-                    <strong>Laravel</strong> Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}
+                <strong>Laravel</strong> Horizon
+                @if (config('app.name'))
+                    -
+                    @if (config('horizon.site_path'))
+                        <a href="{{ config('horizon.site_path') }}">
+                            {{ config('app.name') }}
+                        </a>
+                    @else
+                        {{ config('app.name') }}
+                    @endif
                 @endif
             </h4>
 
