@@ -28,7 +28,11 @@ class ForgetFailedCommand extends Command
      */
     public function handle(JobRepository $repository)
     {
-        $repository->deleteFailed($this->argument('id'));
+        $failedJobPayload = $this->laravel['queue.failer']->find($this->argument('id'))->payload ?? null;
+        if (! is_null($failedJobPayload)) {
+            $jobId = json_decode($failedJobPayload, true)['uuid'] ?? $this->argument('id');
+            $repository->deleteFailed($jobId);
+        }
 
         if ($this->laravel['queue.failer']->forget($this->argument('id'))) {
             $this->info('Failed job deleted successfully!');
