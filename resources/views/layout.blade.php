@@ -117,6 +117,7 @@
             </div>
         </div>
     </div>
+</div>
 
 <!-- Global Horizon Object -->
 <script>
