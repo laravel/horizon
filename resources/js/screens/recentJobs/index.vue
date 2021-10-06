@@ -28,9 +28,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = this.$route.params.type == 'pending'
-                        ? 'Horizon - Pending Jobs'
-                        : 'Horizon - Completed Jobs';
+            this.updatePageTitle();
 
             this.loadJobs();
 
@@ -50,6 +48,8 @@
          */
         watch: {
             '$route'() {
+                this.updatePageTitle();
+                        
                 this.page = 1;
 
                 this.loadJobs();
@@ -129,6 +129,12 @@
                 this.page += 1;
 
                 this.hasNewEntries = false;
+            },
+
+            updatePageTitle() {
+                document.title = this.$route.params.type == 'pending'
+                        ? 'Horizon - Pending Jobs'
+                        : 'Horizon - Completed Jobs';
             }
         }
     }
