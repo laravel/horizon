@@ -131,6 +131,9 @@
                 this.hasNewEntries = false;
             },
 
+            /**
+             * Update the page title.
+             */
             updatePageTitle() {
                 document.title = this.$route.params.type == 'pending'
                         ? 'Horizon - Pending Jobs'
