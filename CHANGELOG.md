@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.13...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.14...5.x)
+
+
+## [v5.7.14 (2021-10-12)](https://github.com/laravel/horizon/compare/v5.7.13...v5.7.14)
+
+### Changed
+- Alphabetically sort jobs/queues for metrics ([#1083](https://github.com/laravel/horizon/pull/1083))
+- Update page title when switching between Pending and Completed views ([#1084](https://github.com/laravel/horizon/pull/1084))
 
 
 ## [v5.7.13 (2021-09-14)](https://github.com/laravel/horizon/compare/v5.7.12...v5.7.13)
