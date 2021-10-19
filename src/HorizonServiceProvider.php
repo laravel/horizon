@@ -187,7 +187,7 @@ class HorizonServiceProvider extends ServiceProvider
      */
     protected function registerQueueConnectors()
     {
-        $this->app->resolving(QueueManager::class, function ($manager) {
+        $this->callAfterResolving(QueueManager::class, function ($manager) {
             $manager->addConnector('redis', function () {
                 return new RedisConnector($this->app['redis']);
             });
