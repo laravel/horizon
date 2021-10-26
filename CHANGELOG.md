@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.14...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.15...5.x)
+
+
+## [v5.7.15 (2021-10-26)](https://github.com/laravel/horizon/compare/v5.7.14...v5.7.15)
+
+### Changed
+- Use callAfterResolving to register QueueManager ([#1089](https://github.com/laravel/horizon/pull/1089))
 
 
 ## [v5.7.14 (2021-10-12)](https://github.com/laravel/horizon/compare/v5.7.13...v5.7.14)
