@@ -6,6 +6,9 @@
 *.md diff=markdown
 *.php diff=php
 
+public/*.css binary
+public/*.js binary
+
 /.github export-ignore
 /tests export-ignore
 .gitattributes export-ignore
