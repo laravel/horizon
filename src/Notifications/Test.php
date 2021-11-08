@@ -40,7 +40,7 @@ class Test extends Notification
             ->error()
             ->subject(config('app.name').': Horizon test notification')
             ->greeting('This is a horizon test.')
-            ->line('This is a test notification sent with php artisan horizon:test-notification command.');
+            ->line('This is a test notification sent with php artisan horizon:test-notifications command.');
     }
 
     /**
@@ -60,7 +60,7 @@ class Test extends Notification
                     ->attachment(function ($attachment) {
                         $attachment->title('Test')
                                    ->content(sprintf(
-                                        '[%s] This is a test notification sent with php artisan horizon:test-notification command.',
+                                        '[%s] This is a test notification sent with php artisan horizon:test-notifications command.',
                                        config('app.name')
                                    ));
                     });
@@ -75,7 +75,7 @@ class Test extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)->content(sprintf(
-            '[%s] This is a test notification sent with php artisan horizon:test-notification command.',
+            '[%s] This is a test notification sent with php artisan horizon:test-notifications command.',
             config('app.name')
         ));
     }

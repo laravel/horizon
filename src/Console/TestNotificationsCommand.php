@@ -3,9 +3,9 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Notifications\Test;
-use Illuminate\Support\Facades\Notification;
 
 class TestNotificationsCommand extends Command
 {
