@@ -60,7 +60,6 @@ class RedisPendingJobsRepository implements PendingJobsRepository
     private function deleteJobs(array $ids): void
     {
         $this->connection()->pipeline(function ($pipe) use ($ids) {
-
             $pipe->del($ids);
 
             $pipe->zrem('pending_jobs', ...$ids);
