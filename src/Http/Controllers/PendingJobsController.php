@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Contracts\PendingJobsRepository;
 
 class PendingJobsController extends Controller
 {
@@ -58,5 +59,17 @@ class PendingJobsController extends Controller
         $job->payload = json_decode($job->payload);
 
         return $job;
+    }
+
+    /**
+     * Delete pending jobs.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param PendingJobsRepository $pendingJobs
+     * @return void
+     */
+    public function batchDelete(Request $request, PendingJobsRepository $pendingJobs)
+    {
+        $pendingJobs->deleteByIds($request->all());
     }
 }

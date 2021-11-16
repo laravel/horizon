@@ -13,8 +13,26 @@
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
-                jobs: []
+                jobs: [],
+                selected: []
             };
+        },
+
+        computed: {
+            selectedAll: {
+                get() {
+                    return this.jobs.length ? (this.selected.length === this.jobs.length) : false
+                },
+                set(value) {
+                    let selected = []
+                    if (value) {
+                        for (let job of this.jobs) {
+                            selected.push(job.id)
+                        }
+                    }
+                    this.selected = selected
+               },
+            },
         },
 
         /**
@@ -138,7 +156,18 @@
                 document.title = this.$route.params.type == 'pending'
                         ? 'Horizon - Pending Jobs'
                         : 'Horizon - Completed Jobs';
-            }
+            },
+
+            /**
+             * Delete the selected jobs
+             */
+            deleteSelected() {
+                this.$http.post(Horizon.basePath + '/api/jobs/pending/batch-delete', this.selected)
+                    .then(() => {
+                        this.loadJobs();
+                        this.selected = [];
+                    })
+            },
         }
     }
 </script>
@@ -147,7 +176,10 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
+                <template v-if="$route.params.type == 'pending'">
+                    <h5>Pending Jobs</h5>
+                    <button @click="deleteSelected" :disabled="selected.length === 0" class="btn btn-danger">Delete selected</button>
+                </template>
                 <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
             </div>
 
@@ -170,6 +202,9 @@
             <table v-if="ready && jobs.length > 0" class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
+                    <th v-if="$route.params.type == 'pending'" style="width: 40px">
+                        <input type="checkbox" v-model="selectedAll">
+                    </th>
                     <th>Job</th>
                     <th v-if="$route.params.type=='pending'" class="text-right">Queued At</th>
                     <th v-if="$route.params.type=='completed'">Queued At</th>
@@ -188,7 +223,7 @@
                         </td>
                     </tr>
 
-                    <tr v-for="job in jobs" :key="job.id" :job="job" is="job-row">
+                    <tr v-for="job in jobs" :key="job.id" :job="job" :selected.sync="selected" is="job-row">
                     </tr>
                 </tbody>
             </table>
