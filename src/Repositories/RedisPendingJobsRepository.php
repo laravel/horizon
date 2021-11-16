@@ -21,9 +21,9 @@ class RedisPendingJobsRepository implements PendingJobsRepository
     }
 
     /**
-     * Delete the jobs with the given IDs
+     * Delete the jobs with the given IDs.
      *
-     * @param array $ids
+     * @param  array  $ids
      * @return void
      */
     public function deleteByIds(array $ids): void
@@ -52,9 +52,9 @@ class RedisPendingJobsRepository implements PendingJobsRepository
     }
 
     /**
-     * Delete the job with the given ID
+     * Delete the job with the given ID.
      *
-     * @param array $ids
+     * @param  array  $ids
      * @return void
      */
     private function deleteJobs(array $ids): void

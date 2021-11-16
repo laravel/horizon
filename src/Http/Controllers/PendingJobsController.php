@@ -64,8 +64,8 @@ class PendingJobsController extends Controller
     /**
      * Delete pending jobs.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param PendingJobsRepository $pendingJobs
+     * @param  \Illuminate\Http\Request  $request
+     * @param  PendingJobsRepository  $pendingJobs
      * @return void
      */
     public function batchDelete(Request $request, PendingJobsRepository $pendingJobs)

@@ -23,7 +23,7 @@ class RedisPendingJobsRepositoryTest extends IntegrationTest
         $repository->pushed('horizon', 'default', new JobPayload(json_encode(['id' => 4, 'displayName' => 'fourth'])));
         $repository->pushed('horizon', 'default', new JobPayload(json_encode(['id' => 5, 'displayName' => 'fifth'])));
 
-        $repositoryPending->deleteByIds([2,3]);
+        $repositoryPending->deleteByIds([2, 3]);
 
         $this->assertEquals(3, $repository->countPending());
     }
