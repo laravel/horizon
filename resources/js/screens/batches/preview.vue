@@ -82,7 +82,7 @@
                 <h5 v-if="!ready">Batch Preview</h5>
                 <h5 v-if="ready">{{batch.name || batch.id}}</h5>
 
-                <button class="btn btn-outline-primary" v-on:click.prevent="retry(batch.id)">
+                <button class="btn btn-outline-primary" v-if="failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary" :class="{spin: retrying}">
                         <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
                     </svg>
