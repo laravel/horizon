@@ -3,10 +3,11 @@
 ## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.16...5.x)
 
 
-## [v5.7.16 (2021-11-16)](https://github.com/laravel/horizon/compare/v5.7.15...v5.7.16)
+## [v5.7.16 (2021-11-23)](https://github.com/laravel/horizon/compare/v5.7.15...v5.7.16)
 
 ### Changed
 - Reduce bundle size ([#1091](https://github.com/laravel/horizon/pull/1091))
+- Hide Retry failed jobs button if no jobs failed ([#1097](https://github.com/laravel/horizon/pull/1097))
 
 ### Fixed
 - Prevent pool to receive more than available processes on scaling ([#1096](https://github.com/laravel/horizon/pull/1096))
