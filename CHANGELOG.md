@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.16...master)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.17...master)
+
+
+## [v5.7.17 (2021-12-07)](https://github.com/laravel/horizon/compare/v5.7.16...v5.7.17)
+
+### Fixed
+- Add some PHP 8.1 fixes ([#1100](https://github.com/laravel/horizon/pull/1100))
 
 
 ## [v5.7.16 (2021-11-23)](https://github.com/laravel/horizon/compare/v5.7.15...v5.7.16)
