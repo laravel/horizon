@@ -1,12 +1,16 @@
 {
-    "name": "laravel/horizon",
-    "description": "Dashboard and code-driven configuration for Laravel queues.",
-    "keywords": ["laravel", "queue"],
+    "name": "phongbui/lumen-horizon",
+    "description": "Dashboard and code-driven configuration for Lumen queues.",
+    "keywords": ["lumen", "queue"],
     "license": "MIT",
     "authors": [
         {
             "name": "Taylor Otwell",
             "email": "taylor@laravel.com"
+        },
+        {
+            "name": "Phong Bui",
+            "email": "buiphongbg@gmail.com"
         }
     ],
     "require": {
