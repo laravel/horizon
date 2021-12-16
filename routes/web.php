@@ -1,44 +1,107 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-Route::prefix('api')->group(function () {
+$router->group([
+    'prefix' => 'api'
+], function ($router) {
     // Dashboard Routes...
-    Route::get('/stats', 'DashboardStatsController@index')->name('horizon.stats.index');
+    $router->get('/stats', [
+        'as' => 'horizon.stats.index',
+        'uses' => 'DashboardStatsController@index'
+    ]);
 
     // Workload Routes...
-    Route::get('/workload', 'WorkloadController@index')->name('horizon.workload.index');
+    $router->get('/workload', [
+        'as' => 'horizon.workload.index',
+        'uses' => 'WorkloadController@index'
+    ]);
 
     // Master Supervisor Routes...
-    Route::get('/masters', 'MasterSupervisorController@index')->name('horizon.masters.index');
+    $router->get('/masters', [
+        'as' => 'horizon.masters.index',
+        'uses' => 'MasterSupervisorController@index'
+    ]);
 
     // Monitoring Routes...
-    Route::get('/monitoring', 'MonitoringController@index')->name('horizon.monitoring.index');
-    Route::post('/monitoring', 'MonitoringController@store')->name('horizon.monitoring.store');
-    Route::get('/monitoring/{tag}', 'MonitoringController@paginate')->name('horizon.monitoring-tag.paginate');
-    Route::delete('/monitoring/{tag}', 'MonitoringController@destroy')->name('horizon.monitoring-tag.destroy');
+    $router->get('/monitoring', [
+        'as' => 'horizon.monitoring.index',
+        'uses' => 'MonitoringController@index'
+    ]);
+    $router->post('/monitoring', [
+        'as' => 'horizon.monitoring.store',
+        'uses' => 'MonitoringController@store'
+    ]);
+    $router->get('/monitoring/{tag}', [
+        'as' => 'horizon.monitoring-tag.paginate',
+        'uses' => 'MonitoringController@paginate'
+    ]);
+    $router->delete('/monitoring/{tag}', [
+        'as' => 'horizon.monitoring-tag.destroy',
+        'uses' => 'MonitoringController@destroy'
+    ]);
 
     // Job Metric Routes...
-    Route::get('/metrics/jobs', 'JobMetricsController@index')->name('horizon.jobs-metrics.index');
-    Route::get('/metrics/jobs/{id}', 'JobMetricsController@show')->name('horizon.jobs-metrics.show');
+    $router->get('/metrics/jobs', [
+        'as' => 'horizon.jobs-metrics.index',
+        'uses' => 'JobMetricsController@index'
+    ]);
+    $router->get('/metrics/jobs/{id}', [
+        'as' => 'horizon.jobs-metrics.show',
+        'uses' => 'JobMetricsController@show'
+    ]);
 
     // Queue Metric Routes...
-    Route::get('/metrics/queues', 'QueueMetricsController@index')->name('horizon.queues-metrics.index');
-    Route::get('/metrics/queues/{id}', 'QueueMetricsController@show')->name('horizon.queues-metrics.show');
+    $router->get('/metrics/queues', [
+        'as' => 'horizon.queues-metrics.index',
+        'uses' => 'QueueMetricsController@index'
+    ]);
+    $router->get('/metrics/queues/{id}', [
+        'as' => 'horizon.queues-metrics.show',
+        'uses' => 'QueueMetricsController@show'
+    ]);
 
     // Batches Routes...
-    Route::get('/batches', 'BatchesController@index')->name('horizon.jobs-batches.index');
-    Route::get('/batches/{id}', 'BatchesController@show')->name('horizon.jobs-batches.show');
-    Route::post('/batches/retry/{id}', 'BatchesController@retry')->name('horizon.jobs-batches.retry');
+    $router->get('/batches', [
+        'as' => 'horizon.jobs-batches.index',
+        'uses' => 'BatchesController@index'
+    ]);
+    $router->get('/batches/{id}', [
+        'as' => 'horizon.jobs-batches.show',
+        'uses' => 'BatchesController@show'
+    ]);
+    $router->post('/batches/retry/{id}', [
+        'as' => 'horizon.jobs-batches.retry',
+        'uses' => 'BatchesController@retry'
+    ]);
 
     // Job Routes...
-    Route::get('/jobs/pending', 'PendingJobsController@index')->name('horizon.pending-jobs.index');
-    Route::get('/jobs/completed', 'CompletedJobsController@index')->name('horizon.completed-jobs.index');
-    Route::get('/jobs/failed', 'FailedJobsController@index')->name('horizon.failed-jobs.index');
-    Route::get('/jobs/failed/{id}', 'FailedJobsController@show')->name('horizon.failed-jobs.show');
-    Route::post('/jobs/retry/{id}', 'RetryController@store')->name('horizon.retry-jobs.show');
-    Route::get('/jobs/{id}', 'JobsController@show')->name('horizon.jobs.show');
+    $router->get('/jobs/pending', [
+        'as' => 'horizon.pending-jobs.index',
+        'uses' => 'PendingJobsController@index'
+    ]);
+    $router->get('/jobs/completed', [
+        'as' => 'horizon.completed-jobs.index',
+        'uses' => 'CompletedJobsController@index'
+    ]);
+    $router->get('/jobs/failed', [
+        'as' => 'horizon.failed-jobs.index',
+        'uses' => 'FailedJobsController@index'
+    ]);
+    $router->get('/jobs/failed/{id}', [
+        'as' => 'horizon.failed-jobs.show',
+        'uses' => 'FailedJobsController@show'
+    ]);
+    $router->post('/jobs/retry/{id}', [
+        'as' => 'horizon.retry-jobs.show',
+        'uses' => 'RetryController@store'
+    ]);
+    $router->get('/jobs/{id}', [
+        'as' => 'horizon.jobs.show',
+        'uses' => 'JobsController@show'
+    ]);
 });
 
 // Catch-all Route...
-Route::get('/{view?}', 'HomeController@index')->where('view', '(.*)')->name('horizon.index');
+$router->get('/{view?}', [
+    'as' => 'horizon.index',
+    'uses' => 'HomeController@index'
+]);
