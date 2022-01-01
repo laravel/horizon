@@ -331,7 +331,7 @@ class RedisMetricsRepository implements MetricsRepository
      */
     protected function minutesSinceLastSnapshot()
     {
-        $lastSnapshotAt = $this->connection()->get('last_snapshot_at')
+        $lastSnapshotAt = (int)$this->connection()->get('last_snapshot_at')
                     ?: $this->storeSnapshotTimestamp();
 
         return max(
