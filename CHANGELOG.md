@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.17...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.18...5.x)
+
+
+## [v5.7.18 (2022-01-04)](https://github.com/laravel/horizon/compare/v5.7.17...v5.7.18)
+
+### Changed
+* Resolve issue with php strict type ([#1110](https://github.com/laravel/horizon/pull/1110))
 
 
 ## [v5.7.17 (2021-12-07)](https://github.com/laravel/horizon/compare/v5.7.16...v5.7.17)
