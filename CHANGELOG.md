@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.7.18...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.8.0...5.x)
+
+
+## [v5.8.0 (2022-01-12)](https://github.com/laravel/horizon/compare/v5.7.18...v5.8.0)
+
+### Changed
+- Laravel 9 Support ([#1112](https://github.com/laravel/horizon/pull/1112))
 
 
 ## [v5.7.18 (2022-01-04)](https://github.com/laravel/horizon/compare/v5.7.17...v5.7.18)
