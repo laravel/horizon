@@ -8,4 +8,4 @@ npm install && npm run prod
 ```
 
 3. Push all commits to GitHub
-4. Create a new GitHub release for this version with the release notes
+4. Create a new GitHub release with the release notes
