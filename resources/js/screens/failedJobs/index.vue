@@ -239,8 +239,7 @@
                             {{ jobBaseName(job.name) }}
                         </router-link>
 
-                        <small class="badge badge-secondary badge-sm"
-                               v-tooltip:top="`Total retries: ${job.retried_by.length}`"
+                        <small class="badge badge-secondary badge-sm" :title="`Total retries: ${job.retried_by.length}`"
                                v-if="wasRetried(job)">
                             Retried
                         </small>
