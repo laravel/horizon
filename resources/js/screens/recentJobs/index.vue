@@ -181,7 +181,7 @@
                 <tbody>
                     <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                         <td colspan="100" class="text-center card-bg-secondary py-1">
-                            <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
+                            <small><a href="#" class="text-decoration-none" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
                                 Entries</a></small>
 
                             <small v-if="loadingNewEntries">Loading...</small>
