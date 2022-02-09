@@ -105,13 +105,13 @@
                     <div class="col">
                         {{batch.id}}
 
-                        <small class="badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small class="badge bg-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small class="badge bg-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
-                        <small class="badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small class="badge bg-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
                         </small>
                     </div>
