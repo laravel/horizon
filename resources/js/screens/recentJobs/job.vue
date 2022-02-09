@@ -5,7 +5,7 @@
                 <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
                 <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
 
-                <a class="text-decoration-none" data-toggle="collapse" href="#collapseDetails" role="button">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseDetails" role="button">
                     Collapse
                 </a>
             </div>
@@ -60,7 +60,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
 
-                <a class="text-decoration-none" data-toggle="collapse" href="#collapseData" role="button">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseData" role="button">
                     Collapse
                 </a>
             </div>
@@ -74,7 +74,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Tags</h2>
 
-                <a class="text-decoration-none" data-toggle="collapse" href="#collapseTags" role="button">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseTags" role="button">
                     Collapse
                 </a>
             </div>
