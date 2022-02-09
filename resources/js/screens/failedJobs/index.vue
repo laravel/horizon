@@ -235,7 +235,7 @@
 
                 <tr v-for="job in jobs" :key="job.id">
                     <td>
-                        <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
+                        <router-link class="text-decoration-none" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
                             {{ jobBaseName(job.name) }}
                         </router-link>
 
@@ -251,7 +251,7 @@
                             | Attempts: {{ job.payload.attempts }}
                             <span v-if="isRetry(job)">
                             | Retry of
-                            <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
+                            <router-link class="text-decoration-none" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
                                 {{ job.payload.retry_of.split('-')[0] }}
                             </router-link>
                             </span>

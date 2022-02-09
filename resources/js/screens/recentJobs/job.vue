@@ -37,7 +37,7 @@
                 <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
                     <div class="col-md-2"><strong>Batch</strong></div>
                     <div class="col">
-                        <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
+                        <router-link class="text-decoration-none" :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
                             {{ prettyPrintJob(job.payload.data).batchId }}
                         </router-link>
                     </div>

@@ -167,7 +167,7 @@
 
                 <tr v-for="batch in batches" :key="batch.id">
                     <td>
-                        <router-link :title="batch.id" :to="{ name: 'batches-preview', params: { batchId: batch.id }}">
+                        <router-link class="text-decoration-none" :title="batch.id" :to="{ name: 'batches-preview', params: { batchId: batch.id }}">
                             {{ batch.name || batch.id }}
                         </router-link>
                     </td>
