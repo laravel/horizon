@@ -354,3 +354,7 @@ button:hover {
 .badge-sm {
     font-size: 0.75rem;
 }
+
+.table > :not(:first-child) {
+    border-top: none;
+}
