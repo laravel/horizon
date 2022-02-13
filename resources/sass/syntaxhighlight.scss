@@ -16,6 +16,9 @@
             color: #20a0ff;
         }
     }
+    .vjs-value {
+        @extend .text-break;
+    }
     .vjs-value__null,
     .vjs-value__number,
     .vjs-value__boolean {
