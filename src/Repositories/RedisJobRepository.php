@@ -26,7 +26,8 @@ class RedisJobRepository implements JobRepository
      */
     public $keys = [
         'id', 'connection', 'queue', 'name', 'status', 'payload',
-        'exception', 'failed_at', 'completed_at', 'retried_by', 'reserved_at',
+        'exception', 'context', 'failed_at', 'completed_at', 'retried_by',
+        'reserved_at',
     ];
 
     /**
@@ -597,7 +598,7 @@ class RedisJobRepository implements JobRepository
     /**
      * Mark the job as failed.
      *
-     * @param  string  $exception
+     * @param  \Exception  $exception
      * @param  string  $connection
      * @param  string  $queue
      * @param  \Laravel\Horizon\JobPayload  $payload
@@ -620,6 +621,9 @@ class RedisJobRepository implements JobRepository
                     'status' => 'failed',
                     'payload' => $payload->value,
                     'exception' => (string) $exception,
+                    'context' => method_exists($exception, 'context')
+                        ? json_encode($exception->context())
+                        : null,
                     'failed_at' => str_replace(',', '.', microtime(true)),
                 ]
             );

@@ -198,6 +198,16 @@
             </div>
         </div>
 
+        <div class="card mt-4" v-if="ready">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5>Exception Context</h5>
+            </div>
+
+            <div class="card-body code-bg text-white">
+                <vue-json-pretty :data="prettyPrintJob(job.context)"></vue-json-pretty>
+            </div>
+        </div>
+
 
         <div class="card mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
