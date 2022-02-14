@@ -162,7 +162,7 @@
 
             <div class="card-bg-secondary">
                 <div class="d-flex">
-                    <div class="w-25 border-right border-bottom">
+                    <div class="w-25 border-end border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase">Jobs Per Minute</small>
 
@@ -172,7 +172,7 @@
                         </div>
                     </div>
 
-                    <div class="w-25 border-right border-bottom">
+                    <div class="w-25 border-end border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase" v-text="recentJobsPeriod"></small>
 
@@ -182,7 +182,7 @@
                         </div>
                     </div>
 
-                    <div class="w-25 border-right border-bottom">
+                    <div class="w-25 border-end border-bottom">
                         <div class="p-4">
                             <small class="text-uppercase" v-text="failedJobsPeriod"></small>
 
@@ -209,15 +209,15 @@
                                     <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/>
                                 </svg>
 
-                                <h4 class="mb-0 ml-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</h4>
-                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} paused)</small>
+                                <h4 class="mb-0 ms-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</h4>
+                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ms-2">({{ stats.pausedMasters }} paused)</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex">
-                    <div class="w-25 border-right">
+                    <div class="w-25 border-end">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">TOTAL PROCESSES</small>
 
@@ -227,7 +227,7 @@
                         </div>
                     </div>
 
-                    <div class="w-25 border-right">
+                    <div class="w-25 border-end">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">MAX WAIT TIME</small>
 
@@ -239,7 +239,7 @@
                         </div>
                     </div>
 
-                    <div class="w-25 border-right">
+                    <div class="w-25 border-end">
                         <div class="p-4 mb-0">
                             <small class="text-uppercase">MAX RUNTIME</small>
 
@@ -274,19 +274,19 @@
                     <th>Queue</th>
                     <th>Processes</th>
                     <th>Jobs</th>
-                    <th class="text-right">Wait</th>
+                    <th class="text-end">Wait</th>
                 </tr>
                 </thead>
 
                 <tbody>
                     <template v-for="queue in workload">
                         <tr>
-                            <td :class="{'font-weight-bold': queue.split_queues}">
+                            <td :class="{'fw-bold': queue.split_queues}">
                                 <span>{{ queue.name.replace(/,/g, ', ') }}</span>
                             </td>
-                            <td :class="{'font-weight-bold': queue.split_queues}">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
-                            <td :class="{'font-weight-bold': queue.split_queues}">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
-                            <td :class="{'font-weight-bold': queue.split_queues}" class="text-right">{{ humanTime(queue.wait) }}</td>
+                            <td :class="{'fw-bold': queue.split_queues}">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                            <td :class="{'fw-bold': queue.split_queues}">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
+                            <td :class="{'fw-bold': queue.split_queues}" class="text-end">{{ humanTime(queue.wait) }}</td>
                         </tr>
 
                         <tr v-for="split_queue in queue.split_queues">
@@ -299,7 +299,7 @@
                             </td>
                             <td>-</td>
                             <td>{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
-                            <td class="text-right">{{ humanTime(split_queue.wait) }}</td>
+                            <td class="text-end">{{ humanTime(split_queue.wait) }}</td>
                         </tr>
                     </template>
                 </tbody>
@@ -326,24 +326,24 @@
                     <th>Supervisor</th>
                     <th>Processes</th>
                     <th>Queues</th>
-                    <th class="text-right">Balancing</th>
+                    <th class="text-end">Balancing</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-for="supervisor in worker.supervisors">
                     <td>
-                        <svg v-if="supervisor.status == 'paused'" class="fill-warning mr-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
+                        <svg v-if="supervisor.status == 'paused'" class="fill-warning me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
                             <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z"/>
                         </svg>
                         {{ superVisorDisplayName(supervisor.name, worker.name) }}
                     </td>
                     <td>{{ countProcesses(supervisor.processes) }}</td>
                     <td>{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
-                    <td class="text-right" v-if="supervisor.options.balance">
+                    <td class="text-end" v-if="supervisor.options.balance">
                         ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
                     </td>
-                    <td class="text-right" v-else>
+                    <td class="text-end" v-else>
                         (Disabled)
                     </td>
                 </tr>

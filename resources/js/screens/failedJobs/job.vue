@@ -134,7 +134,7 @@
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin me-2 fill-text-color">
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
@@ -161,7 +161,7 @@
                 <div class="row mb-2" v-if="job.payload.retry_of">
                     <div class="col-md-2"><strong>Retry of ID</strong></div>
                     <div class="col">
-                         <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
+                         <a class="text-decoration-none" :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
                             {{ job.payload.retry_of }}
                         </a>
                     </div>
@@ -173,7 +173,7 @@
                 <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
                     <div class="col-md-2"><strong>Batch</strong></div>
                     <div class="col">
-                        <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
+                        <router-link class="text-decoration-none" :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
                             {{ prettyPrintJob(job.payload.data).batchId }}
                         </router-link>
                     </div>
@@ -229,7 +229,7 @@
                 <tr>
                     <th>Job</th>
                     <th>ID</th>
-                    <th class="text-right">Retry Time</th>
+                    <th class="text-end">Retry Time</th>
                 </tr>
                 </thead>
 
@@ -249,17 +249,17 @@
                             <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/>
                         </svg>
 
-                        <span class="ml-2">{{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}</span>
+                        <span class="ms-2">{{ retry.status.charAt(0).toUpperCase() + retry.status.slice(1) }}</span>
                     </td>
 
                     <td class="table-fit">
-                        <a v-if="retry.status == 'failed'" :href="Horizon.basePath + '/failed/'+retry.id">
+                        <a class="text-decoration-none" v-if="retry.status == 'failed'" :href="Horizon.basePath + '/failed/'+retry.id">
                             {{ retry.id }}
                         </a>
                         <span v-else>{{ retry.id }}</span>
                     </td>
 
-                    <td class="text-right table-fit">
+                    <td class="text-end table-fit">
                         {{readableTimestamp(retry.retried_at)}}
                     </td>
                 </tr>
