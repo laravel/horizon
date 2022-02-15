@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.1...5.x)
+
+## [v5.9.1](https://github.com/laravel/horizon/compare/v5.9.0...v5.9.1) - 2022-02-15
+
+### Changed
+
+- Add some more defaults to supervisor ([#1122](https://github.com/laravel/horizon/pull/1122))
+- added `display=swap` to google font ([#1121](https://github.com/laravel/horizon/pull/1121))
 
 ## [v5.9.0](https://github.com/laravel/horizon/compare/v5.8.0...v5.9.0) - 2022-02-08
 
