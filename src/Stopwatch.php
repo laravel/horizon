@@ -34,4 +34,15 @@ class Stopwatch
             return round((microtime(true) - $this->timers[$key]) * 1000, 2);
         }
     }
+
+    /**
+     * Forget a given timer.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function forget($key)
+    {
+        unset($this->timers[$key]);
+    }
 }
