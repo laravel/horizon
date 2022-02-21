@@ -67,5 +67,9 @@ trait EventMap
         Events\LongWaitDetected::class => [
             Listeners\SendNotification::class,
         ],
+
+        \Illuminate\Queue\Events\Looping::class => [
+            Listeners\ClearJobTimers::class,
+        ],
     ];
 }

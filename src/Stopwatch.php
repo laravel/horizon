@@ -34,4 +34,14 @@ class Stopwatch
             return round((microtime(true) - $this->timers[$key]) * 1000, 2);
         }
     }
+
+    /**
+     * Clear all registered timers.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->timers = [];
+    }
 }
