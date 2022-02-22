@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.2...5.x)
+
+## [v5.9.2](https://github.com/laravel/horizon/compare/v5.9.1...v5.9.2) - 2022-02-22
+
+### Fixed
+
+- Clear stopwatch once job is deleted by @taylorotwell in https://github.com/laravel/horizon/commit/69486d5e4fad8b6ee02c97ed0bea39ef241df956
 
 ## [v5.9.1](https://github.com/laravel/horizon/compare/v5.9.0...v5.9.1) - 2022-02-15
 
