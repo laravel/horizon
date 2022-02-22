@@ -32,7 +32,7 @@ trait EventMap
         Events\JobsMigrated::class => [
             Listeners\MarkJobsAsMigrated::class,
         ],
-        
+
         \Illuminate\Queue\Events\JobExceptionOccurred::class => [
             Listeners\ForgetJobTimer::class,
         ],
