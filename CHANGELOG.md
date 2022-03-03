@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.2...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.3...5.x)
+
+## [v5.9.3](https://github.com/laravel/horizon/compare/v5.9.2...v5.9.3) - 2022-03-03
+
+### Fixed
+
+- Forget job timer in case of exception or failed job by @Namoshek in https://github.com/laravel/horizon/pull/1127
 
 ## [v5.9.2](https://github.com/laravel/horizon/compare/v5.9.1...v5.9.2) - 2022-02-22
 
