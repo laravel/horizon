@@ -17,6 +17,9 @@
             this.chart = new Chart(this.context, {
                 type: 'line',
                 options: {
+                    tooltips: {
+                        intersect: false,
+                    },
                     legend: {
                         display: false,
                     },
