@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.3...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.4...5.x)
+
+## [v5.9.4](https://github.com/laravel/horizon/compare/v5.9.3...v5.9.4) - 2022-03-29
+
+### Changed
+
+- change chart.js intersect mode to false by @swist666 in https://github.com/laravel/horizon/pull/1133
 
 ## [v5.9.3](https://github.com/laravel/horizon/compare/v5.9.2...v5.9.3) - 2022-03-03
 
