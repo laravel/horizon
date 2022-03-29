@@ -161,8 +161,8 @@
             <tr>
                 <th>Job</th>
                 <th>Queued At</th>
-                <th v-if="type == 'jobs'">Runtime</th>
-                <th class="text-right" v-if="type == 'jobs'">Status</th>
+                <th v-if="type == 'jobs'">Completed At</th>
+                <th class="text-right" v-if="type == 'jobs'">Runtime</th>
                 <th class="text-right" v-if="type == 'failed'">Failed At</th>
             </tr>
             </thead>
