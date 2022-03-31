@@ -37,11 +37,11 @@ export default {
          * Autoload new entries in listing screens.
          */
         autoLoadNewEntries() {
-            if (!this.autoLoadsNewEntries) {
-                this.autoLoadsNewEntries = true;
+            if (!this.$root.autoLoadsNewEntries) {
+                this.$root.autoLoadsNewEntries = true;
                 localStorage.autoLoadsNewEntries = 1;
             } else {
-                this.autoLoadsNewEntries = false;
+                this.$root.autoLoadsNewEntries = false;
                 localStorage.autoLoadsNewEntries = 0;
             }
         },
