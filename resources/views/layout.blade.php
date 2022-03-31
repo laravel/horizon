@@ -17,7 +17,7 @@
     <div
         id="horizon"
         v-cloak
-        data-assets-are-current="{{ !$assetsAreCurrent }}"
+        data-assets-are-current="{{ $assetsAreCurrent }}"
         data-is-down-for-maintenance="{{ $isDownForMaintenance }}"
         data-app-name="{{ config('app.name') ? ' - ' . config('app.name') : '' }}">
     </div>
