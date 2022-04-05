@@ -1,6 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.4...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.5...5.x)
+
+## [v5.9.5](https://github.com/laravel/horizon/compare/v5.9.4...v5.9.5) - 2022-03-31
+
+### Changed
+
+- Make horizon work with strict content-security-policy by @Grldk in https://github.com/laravel/horizon/pull/1138
+
+### Fixed
+
+- Fix for table headers in the Monitoring tab to match the data that is presented to the user by @dylan7778 in https://github.com/laravel/horizon/pull/1137
 
 ## [v5.9.4](https://github.com/laravel/horizon/compare/v5.9.3...v5.9.4) - 2022-03-29
 
