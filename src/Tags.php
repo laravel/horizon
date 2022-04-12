@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Notifications\SendQueuedNotifications;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Laravel\Horizon\Attributes\Tag;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use stdClass;
@@ -26,22 +30,31 @@ class Tags
             return $tags;
         }
 
-        return static::modelsFor(static::targetsFor($job))->map(function ($model) {
-            return get_class($model).':'.$model->getKey();
-        })->all();
+        $targets = static::targetsFor($job);
+        $modelTags = static::modelsFor($targets)->map(function ($model) {
+            return get_class($model) . ':' . $model->getKey();
+        });
+
+        if (version_compare(phpversion(), '8.0', '<')) {
+            return $modelTags->all();
+        }
+
+        $additionalTags = static::enrichedTagsFor($targets);
+
+        return $modelTags->merge($additionalTags)->all();
     }
 
     /**
      * Extract tags from job object.
      *
-     * @param  mixed  $job
+     * @param mixed $job
      * @return array
      */
     public static function extractExplicitTags($job)
     {
         return $job instanceof CallQueuedListener
-                    ? static::tagsForListener($job)
-                    : static::explicitTags(static::targetsFor($job));
+            ? static::tagsForListener($job)
+            : static::explicitTags(static::targetsFor($job));
     }
 
     /**
@@ -124,6 +137,51 @@ class Tags
     }
 
     /**
+     *  Get additional tags from the given object.
+     *
+     * @param array $targets
+     * @return \Illuminate\Support\Collection
+     */
+    public static function enrichedTagsFor(array $targets)
+    {
+        $additionalTags = [];
+
+        foreach ($targets as $target) {
+            $additionalTags[] = collect(
+                (new ReflectionClass($target))->getProperties()
+            )->map(function (ReflectionProperty $property) use ($target) {
+                $property->setAccessible(true);
+
+                $enrichAttribute = Arr::first($property->getAttributes(Tag::class));
+                if ($enrichAttribute) {
+                    $propertyValue = static::getValue($property, $target);
+                    if (!$propertyValue) {
+                        return null;
+                    }
+
+                    $enrichAttributeInstance = $enrichAttribute->newInstance();
+
+                    if ($innerPropertyName = $enrichAttributeInstance->attribute) {
+                        $innerValue = data_get($propertyValue, $innerPropertyName);
+                        if (is_bool($innerValue)) {
+                            $innerValue = $innerValue ? 'true' : 'false';
+                        }
+
+                        $propertyValue = (string)Str::of($innerValue)
+                            ->slug();
+                    }
+
+                    return $propertyValue ? "{$property->getName()}:{$propertyValue}" : null;
+                }
+            })
+                ->filter()
+                ->all();
+        }
+
+        return collect($additionalTags)->collapse()->unique();
+    }
+
+    /**
      * Get the value of the given ReflectionProperty.
      *
      * @param  \ReflectionProperty  $property
@@ -159,7 +217,7 @@ class Tags
     protected static function extractEvent($job)
     {
         return isset($job->data[0]) && is_object($job->data[0])
-                        ? $job->data[0]
-                        : new stdClass;
+            ? $job->data[0]
+            : new stdClass;
     }
 }
