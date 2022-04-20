@@ -27,8 +27,7 @@ class HorizonApplicationServiceProvider extends ServiceProvider
         $this->gate();
 
         Horizon::auth(function ($request) {
-            return app()->environment('local') ||
-                   Gate::check('viewHorizon', [$request->user()]);
+            return Gate::check('viewHorizon', [$request->user()]) || app()->environment('local');
         });
     }
 
