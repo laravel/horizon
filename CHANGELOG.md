@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.6...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.7...5.x)
+
+## [v5.9.7](https://github.com/laravel/horizon/compare/v5.9.6...v5.9.7) - 2022-04-21
+
+### Fixed
+
+- Checking the "viewHorizon" gate first by @marcialpaulg in https://github.com/laravel/horizon/pull/1148
 
 ## [v5.9.6](https://github.com/laravel/horizon/compare/v5.9.5...v5.9.6) - 2022-04-07
 
