@@ -3,5 +3,5 @@ name: Compile Assets
 on: [push]
 
 jobs:
-  update:
+  compile:
     uses: laravel/.github/.github/workflows/compile-assets.yml@main
