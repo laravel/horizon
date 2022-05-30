@@ -21,3 +21,4 @@ jobs:
         with:
           commit_message: Compile Assets
           file_pattern: public/*
+          skip_dirty_check: true
