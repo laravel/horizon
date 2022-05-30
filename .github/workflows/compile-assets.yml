@@ -1,23 +1,9 @@
-name: Compile Assets
+name: "Update Changelog"
 
-on: [push]
+on:
+  release:
+    types: [released]
 
 jobs:
-  compile:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install NPM dependencies
-        run: npm ci
-
-      - name: Compile assets
-        run: npm run production
-
-      - name: Commit compiled files
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Compile Assets
-          file_pattern: public/
+  update:
+    uses: laravel/.github/.github/workflows/update-changelog.yml@main
