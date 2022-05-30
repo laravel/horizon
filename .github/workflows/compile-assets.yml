@@ -20,5 +20,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Compile Assets
-          file_pattern: public/*
-          skip_dirty_check: true
+          file_pattern: public/
