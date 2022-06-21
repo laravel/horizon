@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.7...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.8...5.x)
+
+## [v5.9.8](https://github.com/laravel/horizon/compare/v5.9.7...v5.9.8) - 2022-06-08
+
+### Changed
+
+- Predis v2 support by @driesvints in https://github.com/laravel/horizon/commit/71291b2dc8172f46a8a503aee97b80d9a4139cdf
 
 ## [v5.9.7](https://github.com/laravel/horizon/compare/v5.9.6...v5.9.7) - 2022-04-21
 
