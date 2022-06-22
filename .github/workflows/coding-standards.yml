@@ -1,0 +1,9 @@
+name: fix code styling
+
+on: [push]
+
+jobs:
+  compile:
+    uses: laravel/.github/.github/workflows/coding-standards.yml@main
+    with:
+      commit_message: "Run through Pint [skip ci] [ci skip]"
