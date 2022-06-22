@@ -128,7 +128,9 @@ class SupervisorProcess extends WorkerProcess
     public function terminateWithStatus($status)
     {
         app(HorizonCommandQueue::class)->push(
-            $this->options->name, Terminate::class, ['status' => $status]
+            $this->options->name,
+            Terminate::class,
+            ['status' => $status]
         );
     }
 

@@ -14,7 +14,7 @@ class TrimRecentJobsTest extends IntegrationTest
 {
     public function test_trimmer_has_a_cooldown_period()
     {
-        $trim = new TrimRecentJobs;
+        $trim = new TrimRecentJobs();
 
         $repository = Mockery::mock(JobRepository::class);
         $repository->shouldReceive('trimRecentJobs')->twice();

@@ -21,7 +21,7 @@ class MonitoringControllerTest extends AbstractControllerTest
 
         $this->app->instance(TagRepository::class, $tags);
 
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/monitoring');
 
         $response->assertJson([
@@ -45,7 +45,7 @@ class MonitoringControllerTest extends AbstractControllerTest
         }
 
         // Paginate first set...
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/monitoring/tag');
 
         $results = $response->original['jobs'];
@@ -55,7 +55,7 @@ class MonitoringControllerTest extends AbstractControllerTest
         $this->assertSame('25', $results[24]->id);
 
         // Paginate second set...
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/monitoring/tag?starting_at=25');
 
         $results = $response->original['jobs'];
@@ -75,7 +75,7 @@ class MonitoringControllerTest extends AbstractControllerTest
             $tags->add((string) $i, ['tag']);
         }
 
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/monitoring/tag?starting_at=1000');
 
         $this->assertCount(0, $response->original['jobs']);
@@ -85,7 +85,7 @@ class MonitoringControllerTest extends AbstractControllerTest
     {
         $tags = resolve(TagRepository::class);
 
-        $this->actingAs(new Fakes\User)
+        $this->actingAs(new Fakes\User())
              ->post('/horizon/api/monitoring', ['tag' => 'taylor']);
 
         $this->assertEquals(['taylor'], $tags->monitoring());
@@ -105,11 +105,11 @@ class MonitoringControllerTest extends AbstractControllerTest
             ));
         }
 
-        $this->actingAs(new Fakes\User)
+        $this->actingAs(new Fakes\User())
              ->delete('/horizon/api/monitoring/tag');
 
         // Ensure monitored jobs were deleted...
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/monitoring/tag');
 
         $results = $response->original['jobs'];

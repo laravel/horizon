@@ -110,7 +110,9 @@ class ProcessPool implements Countable
         // and remove them from the active process array. We'll be adding them the array
         // of terminating processes where they'll run until they are fully terminated.
         $terminatingProcesses = array_slice(
-            $this->processes, 0, $difference
+            $this->processes,
+            0,
+            $difference
         );
 
         collect($terminatingProcesses)->each(function ($process) {
@@ -180,7 +182,8 @@ class ProcessPool implements Countable
                     : Process::class;
 
         return new WorkerProcess($class::fromShellCommandline(
-            $this->options->toWorkerCommand(), $this->options->directory
+            $this->options->toWorkerCommand(),
+            $this->options->directory
         )->setTimeout(null)->disableOutput());
     }
 

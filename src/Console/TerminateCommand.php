@@ -40,7 +40,8 @@ class TerminateCommand extends Command
     {
         if (config('horizon.fast_termination')) {
             $cache->forever(
-                'horizon:terminate:wait', $this->option('wait')
+                'horizon:terminate:wait',
+                $this->option('wait')
             );
         }
 

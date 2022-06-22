@@ -34,7 +34,9 @@ class StoreJob
     public function handle(JobPushed $event)
     {
         $this->jobs->pushed(
-            $event->connectionName, $event->queue, $event->payload
+            $event->connectionName,
+            $event->queue,
+            $event->payload
         );
     }
 }

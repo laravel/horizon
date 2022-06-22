@@ -92,7 +92,9 @@ abstract class IntegrationTest extends TestCase
     {
         for ($i = 0; $i < $times; $i++) {
             $this->worker()->runNextJob(
-                'redis', 'default', $this->workerOptions()
+                'redis',
+                'default',
+                $this->workerOptions()
             );
         }
     }
@@ -114,7 +116,7 @@ abstract class IntegrationTest extends TestCase
      */
     protected function workerOptions()
     {
-        return tap(new WorkerOptions, function ($options) {
+        return tap(new WorkerOptions(), function ($options) {
             $options->sleep = 0;
             $options->maxTries = 1;
         });

@@ -21,7 +21,9 @@ class AddSupervisor
         $options = SupervisorOptions::fromArray($options);
 
         $master->supervisors[] = new SupervisorProcess(
-            $options, $this->createProcess($master, $options), function ($type, $line) use ($master) {
+            $options,
+            $this->createProcess($master, $options),
+            function ($type, $line) use ($master) {
                 $master->output($type, $line);
             }
         );

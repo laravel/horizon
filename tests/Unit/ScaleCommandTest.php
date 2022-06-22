@@ -13,7 +13,7 @@ class ScaleCommandTest extends UnitTest
     {
         $supervisor = Mockery::mock(Supervisor::class);
         $supervisor->shouldReceive('scale')->once()->with(3);
-        $scale = new Scale;
+        $scale = new Scale();
         $scale->process($supervisor, ['scale' => 3]);
     }
 }

@@ -13,12 +13,12 @@ class AddSupervisorTest extends IntegrationTest
 {
     public function test_add_supervisor_command_creates_new_supervisor_on_master_process()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $phpBinary = PhpBinary::path();
 
         $master->loop();
 
-        new AddSupervisor;
+        new AddSupervisor();
         resolve(HorizonCommandQueue::class)->push($master->commandQueue(), AddSupervisor::class, (new SupervisorOptions('my-supervisor', 'redis'))->toArray());
 
         $this->assertCount(0, $master->supervisors);

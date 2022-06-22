@@ -16,6 +16,6 @@ class SupervisorThatThrowsException extends Supervisor
      */
     public function persist()
     {
-        throw new Exception;
+        throw new Exception();
     }
 }

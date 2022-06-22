@@ -35,7 +35,9 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     public function names()
     {
-        return $this->connection()->zrevrangebyscore('supervisors', '+inf',
+        return $this->connection()->zrevrangebyscore(
+            'supervisors',
+            '+inf',
             CarbonImmutable::now()->subSeconds(29)->getTimestamp()
         );
     }
@@ -115,7 +117,8 @@ class RedisSupervisorRepository implements SupervisorRepository
 
         $this->connection()->pipeline(function ($pipe) use ($supervisor, $processes) {
             $pipe->hmset(
-                'supervisor:'.$supervisor->name, [
+                'supervisor:'.$supervisor->name,
+                [
                     'name' => $supervisor->name,
                     'master' => implode(':', explode(':', $supervisor->name, -1)),
                     'pid' => $supervisor->pid(),
@@ -125,8 +128,10 @@ class RedisSupervisorRepository implements SupervisorRepository
                 ]
             );
 
-            $pipe->zadd('supervisors',
-                CarbonImmutable::now()->getTimestamp(), $supervisor->name
+            $pipe->zadd(
+                'supervisors',
+                CarbonImmutable::now()->getTimestamp(),
+                $supervisor->name
             );
 
             $pipe->expire('supervisor:'.$supervisor->name, 30);
@@ -161,7 +166,9 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     public function flushExpired()
     {
-        $this->connection()->zremrangebyscore('supervisors', '-inf',
+        $this->connection()->zremrangebyscore(
+            'supervisors',
+            '-inf',
             CarbonImmutable::now()->subSeconds(14)->getTimestamp()
         );
     }

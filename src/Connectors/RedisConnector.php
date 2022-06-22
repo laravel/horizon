@@ -17,7 +17,8 @@ class RedisConnector extends BaseConnector
     public function connect(array $config)
     {
         return new RedisQueue(
-            $this->redis, $config['queue'],
+            $this->redis,
+            $config['queue'],
             Arr::get($config, 'connection', $this->connection),
             Arr::get($config, 'retry_after', 60),
             Arr::get($config, 'block_for', null),

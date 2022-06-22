@@ -50,7 +50,9 @@ class LongWaitDetected
     public function toNotification()
     {
         return new LongWaitDetectedNotification(
-            $this->connection, $this->queue, $this->seconds
+            $this->connection,
+            $this->queue,
+            $this->seconds
         );
     }
 }

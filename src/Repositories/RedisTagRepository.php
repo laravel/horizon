@@ -136,7 +136,9 @@ class RedisTagRepository implements TagRepository
     public function paginate($tag, $startingAt = 0, $limit = 25)
     {
         $tags = (array) $this->connection()->zrevrange(
-            $tag, $startingAt, $startingAt + $limit - 1
+            $tag,
+            $startingAt,
+            $startingAt + $limit - 1
         );
 
         return collect($tags)->values()->mapWithKeys(function ($tag, $index) use ($startingAt) {

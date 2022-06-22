@@ -9,8 +9,7 @@ use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
 use Orchestra\Testbench\Concerns\CreatesApplication;
 
-$appLoader = new class
-{
+$appLoader = new class () {
     use CreatesApplication;
 
     /**
@@ -46,5 +45,7 @@ if (in_array('--paused', $_SERVER['argv'])) {
 
 // Start the daemon loop.
 $worker->daemon(
-    'redis', 'default', new WorkerOptions
+    'redis',
+    'default',
+    new WorkerOptions()
 );

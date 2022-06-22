@@ -40,7 +40,9 @@ class MarshalFailedEvent
         }
 
         $this->events->dispatch((new JobFailed(
-            $event->exception, $event->job, $event->job->getReservedJob()
+            $event->exception,
+            $event->job,
+            $event->job->getReservedJob()
         ))->connection($event->connectionName)->queue($event->job->getQueue()));
     }
 }

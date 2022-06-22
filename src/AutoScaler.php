@@ -46,7 +46,8 @@ class AutoScaler
         $pools = $this->poolsByQueue($supervisor);
 
         $workers = $this->numberOfWorkersPerQueue(
-            $supervisor, $this->timeToClearPerQueue($supervisor, $pools)
+            $supervisor,
+            $this->timeToClearPerQueue($supervisor, $pools)
         );
 
         $workers->each(function ($workers, $queue) use ($supervisor, $pools) {

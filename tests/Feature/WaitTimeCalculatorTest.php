@@ -68,7 +68,8 @@ class WaitTimeCalculatorTest extends IntegrationTest
 
         // Test easily retrieving the longest wait...
         $this->assertEquals(
-            ['redis:test-queue-2' => 40], collect($calculator->calculate())->take(1)->all()
+            ['redis:test-queue-2' => 40],
+            collect($calculator->calculate())->take(1)->all()
         );
     }
 

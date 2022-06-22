@@ -182,8 +182,12 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function incrementJob($job, $runtime)
     {
-        $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'job:'.$job, 'measured_jobs', str_replace(',', '.', $runtime)
+        $this->connection()->eval(
+            LuaScripts::updateMetrics(),
+            2,
+            'job:'.$job,
+            'measured_jobs',
+            str_replace(',', '.', $runtime)
         );
     }
 
@@ -196,8 +200,12 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function incrementQueue($queue, $runtime)
     {
-        $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'queue:'.$queue, 'measured_queues', str_replace(',', '.', $runtime)
+        $this->connection()->eval(
+            LuaScripts::updateMetrics(),
+            2,
+            'queue:'.$queue,
+            'measured_queues',
+            str_replace(',', '.', $runtime)
         );
     }
 
@@ -266,7 +274,9 @@ class RedisMetricsRepository implements MetricsRepository
         $data = $this->baseSnapshotData($key = 'job:'.$job);
 
         $this->connection()->zadd(
-            'snapshot:'.$key, $time = CarbonImmutable::now()->getTimestamp(), json_encode([
+            'snapshot:'.$key,
+            $time = CarbonImmutable::now()->getTimestamp(),
+            json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
                 'time' => $time,
@@ -274,7 +284,9 @@ class RedisMetricsRepository implements MetricsRepository
         );
 
         $this->connection()->zremrangebyrank(
-            'snapshot:'.$key, 0, -abs(1 + config('horizon.metrics.trim_snapshots.job', 24))
+            'snapshot:'.$key,
+            0,
+            -abs(1 + config('horizon.metrics.trim_snapshots.job', 24))
         );
     }
 
@@ -289,7 +301,9 @@ class RedisMetricsRepository implements MetricsRepository
         $data = $this->baseSnapshotData($key = 'queue:'.$queue);
 
         $this->connection()->zadd(
-            'snapshot:'.$key, $time = CarbonImmutable::now()->getTimestamp(), json_encode([
+            'snapshot:'.$key,
+            $time = CarbonImmutable::now()->getTimestamp(),
+            json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
                 'wait' => app(WaitTimeCalculator::class)->calculateFor($queue),
@@ -298,7 +312,9 @@ class RedisMetricsRepository implements MetricsRepository
         );
 
         $this->connection()->zremrangebyrank(
-            'snapshot:'.$key, 0, -abs(1 + config('horizon.metrics.trim_snapshots.queue', 24))
+            'snapshot:'.$key,
+            0,
+            -abs(1 + config('horizon.metrics.trim_snapshots.queue', 24))
         );
     }
 
@@ -335,7 +351,8 @@ class RedisMetricsRepository implements MetricsRepository
                                     ?: $this->storeSnapshotTimestamp());
 
         return max(
-            (CarbonImmutable::now()->getTimestamp() - $lastSnapshotAt) / 60, 1
+            (CarbonImmutable::now()->getTimestamp() - $lastSnapshotAt) / 60,
+            1
         );
     }
 

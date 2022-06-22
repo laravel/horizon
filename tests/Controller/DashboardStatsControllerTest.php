@@ -50,7 +50,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         ]);
         $this->app->instance(WaitTimeCalculator::class, $wait);
 
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/stats');
 
         $response->assertJson([
@@ -82,7 +82,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         ]);
         $this->app->instance(MasterSupervisorRepository::class, $masters);
 
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
                     ->get('/horizon/api/stats');
 
         $response->assertJson([
@@ -103,7 +103,7 @@ class DashboardStatsControllerTest extends AbstractControllerTest
         ]);
         $this->app->instance(MasterSupervisorRepository::class, $masters);
 
-        $response = $this->actingAs(new Fakes\User)
+        $response = $this->actingAs(new Fakes\User())
             ->get('/horizon/api/stats');
 
         $response->assertJson([

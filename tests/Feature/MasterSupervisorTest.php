@@ -25,7 +25,7 @@ class MasterSupervisorTest extends IntegrationTest
             return 'test-name';
         });
 
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
 
         $this->assertStringStartsWith('test-name', $master->name);
         $this->assertStringStartsWith('test-name', $master->name());
@@ -36,10 +36,11 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_master_process_marks_clean_exits_as_dead_and_removes_them()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
         $master->supervisors[] = $supervisorProcess = new SupervisorProcess(
-            $this->supervisorOptions(), $process = Mockery::mock()
+            $this->supervisorOptions(),
+            $process = Mockery::mock()
         );
 
         $process->shouldReceive('isStarted')->andReturn(true);
@@ -54,10 +55,11 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_master_process_marks_duplicates_as_dead_and_removes_them()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
         $master->supervisors[] = $supervisorProcess = new SupervisorProcess(
-            $this->supervisorOptions(), $process = Mockery::mock()
+            $this->supervisorOptions(),
+            $process = Mockery::mock()
         );
 
         $process->shouldReceive('isStarted')->andReturn(true);
@@ -72,10 +74,11 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_master_process_restarts_unexpected_exits()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
         $master->supervisors[] = $supervisorProcess = new SupervisorProcessWithFakeRestart(
-            $this->supervisorOptions(), $process = Mockery::mock()
+            $this->supervisorOptions(),
+            $process = Mockery::mock()
         );
 
         $process->shouldReceive('isStarted')->andReturn(true);
@@ -86,7 +89,9 @@ class MasterSupervisorTest extends IntegrationTest
 
         $this->assertTrue($supervisorProcess->dead);
         $commands = Redis::connection('horizon')->lrange(
-            'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
+            'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()),
+            0,
+            -1
         );
 
         $this->assertCount(1, $commands);
@@ -99,10 +104,11 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_master_process_restarts_processes_that_never_started()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
         $master->supervisors[] = $supervisorProcess = new SupervisorProcessWithFakeRestart(
-            $this->supervisorOptions(), $process = Mockery::mock()
+            $this->supervisorOptions(),
+            $process = Mockery::mock()
         );
 
         $process->shouldReceive('isStarted')->andReturn(false);
@@ -116,9 +122,10 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_master_process_starts_unstarted_processes_when_unpaused()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->supervisors[] = $supervisorProcess = new SupervisorProcessWithFakeRestart(
-            $this->supervisorOptions(), $process = Mockery::mock()
+            $this->supervisorOptions(),
+            $process = Mockery::mock()
         );
 
         $process->shouldReceive('isStarted')->andReturn(false);
@@ -135,11 +142,13 @@ class MasterSupervisorTest extends IntegrationTest
     {
         $this->app->singleton(Commands\FakeMasterCommand::class);
 
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
 
         resolve(HorizonCommandQueue::class)->push(
-            $master->commandQueue(), Commands\FakeMasterCommand::class, ['foo' => 'bar']
+            $master->commandQueue(),
+            Commands\FakeMasterCommand::class,
+            ['foo' => 'bar']
         );
 
         // Loop twice to make sure command is only called once...
@@ -155,7 +164,7 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_master_process_information_is_persisted()
     {
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
         $master->supervisors[] = new SupervisorProcess($this->supervisorOptions(), $process = Mockery::mock());
         $process->shouldReceive('isStarted')->andReturn(true);
@@ -181,9 +190,9 @@ class MasterSupervisorTest extends IntegrationTest
     {
         $this->expectException(Exception::class);
 
-        $master = new MasterSupervisor;
+        $master = new MasterSupervisor();
         $master->working = true;
-        $master2 = new MasterSupervisor;
+        $master2 = new MasterSupervisor();
         $master2->working = true;
 
         $master->persist();
@@ -199,7 +208,7 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_supervisor_process_terminates_all_workers_and_exits_on_full_termination()
     {
-        $master = new Fakes\MasterSupervisorWithFakeExit;
+        $master = new Fakes\MasterSupervisorWithFakeExit();
         $master->working = true;
 
         $repository = resolve(MasterSupervisorRepository::class);
@@ -216,13 +225,13 @@ class MasterSupervisorTest extends IntegrationTest
 
     public function test_supervisor_continues_termination_if_supervisors_take_too_long()
     {
-        $master = new Fakes\MasterSupervisorWithFakeExit;
+        $master = new Fakes\MasterSupervisorWithFakeExit();
         $master->working = true;
 
         $repository = resolve(MasterSupervisorRepository::class);
         $repository->forgetDelay = 1;
 
-        $master->supervisors = collect([new EternalSupervisor]);
+        $master->supervisors = collect([new EternalSupervisor()]);
 
         $master->persist();
         $master->terminate();

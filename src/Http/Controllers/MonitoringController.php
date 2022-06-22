@@ -64,7 +64,8 @@ class MonitoringController extends Controller
     public function paginate(Request $request, $tag)
     {
         $jobIds = $this->tags->paginate(
-            $tag, $startingAt = $request->query('starting_at', 0),
+            $tag,
+            $startingAt = $request->query('starting_at', 0),
             $request->query('limit', 25)
         );
 

@@ -10,7 +10,8 @@ use Laravel\Horizon\Connectors\RedisConnector;
 
 class HorizonServiceProvider extends ServiceProvider
 {
-    use EventMap, ServiceBindings;
+    use EventMap;
+    use ServiceBindings;
 
     /**
      * Bootstrap any application services.
@@ -160,7 +161,8 @@ class HorizonServiceProvider extends ServiceProvider
     protected function configure()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/horizon.php', 'horizon'
+            __DIR__.'/../config/horizon.php',
+            'horizon'
         );
 
         Horizon::use(config('horizon.use', 'default'));

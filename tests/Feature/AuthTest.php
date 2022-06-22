@@ -28,11 +28,10 @@ class AuthTest extends IntegrationTest
             return true;
         });
 
-        $middleware = new Authenticate;
+        $middleware = new Authenticate();
 
         $response = $middleware->handle(
-            new class
-            {
+            new class () {
             },
             function ($value) {
                 return 'response';
@@ -50,11 +49,10 @@ class AuthTest extends IntegrationTest
             return false;
         });
 
-        $middleware = new Authenticate;
+        $middleware = new Authenticate();
 
         $middleware->handle(
-            new class
-            {
+            new class () {
             },
             function ($value) {
                 return 'response';

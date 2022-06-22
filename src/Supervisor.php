@@ -135,8 +135,10 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function scale($processes)
     {
-        $this->options->maxProcesses = max($this->options->maxProcesses,
-            $processes, count($this->processPools)
+        $this->options->maxProcesses = max(
+            $this->options->maxProcesses,
+            $processes,
+            count($this->processPools)
         );
 
         $this->balance($this->processPools->mapWithKeys(function ($pool) use ($processes) {
@@ -155,8 +157,7 @@ class Supervisor implements Pausable, Restartable, Terminable
         foreach ($balance as $queue => $scale) {
             $this->processPools->first(function ($pool) use ($queue) {
                 return $pool->queue() === $queue;
-            }, new class
-            {
+            }, new class () {
                 public function __call($method, $arguments)
                 {
                 }

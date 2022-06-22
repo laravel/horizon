@@ -35,7 +35,7 @@ class HorizonCommand extends Command
             return $this->comment('A master supervisor is already running on this machine.');
         }
 
-        $master = (new MasterSupervisor)->handleOutputUsing(function ($type, $line) {
+        $master = (new MasterSupervisor())->handleOutputUsing(function ($type, $line) {
             $this->output->write($line);
         });
 

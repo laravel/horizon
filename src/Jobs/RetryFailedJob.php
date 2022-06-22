@@ -41,7 +41,8 @@ class RetryFailedJob
         }
 
         $queue->connection($job->connection)->pushRaw(
-            $this->preparePayload($id = Str::uuid(), $job->payload), $job->queue
+            $this->preparePayload($id = Str::uuid(), $job->payload),
+            $job->queue
         );
 
         $jobs->storeRetryReference($this->id, $id);

@@ -94,7 +94,8 @@ class SupervisorCommand extends Command
         $supervisor->working = ! $this->option('paused');
 
         $supervisor->scale(max(
-            0, $this->option('max-processes') - $supervisor->totalSystemProcessCount()
+            0,
+            $this->option('max-processes') - $supervisor->totalSystemProcessCount()
         ));
 
         $supervisor->monitor();
@@ -144,7 +145,8 @@ class SupervisorCommand extends Command
     protected function getQueue($connection)
     {
         return $this->option('queue') ?: $this->laravel['config']->get(
-            "queue.connections.{$connection}.queue", 'default'
+            "queue.connections.{$connection}.queue",
+            'default'
         );
     }
 }

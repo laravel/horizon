@@ -13,7 +13,7 @@ class MonitorSupervisorMemoryTest extends IntegrationTest
 {
     public function test_supervisor_is_terminated_when_using_too_much_memory()
     {
-        $monitor = new MonitorSupervisorMemory;
+        $monitor = new MonitorSupervisorMemory();
 
         $supervisor = Mockery::mock(Supervisor::class);
         $supervisor->options = new SupervisorOptions('redis', 'default');
@@ -26,7 +26,7 @@ class MonitorSupervisorMemoryTest extends IntegrationTest
 
     public function test_supervisor_is_not_terminated_when_using_low_memory()
     {
-        $monitor = new MonitorSupervisorMemory;
+        $monitor = new MonitorSupervisorMemory();
 
         $supervisor = Mockery::mock(Supervisor::class);
         $supervisor->options = new SupervisorOptions('redis', 'default');

@@ -84,7 +84,7 @@ class Horizon
     {
         static::$authUsing = $callback;
 
-        return new static;
+        return new static();
     }
 
     /**
@@ -117,7 +117,7 @@ class Horizon
     {
         static::$useDarkTheme = true;
 
-        return new static;
+        return new static();
     }
 
     /**
@@ -142,7 +142,7 @@ class Horizon
     {
         static::$email = $email;
 
-        return new static;
+        return new static();
     }
 
     /**
@@ -157,7 +157,7 @@ class Horizon
         static::$slackWebhookUrl = $url;
         static::$slackChannel = $channel;
 
-        return new static;
+        return new static();
     }
 
     /**
@@ -170,7 +170,7 @@ class Horizon
     {
         static::$smsNumber = $number;
 
-        return new static;
+        return new static();
     }
 
     /**

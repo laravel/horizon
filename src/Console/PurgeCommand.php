@@ -87,7 +87,8 @@ class PurgeCommand extends Command
         $this->recordOrphans($master);
 
         $expired = $this->processes->orphanedFor(
-            $master, $this->supervisors->longestActiveTimeout()
+            $master,
+            $this->supervisors->longestActiveTimeout()
         );
 
         collect($expired)->each(function ($processId) use ($master) {
@@ -108,7 +109,8 @@ class PurgeCommand extends Command
     protected function recordOrphans($master)
     {
         $this->processes->orphaned(
-            $master, $orphans = $this->inspector->orphaned()
+            $master,
+            $orphans = $this->inspector->orphaned()
         );
 
         foreach ($orphans as $processId) {

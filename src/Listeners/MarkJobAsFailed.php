@@ -34,8 +34,10 @@ class MarkJobAsFailed
     public function handle(JobFailed $event)
     {
         $this->jobs->failed(
-            $event->exception, $event->connectionName,
-            $event->queue, $event->payload
+            $event->exception,
+            $event->connectionName,
+            $event->queue,
+            $event->payload
         );
     }
 }

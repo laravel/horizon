@@ -91,7 +91,8 @@ class RedisProcessRepository implements ProcessRepository
     public function forgetOrphans($master, array $processIds)
     {
         $this->connection()->hdel(
-            "{$master}:orphans", ...$processIds
+            "{$master}:orphans",
+            ...$processIds
         );
     }
 

@@ -51,7 +51,7 @@ class SupervisorTest extends IntegrationTest
 
     public function test_supervisor_can_start_worker_process_with_given_options()
     {
-        Queue::push(new Jobs\BasicJob);
+        Queue::push(new Jobs\BasicJob());
         $this->assertSame(1, $this->recentJobs());
 
         $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
@@ -97,7 +97,7 @@ class SupervisorTest extends IntegrationTest
 
     public function test_recent_jobs_are_correctly_maintained()
     {
-        $id = Queue::push(new Jobs\BasicJob);
+        $id = Queue::push(new Jobs\BasicJob());
         $this->assertSame(1, $this->recentJobs());
 
         $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
@@ -250,7 +250,7 @@ class SupervisorTest extends IntegrationTest
         $this->assertFalse($supervisor->processPools[0]->working);
         usleep(1100 * 1000);
 
-        Queue::push(new Jobs\BasicJob);
+        Queue::push(new Jobs\BasicJob());
         usleep(1100 * 1000);
 
         $this->assertSame(1, $this->recentJobs());
@@ -361,7 +361,9 @@ class SupervisorTest extends IntegrationTest
         usleep(100 * 1000);
 
         resolve(HorizonCommandQueue::class)->push(
-            $supervisor->name, Commands\FakeCommand::class, ['foo' => 'bar']
+            $supervisor->name,
+            Commands\FakeCommand::class,
+            ['foo' => 'bar']
         );
 
         // Loop twice to make sure command is only called once...
@@ -385,7 +387,9 @@ class SupervisorTest extends IntegrationTest
         usleep(100 * 1000);
 
         resolve(HorizonCommandQueue::class)->push(
-            $supervisor->name, Scale::class, ['scale' => 2]
+            $supervisor->name,
+            Scale::class,
+            ['scale' => 2]
         );
         $supervisor->pause();
         usleep(250 * 1000);
@@ -394,7 +398,7 @@ class SupervisorTest extends IntegrationTest
 
         $this->assertSame(2, $supervisor->totalProcessCount());
 
-        Queue::push(new Jobs\BasicJob);
+        Queue::push(new Jobs\BasicJob());
         usleep(500 * 1000);
 
         $this->assertSame(1, $this->recentJobs());
