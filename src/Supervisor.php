@@ -157,8 +157,7 @@ class Supervisor implements Pausable, Restartable, Terminable
         foreach ($balance as $queue => $scale) {
             $this->processPools->first(function ($pool) use ($queue) {
                 return $pool->queue() === $queue;
-            }, new class()
-            {
+            }, new class () {
                 public function __call($method, $arguments)
                 {
                 }

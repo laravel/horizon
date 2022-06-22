@@ -9,8 +9,7 @@ use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
 use Orchestra\Testbench\Concerns\CreatesApplication;
 
-$appLoader = new class()
-{
+$appLoader = new class () {
     use CreatesApplication;
 
     /**
