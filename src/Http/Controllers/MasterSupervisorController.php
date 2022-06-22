@@ -17,8 +17,7 @@ class MasterSupervisorController extends Controller
     public function index(
         MasterSupervisorRepository $masters,
         SupervisorRepository $supervisors
-    )
-    {
+    ) {
         $masters = collect($masters->all())->keyBy('name')->sortBy('name');
 
         $supervisors = collect($supervisors->all())->sortBy('name')->groupBy('master');

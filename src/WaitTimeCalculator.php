@@ -42,8 +42,7 @@ class WaitTimeCalculator
         QueueFactory $queue,
         SupervisorRepository $supervisors,
         MetricsRepository $metrics
-    )
-    {
+    ) {
         $this->queue = $queue;
         $this->metrics = $metrics;
         $this->supervisors = $supervisors;

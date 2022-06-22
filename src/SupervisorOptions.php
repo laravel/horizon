@@ -196,8 +196,7 @@ class SupervisorOptions
         $balanceMaxShift = 1,
         $parentId = 0,
         $rest = 0
-    )
-    {
+    ) {
         $this->name = $name;
         $this->connection = $connection;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');

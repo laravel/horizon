@@ -53,8 +53,7 @@ class RedisWorkloadRepository implements WorkloadRepository
         WaitTimeCalculator $waitTime,
         MasterSupervisorRepository $masters,
         SupervisorRepository $supervisors
-    )
-    {
+    ) {
         $this->queue = $queue;
         $this->masters = $masters;
         $this->waitTime = $waitTime;
