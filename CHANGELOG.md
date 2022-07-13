@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.8...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.9...5.x)
+
+## [v5.9.9](https://github.com/laravel/horizon/compare/v5.9.8...v5.9.9) - 2022-07-12
+
+### Changed
+
+- When register, keep the original Redis options, only overwrite prefix by @nthsky in https://github.com/laravel/horizon/pull/1161
 
 ## [v5.9.8](https://github.com/laravel/horizon/compare/v5.9.7...v5.9.8) - 2022-06-08
 
