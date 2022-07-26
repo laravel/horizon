@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.9...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.10...5.x)
+
+## [v5.9.10](https://github.com/laravel/horizon/compare/v5.9.9...v5.9.10) - 2022-07-25
+
+### Fixed
+
+- Fallback array for `retried_by` by @driesvints in https://github.com/laravel/horizon/pull/1166
 
 ## [v5.9.9](https://github.com/laravel/horizon/compare/v5.9.8...v5.9.9) - 2022-07-12
 
