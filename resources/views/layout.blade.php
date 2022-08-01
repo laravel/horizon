@@ -10,7 +10,7 @@
     <title>Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</title>
 
     <!-- Style sheets-->
-    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=Nunito&display=swap" rel="stylesheet">
     <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet">
 </head>
 <body>
