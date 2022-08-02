@@ -13,6 +13,10 @@ Horizon provides a beautiful dashboard and code-driven configuration for your La
 
 All of your worker configuration is stored in a single, simple configuration file, allowing your configuration to stay in source control where your entire team can collaborate.
 
+<p align="center">
+<img src="https://laravel.com/img/docs/horizon-example.png">
+</p>
+
 ## Official Documentation
 
 Documentation for Horizon can be found on the [Laravel website](https://laravel.com/docs/horizon).
