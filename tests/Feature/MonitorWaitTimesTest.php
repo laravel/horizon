@@ -36,4 +36,24 @@ class MonitorWaitTimesTest extends IntegrationTest
             return $event->connection == 'redis' && $event->queue == 'test-queue-2';
         });
     }
+
+    public function test_queue_ignores_long_waits()
+    {
+        config(['horizon.waits' => ['redis:ignore-queue' => 0]]);
+
+        Event::fake();
+
+        $calc = Mockery::mock(WaitTimeCalculator::class);
+        $calc->expects('calculate')->andReturn([
+            'redis:ignore-queue' => 10,
+        ]);
+        $this->app->instance(WaitTimeCalculator::class, $calc);
+
+        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
+        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
+
+        $listener->handle(null);
+
+        Event::assertNotDispatched(LongWaitDetected::class);
+    }
 }
