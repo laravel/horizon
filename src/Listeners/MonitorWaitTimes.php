@@ -5,7 +5,6 @@ namespace Laravel\Horizon\Listeners;
 use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
-use Laravel\Horizon\Events\SupervisorLooped;
 use Laravel\Horizon\WaitTimeCalculator;
 
 class MonitorWaitTimes
@@ -41,7 +40,7 @@ class MonitorWaitTimes
      * @param  \Laravel\Horizon\Events\SupervisorLooped  $event
      * @return void
      */
-    public function handle(SupervisorLooped $event)
+    public function handle()
     {
         if (! $this->dueToMonitor()) {
             return;

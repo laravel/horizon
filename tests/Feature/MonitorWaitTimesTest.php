@@ -27,7 +27,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
         $listener->lastMonitoredAt = CarbonImmutable::now()->subDay();
 
-        $listener->handle(null);
+        $listener->handle();
 
         Event::assertDispatched(LongWaitDetected::class, function ($event) {
             return $event->connection == 'redis' && $event->queue == 'test-queue-2';
@@ -49,7 +49,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
         $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
 
-        $listener->handle(null);
+        $listener->handle();
 
         Event::assertNotDispatched(LongWaitDetected::class);
     }
