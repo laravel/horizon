@@ -20,10 +20,6 @@ class MonitorWaitTimesTest extends IntegrationTest
     {
         Event::fake();
 
-        $redis = Mockery::mock(RedisFactory::class);
-        $redis->shouldReceive('setnx')->with('monitor:time-to-clear', 1)->andReturn(1);
-        $redis->shouldReceive('expire')->with('monitor:time-to-clear', 60);
-
         $calc = Mockery::mock(WaitTimeCalculator::class);
         $calc->shouldReceive('calculate')->andReturn([
             'redis:test-queue' => 10,
@@ -31,10 +27,10 @@ class MonitorWaitTimesTest extends IntegrationTest
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
-        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class), $redis);
-        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
+        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
+        $listener->lastMonitoredAt = CarbonImmutable::now()->subDay();
 
-        $listener->handle(new SupervisorLooped(Mockery::mock(Supervisor::class)));
+        $listener->handle(null);
 
         Event::assertDispatched(LongWaitDetected::class, function ($event) {
             return $event->connection == 'redis' && $event->queue == 'test-queue-2';
