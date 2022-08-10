@@ -3,13 +3,10 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
-use Laravel\Horizon\Events\SupervisorLooped;
 use Laravel\Horizon\Listeners\MonitorWaitTimes;
-use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
