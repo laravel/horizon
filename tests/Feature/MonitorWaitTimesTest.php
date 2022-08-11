@@ -3,13 +3,10 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
-use Laravel\Horizon\Events\SupervisorLooped;
 use Laravel\Horizon\Listeners\MonitorWaitTimes;
-use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
@@ -20,10 +17,6 @@ class MonitorWaitTimesTest extends IntegrationTest
     {
         Event::fake();
 
-        $redis = Mockery::mock(RedisFactory::class);
-        $redis->shouldReceive('setnx')->with('monitor:time-to-clear', 1)->andReturn(1);
-        $redis->shouldReceive('expire')->with('monitor:time-to-clear', 60);
-
         $calc = Mockery::mock(WaitTimeCalculator::class);
         $calc->shouldReceive('calculate')->andReturn([
             'redis:test-queue' => 10,
@@ -31,13 +24,33 @@ class MonitorWaitTimesTest extends IntegrationTest
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
-        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class), $redis);
-        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
+        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
+        $listener->lastMonitoredAt = CarbonImmutable::now()->subDay();
 
-        $listener->handle(new SupervisorLooped(Mockery::mock(Supervisor::class)));
+        $listener->handle();
 
         Event::assertDispatched(LongWaitDetected::class, function ($event) {
             return $event->connection == 'redis' && $event->queue == 'test-queue-2';
         });
+    }
+
+    public function test_queue_ignores_long_waits()
+    {
+        config(['horizon.waits' => ['redis:ignore-queue' => 0]]);
+
+        Event::fake();
+
+        $calc = Mockery::mock(WaitTimeCalculator::class);
+        $calc->expects('calculate')->andReturn([
+            'redis:ignore-queue' => 10,
+        ]);
+        $this->app->instance(WaitTimeCalculator::class, $calc);
+
+        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
+        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
+
+        $listener->handle();
+
+        Event::assertNotDispatched(LongWaitDetected::class);
     }
 }
