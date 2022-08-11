@@ -38,7 +38,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         });
     }
 
-    public function test_queue_ignores_long_waits()
+    public function test_ignores_queue_with_long_wait()
     {
         config(['horizon.waits' => ['redis:ignore-queue' => 0]]);
 
@@ -53,7 +53,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
         $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
-        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
+        $listener->lastMonitoredAt = CarbonImmutable::now()->subDay();
 
         $listener->handle();
 
