@@ -62,6 +62,13 @@ class Horizon
     ];
 
     /**
+     * The translations that should be made available on the Horizon JavaScript object.
+     *
+     * @var array<string, string>
+     */
+    public static $translations = [];
+
+    /**
      * Determine if the given request can access the Horizon dashboard.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -129,6 +136,8 @@ class Horizon
     {
         return [
             'path' => config('horizon.path'),
+
+            'translations' => static::allTranslations(),
         ];
     }
 
@@ -189,5 +198,36 @@ class Horizon
         }
 
         return File::get($publishedPath) === File::get(__DIR__.'/../public/mix-manifest.json');
+    }
+
+    /**
+     * Register the given translations with Horizon.
+     *
+     * @param  array<string, string>|string  $translations
+     * @return static
+     */
+    public static function translations($translations)
+    {
+        if (is_string($translations)) {
+            if (! is_readable($translations)) {
+                return new static();
+            }
+
+            $translations = json_decode(file_get_contents($translations), true);
+        }
+
+        static::$translations = array_merge(static::$translations, $translations);
+
+        return new static();
+    }
+
+    /**
+     * Get all of the additional translations that should be loaded.
+     *
+     * @return array<string, string>
+     */
+    public static function allTranslations()
+    {
+        return static::$translations;
     }
 }

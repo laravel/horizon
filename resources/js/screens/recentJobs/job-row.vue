@@ -6,7 +6,7 @@
             </router-link>
 
             <small class="badge badge-secondary badge-sm"
-                    v-tooltip:top="`Delayed for ${delayed}`"
+                    v-tooltip:top="`${__('Delayed for')} ${delayed}`"
                     v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
                 Delayed
             </small>
@@ -14,10 +14,10 @@
             <br>
 
             <small class="text-muted">
-                Queue: {{job.queue}}
+                {{ __('Queue:') }} {{job.queue}}
 
                 <span v-if="job.payload.tags && job.payload.tags.length" class="text-break">
-                    | Tags: {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.slice(0,3).join(', ') : '' }}<span v-if="job.payload.tags.length > 3"> ({{ job.payload.tags.length - 3 }} more)</span>
+                    | {{ __('Tags:') }} {{ job.payload.tags && job.payload.tags.length ? job.payload.tags.slice(0,3).join(', ') : '' }}<span v-if="job.payload.tags.length > 3"> ({{ job.payload.tags.length - 3 }} {{ __('more') }})</span>
                 </span>
             </small>
         </td>

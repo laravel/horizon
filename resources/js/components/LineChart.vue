@@ -29,8 +29,8 @@
                                 ticks: {
                                     beginAtZero: true,
                                      callback: (value, index, values) => {
-                                        return this.data.datasets[0].label === "Seconds"
-                                            ? `${value} secs`
+                                        return this.data.datasets[0].label === this.__('Seconds')
+                                            ? this.__(':count secs', {count: value})
                                             : value;
                                     },
                                 },

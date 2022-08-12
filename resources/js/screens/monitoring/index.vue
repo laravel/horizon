@@ -17,7 +17,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Monitoring";
+            document.title = 'Horizon - ' + this.__('Monitoring');
 
             this.loadTags();
 
@@ -103,9 +103,9 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Monitoring</h5>
+                <h5>{{ __('Monitoring') }}</h5>
 
-                <button @click="openNewTagModal" class="btn btn-primary btn-sm">Monitor Tag</button>
+                <button @click="openNewTagModal" class="btn btn-primary btn-sm">{{ __('Monitor Tag') }}</button>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -113,20 +113,20 @@
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>Loading...</span>
+                <span>{{ __('Loading...') }}</span>
             </div>
 
 
             <div v-if="ready && tags.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>You're not monitoring any tags.</span>
+                <span>{{ __('You\'re not monitoring any tags.') }}</span>
             </div>
 
 
             <table v-if="ready && tags.length > 0" class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
-                    <th>Tag Name</th>
-                    <th>Jobs</th>
+                    <th>{{ __('Tag Name') }}</th>
+                    <th>{{ __('Jobs') }}</th>
                     <th class="text-right"></th>
                 </tr>
                 </thead>
@@ -154,7 +154,7 @@
         <div class="modal" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">Monitor New Tag</div>
+                    <div class="modal-header">{{ __('Monitor New Tag') }}</div>
 
                     <div class="modal-body">
                         <input type="text" class="form-control" placeholder="App\Models\User:6352"
@@ -166,11 +166,11 @@
 
                     <div class="modal-footer justify-content-center">
                         <button class="btn btn-primary" @click="monitorNewTag">
-                            Monitor
+                            {{ __('Monitor') }}
                         </button>
 
                         <button class="btn" @click="cancelNewTag">
-                            Cancel
+                            {{ __('Cancel') }}
                         </button>
                     </div>
                 </div>

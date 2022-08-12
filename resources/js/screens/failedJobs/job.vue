@@ -24,7 +24,7 @@
         mounted() {
             this.loadFailedJob(this.$route.params.jobId);
 
-            document.title = "Horizon - Failed Jobs";
+            document.title = 'Horizon - ' + this.__('Failed Jobs');
 
             this.interval = setInterval(() => {
                 this.reloadRetries();
@@ -123,7 +123,7 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 v-if="!ready">Job Preview</h5>
+                <h5 v-if="!ready">{{ __('Job Preview') }}</h5>
                 <h5 v-if="ready">{{job.name}}</h5>
 
                 <button class="btn btn-outline-primary" v-on:click.prevent="retry(job.id)">
@@ -138,28 +138,28 @@
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>Loading...</span>
+                <span>{{ __('Loading...') }}</span>
             </div>
 
             <div class="card-body card-bg-secondary" v-if="ready">
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>ID</strong></div>
+                    <div class="col-md-2"><strong>{{ __('ID') }}</strong></div>
                     <div class="col">{{job.id}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Queue</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Queue') }}</strong></div>
                     <div class="col">{{job.queue}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Attempts</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Attempts') }}</strong></div>
                     <div class="col">{{job.payload.attempts}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Retries</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Retries') }}</strong></div>
                     <div class="col">{{job.retried_by.length}}</div>
                 </div>
                 <div class="row mb-2" v-if="job.payload.retry_of">
-                    <div class="col-md-2"><strong>Retry of ID</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Retry of ID') }}</strong></div>
                     <div class="col">
                          <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
                             {{ job.payload.retry_of }}
@@ -167,11 +167,11 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Tags</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Tags') }}</strong></div>
                     <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                 </div>
                 <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
-                    <div class="col-md-2"><strong>Batch</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Batch') }}</strong></div>
                     <div class="col">
                         <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
                             {{ prettyPrintJob(job.payload.data).batchId }}
@@ -179,11 +179,11 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Pushed At</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Pushed At') }}</strong></div>
                     <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><strong>Failed At</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Failed At') }}</strong></div>
                     <div class="col">{{readableTimestamp(job.failed_at)}}</div>
                 </div>
             </div>
@@ -191,7 +191,7 @@
 
         <div class="card mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Exception</h5>
+                <h5>{{ __('Exception') }}</h5>
             </div>
             <div>
                 <stack-trace :trace="job.exception.split('\n')"></stack-trace>
@@ -200,7 +200,7 @@
 
         <div class="card mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Exception Context</h5>
+                <h5>{{ __('Exception Context') }}</h5>
             </div>
 
             <div class="card-body code-bg text-white">
@@ -211,7 +211,7 @@
 
         <div class="card mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Data</h5>
+                <h5>{{ __('Data') }}</h5>
             </div>
 
             <div class="card-body code-bg text-white">
@@ -221,15 +221,15 @@
 
         <div class="card mt-4" v-if="ready && job.retried_by.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Recent Retries</h5>
+                <h5>{{ __('Recent Retries') }}</h5>
             </div>
 
             <table class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
-                    <th>Job</th>
-                    <th>ID</th>
-                    <th class="text-right">Retry Time</th>
+                    <th>{{ __('Job') }}</th>
+                    <th>{{ __('ID') }}</th>
+                    <th class="text-right">{{ __('Retry Time') }}</th>
                 </tr>
                 </thead>
 

@@ -23,7 +23,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Dashboard";
+            document.title = 'Horizon - ' + this.__('Dashboard');
 
             this.refreshStatsPeriodically();
         },
@@ -43,8 +43,8 @@
              */
             recentJobsPeriod() {
                 return !this.ready
-                    ? 'Jobs past hour'
-                    : `Jobs past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
+                    ? this.__('Jobs past hour')
+                    : `${this.__('Jobs past')} ${this.determinePeriod(this.stats.periods.recentJobs)}`;
             },
 
 
@@ -53,8 +53,8 @@
              */
             failedJobsPeriod() {
                 return !this.ready
-                    ? 'Failed jobs past 7 days'
-                    : `Failed jobs past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
+                    ? this.__('Failed jobs past 7 days')
+                    : `${this.__('Failed jobs past')} ${this.determinePeriod(this.stats.periods.failedJobs)}`;
             },
         },
 
@@ -157,14 +157,14 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Overview</h5>
+                <h5>{{ __('Overview') }}</h5>
             </div>
 
             <div class="card-bg-secondary">
                 <div class="d-flex">
                     <div class="w-25 border-right border-bottom">
                         <div class="p-4">
-                            <small class="text-uppercase">Jobs Per Minute</small>
+                            <small class="text-uppercase">{{ __('Jobs Per Minute') }}</small>
 
                             <h4 class="mt-4 mb-0">
                                 {{ stats.jobsPerMinute ? stats.jobsPerMinute.toLocaleString() : 0 }}
@@ -194,7 +194,7 @@
 
                     <div class="w-25 border-bottom">
                         <div class="p-4">
-                            <small class="text-uppercase">Status</small>
+                            <small class="text-uppercase">{{ __('Status') }}</small>
 
                             <div class="d-flex align-items-center mt-4">
                                 <svg v-if="stats.status == 'running'" class="fill-success" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;">
@@ -209,8 +209,8 @@
                                     <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"/>
                                 </svg>
 
-                                <h4 class="mb-0 ml-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</h4>
-                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} paused)</small>
+                                <h4 class="mb-0 ml-2">{{ {running: __('Active'), paused: __('Paused'), inactive: __('Inactive')}[stats.status] }}</h4>
+                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} {{ __('paused') }})</small>
                             </div>
                         </div>
                     </div>
@@ -219,7 +219,7 @@
                 <div class="d-flex">
                     <div class="w-25 border-right">
                         <div class="p-4 mb-0">
-                            <small class="text-uppercase">TOTAL PROCESSES</small>
+                            <small class="text-uppercase">{{ __('TOTAL PROCESSES') }}</small>
 
                             <h4 class="mt-4">
                                 {{ stats.processes ? stats.processes.toLocaleString() : 0 }}
@@ -229,7 +229,7 @@
 
                     <div class="w-25 border-right">
                         <div class="p-4 mb-0">
-                            <small class="text-uppercase">MAX WAIT TIME</small>
+                            <small class="text-uppercase">{{ __('MAX WAIT TIME') }}</small>
 
                             <h4 class="mt-4 mb-0">
                                 {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
@@ -241,7 +241,7 @@
 
                     <div class="w-25 border-right">
                         <div class="p-4 mb-0">
-                            <small class="text-uppercase">MAX RUNTIME</small>
+                            <small class="text-uppercase">{{ __('MAX RUNTIME') }}</small>
 
                             <h4 class="mt-4">
                                 {{ stats.queueWithMaxRuntime ? stats.queueWithMaxRuntime : '-' }}
@@ -251,7 +251,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-uppercase">MAX THROUGHPUT</small>
+                            <small class="text-uppercase">{{ __('MAX THROUGHPUT') }}</small>
 
                             <h4 class="mt-4">
                                 {{ stats.queueWithMaxThroughput ? stats.queueWithMaxThroughput : '-' }}
@@ -265,16 +265,16 @@
 
         <div class="card mt-4" v-if="workload.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Current Workload</h5>
+                <h5>{{ __('Current Workload') }}</h5>
             </div>
 
             <table class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
-                    <th>Queue</th>
-                    <th>Processes</th>
-                    <th>Jobs</th>
-                    <th class="text-right">Wait</th>
+                    <th>{{ __('Queue') }}</th>
+                    <th>{{ __('Processes') }}</th>
+                    <th>{{ __('Jobs') }}</th>
+                    <th class="text-right">{{ __('Wait') }}</th>
                 </tr>
                 </thead>
 
@@ -323,10 +323,10 @@
             <table class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
-                    <th>Supervisor</th>
-                    <th>Processes</th>
-                    <th>Queues</th>
-                    <th class="text-right">Balancing</th>
+                    <th>{{ __('Supervisor') }}</th>
+                    <th>{{ __('Processes') }}</th>
+                    <th>{{ __('Queues') }}</th>
+                    <th class="text-right">{{ __('Balancing') }}</th>
                 </tr>
                 </thead>
 
@@ -344,7 +344,7 @@
                         ({{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }})
                     </td>
                     <td class="text-right" v-else>
-                        (Disabled)
+                        ({{ __('Disabled') }})
                     </td>
                 </tr>
                 </tbody>

@@ -19,7 +19,7 @@
         mounted() {
             this.loadBatch();
 
-            document.title = "Horizon - Batches";
+            document.title = 'Horizon - ' + this.__('Batches');
 
             this.interval = setInterval(() => {
                 this.loadBatch(false);
@@ -79,7 +79,7 @@
     <div>
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 v-if="!ready">Batch Preview</h5>
+                <h5 v-if="!ready">{{ __('Batch Preview') }}</h5>
                 <h5 v-if="ready">{{batch.name || batch.id}}</h5>
 
                 <button class="btn btn-outline-primary" v-if="failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
@@ -87,7 +87,7 @@
                         <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
                     </svg>
 
-                    Retry Failed Jobs
+                    {{ __('Retry Failed Jobs') }}
                 </button>
             </div>
 
@@ -96,64 +96,64 @@
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>Loading...</span>
+                <span>{{ __('Loading...') }}</span>
             </div>
 
             <div class="card-body card-bg-secondary" v-if="ready">
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>ID</strong></div>
+                    <div class="col-md-2"><strong>{{ __('ID') }}</strong></div>
                     <div class="col">
                         {{batch.id}}
 
                         <small class="badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
-                            Failures
+                            {{ __('Failures') }}
                         </small>
                         <small class="badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
-                            Finished
+                            {{ __('Finished') }}
                         </small>
                         <small class="badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
-                            Pending
+                            {{ __('Pending') }}
                         </small>
                     </div>
                 </div>
                 <div class="row mb-2" v-if="batch.name">
-                    <div class="col-md-2"><strong>Name</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Name') }}</strong></div>
                     <div class="col">{{batch.name}}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.options.queue">
-                    <div class="col-md-2"><strong>Queue</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Queue') }}</strong></div>
                     <div class="col">{{batch.options.queue}}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.options.connection">
-                    <div class="col-md-2"><strong>Connection</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Connection') }}</strong></div>
                     <div class="col">{{batch.options.connection}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Created At</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Created At') }}</strong></div>
                     <div class="col">{{ formatDateIso(batch.createdAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.finishedAt">
-                    <div class="col-md-2"><strong>Finished At</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Finished At') }}</strong></div>
                     <div class="col">{{ formatDateIso(batch.finishedAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.cancelledAt">
-                    <div class="col-md-2"><strong>Cancelled At</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Cancelled At') }}</strong></div>
                     <div class="col">{{ formatDateIso(batch.cancelledAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Total Jobs</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Total Jobs') }}</strong></div>
                     <div class="col">{{batch.totalJobs}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Pending Jobs</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Pending Jobs') }}</strong></div>
                     <div class="col">{{batch.pendingJobs}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Failed Jobs</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Failed Jobs') }}</strong></div>
                     <div class="col">{{batch.failedJobs}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><strong>Completed Jobs (Including Failed)</strong></div>
+                    <div class="col-md-2"><strong>{{ __('Completed Jobs (Including Failed)') }}</strong></div>
                     <div class="col">{{ (batch.totalJobs-batch.pendingJobs) }} ({{batch.progress}}%)</div>
                 </div>
             </div>
@@ -162,15 +162,15 @@
 
         <div class="card mt-4" v-if="ready && failedJobs.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Failed Jobs</h5>
+                <h5>{{ __('Failed Jobs') }}</h5>
             </div>
 
             <table class="table table-hover table-sm mb-0">
                 <thead>
                 <tr>
-                    <th>Job</th>
-                    <th>Runtime</th>
-                    <th class="text-right">Failed At</th>
+                    <th>{{ __('Job') }}</th>
+                    <th>{{ __('Runtime') }}</th>
+                    <th class="text-right">{{ __('Failed At') }}</th>
                 </tr>
                 </thead>
 

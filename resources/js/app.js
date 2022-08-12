@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Base from './base';
+import Localization from './localization';
 import axios from 'axios';
 import Routes from './routes';
 import VueRouter from 'vue-router';
@@ -44,6 +45,7 @@ Vue.component('vue-json-pretty', VueJsonPretty);
 Vue.component('alert', require('./components/Alert.vue').default);
 
 Vue.mixin(Base);
+Vue.mixin(Localization);
 
 Vue.directive('tooltip', function (el, binding) {
     $(el).tooltip({
