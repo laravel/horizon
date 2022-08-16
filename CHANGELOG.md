@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.9.10...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.0...5.x)
+
+## [v5.10.0](https://github.com/laravel/horizon/compare/v5.9.10...v5.10.0) - 2022-08-11
+
+### Added
+
+- Ability to ignore long waits for queue by @jasonmccreary in https://github.com/laravel/horizon/pull/1172
 
 ## [v5.9.10](https://github.com/laravel/horizon/compare/v5.9.9...v5.9.10) - 2022-07-25
 
