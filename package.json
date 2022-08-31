@@ -19,7 +19,7 @@
         "lodash": "^4.17.19",
         "md5": "^2.2.1",
         "moment": "^2.29.4",
-        "moment-timezone": "^0.5.21",
+        "moment-timezone": "^0.5.35",
         "phpunserialize": "1.*",
         "popper.js": "^1.12",
         "resolve-url-loader": "^3.1.2",
