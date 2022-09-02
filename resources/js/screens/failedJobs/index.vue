@@ -155,14 +155,8 @@
              * Construct the tooltip label for the job containing retry count and the last retry status.
              */
             jobTooltipLabel(job){
-                let label  = `Total retries: ${job.retried_by.length}`
                 let lastRetry = job.retried_by[job.retried_by.length - 1]
-
-                if(lastRetry){
-                    label += `, Last retry status: ${_.upperFirst(lastRetry.status)}`
-                }
-
-                return label;
+                return `Total retries: ${job.retried_by.length}, Last retry status: ${_.upperFirst(lastRetry.status)}`;
             },
 
             /**
