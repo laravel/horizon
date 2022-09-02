@@ -152,7 +152,7 @@
             },
 
             /**
-             * Construct the tooltip label for the job containing retry count and the last retry status.
+             * Construct the tooltip label for the job containing retry count and the status of the last retry.
              */
             jobTooltipLabel(job){
                 let lastRetry = job.retried_by[job.retried_by.length - 1]
