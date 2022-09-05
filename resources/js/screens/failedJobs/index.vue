@@ -154,7 +154,7 @@
             /**
              * Construct the tooltip label for a retried job.
              */
-            retriedJobTooltip(job){
+            retriedJobTooltip(job) {
                 let lastRetry = job.retried_by[job.retried_by.length - 1];
 
                 return `Total retries: ${job.retried_by.length}, Last retry status: ${_.upperFirst(lastRetry.status)}`;
