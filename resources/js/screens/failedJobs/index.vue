@@ -152,10 +152,11 @@
             },
 
             /**
-             * Construct the tooltip label for the job containing retry count and the status of the last retry.
+             * Construct the tooltip label for a retried job.
              */
-            jobTooltipLabel(job){
-                let lastRetry = job.retried_by[job.retried_by.length - 1]
+            retriedJobTooltip(job){
+                let lastRetry = job.retried_by[job.retried_by.length - 1];
+
                 return `Total retries: ${job.retried_by.length}, Last retry status: ${_.upperFirst(lastRetry.status)}`;
             },
 
@@ -247,7 +248,7 @@
                         </router-link>
 
                         <small class="badge badge-secondary badge-sm"
-                               v-tooltip:top="jobTooltipLabel(job)"
+                               v-tooltip:top="retriedJobTooltip(job)"
                                v-if="wasRetried(job)">
                             Retried
                         </small>
