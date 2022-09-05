@@ -151,6 +151,14 @@
                 return job.payload.retry_of;
             },
 
+            /**
+             * Construct the tooltip label for a retried job.
+             */
+            retriedJobTooltip(job) {
+                let lastRetry = job.retried_by[job.retried_by.length - 1];
+
+                return `Total retries: ${job.retried_by.length}, Last retry status: ${_.upperFirst(lastRetry.status)}`;
+            },
 
             /**
              * Refresh the jobs every period of time.
@@ -240,7 +248,7 @@
                         </router-link>
 
                         <small class="badge badge-secondary badge-sm"
-                               v-tooltip:top="`Total retries: ${job.retried_by.length}`"
+                               v-tooltip:top="retriedJobTooltip(job)"
                                v-if="wasRetried(job)">
                             Retried
                         </small>
