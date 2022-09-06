@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.1...5.x)
+
+## [v5.10.1](https://github.com/laravel/horizon/compare/v5.10.0...v5.10.1) - 2022-09-05
+
+### Changed
+
+- Failed job list: Modify job retry tooltip label to include status of last job retry by @Jevz in https://github.com/laravel/horizon/pull/1182
 
 ## [v5.10.0](https://github.com/laravel/horizon/compare/v5.9.10...v5.10.0) - 2022-08-11
 
