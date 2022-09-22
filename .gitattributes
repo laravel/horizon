@@ -11,6 +11,7 @@ public/*.js binary
 
 /.github export-ignore
 /tests export-ignore
+package-lock.json export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .editorconfig export-ignore
