@@ -43,7 +43,7 @@ class StatusCommand extends Command
             return 1;
         }
 
-        $this->info("Horizon is running.");
+        $this->info('Horizon is running.');
 
         return 0;
     }
