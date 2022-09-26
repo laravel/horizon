@@ -25,27 +25,26 @@ class StatusCommand extends Command
      * Execute the console command.
      *
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masterSupervisorRepository
-     * @return void
+     * @return int
      */
     public function handle(MasterSupervisorRepository $masterSupervisorRepository)
     {
-        $this->line($this->currentStatus($masterSupervisorRepository));
-    }
-
-    /**
-     * Get the current status of Horizon.
-     *
-     * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masterSupervisorRepository
-     * @return string
-     */
-    protected function currentStatus(MasterSupervisorRepository $masterSupervisorRepository)
-    {
         if (! $masters = $masterSupervisorRepository->all()) {
-            return 'Horizon is inactive.';
+            $this->error('Horizon is inactive.');
+
+            return 1;
         }
 
-        return collect($masters)->contains(function ($master) {
+        if (collect($masters)->contains(function ($master) {
             return $master->status === 'paused';
-        }) ? 'Horizon is paused.' : 'Horizon is running.';
+        })) {
+            $this->warn('Horizon is paused.');
+
+            return 1;
+        }
+
+        $this->info('Horizon is running.');
+
+        return 0;
     }
 }
