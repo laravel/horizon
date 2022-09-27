@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.2...5.x)
+
+## [v5.10.2](https://github.com/laravel/horizon/compare/v5.10.1...v5.10.2) - 2022-09-26
+
+### Changed
+
+- Add exit codes to status command by @mbardelmeijer in https://github.com/laravel/horizon/pull/1191
 
 ## [v5.10.1](https://github.com/laravel/horizon/compare/v5.10.0...v5.10.1) - 2022-09-05
 
