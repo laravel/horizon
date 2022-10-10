@@ -16,7 +16,9 @@ Route::prefix('api')->group(function () {
     Route::get('/monitoring', 'MonitoringController@index')->name('horizon.monitoring.index');
     Route::post('/monitoring', 'MonitoringController@store')->name('horizon.monitoring.store');
     Route::get('/monitoring/{tag}', 'MonitoringController@paginate')->name('horizon.monitoring-tag.paginate');
-    Route::delete('/monitoring/{tag}', 'MonitoringController@destroy')->name('horizon.monitoring-tag.destroy');
+    Route::delete('/monitoring/{tag}', 'MonitoringController@destroy')
+        ->name('horizon.monitoring-tag.destroy')
+        ->where('tag', '.*');
 
     // Job Metric Routes...
     Route::get('/metrics/jobs', 'JobMetricsController@index')->name('horizon.jobs-metrics.index');
