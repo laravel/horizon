@@ -110,7 +110,7 @@
                     this.ready = true;
 
                     this.timeout = setTimeout(() => {
-                        this.refreshStatsPeriodically(false);
+                        this.refreshStatsPeriodically();
                     }, 5000);
                 });
             },
