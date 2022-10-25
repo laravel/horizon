@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.2...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.3...5.x)
+
+## [v5.10.3](https://github.com/laravel/horizon/compare/v5.10.2...v5.10.3) - 2022-10-14
+
+### Fixed
+
+- Allow deleting of Tags which contain forward slashes (Fixes #1093) by @sgotre in https://github.com/laravel/horizon/pull/1196
+- Unnecessary param to refreshStatsPeriodically by @peterlupu in https://github.com/laravel/horizon/pull/1198
 
 ## [v5.10.2](https://github.com/laravel/horizon/compare/v5.10.1...v5.10.2) - 2022-09-26
 
