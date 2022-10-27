@@ -38,6 +38,8 @@ class PendingJobsController extends Controller
         $jobs = $this->jobs->getPending($request->query('starting_at', -1))->map(function ($job) {
             $job->payload = json_decode($job->payload);
 
+            unset($job->payload->data);
+
             return $job;
         })->values();
 
@@ -45,18 +47,5 @@ class PendingJobsController extends Controller
             'jobs' => $jobs,
             'total' => $this->jobs->countPending(),
         ];
-    }
-
-    /**
-     * Decode the given job.
-     *
-     * @param  object  $job
-     * @return object
-     */
-    protected function decode($job)
-    {
-        $job->payload = json_decode($job->payload);
-
-        return $job;
     }
 }

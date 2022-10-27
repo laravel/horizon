@@ -38,6 +38,8 @@ class CompletedJobsController extends Controller
         $jobs = $this->jobs->getCompleted($request->query('starting_at', -1))->map(function ($job) {
             $job->payload = json_decode($job->payload);
 
+            unset($job->payload->data);
+
             return $job;
         })->values();
 
@@ -45,18 +47,5 @@ class CompletedJobsController extends Controller
             'jobs' => $jobs,
             'total' => $this->jobs->countCompleted(),
         ];
-    }
-
-    /**
-     * Decode the given job.
-     *
-     * @param  object  $job
-     * @return object
-     */
-    protected function decode($job)
-    {
-        $job->payload = json_decode($job->payload);
-
-        return $job;
     }
 }
