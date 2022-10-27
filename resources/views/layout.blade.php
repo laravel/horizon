@@ -31,11 +31,16 @@
             <h4 class="mb-0 ml-2">
                 <strong>Laravel</strong> Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</h4>
 
-            <button class="btn btn-outline-primary ml-auto" :class="{active: autoLoadsNewEntries}" v-on:click.prevent="autoLoadNewEntries" title="Auto Load Entries">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary">
-                    <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"></path>
-                </svg>
-            </button>
+            <div class="ml-auto">
+                <a href="https://laravel.com/docs/horizon" target="_blank" class="mr-3">Docs</a>
+
+                <button class="btn btn-outline-primary ml-auto" :class="{active: autoLoadsNewEntries}"
+                        v-on:click.prevent="autoLoadNewEntries" title="Auto Load Entries">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary">
+                        <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <div class="row mt-4">
