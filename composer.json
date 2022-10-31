@@ -30,7 +30,8 @@
     },
     "suggest": {
         "ext-redis": "Required to use the Redis PHP driver.",
-        "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0)."
+        "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0).",
+        "spatie/laravel-horizon-watcher": "Automatically restarts Horizon when local PHP files change"
     },
     "autoload": {
         "psr-4": {
