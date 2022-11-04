@@ -2,8 +2,11 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Exception;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Jobs\MonitorTag;
 use Laravel\Horizon\Jobs\RetryFailedJob;
 use Laravel\Horizon\Tests\IntegrationTest;
@@ -78,5 +81,28 @@ class RetryJobTest extends IntegrationTest
 
         // Test status is now failed on the retry...
         $this->assertSame('failed', $retried[0]['status']);
+    }
+
+    public function test_retrying_failed_job_with_retry_until_and_without_pushed_at()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $payload = new JobPayload(
+            json_encode([
+                'id' => 1,
+                'displayName' => 'foo',
+                'retryUntil' => now()->addMinute()->timestamp,
+            ])
+        );
+
+        $repository->failed(new Exception('Failed Job'), 'redis', 'default', $payload);
+
+        dispatch(new RetryFailedJob(1));
+        $this->work();
+
+        $retried = Redis::connection('horizon')->hget(1, 'retried_by');
+        $retried = json_decode($retried, true);
+
+        $this->assertSame('pending', $retried[0]['status']);
     }
 }
