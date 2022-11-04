@@ -89,20 +89,20 @@ class RetryJobTest extends IntegrationTest
 
         $payload = new JobPayload(
             json_encode([
-                'id' => 1, 
+                'id' => 1,
                 'displayName' => 'foo',
-                'retryUntil' => now()->addMinute()->timestamp
+                'retryUntil' => now()->addMinute()->timestamp,
             ])
         );
 
         $repository->failed(new Exception('Failed Job'), 'redis', 'default', $payload);
-        
+
         dispatch(new RetryFailedJob(1));
         $this->work();
 
         $retried = Redis::connection('horizon')->hget(1, 'retried_by');
         $retried = json_decode($retried, true);
-        
+
         $this->assertSame('pending', $retried[0]['status']);
     }
 }
