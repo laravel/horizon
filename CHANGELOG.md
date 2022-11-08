@@ -1,6 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.3...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.4...5.x)
+
+## [v5.10.4](https://github.com/laravel/horizon/compare/v5.10.3...v5.10.4) - 2022-11-07
+
+### Changed
+
+- Add missing anchor title for clarity by @stevebauman in https://github.com/laravel/horizon/pull/1212
+
+### Fixed
+
+- Set default value for job `$payload['pushedAt']` when retrying by @stevebauman in https://github.com/laravel/horizon/pull/1211
 
 ## [v5.10.3](https://github.com/laravel/horizon/compare/v5.10.2...v5.10.3) - 2022-10-14
 
