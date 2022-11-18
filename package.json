@@ -22,7 +22,7 @@
         "moment-timezone": "^0.5.35",
         "phpunserialize": "1.*",
         "popper.js": "^1.12",
-        "resolve-url-loader": "^3.1.2",
+        "resolve-url-loader": "^5.0.0",
         "sass": "^1.26.3",
         "sass-loader": "^11.0.1",
         "sql-formatter": "^4.0.2",
