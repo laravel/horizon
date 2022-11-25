@@ -132,7 +132,7 @@ class AutoScaler
 
         if ($desiredProcessCount > $totalProcessCount) {
             $maxUpShift = min(
-                $supervisor->options->maxProcesses - $supervisor->totalProcessCount(),
+                max(0, $supervisor->options->maxProcesses - $supervisor->totalProcessCount()),
                 $supervisor->options->balanceMaxShift
             );
 
