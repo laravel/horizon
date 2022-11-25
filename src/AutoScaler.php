@@ -151,7 +151,6 @@ class AutoScaler
 
             $pool->scale(
                 max(
-                    1,
                     $totalProcessCount - $maxDownShift,
                     $supervisor->options->minProcesses,
                     $desiredProcessCount

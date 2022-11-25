@@ -15,7 +15,7 @@ class FakePool
 
     public function scale($processCount)
     {
-        $this->processCount = max(0, (int) $processCount);
+        $this->processCount = $processCount;
     }
 
     public function queue()
