@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.4...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.5...5.x)
+
+## [v5.10.5](https://github.com/laravel/horizon/compare/v5.10.4...v5.10.5) - 2022-11-25
+
+### Fixed
+
+- Ensure Autoscaler never reduces processes to less than 1 by @LasseRafn in https://github.com/laravel/horizon/pull/1221
 
 ## [v5.10.4](https://github.com/laravel/horizon/compare/v5.10.3...v5.10.4) - 2022-11-07
 
