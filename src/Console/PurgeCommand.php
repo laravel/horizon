@@ -17,7 +17,8 @@ class PurgeCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:purge';
+    protected $signature = 'horizon:purge
+                            {--signal=SIGTERM : Signal to send to the rogue processes}';
 
     /**
      * The console command description.
@@ -40,6 +41,11 @@ class PurgeCommand extends Command
      * @var \Laravel\Horizon\ProcessInspector
      */
     private $inspector;
+
+    /**
+     * @var int
+     */
+    private $signal = SIGTERM;
 
     /**
      * Create a new command instance.
@@ -69,6 +75,10 @@ class PurgeCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masters)
     {
+        $this->signal = is_numeric(($signal = $this->option('signal')))
+            ? $signal
+            : constant($signal);
+
         foreach ($masters->names() as $master) {
             if (Str::startsWith($master, MasterSupervisor::basename())) {
                 $this->purge($master);
@@ -93,7 +103,7 @@ class PurgeCommand extends Command
         collect($expired)->each(function ($processId) use ($master) {
             $this->comment("Killing Process: {$processId}");
 
-            exec("kill {$processId}");
+            exec("kill -s {$this->signal} {$processId}");
 
             $this->processes->forgetOrphans($master, [$processId]);
         });
@@ -114,7 +124,7 @@ class PurgeCommand extends Command
         foreach ($orphans as $processId) {
             $this->info("Observed Orphan: {$processId}");
 
-            if (! posix_kill($processId, SIGTERM)) {
+            if (! posix_kill($processId, $this->signal)) {
                 $this->error("Failed to kill process for Orphan: {$processId} (".posix_strerror(posix_get_last_error()).')');
             }
         }
