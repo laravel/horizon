@@ -17,7 +17,8 @@ class PurgeCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:purge';
+    protected $signature = 'horizon:purge
+                            {--signal=SIGTERM : The signal to send to the rogue processes}';
 
     /**
      * The console command description.
@@ -69,9 +70,13 @@ class PurgeCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masters)
     {
+        $signal = is_numeric($signal = $this->option('signal'))
+                        ? $signal
+                        : constant($signal);
+
         foreach ($masters->names() as $master) {
             if (Str::startsWith($master, MasterSupervisor::basename())) {
-                $this->purge($master);
+                $this->purge($master, $signal);
             }
         }
     }
@@ -80,11 +85,12 @@ class PurgeCommand extends Command
      * Purge any orphan processes.
      *
      * @param  string  $master
+     * @param  int  $signal
      * @return void
      */
-    public function purge($master)
+    public function purge($master, $signal = SIGTERM)
     {
-        $this->recordOrphans($master);
+        $this->recordOrphans($master, $signal);
 
         $expired = $this->processes->orphanedFor(
             $master, $this->supervisors->longestActiveTimeout()
@@ -93,7 +99,7 @@ class PurgeCommand extends Command
         collect($expired)->each(function ($processId) use ($master) {
             $this->comment("Killing Process: {$processId}");
 
-            exec("kill {$processId}");
+            exec("kill -s {$signal} {$processId}");
 
             $this->processes->forgetOrphans($master, [$processId]);
         });
@@ -103,9 +109,10 @@ class PurgeCommand extends Command
      * Record the orphaned Horizon processes.
      *
      * @param  string  $master
+     * @param  int  $signal
      * @return void
      */
-    protected function recordOrphans($master)
+    protected function recordOrphans($master, $signal)
     {
         $this->processes->orphaned(
             $master, $orphans = $this->inspector->orphaned()
@@ -114,7 +121,7 @@ class PurgeCommand extends Command
         foreach ($orphans as $processId) {
             $this->info("Observed Orphan: {$processId}");
 
-            if (! posix_kill($processId, SIGTERM)) {
+            if (! posix_kill($processId, $signal)) {
                 $this->error("Failed to kill process for Orphan: {$processId} (".posix_strerror(posix_get_last_error()).')');
             }
         }
