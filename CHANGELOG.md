@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.5...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.6...5.x)
+
+## [v5.10.6](https://github.com/laravel/horizon/compare/v5.10.5...v5.10.6) - 2022-12-14
+
+### Changed
+
+- Add signal option to `horizon:purge` (e.g. `SIGKILL`) by @crishoj in https://github.com/laravel/horizon/pull/1226
 
 ## [v5.10.5](https://github.com/laravel/horizon/compare/v5.10.4...v5.10.5) - 2022-11-25
 
