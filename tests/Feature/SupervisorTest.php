@@ -60,7 +60,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
 
         $this->wait(function () {
-            $this->assertSame('completed', resolve(JobRepository::class)->getRecent()[0]->status);
+            $this->assertSame('completed', app(JobRepository::class)->getRecent()[0]->status);
         });
 
         $this->assertCount(1, $supervisor->processes());
@@ -100,7 +100,7 @@ class SupervisorTest extends IntegrationTest
         $id = Queue::push(new Jobs\BasicJob);
         $this->assertSame(1, $this->recentJobs());
 
-        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
 
         $supervisor->scale(1);
         $supervisor->loop();
@@ -116,7 +116,7 @@ class SupervisorTest extends IntegrationTest
 
     public function test_supervisor_monitors_worker_processes()
     {
-        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
         // Force underlying worker to fail...
         WorkerCommandString::$command = 'php wrong.php';
 
@@ -146,7 +146,7 @@ class SupervisorTest extends IntegrationTest
         $exceptions->shouldReceive('report')->once();
         $this->app->instance(ExceptionHandler::class, $exceptions);
 
-        $this->supervisor = $supervisor = new Fakes\SupervisorThatThrowsException($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Fakes\SupervisorThatThrowsException($this->supervisorOptions());
 
         $supervisor->loop();
     }
@@ -161,7 +161,7 @@ class SupervisorTest extends IntegrationTest
 
         $supervisor->loop();
 
-        $record = resolve(SupervisorRepository::class)->find($supervisor->name);
+        $record = app(SupervisorRepository::class)->find($supervisor->name);
         $this->assertSame('running', $record->status);
         $this->assertSame(2, collect($record->processes)->sum());
         $this->assertSame(2, $record->processes['redis:default,another']);
@@ -171,20 +171,20 @@ class SupervisorTest extends IntegrationTest
         $supervisor->pause();
         $supervisor->loop();
 
-        $record = resolve(SupervisorRepository::class)->find($supervisor->name);
+        $record = app(SupervisorRepository::class)->find($supervisor->name);
         $this->assertSame('paused', $record->status);
     }
 
     public function test_supervisor_repository_returns_null_if_no_supervisor_exists_with_given_name()
     {
-        $repository = resolve(SupervisorRepository::class);
+        $repository = app(SupervisorRepository::class);
 
         $this->assertNull($repository->find('nothing'));
     }
 
     public function test_processes_can_be_scaled_up()
     {
-        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
 
         $supervisor->scale(2);
         $supervisor->loop();
@@ -221,7 +221,7 @@ class SupervisorTest extends IntegrationTest
 
     public function test_supervisor_can_restart_processes()
     {
-        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
 
         $supervisor->scale(1);
         $supervisor->loop();
@@ -259,13 +259,13 @@ class SupervisorTest extends IntegrationTest
         $this->assertTrue($supervisor->processPools[0]->working);
 
         $this->wait(function () {
-            $this->assertSame('completed', resolve(JobRepository::class)->getRecent()[0]->status);
+            $this->assertSame('completed', app(JobRepository::class)->getRecent()[0]->status);
         });
     }
 
     public function test_dead_processes_are_not_restarted_when_paused()
     {
-        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
 
         $supervisor->scale(1);
         $supervisor->loop();
@@ -334,10 +334,7 @@ class SupervisorTest extends IntegrationTest
 
     public function test_supervisor_process_terminates_all_workers_and_exits_on_full_termination()
     {
-        $this->supervisor = $supervisor = new Fakes\SupervisorWithFakeExit($options = $this->supervisorOptions());
-
-        $repository = resolve(SupervisorRepository::class);
-        $repository->forgetDelay = 1;
+        $this->supervisor = $supervisor = new Fakes\SupervisorWithFakeExit($this->supervisorOptions());
 
         $supervisor->scale(1);
         usleep(100 * 1000);
@@ -348,19 +345,19 @@ class SupervisorTest extends IntegrationTest
         $this->assertTrue($supervisor->exited);
 
         // Assert that the supervisor is removed...
-        $this->assertNull(resolve(SupervisorRepository::class)->find($supervisor->name));
+        $this->assertNull(app(SupervisorRepository::class)->find($supervisor->name));
     }
 
     public function test_supervisor_loop_processes_pending_supervisor_commands()
     {
         $this->app->singleton(Commands\FakeCommand::class);
 
-        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
 
         $supervisor->scale(1);
         usleep(100 * 1000);
 
-        resolve(HorizonCommandQueue::class)->push(
+        app(HorizonCommandQueue::class)->push(
             $supervisor->name, Commands\FakeCommand::class, ['foo' => 'bar']
         );
 
@@ -368,7 +365,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->loop();
         $supervisor->loop();
 
-        $command = resolve(Commands\FakeCommand::class);
+        $command = app(Commands\FakeCommand::class);
 
         $this->assertSame(1, $command->processCount);
         $this->assertEquals($supervisor, $command->supervisor);
@@ -384,7 +381,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->scale(1);
         usleep(100 * 1000);
 
-        resolve(HorizonCommandQueue::class)->push(
+        app(HorizonCommandQueue::class)->push(
             $supervisor->name, Scale::class, ['scale' => 2]
         );
         $supervisor->pause();

@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
@@ -24,8 +23,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
-        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
-        $listener->lastMonitoredAt = CarbonImmutable::now()->subDay();
+        $listener = new MonitorWaitTimes(app(MetricsRepository::class));
 
         $listener->handle();
 
@@ -46,8 +44,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
-        $listener = new MonitorWaitTimes(resolve(MetricsRepository::class));
-        $listener->lastMonitoredAt = CarbonImmutable::now()->subDays(1);
+        $listener = new MonitorWaitTimes(app(MetricsRepository::class));
 
         $listener->handle();
 

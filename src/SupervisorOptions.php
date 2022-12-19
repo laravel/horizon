@@ -152,6 +152,13 @@ class SupervisorOptions
     public $rest;
 
     /**
+     * Indicates if the supervisor should auto-scale.
+     *
+     * @var bool
+     */
+    public $autoScale;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name

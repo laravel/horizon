@@ -202,9 +202,6 @@ class MasterSupervisorTest extends IntegrationTest
         $master = new Fakes\MasterSupervisorWithFakeExit;
         $master->working = true;
 
-        $repository = resolve(MasterSupervisorRepository::class);
-        $repository->forgetDelay = 1;
-
         $master->persist();
         $master->terminate();
 
@@ -218,9 +215,6 @@ class MasterSupervisorTest extends IntegrationTest
     {
         $master = new Fakes\MasterSupervisorWithFakeExit;
         $master->working = true;
-
-        $repository = resolve(MasterSupervisorRepository::class);
-        $repository->forgetDelay = 1;
 
         $master->supervisors = collect([new EternalSupervisor]);
 
