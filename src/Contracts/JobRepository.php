@@ -56,9 +56,10 @@ interface JobRepository
      * Get a chunk of completed jobs.
      *
      * @param  string  $afterIndex
+     * @param  array  $exclude
      * @return \Illuminate\Support\Collection
      */
-    public function getCompleted($afterIndex = null);
+    public function getCompleted($afterIndex = null, array $exclude = []);
 
     /**
      * Get the count of recent jobs.

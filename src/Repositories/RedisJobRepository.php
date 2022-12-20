@@ -158,12 +158,12 @@ class RedisJobRepository implements JobRepository
      * Get a chunk of completed jobs.
      *
      * @param  string|null  $afterIndex
-     * @param  array  $filter
+     * @param  array  $exclude
      * @return \Illuminate\Support\Collection
      */
-    public function getCompleted($afterIndex = null, array $filter = [])
+    public function getCompleted($afterIndex = null, array $exclude = [])
     {
-        return $this->getJobsByType('completed_jobs', $afterIndex, $filter);
+        return $this->getJobsByType('completed_jobs', $afterIndex, $exclude);
     }
 
     /**
@@ -221,10 +221,10 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $type
      * @param  string  $afterIndex
-     * @param  array  $filter
+     * @param  array  $exclude
      * @return \Illuminate\Support\Collection
      */
-    protected function getJobsByType($type, $afterIndex, array $filter = [])
+    protected function getJobsByType($type, $afterIndex, array $exclude = [])
     {
         $afterIndex = $afterIndex === null ? -1 : $afterIndex;
 
