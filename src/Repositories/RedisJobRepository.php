@@ -12,6 +12,8 @@ use Laravel\Horizon\LuaScripts;
 
 class RedisJobRepository implements JobRepository
 {
+    const PER_PAGE = 50;
+
     /**
      * The Redis connection instance.
      *
@@ -156,11 +158,12 @@ class RedisJobRepository implements JobRepository
      * Get a chunk of completed jobs.
      *
      * @param  string|null  $afterIndex
+     * @param  array  $filter
      * @return \Illuminate\Support\Collection
      */
-    public function getCompleted($afterIndex = null)
+    public function getCompleted($afterIndex = null, array $filter = [])
     {
-        return $this->getJobsByType('completed_jobs', $afterIndex);
+        return $this->getJobsByType('completed_jobs', $afterIndex, $filter);
     }
 
     /**
@@ -218,15 +221,18 @@ class RedisJobRepository implements JobRepository
      *
      * @param  string  $type
      * @param  string  $afterIndex
+     * @param  array  $filter
      * @return \Illuminate\Support\Collection
      */
-    protected function getJobsByType($type, $afterIndex)
+    protected function getJobsByType($type, $afterIndex, array $filter = [])
     {
         $afterIndex = $afterIndex === null ? -1 : $afterIndex;
 
-        return $this->getJobs($this->connection()->zrange(
-            $type, $afterIndex + 1, $afterIndex + 50
-        ), $afterIndex + 1);
+        $ids = $this->connection()->zrange(
+            $type, $afterIndex + 1, $afterIndex + self::PER_PAGE
+        );
+
+        return $this->getJobs($ids, $afterIndex + 1);
     }
 
     /**
