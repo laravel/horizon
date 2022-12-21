@@ -220,7 +220,7 @@ class RedisJobRepository implements JobRepository
      * Get a chunk of jobs from the given type set.
      *
      * @param  string  $type
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @param  array  $exclude
      * @return \Illuminate\Support\Collection
      */
@@ -228,11 +228,21 @@ class RedisJobRepository implements JobRepository
     {
         $afterIndex = $afterIndex === null ? -1 : $afterIndex;
 
-        $ids = $this->connection()->zrange(
-            $type, $afterIndex + 1, $afterIndex + self::PER_PAGE
-        );
+        $jobs = collect();
 
-        return $this->getJobs($ids, $afterIndex + 1);
+        do {
+            $jobs = $jobs->merge($newJobs = $this->getJobs($this->connection()->zrange(
+                $type, $afterIndex + 1, $afterIndex + self::PER_PAGE
+            ), $afterIndex + 1));
+
+            $afterIndex = $afterIndex + $newJobs->count();
+
+            $jobs = $jobs->reject(function ($job) use ($exclude) {
+                return in_array($job->name, $exclude);
+            });
+        } while ($jobs->count() < self::PER_PAGE && $jobs->count() > 0 && $newJobs->count() > 0);
+
+        return $jobs->take(self::PER_PAGE);
     }
 
     /**
@@ -245,7 +255,7 @@ class RedisJobRepository implements JobRepository
     {
         $minutes = $this->minutesForType($type);
 
-        return $this->connection()->zcount(
+        return (int) $this->connection()->zcount(
             $type, '-inf', CarbonImmutable::now()->subMinutes($minutes)->getTimestamp() * -1
         );
     }
