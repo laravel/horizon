@@ -43,3 +43,5 @@ mix.options({
             }),
         ],
     });
+
+mix.disableSuccessNotifications();

@@ -26,11 +26,11 @@
             {{ readableTimestamp(job.payload.pushedAt) }}
         </td>
 
-        <td v-if="$route.params.type=='completed'" class="table-fit">
+        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit">
             {{ readableTimestamp(job.completed_at) }}
         </td>
 
-        <td v-if="$route.params.type=='completed'" class="table-fit">
+        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit">
             <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
         </td>
     </tr>

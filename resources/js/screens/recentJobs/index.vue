@@ -49,7 +49,7 @@
         watch: {
             '$route'() {
                 this.updatePageTitle();
-                        
+
                 this.page = 1;
 
                 this.loadJobs();
@@ -137,7 +137,11 @@
             updatePageTitle() {
                 document.title = this.$route.params.type == 'pending'
                         ? 'Horizon - Pending Jobs'
-                        : 'Horizon - Completed Jobs';
+                        : (
+                            this.$route.params.type == 'silenced'
+                                ? 'Horizon - Silenced Jobs'
+                                : 'Horizon - Completed Jobs'
+                        );
             }
         }
     }
@@ -149,6 +153,15 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
                 <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
+                <h5 v-if="$route.params.type == 'silenced'">Silenced Jobs</h5>
+
+                <router-link v-if="$route.params.type == 'completed'" active-class="active" to="/jobs/silenced" class="nav-link">
+                    <span>See Silenced Jobs</span>
+                </router-link>
+
+                <router-link v-if="$route.params.type == 'silenced'" active-class="active" to="/jobs/completed" class="nav-link">
+                    <span>See Completed Jobs</span>
+                </router-link>
             </div>
 
             <div v-if="!ready"
@@ -161,7 +174,6 @@
                 <span>Loading...</span>
             </div>
 
-
             <div v-if="ready && jobs.length == 0"
                  class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
                 <span>There aren't any jobs.</span>
@@ -169,13 +181,13 @@
 
             <table v-if="ready && jobs.length > 0" class="table table-hover table-sm mb-0">
                 <thead>
-                <tr>
-                    <th>Job</th>
-                    <th v-if="$route.params.type=='pending'" class="text-right">Queued At</th>
-                    <th v-if="$route.params.type=='completed'">Queued At</th>
-                    <th v-if="$route.params.type=='completed'">Completed At</th>
-                    <th v-if="$route.params.type=='completed'" class="text-right">Runtime</th>
-                </tr>
+                    <tr>
+                        <th>Job</th>
+                        <th v-if="$route.params.type=='pending'" class="text-right">Queued At</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued At</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed At</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">Runtime</th>
+                    </tr>
                 </thead>
 
                 <tbody>
@@ -198,6 +210,5 @@
                 <button @click="next" class="btn btn-secondary btn-md" :disabled="page>=totalPages">Next</button>
             </div>
         </div>
-
     </div>
 </template>
