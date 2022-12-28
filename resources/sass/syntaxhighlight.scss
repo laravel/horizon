@@ -8,13 +8,14 @@
         position: relative;
         .vjs-indent-unit {
             &.has-line {
-                border-left: 1px dotted rgba(204, 204, 204, .28) !important;
+                border-left: 1px dotted rgba(204, 204, 204, 0.28) !important;
             }
         }
         &.has-carets {
             padding-left: 15px;
         }
-        .has-carets.has-selector, .has-selector {
+        .has-carets.has-selector,
+        .has-selector {
             padding-left: 30px;
         }
     }
