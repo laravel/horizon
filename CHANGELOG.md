@@ -1,6 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.10.6...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.11.0...5.x)
+
+## [v5.11.0](https://github.com/laravel/horizon/compare/v5.10.6...v5.11.0) - 2023-01-03
+
+### Changed
+
+- Uses PHP Native Type Declarations 🐘 by @nunomaduro in https://github.com/laravel/horizon/pull/1206
+
+### Fixed
+
+- Fix vue-json-pretty CSS for new classnames by @datpmwork in https://github.com/laravel/horizon/pull/1231
 
 ## [v5.10.6](https://github.com/laravel/horizon/compare/v5.10.5...v5.10.6) - 2022-12-14
 
