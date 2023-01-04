@@ -61,6 +61,14 @@ interface JobRepository
     public function getCompleted($afterIndex = null);
 
     /**
+     * Get a chunk of silenced jobs.
+     *
+     * @param  string  $afterIndex
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSilenced($afterIndex = null);
+
+    /**
      * Get the count of recent jobs.
      *
      * @return int
@@ -87,6 +95,13 @@ interface JobRepository
      * @return int
      */
     public function countCompleted();
+
+    /**
+     * Get the count of silenced jobs.
+     *
+     * @return int
+     */
+    public function countSilenced();
 
     /**
      * Get the count of the recently failed jobs.
@@ -159,9 +174,10 @@ interface JobRepository
      *
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @param  bool  $failed
+     * @param  bool  $silenced
      * @return void
      */
-    public function completed(JobPayload $payload, $failed = false);
+    public function completed(JobPayload $payload, $failed = false, $silenced = false);
 
     /**
      * Delete the given monitored jobs by IDs.
