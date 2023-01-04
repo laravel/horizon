@@ -97,7 +97,7 @@ interface JobRepository
     public function countCompleted();
 
     /**
-     * Get the count of completed jobs.
+     * Get the count of silenced jobs.
      *
      * @return int
      */

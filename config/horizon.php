@@ -112,12 +112,14 @@ return [
     | Silenced Jobs
     |--------------------------------------------------------------------------
     |
-    | Here you can configure which jobs to exclude from the completed jobs list.
+    | Silencing a job will instruct Horizon to not place the job in the list
+    | of completed jobs within the Horizon dashboard. This setting may be
+    | used to fully remove any noisy jobs from the completed jobs list.
     |
     */
 
     'silenced' => [
-        //
+        // App\Jobs\ExampleJob::class,
     ],
 
     /*
