@@ -154,14 +154,6 @@
                 <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
                 <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
                 <h5 v-if="$route.params.type == 'silenced'">Silenced Jobs</h5>
-
-                <router-link v-if="$route.params.type == 'completed'" active-class="active" to="/jobs/silenced" class="nav-link">
-                    <span>View Silenced Jobs</span>
-                </router-link>
-
-                <router-link v-if="$route.params.type == 'silenced'" active-class="active" to="/jobs/completed" class="nav-link">
-                    <span>View Completed Jobs</span>
-                </router-link>
             </div>
 
             <div v-if="!ready"

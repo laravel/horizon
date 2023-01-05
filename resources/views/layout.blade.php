@@ -90,6 +90,14 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
+                        <router-link active-class="active" to="/jobs/silenced" class="nav-link d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                            </svg>
+                            <span>Silenced Jobs</span>
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
                         <router-link active-class="active" to="/failed" class="nav-link d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"></path>
