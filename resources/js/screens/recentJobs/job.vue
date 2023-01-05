@@ -56,7 +56,6 @@
             </div>
         </div>
 
-
         <div class="card mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>Data</h5>
@@ -96,9 +95,6 @@
             'stack-trace': require('./../../components/Stacktrace').default
         },
 
-        /**
-         * The component's data.
-         */
         data() {
             return {
                 ready: false,
@@ -134,10 +130,6 @@
             },
         },
 
-
-        /**
-         * Prepare the component.
-         */
         mounted() {
             this.loadJob(this.$route.params.jobId);
 

@@ -76,6 +76,12 @@ export default [
     },
 
     {
+        path: '/jobs/silenced/:jobId',
+        name: 'silenced-jobs-preview',
+        component: require('./screens/recentJobs/job').default,
+    },
+
+    {
         path: '/failed',
         name: 'failed-jobs',
         component: require('./screens/failedJobs/index').default,
