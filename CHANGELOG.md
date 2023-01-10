@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.11.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.12.0...5.x)
+
+## [v5.12.0](https://github.com/laravel/horizon/compare/v5.11.0...v5.12.0) - 2023-01-09
+
+### Added
+
+- Silenced jobs by @driesvints in https://github.com/laravel/horizon/pull/1232
+- Laravel v10 Support by @driesvints in https://github.com/laravel/horizon/pull/1234
 
 ## [v5.11.0](https://github.com/laravel/horizon/compare/v5.10.6...v5.11.0) - 2023-01-03
 
