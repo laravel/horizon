@@ -13,7 +13,7 @@
                 loadingNewEntries: false,
                 hasNewEntries: false,
                 page: 1,
-                perPage: 3,
+                perPage: 50,
                 totalPages: 1,
                 jobs: []
             };
