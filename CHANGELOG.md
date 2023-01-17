@@ -1,6 +1,16 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.12.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.13.0...5.x)
+
+## [v5.13.0](https://github.com/laravel/horizon/compare/v5.12.0...v5.13.0) - 2023-01-17
+
+### Added
+
+- Implement Silenced interface by @driesvints in https://github.com/laravel/horizon/pull/1236
+
+### Fixed
+
+- Increase `perPage` variable for monitored tags by @joshuaruesweg in https://github.com/laravel/horizon/pull/1237
 
 ## [v5.12.0](https://github.com/laravel/horizon/compare/v5.11.0...v5.12.0) - 2023-01-09
 
