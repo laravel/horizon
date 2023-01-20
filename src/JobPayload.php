@@ -79,6 +79,16 @@ class JobPayload implements ArrayAccess
     }
 
     /**
+     * Determine if the job is silenced.
+     *
+     * @return bool
+     */
+    public function isSilenced()
+    {
+        return $this->decoded['silenced'] ?? false;
+    }
+
+    /**
      * Prepare the payload for storage on the queue by adding tags, etc.
      *
      * @param  mixed  $job
@@ -89,6 +99,7 @@ class JobPayload implements ArrayAccess
         return $this->set([
             'type' => $this->determineType($job),
             'tags' => $this->determineTags($job),
+            'silenced' => $this->determineIfSilenced($job),
             'pushedAt' => str_replace(',', '.', microtime(true)),
         ]);
     }
@@ -127,6 +138,21 @@ class JobPayload implements ArrayAccess
             $this->decoded['tags'] ?? [],
             ! $job || is_string($job) ? [] : Tags::for($job)
         );
+    }
+
+    /**
+     * Determine if the job is silenced using the method override.
+     *
+     * @param mixed $job
+     * @return bool
+     */
+    protected function determineIfSilenced($job)
+    {
+        if (! $job) {
+            return false;
+        }
+
+        return method_exists($job, 'silenced') ? $job->silenced() : false;
     }
 
     /**

@@ -45,7 +45,8 @@ class MarkJobAsComplete
     public function handle(JobDeleted $event)
     {
         $isSilenced = in_array($event->payload->commandName(), config('horizon.silenced', [])) ||
-            is_a($event->payload->commandName(), Silenced::class, true);
+            is_a($event->payload->commandName(), Silenced::class, true) ||
+            $event->payload->isSilenced();
 
         $this->jobs->completed($event->payload, $event->job->hasFailed(), $isSilenced);
 

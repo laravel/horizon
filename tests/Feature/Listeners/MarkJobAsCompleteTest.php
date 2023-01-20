@@ -55,6 +55,41 @@ class MarkJobAsCompleteTest extends IntegrationTest
         $payload = m::mock(JobPayload::class);
         $payload->shouldReceive('commandName')->andReturn($job);
         $payload->shouldReceive('tags')->andReturn([]);
+        $payload->shouldReceive('isSilenced')->andReturn(false);
+
+        $job = m::mock(RedisJob::class);
+        $job->shouldReceive('hasFailed')->andReturn(false);
+
+        $event = m::mock(JobDeleted::class);
+        $event->payload = $payload;
+        $event->job = $job;
+
+        $jobs = m::mock(JobRepository::class);
+        $jobs->shouldReceive('completed')->once()->with($payload, false, $silenced);
+
+        $tags = m::mock(TagRepository::class);
+        $tags->shouldReceive('monitored')->once()->with([])->andReturn([]);
+
+        $listener = new MarkJobAsComplete($jobs, $tags);
+
+        $listener->handle($event);
+    }
+
+    public function test_it_can_handle_job_when_silence_override_true(): void
+    {
+        $this->runScenarioWithMethodOverride(SilencedJobWithMethodTrue::class, true);
+    }
+
+    public function test_it_can_handle_job_when_silence_override_false(): void
+    {
+        $this->runScenarioWithMethodOverride(SilencedJobWithMethodFalse::class, false);
+    }
+        public function runScenarioWithMethodOverride(string $job, bool $silenced): void
+    {
+        $payload = m::mock(JobPayload::class);
+        $payload->shouldReceive('commandName')->andReturn($job);
+        $payload->shouldReceive('tags')->andReturn([]);
+        $payload->shouldReceive('isSilenced')->andReturn((new $job())->silenced());
 
         $job = m::mock(RedisJob::class);
         $job->shouldReceive('hasFailed')->andReturn(false);
@@ -77,6 +112,22 @@ class MarkJobAsCompleteTest extends IntegrationTest
 
 class SilencedJob implements Silenced
 {
+}
+
+class SilencedJobWithMethodTrue
+{
+    public function silenced()
+    {
+        return true;
+    }
+}
+
+class SilencedJobWithMethodFalse
+{
+    public function silenced()
+    {
+        return false;
+    }
 }
 
 class NonSilencedJob
