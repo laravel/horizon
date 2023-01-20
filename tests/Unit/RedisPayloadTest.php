@@ -53,7 +53,7 @@ class RedisPayloadTest extends UnitTest
         $second->id = 2;
 
         $JobPayload->prepare(new FakeJobWithEloquentModel($first, $second));
-        $this->assertEquals([FakeModel::class . ':1', FakeModel::class . ':2'], $JobPayload->decoded['tags']);
+        $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
 
     public function test_tags_are_correctly_gathered_from_collections()
@@ -67,7 +67,7 @@ class RedisPayloadTest extends UnitTest
         $second->id = 2;
 
         $JobPayload->prepare(new FakeJobWithEloquentCollection(new EloquentCollection([$first, $second])));
-        $this->assertEquals([FakeModel::class . ':1', FakeModel::class . ':2'], $JobPayload->decoded['tags']);
+        $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
 
     public function test_tags_are_correctly_extracted_for_internal_special_jobs()
@@ -81,7 +81,7 @@ class RedisPayloadTest extends UnitTest
         $second->id = 2;
 
         $JobPayload->prepare(new FakeJobWithEloquentCollection(new EloquentCollection([$first, $second])));
-        $this->assertEquals([FakeModel::class . ':1', FakeModel::class . ':2'], $JobPayload->decoded['tags']);
+        $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
 
     public function test_tags_are_correctly_extracted_for_listeners()
@@ -105,7 +105,7 @@ class RedisPayloadTest extends UnitTest
 
         $JobPayload->prepare($job);
 
-        $this->assertEquals([FakeModel::class . ':42'], $JobPayload->decoded['tags']);
+        $this->assertEquals([FakeModel::class.':42'], $JobPayload->decoded['tags']);
     }
 
     /**
@@ -119,7 +119,7 @@ class RedisPayloadTest extends UnitTest
 
         $JobPayload->prepare($job);
 
-        $this->assertEquals([FakeModel::class . ':21'], $JobPayload->decoded['tags']);
+        $this->assertEquals([FakeModel::class.':21'], $JobPayload->decoded['tags']);
     }
 
     public function test_listener_and_event_tags_can_merge_auto_tag_events()
@@ -131,7 +131,7 @@ class RedisPayloadTest extends UnitTest
         $JobPayload->prepare($job);
 
         $this->assertEquals([
-            'listenerTag1', 'listenerTag2', FakeModel::class . ':5',
+            'listenerTag1', 'listenerTag2', FakeModel::class.':5',
         ], $JobPayload->decoded['tags']);
     }
 
@@ -143,7 +143,7 @@ class RedisPayloadTest extends UnitTest
 
         $JobPayload->prepare($job);
 
-        $this->assertEquals(['mytag', FakeModel::class . ':42'], $JobPayload->decoded['tags']);
+        $this->assertEquals(['mytag', FakeModel::class.':42'], $JobPayload->decoded['tags']);
     }
 
     public function test_jobs_can_have_tags_method_to_override_auto_tagging()

@@ -84,7 +84,7 @@ class MarkJobAsCompleteTest extends IntegrationTest
     {
         $this->runScenarioWithMethodOverride(SilencedJobWithMethodFalse::class, false);
     }
-        public function runScenarioWithMethodOverride(string $job, bool $silenced): void
+    public function runScenarioWithMethodOverride(string $job, bool $silenced): void
     {
         $payload = m::mock(JobPayload::class);
         $payload->shouldReceive('commandName')->andReturn($job);

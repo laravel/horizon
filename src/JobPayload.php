@@ -143,7 +143,7 @@ class JobPayload implements ArrayAccess
     /**
      * Determine if the job is silenced using the method override.
      *
-     * @param mixed $job
+     * @param  mixed  $job
      * @return bool
      */
     protected function determineIfSilenced($job)
