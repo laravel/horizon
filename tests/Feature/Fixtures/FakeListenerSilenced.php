@@ -1,10 +1,11 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Unit\Fixtures;
+namespace Laravel\Horizon\Tests\Feature\Fixtures;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Laravel\Horizon\Contracts\Silenced;
 
-class FakeListenerWithProperties
+class FakeListenerSilenced implements Silenced
 {
     /**
      * @var Dispatcher

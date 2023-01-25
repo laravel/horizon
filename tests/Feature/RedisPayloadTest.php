@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Unit;
+namespace Laravel\Horizon\Tests\Feature;
 
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Contracts\Mail\Mailable;
@@ -8,21 +8,25 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Notifications\SendQueuedNotifications;
+use Laravel\Horizon\Contracts\Silenced;
 use Laravel\Horizon\JobPayload;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeEvent;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeEventWithModel;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentCollection;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentModel;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithTagsMethod;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListener;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithProperties;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithTypedProperties;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeModel;
-use Laravel\Horizon\Tests\UnitTest;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeEvent;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeEventWithModel;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentCollection;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentModel;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithTagsMethod;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListener;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerSilenced;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithProperties;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithTypedProperties;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeModel;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeSilencedJob;
+use Laravel\Horizon\Tests\Feature\Fixtures\SilencedMailable;
+use Laravel\Horizon\Tests\IntegrationTest;
 use Mockery;
 use StdClass;
 
-class RedisPayloadTest extends UnitTest
+class RedisPayloadTest extends IntegrationTest
 {
     public function test_type_is_correctly_determined()
     {
@@ -151,5 +155,35 @@ class RedisPayloadTest extends UnitTest
 
         $JobPayload->prepare(new FakeJobWithTagsMethod);
         $this->assertEquals(['first', 'second'], $JobPayload->decoded['tags']);
+    }
+
+    public function test_it_determines_if_job_is_silenced_correctly()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $JobPayload->prepare(new BroadcastEvent(new class implements Silenced {}));
+        $this->assertTrue($JobPayload->isSilenced());
+
+        $JobPayload->prepare(new CallQueuedListener(FakeListenerSilenced::class, 'handle', [new FakeEventWithModel(42)]));
+        $this->assertTrue($JobPayload->isSilenced());
+
+        $JobPayload->prepare(new SendQueuedNotifications([], new class implements Silenced {}, ['mail']));
+        $this->assertTrue($JobPayload->isSilenced());
+
+        $JobPayload->prepare(new FakeSilencedJob);
+        $this->assertTrue($JobPayload->isSilenced());
+
+        $JobPayload->prepare(new BroadcastEvent(new class {}));
+        $this->assertFalse($JobPayload->isSilenced());
+    }
+
+    public function test_it_determines_if_job_is_silenced_correctly_for_mailable()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $mailableMock = Mockery::mock(SilencedMailable::class);
+        config(['horizon.silenced' => [get_class($mailableMock)]]);
+        $JobPayload->prepare(new SendQueuedMailable($mailableMock));
+        $this->assertTrue($JobPayload->isSilenced());
     }
 }
