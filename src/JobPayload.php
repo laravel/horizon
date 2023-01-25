@@ -8,6 +8,7 @@ use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Support\Arr;
+use Laravel\Horizon\Contracts\Silenced;
 
 class JobPayload implements ArrayAccess
 {
@@ -79,6 +80,16 @@ class JobPayload implements ArrayAccess
     }
 
     /**
+     * Determine if the job has been silenced.
+     *
+     * @return  bool
+     */
+    public function isSilenced()
+    {
+        return isset($this->decoded['silenced']) ?? false;
+    }
+
+    /**
      * Prepare the payload for storage on the queue by adding tags, etc.
      *
      * @param  mixed  $job
@@ -89,6 +100,7 @@ class JobPayload implements ArrayAccess
         return $this->set([
             'type' => $this->determineType($job),
             'tags' => $this->determineTags($job),
+            'silenced' => $this->determineIfJobIsSilenced($job),
             'pushedAt' => str_replace(',', '.', microtime(true)),
         ]);
     }
@@ -127,6 +139,42 @@ class JobPayload implements ArrayAccess
             $this->decoded['tags'] ?? [],
             ! $job || is_string($job) ? [] : Tags::for($job)
         );
+    }
+
+    /**
+     * Inspect the underlying job class to see if it is silenced.
+     *
+     * @param  mixed  $job
+     * @return bool
+     */
+    public function determineIfJobIsSilenced($job)
+    {
+        $jobClass = $this->underlyingJobClass($job);
+
+        return in_array(get_class($jobClass), config('horizon.silenced', [])) ||
+                    is_a($jobClass, Silenced::class, true);
+    }
+
+    /**
+     * Get the underlying queued job.
+     *
+     * @param  mixed  $job
+     * @return mixed
+     */
+    public function underlyingJobClass($job)
+    {
+        switch (true) {
+            case $job instanceof BroadcastEvent:
+                return $job->event;
+            case $job instanceof CallQueuedListener:
+                return $job->class;
+            case $job instanceof SendQueuedMailable:
+                return $job->mailable;
+            case $job instanceof SendQueuedNotifications:
+                return $job->notification;
+            default:
+                return $job;
+        }
     }
 
     /**

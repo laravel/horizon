@@ -44,10 +44,7 @@ class MarkJobAsComplete
      */
     public function handle(JobDeleted $event)
     {
-        $isSilenced = in_array($event->payload->commandName(), config('horizon.silenced', [])) ||
-            is_a($event->payload->commandName(), Silenced::class, true);
-
-        $this->jobs->completed($event->payload, $event->job->hasFailed(), $isSilenced);
+        $this->jobs->completed($event->payload, $event->job->hasFailed(), $event->payload->isSilenced());
 
         if (! $event->job->hasFailed() && count($this->tags->monitored($event->payload->tags())) > 0) {
             $this->jobs->remember($event->connectionName, $event->queue, $event->payload);

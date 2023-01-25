@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Notifications\SendQueuedNotifications;
+use Laravel\Horizon\Contracts\Silenced;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeEvent;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeEventWithModel;
@@ -15,6 +16,7 @@ use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentCollection;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentModel;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithTagsMethod;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeListener;
+use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerSilenced;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithProperties;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithTypedProperties;
 use Laravel\Horizon\Tests\Unit\Fixtures\FakeModel;
@@ -151,5 +153,16 @@ class RedisPayloadTest extends UnitTest
 
         $JobPayload->prepare(new FakeJobWithTagsMethod);
         $this->assertEquals(['first', 'second'], $JobPayload->decoded['tags']);
+    }
+
+    public function test_it_determines_if_job_is_silenced_for_listeners()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $job = new CallQueuedListener(FakeListenerSilenced::class, 'handle', [new FakeEventWithModel(42)]);
+
+        $JobPayload->prepare($job);
+
+        $this->assertTrue($JobPayload->isSilenced());
     }
 }

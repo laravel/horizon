@@ -55,6 +55,7 @@ class MarkJobAsCompleteTest extends IntegrationTest
         $payload = m::mock(JobPayload::class);
         $payload->shouldReceive('commandName')->andReturn($job);
         $payload->shouldReceive('tags')->andReturn([]);
+        $payload->shouldReceive('isSilenced')->andReturn($silenced);
 
         $job = m::mock(RedisJob::class);
         $job->shouldReceive('hasFailed')->andReturn(false);
