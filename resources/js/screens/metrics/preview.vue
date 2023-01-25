@@ -101,9 +101,9 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Throughput - {{$route.params.slug}}</h5>
+                <h2 class="h6 m-0">Throughput - {{$route.params.slug}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -123,9 +123,9 @@
             </div>
         </div>
 
-        <div class="card mt-4">
+        <div class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Runtime - {{$route.params.slug}}</h5>
+                <h2 class="h6 m-0">Runtime - {{$route.params.slug}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">

@@ -127,9 +127,9 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Batches</h5>
+                <h2 class="h6 m-0">Batches</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -145,20 +145,20 @@
                 <span>There aren't any batches.</span>
             </div>
 
-            <table v-if="ready && batches.length > 0" class="table table-hover table-sm mb-0">
+            <table v-if="ready && batches.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
                     <th>Batch</th>
                     <th>Status</th>
-                    <th>Size</th>
-                    <th>Completion</th>
-                    <th class="text-right">Created At</th>
+                    <th class="text-right">Size</th>
+                    <th class="text-right">Completion</th>
+                    <th class="text-right">Created</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
-                    <td colspan="100" class="text-center card-bg-secondary py-1">
+                    <td colspan="100" class="text-center card-bg-secondary py-2">
                         <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
 
                         <small v-if="loadingNewEntries">Loading...</small>
@@ -182,10 +182,10 @@
                             Pending
                         </small>
                     </td>
-                    <td>{{batch.totalJobs}}</td>
-                    <td>{{batch.progress}}%</td>
+                    <td class="text-right text-muted">{{batch.totalJobs}}</td>
+                    <td class="text-right text-muted">{{batch.progress}}%</td>
 
-                    <td class="text-right table-fit">
+                    <td class="text-right text-muted table-fit">
                         {{ formatDateIso(batch.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
                     </td>
                 </tr>
@@ -193,8 +193,8 @@
             </table>
 
             <div v-if="ready && batches.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-md" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-md" :disabled="batches.length < 50">Next</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">Next</button>
             </div>
         </div>
 

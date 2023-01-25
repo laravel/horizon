@@ -5,7 +5,7 @@
                 {{ jobBaseName(job.name) }}
             </router-link>
 
-            <small class="badge badge-secondary badge-sm"
+            <small class="ml-1 badge badge-secondary badge-sm"
                     v-tooltip:top="`Delayed for ${delayed}`"
                     v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
                 Delayed
@@ -22,15 +22,15 @@
             </small>
         </td>
 
-        <td class="table-fit">
+        <td class="table-fit text-muted">
             {{ readableTimestamp(job.payload.pushedAt) }}
         </td>
 
-        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit">
+        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-muted">
             {{ readableTimestamp(job.completed_at) }}
         </td>
 
-        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit">
+        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-right text-muted">
             <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
         </td>
     </tr>
