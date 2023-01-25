@@ -86,7 +86,7 @@ class JobPayload implements ArrayAccess
      */
     public function isSilenced()
     {
-        return isset($this->decoded['silenced']) ?? false;
+        return $this->decoded['silenced'] ?? false;
     }
 
     /**
@@ -149,9 +149,15 @@ class JobPayload implements ArrayAccess
      */
     public function determineIfJobIsSilenced($job)
     {
-        $jobClass = $this->underlyingJobClass($job);
+        if (! $job) {
+            return false;
+        }
 
-        return in_array(get_class($jobClass), config('horizon.silenced', [])) ||
+        $underlyingJob = $this->underlyingJob($job);
+
+        $jobClass = is_string($underlyingJob) ? $underlyingJob : get_class($underlyingJob);
+
+        return in_array($jobClass, config('horizon.silenced', [])) ||
                     is_a($jobClass, Silenced::class, true);
     }
 
@@ -161,7 +167,7 @@ class JobPayload implements ArrayAccess
      * @param  mixed  $job
      * @return mixed
      */
-    public function underlyingJobClass($job)
+    public function underlyingJob($job)
     {
         switch (true) {
             case $job instanceof BroadcastEvent:
