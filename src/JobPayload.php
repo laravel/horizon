@@ -147,7 +147,7 @@ class JobPayload implements ArrayAccess
      * @param  mixed  $job
      * @return bool
      */
-    public function determineIfJobIsSilenced($job)
+    protected function determineIfJobIsSilenced($job)
     {
         if (! $job) {
             return false;
@@ -167,7 +167,7 @@ class JobPayload implements ArrayAccess
      * @param  mixed  $job
      * @return mixed
      */
-    public function underlyingJob($job)
+    protected function underlyingJob($job)
     {
         switch (true) {
             case $job instanceof BroadcastEvent:
