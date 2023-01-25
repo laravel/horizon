@@ -82,7 +82,7 @@ class JobPayload implements ArrayAccess
     /**
      * Determine if the job has been silenced.
      *
-     * @return  bool
+     * @return bool
      */
     public function isSilenced()
     {

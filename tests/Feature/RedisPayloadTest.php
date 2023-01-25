@@ -23,8 +23,6 @@ use Laravel\Horizon\Tests\Feature\Fixtures\FakeModel;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeSilencedJob;
 use Laravel\Horizon\Tests\Feature\Fixtures\SilencedMailable;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Laravel\Horizon\Tests\UnitTest;
-use League\Flysystem\Config;
 use Mockery;
 use StdClass;
 
