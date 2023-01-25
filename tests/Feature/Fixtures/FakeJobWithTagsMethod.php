@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Unit\Fixtures;
+namespace Laravel\Horizon\Tests\Feature\Fixtures;
 
 class FakeJobWithTagsMethod
 {

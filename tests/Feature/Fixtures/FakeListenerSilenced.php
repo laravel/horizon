@@ -1,14 +1,21 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Unit\Fixtures;
+namespace Laravel\Horizon\Tests\Feature\Fixtures;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Laravel\Horizon\Contracts\Silenced;
 
-class FakeListenerWithTypedProperties
+class FakeListenerSilenced implements Silenced
 {
-    protected Dispatcher $dispatcher;
+    /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
 
-    protected FakeEventWithModel $fakeModel;
+    /**
+     * @var FakeEventWithModel
+     */
+    protected $fakeModel;
 
     public function __construct(Dispatcher $dispatcher)
     {

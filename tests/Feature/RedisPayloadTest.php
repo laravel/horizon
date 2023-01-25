@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Unit;
+namespace Laravel\Horizon\Tests\Feature;
 
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Contracts\Mail\Mailable;
@@ -8,23 +8,23 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Notifications\SendQueuedNotifications;
-use Laravel\Horizon\Contracts\Silenced;
 use Laravel\Horizon\JobPayload;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeEvent;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeEventWithModel;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentCollection;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithEloquentModel;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeJobWithTagsMethod;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListener;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerSilenced;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithProperties;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeListenerWithTypedProperties;
-use Laravel\Horizon\Tests\Unit\Fixtures\FakeModel;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeEvent;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeEventWithModel;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentCollection;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentModel;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithTagsMethod;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListener;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerSilenced;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithProperties;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithTypedProperties;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeModel;
+use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\Tests\UnitTest;
 use Mockery;
 use StdClass;
 
-class RedisPayloadTest extends UnitTest
+class RedisPayloadTest extends IntegrationTest
 {
     public function test_type_is_correctly_determined()
     {

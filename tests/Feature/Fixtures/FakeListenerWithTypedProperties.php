@@ -1,20 +1,14 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Unit\Fixtures;
+namespace Laravel\Horizon\Tests\Feature\Fixtures;
 
 use Illuminate\Contracts\Events\Dispatcher;
 
-class FakeListenerWithProperties
+class FakeListenerWithTypedProperties
 {
-    /**
-     * @var Dispatcher
-     */
-    protected $dispatcher;
+    protected Dispatcher $dispatcher;
 
-    /**
-     * @var FakeEventWithModel
-     */
-    protected $fakeModel;
+    protected FakeEventWithModel $fakeModel;
 
     public function __construct(Dispatcher $dispatcher)
     {
