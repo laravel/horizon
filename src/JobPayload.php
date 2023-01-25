@@ -100,7 +100,7 @@ class JobPayload implements ArrayAccess
         return $this->set([
             'type' => $this->determineType($job),
             'tags' => $this->determineTags($job),
-            'silenced' => $this->determineIfJobIsSilenced($job),
+            'silenced' => $this->shouldBeSilenced($job),
             'pushedAt' => str_replace(',', '.', microtime(true)),
         ]);
     }
@@ -142,12 +142,12 @@ class JobPayload implements ArrayAccess
     }
 
     /**
-     * Inspect the underlying job class to see if it is silenced.
+     * Determine if the underlying job class should be silenced.
      *
      * @param  mixed  $job
      * @return bool
      */
-    protected function determineIfJobIsSilenced($job)
+    protected function shouldBeSilenced($job)
     {
         if (! $job) {
             return false;
@@ -158,7 +158,7 @@ class JobPayload implements ArrayAccess
         $jobClass = is_string($underlyingJob) ? $underlyingJob : get_class($underlyingJob);
 
         return in_array($jobClass, config('horizon.silenced', [])) ||
-                    is_a($jobClass, Silenced::class, true);
+               is_a($jobClass, Silenced::class, true);
     }
 
     /**
