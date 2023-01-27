@@ -101,9 +101,9 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Monitoring</h5>
+                <h2 class="h6 m-0">Monitoring</h2>
 
                 <button @click="openNewTagModal" class="btn btn-primary btn-sm">Monitor Tag</button>
             </div>
@@ -122,11 +122,11 @@
             </div>
 
 
-            <table v-if="ready && tags.length > 0" class="table table-hover table-sm mb-0">
+            <table v-if="ready && tags.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Tag Name</th>
-                    <th>Jobs</th>
+                    <th>Tag</th>
+                    <th class="text-right">Jobs</th>
                     <th class="text-right"></th>
                 </tr>
                 </thead>
@@ -138,11 +138,11 @@
                             {{ tag.tag }}
                         </router-link>
                     </td>
-                    <td>{{ tag.count }}</td>
+                    <td class="text-right text-muted">{{ tag.count }}</td>
                     <td class="text-right">
                         <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z"></path>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                             </svg>
                         </a>
                     </td>
@@ -164,7 +164,7 @@
                     </div>
 
 
-                    <div class="modal-footer justify-content-center">
+                    <div class="modal-footer justify-content-start flex-row-reverse">
                         <button class="btn btn-primary" @click="monitorNewTag">
                             Monitor
                         </button>

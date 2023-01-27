@@ -77,14 +77,14 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 v-if="!ready">Batch Preview</h5>
-                <h5 v-if="ready">{{batch.name || batch.id}}</h5>
+                <h2 class="h6 m-0" v-if="!ready">Batch Preview</h2>
+                <h2 class="h6 m-0" v-if="ready">{{batch.name || batch.id}}</h2>
 
-                <button class="btn btn-outline-primary" v-if="failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary" :class="{spin: retrying}">
-                        <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
+                <button class="btn btn-primary" v-if="failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor" :class="{spin: retrying}">
+                        <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                     </svg>
 
                     Retry Failed Jobs
@@ -101,76 +101,76 @@
 
             <div class="card-body card-bg-secondary" v-if="ready">
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>ID</strong></div>
+                    <div class="col-md-2 text-muted">ID</div>
                     <div class="col">
                         {{batch.id}}
 
-                        <small class="badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small class="ml-1 badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small class="ml-1 badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
-                        <small class="badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small class="ml-1 badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
                         </small>
                     </div>
                 </div>
                 <div class="row mb-2" v-if="batch.name">
-                    <div class="col-md-2"><strong>Name</strong></div>
+                    <div class="col-md-2 text-muted">Name</div>
                     <div class="col">{{batch.name}}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.options.queue">
-                    <div class="col-md-2"><strong>Queue</strong></div>
+                    <div class="col-md-2 text-muted">Queue</div>
                     <div class="col">{{batch.options.queue}}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.options.connection">
-                    <div class="col-md-2"><strong>Connection</strong></div>
+                    <div class="col-md-2 text-muted">Connection</div>
                     <div class="col">{{batch.options.connection}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Created At</strong></div>
+                    <div class="col-md-2 text-muted">Created</div>
                     <div class="col">{{ formatDateIso(batch.createdAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.finishedAt">
-                    <div class="col-md-2"><strong>Finished At</strong></div>
+                    <div class="col-md-2 text-muted">Finished</div>
                     <div class="col">{{ formatDateIso(batch.finishedAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
                 <div class="row mb-2" v-if="batch.cancelledAt">
-                    <div class="col-md-2"><strong>Cancelled At</strong></div>
+                    <div class="col-md-2 text-muted">Cancelled</div>
                     <div class="col">{{ formatDateIso(batch.cancelledAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Total Jobs</strong></div>
+                    <div class="col-md-2 text-muted">Total Jobs</div>
                     <div class="col">{{batch.totalJobs}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Pending Jobs</strong></div>
+                    <div class="col-md-2 text-muted">Pending Jobs</div>
                     <div class="col">{{batch.pendingJobs}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2"><strong>Failed Jobs</strong></div>
+                    <div class="col-md-2 text-muted">Failed Jobs</div>
                     <div class="col">{{batch.failedJobs}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><strong>Completed Jobs (Including Failed)</strong></div>
+                    <div class="col-md-2 text-muted">Completed Jobs<br><small>(Including Failed)</small></div>
                     <div class="col">{{ (batch.totalJobs-batch.pendingJobs) }} ({{batch.progress}}%)</div>
                 </div>
             </div>
         </div>
 
 
-        <div class="card mt-4" v-if="ready && failedJobs.length">
+        <div class="card overflow-hidden mt-4" v-if="ready && failedJobs.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Failed Jobs</h5>
+                <h2 class="h6 m-0">Failed Jobs</h2>
             </div>
 
-            <table class="table table-hover table-sm mb-0">
+            <table class="table table-hover mb-0">
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th>Runtime</th>
-                    <th class="text-right">Failed At</th>
+                    <th class="text-right">Runtime</th>
+                    <th class="text-right">Failed</th>
                 </tr>
                 </thead>
 
@@ -183,11 +183,11 @@
                         </router-link>
                     </td>
 
-                    <td class="table-fit">
+                    <td class="text-right text-muted table-fit">
                         <span>{{ failedJob.failed_at && failedJob.reserved_at ? String((failedJob.failed_at - failedJob.reserved_at).toFixed(2))+'s' : '-' }}</span>
                     </td>
 
-                    <td class="text-right table-fit">
+                    <td class="text-right text-muted table-fit">
                         {{ readableTimestamp(failedJob.failed_at) }}
                     </td>
                 </tr>

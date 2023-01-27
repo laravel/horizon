@@ -202,11 +202,19 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Failed Jobs</h5>
+                <h2 class="h6 m-0">Failed Jobs</h2>
 
-                <input type="text" class="form-control" v-model="tagSearchPhrase" placeholder="Search Tags" style="width:200px">
+                <div class="form-control-with-icon">
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+
+                    <input type="text" class="form-control w-100" v-model="tagSearchPhrase" placeholder="Search Tags">
+                </div>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -222,19 +230,19 @@
                 <span>There aren't any failed jobs.</span>
             </div>
 
-            <table v-if="ready && jobs.length > 0" class="table table-hover table-sm mb-0">
+            <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th>Runtime</th>
-                    <th>Failed At</th>
+                    <th class="text-right">Runtime</th>
+                    <th>Failed</th>
                     <th class="text-right">Retry</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
-                    <td colspan="100" class="text-center card-bg-secondary py-1">
+                    <td colspan="100" class="text-center card-bg-secondary py-2">
                         <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
 
                         <small v-if="loadingNewEntries">Loading...</small>
@@ -243,11 +251,9 @@
 
                 <tr v-for="job in jobs" :key="job.id">
                     <td>
-                        <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
-                            {{ jobBaseName(job.name) }}
-                        </router-link>
+                        <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">{{ jobBaseName(job.name) }}</router-link>
 
-                        <small class="badge badge-secondary badge-sm"
+                        <small class="ml-1 badge badge-secondary badge-sm"
                                v-tooltip:top="retriedJobTooltip(job)"
                                v-if="wasRetried(job)">
                             Retried
@@ -270,18 +276,18 @@
                         </small>
                     </td>
 
-                    <td class="table-fit">
+                    <td class="table-fit text-muted text-right">
                         <span>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(2))+'s' : '-' }}</span>
                     </td>
 
-                    <td class="table-fit">
+                    <td class="table-fit text-muted">
                         {{ readableTimestamp(job.failed_at) }}
                     </td>
 
                     <td class="text-right table-fit">
                         <a href="#" title="Retry Job" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
-                            <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.5rem; height: 1.5rem;" :class="{spin: isRetrying(job.id)}">
-                                <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
+                            <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.25rem; height: 1.25rem;" :class="{spin: isRetrying(job.id)}">
+                                <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                             </svg>
                         </a>
                     </td>
@@ -290,8 +296,8 @@
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-md" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-md" :disabled="page>=totalPages">Next</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
             </div>
         </div>
 

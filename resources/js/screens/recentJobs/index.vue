@@ -149,11 +149,11 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 v-if="$route.params.type == 'pending'">Pending Jobs</h5>
-                <h5 v-if="$route.params.type == 'completed'">Completed Jobs</h5>
-                <h5 v-if="$route.params.type == 'silenced'">Silenced Jobs</h5>
+                <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
+                <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
+                <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
             </div>
 
             <div v-if="!ready"
@@ -171,13 +171,13 @@
                 <span>There aren't any jobs.</span>
             </div>
 
-            <table v-if="ready && jobs.length > 0" class="table table-hover table-sm mb-0">
+            <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Job</th>
-                        <th v-if="$route.params.type=='pending'" class="text-right">Queued At</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued At</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed At</th>
+                        <th v-if="$route.params.type=='pending'" class="text-right">Queued</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
                         <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">Runtime</th>
                     </tr>
                 </thead>
@@ -198,8 +198,8 @@
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-md" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-md" :disabled="page>=totalPages">Next</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
             </div>
         </div>
     </div>

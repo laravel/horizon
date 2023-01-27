@@ -4,9 +4,9 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Recent Jobs for "{{ $route.params.tag }}"</h5>
+                <h2 class="h6 m-0">Recent Jobs for "{{ $route.params.tag }}"</h2>
             </div>
 
             <ul class="nav nav-pills card-bg-secondary">

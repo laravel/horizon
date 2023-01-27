@@ -156,20 +156,20 @@
             <span>There aren't any jobs for this tag.</span>
         </div>
 
-        <table v-if="ready && jobs.length > 0" class="table table-hover table-sm mb-0">
+        <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
             <thead>
             <tr>
                 <th>Job</th>
-                <th>Queued At</th>
-                <th v-if="type == 'jobs'">Completed At</th>
+                <th>Queued</th>
+                <th v-if="type == 'jobs'">Completed</th>
                 <th class="text-right" v-if="type == 'jobs'">Runtime</th>
-                <th class="text-right" v-if="type == 'failed'">Failed At</th>
+                <th class="text-right" v-if="type == 'failed'">Failed</th>
             </tr>
             </thead>
 
             <tbody>
             <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
-                <td colspan="100" class="text-center card-bg-secondary py-1">
+                <td colspan="100" class="text-center card-bg-secondary py-2">
                     <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
 
                     <small v-if="loadingNewEntries">Loading...</small>
@@ -182,8 +182,8 @@
         </table>
 
         <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-            <button @click="previous" class="btn btn-secondary btn-md" :disabled="page==1">Previous</button>
-            <button @click="next" class="btn btn-secondary btn-md" :disabled="page>=totalPages">Next</button>
+            <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
+            <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
         </div>
     </div>
 
