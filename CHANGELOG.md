@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.13.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.14.0...5.x)
+
+## [v5.14.0](https://github.com/laravel/horizon/compare/v5.13.0...v5.14.0) - 2023-01-27
+
+### Changed
+
+- Allow any queued class to be silenced by @lioneaglesolutions in https://github.com/laravel/horizon/pull/1241
+- A fresh coat of paint by @jessarcher in https://github.com/laravel/horizon/pull/1242
 
 ## [v5.13.0](https://github.com/laravel/horizon/compare/v5.12.0...v5.13.0) - 2023-01-17
 
