@@ -96,7 +96,7 @@ class PurgeCommand extends Command
             $master, $this->supervisors->longestActiveTimeout()
         );
 
-        collect($expired)->each(function ($processId) use ($master) {
+        collect($expired)->each(function ($processId) use ($master, $signal) {
             $this->comment("Killing Process: {$processId}");
 
             exec("kill -s {$signal} {$processId}");
