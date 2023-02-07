@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.14.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.14.1...5.x)
+
+## [v5.14.1](https://github.com/laravel/horizon/compare/v5.14.0...v5.14.1) - 2023-02-07
+
+### Fixed
+
+- Fix missing variable use in anonymous function by @joshuaruesweg in https://github.com/laravel/horizon/pull/1244
 
 ## [v5.14.0](https://github.com/laravel/horizon/compare/v5.13.0...v5.14.0) - 2023-01-27
 
