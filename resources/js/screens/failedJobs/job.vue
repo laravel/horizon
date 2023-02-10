@@ -87,21 +87,6 @@
 
 
             /**
-             * Convert exception to a more readable format.
-             */
-            prettyPrintException(exception) {
-                var lines = _.split(exception, "\n"),
-                    output = '';
-
-                lines.forEach(line => {
-                    output += '<span>' + line + '</span>';
-                });
-
-                return output;
-            },
-
-
-            /**
              * Pretty print serialized job.
              *
              * @param data

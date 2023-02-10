@@ -16,7 +16,6 @@
         "highlight.js": "^10.4.1",
         "jquery": "^3.5.0",
         "laravel-mix": "^6.0.13",
-        "lodash": "^4.17.19",
         "md5": "^2.2.1",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.35",

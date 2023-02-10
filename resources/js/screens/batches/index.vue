@@ -60,8 +60,7 @@
                             return;
                         }
 
-
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.batches.length && _.first(response.data.batches).id !== _.first(this.batches).id) {
+                        if (!this.$root.autoLoadsNewEntries && refreshing && this.batches.length && response.data.batches[0]?.id !== this.batches[0]?.id) {
                             this.hasNewEntries = true;
                         } else {
                             this.batches = response.data.batches;
@@ -111,10 +110,10 @@
              * Load the batches for the next page.
              */
             next() {
-                this.previousFirstId = _.first(this.batches).id + '0';
+                this.previousFirstId = this.batches[0]?.id + '0';
 
                 this.loadBatches(
-                    _.last(this.batches).id
+                    this.batches.slice(-1)[0]?.id
                 );
 
                 this.page += 1;

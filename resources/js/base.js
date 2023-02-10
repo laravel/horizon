@@ -52,5 +52,25 @@ export default {
         readableTimestamp(timestamp) {
             return this.formatDate(timestamp).format('YYYY-MM-DD HH:mm:ss');
         },
+
+        /**
+         * Uppercase the first character of the string.
+         */
+        upperFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
+
+        /**
+         * Group array entries by a given key.
+         */
+        groupBy(array, key) {
+            return array.reduce((grouped, entry) => ({
+                ...grouped,
+                [entry[key]]: [
+                    ...(grouped[entry[key]] || []),
+                    entry,
+                ],
+            }), {});
+        },
     },
 };

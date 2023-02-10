@@ -38,7 +38,7 @@
                                     display: true
                                 },
                                 beforeBuildTicks: function (scale) {
-                                    var max = _.max(scale.chart.data.datasets[0].data);
+                                    var max = scale.chart.data.datasets[0].data.reduce((max, value) => value > max ? value : max)
 
                                     scale.max = parseFloat(max) + parseFloat(max * 0.25);
                                 },
