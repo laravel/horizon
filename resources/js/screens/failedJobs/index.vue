@@ -76,8 +76,7 @@
                             return;
                         }
 
-
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && _.first(response.data.jobs).id !== _.first(this.jobs).id) {
+                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
                             this.hasNewEntries = true;
                         } else {
                             this.jobs = response.data.jobs;
@@ -112,10 +111,10 @@
                 this.$http.post(Horizon.basePath + '/api/jobs/retry/' + id)
                     .then((response) => {
                         setTimeout(() => {
-                            this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
+                            this.retryingJobs = this.retryingJobs.filter(job => job != id);
                         }, 5000);
                     }).catch(error => {
-                        this.retryingJobs = _.reject(this.retryingJobs, job => job == id);
+                        this.retryingJobs = this.retryingJobs.filter(job => job != id);
                     });
             },
 
@@ -124,7 +123,7 @@
              * Determine if the given job is currently retrying.
              */
             isRetrying(id) {
-                return _.includes(this.retryingJobs, id);
+                return this.retryingJobs.includes(id);
             },
 
 
@@ -132,7 +131,7 @@
              * Determine if the given job has completed.
              */
             hasCompleted(job) {
-                return _.find(job.retried_by, retry => retry.status == 'completed');
+                return job.retried_by.find(retry => retry.status === 'completed');
             },
 
 
@@ -157,7 +156,7 @@
             retriedJobTooltip(job) {
                 let lastRetry = job.retried_by[job.retried_by.length - 1];
 
-                return `Total retries: ${job.retried_by.length}, Last retry status: ${_.upperFirst(lastRetry.status)}`;
+                return `Total retries: ${job.retried_by.length}, Last retry status: ${this.upperFirst(lastRetry.status)}`;
             },
 
             /**

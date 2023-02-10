@@ -1,5 +1,4 @@
 <script type="text/ecmascript-6">
-    import _ from 'lodash';
     import moment from 'moment';
 
     export default {
@@ -68,9 +67,9 @@
                     .then(response => {
                         this.stats = response.data;
 
-                        if (_.values(response.data.wait)[0]) {
-                            this.stats.max_wait_time = _.values(response.data.wait)[0];
-                            this.stats.max_wait_queue = _.keys(response.data.wait)[0].split(':')[1];
+                        if (Object.values(response.data.wait)[0]) {
+                            this.stats.max_wait_time = Object.values(response.data.wait)[0];
+                            this.stats.max_wait_queue = Object.keys(response.data.wait)[0].split(':')[1];
                         }
                     });
             },
@@ -120,7 +119,7 @@
              *  Count processes for the given supervisor.
              */
             countProcesses(processes) {
-                return _.chain(processes).values().sum().value().toLocaleString()
+                return Object.values(processes).reduce((total, value) => total + value, 0).toLocaleString();
             },
 
 
@@ -128,7 +127,7 @@
              *  Format the Supervisor display name.
              */
             superVisorDisplayName(supervisor, worker) {
-                return _.replace(supervisor, worker + ':', '');
+                return supervisor.replace(worker + ':', '');
             },
 
 

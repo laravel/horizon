@@ -55,23 +55,14 @@
              * Prepare the response data for charts.
              */
             prepareData(data) {
-                return _.chain(data)
-                    .map(value => {
-                        value.time = this.formatDate(value.time).format("MMM-D hh:mmA");
-
-                        return value;
-                    })
-                    .groupBy(value => value.time)
-                    .map(value => {
-                        return _.reduce(value, (sum, value) => {
-                            return {
-                                runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
-                                throughput: parseInt(sum.throughput) + parseInt(value.throughput),
-                                time: value.time
-                            };
-                        })
-                    })
-                    .value();
+                return Object.values(this.groupBy(data.map(value => ({
+                    ...value,
+                    time: this.formatDate(value.time).format("MMM-D hh:mmA"),
+                })), 'time')).map(value => value.reduce((sum, value) => ({
+                    runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
+                    throughput: parseInt(sum.throughput) + parseInt(value.throughput),
+                    time: value.time
+                })))
             },
 
 
@@ -80,11 +71,11 @@
              */
             buildChartData(data, attribute, label) {
                 return {
-                    labels: _.map(data, 'time'),
+                    labels: data.map(entry => entry.time),
                     datasets: [
                         {
                             label: label,
-                            data: _.map(data, attribute),
+                            data: data.map(entry => entry[attribute]),
                             lineTension: 0,
                             backgroundColor: 'transparent',
                             pointBackgroundColor: '#fff',

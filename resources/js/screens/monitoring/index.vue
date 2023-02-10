@@ -92,7 +92,7 @@
             stopMonitoring(tag) {
                 this.$http.delete(Horizon.basePath + '/api/monitoring/' + encodeURIComponent(tag))
                     .then(() => {
-                        this.tags = _.reject(this.tags, existing => existing.tag == tag)
+                        this.tags = this.tags.filter(existing => existing.tag !== tag)
                     })
             }
         }
