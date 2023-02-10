@@ -64,13 +64,13 @@ export default {
          * Group array entries by a given key.
          */
         groupBy(array, key) {
-            return array.reduce((grouped, entry) => ({
-                ...grouped,
-                [entry[key]]: [
-                    ...(grouped[entry[key]] || []),
-                    entry,
-                ],
-            }), {});
+            return array.reduce(
+                (grouped, entry) => ({
+                    ...grouped,
+                    [entry[key]]: [...(grouped[entry[key]] || []), entry],
+                }),
+                {}
+            );
         },
     },
 };
