@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.14.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.14.2...5.x)
+
+## [v5.14.2](https://github.com/laravel/horizon/compare/v5.14.1...v5.14.2) - 2023-02-10
+
+### Changed
+
+- Remove Lodash by @jessarcher in https://github.com/laravel/horizon/pull/1246
+- Bump axios to v1.x by @ankurk91 in https://github.com/laravel/horizon/pull/1247
 
 ## [v5.14.1](https://github.com/laravel/horizon/compare/v5.14.0...v5.14.1) - 2023-02-07
 
