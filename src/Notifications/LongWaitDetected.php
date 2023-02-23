@@ -90,7 +90,7 @@ class LongWaitDetected extends Notification
      */
     public function toSlack($notifiable)
     {
-        return (new SlackMessage)
+        return (new SlackMessage) // @phpstan-ignore-line
                     ->from('Laravel Horizon')
                     ->to(Horizon::$slackChannel)
                     ->image('https://laravel.com/assets/img/horizon-48px.png')
@@ -113,7 +113,7 @@ class LongWaitDetected extends Notification
      */
     public function toNexmo($notifiable)
     {
-        return (new NexmoMessage)->content(sprintf(
+        return (new NexmoMessage)->content(sprintf( // @phpstan-ignore-line
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
             config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
         ));

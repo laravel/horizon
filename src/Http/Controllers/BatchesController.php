@@ -72,7 +72,7 @@ class BatchesController extends Controller
      * Retry the given batch.
      *
      * @param  string  $id
-     * @return array
+     * @return void
      */
     public function retry($id)
     {

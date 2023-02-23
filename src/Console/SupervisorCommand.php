@@ -56,7 +56,7 @@ class SupervisorCommand extends Command
      * Execute the console command.
      *
      * @param  \Laravel\Horizon\SupervisorFactory  $factory
-     * @return int
+     * @return int|null
      */
     public function handle(SupervisorFactory $factory)
     {
