@@ -36,7 +36,8 @@ class SupervisorCommand extends Command
                             {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}
                             {--workers-name=default : The name that should be assigned to the workers}
                             {--parent-id=0 : The parent process ID}
-                            {--rest=0 : Number of seconds to rest between jobs}';
+                            {--rest=0 : Number of seconds to rest between jobs}
+                            {--auto-scaling-strategy=runtime : If supervisor should scale by jobs or time to complete}';
 
     /**
      * The console command description.
@@ -111,12 +112,15 @@ class SupervisorCommand extends Command
                     ? $this->option('backoff')
                     : $this->option('delay');
 
+        $balance = $this->option('balance');
+        $autoScalingStrategy = $balance === 'auto' ? $this->option('auto-scaling-strategy') : null;
+
         return new SupervisorOptions(
             $this->argument('name'),
             $this->argument('connection'),
             $this->getQueue($this->argument('connection')),
             $this->option('workers-name'),
-            $this->option('balance'),
+            $balance,
             $backoff,
             $this->option('max-time'),
             $this->option('max-jobs'),
@@ -131,7 +135,8 @@ class SupervisorCommand extends Command
             $this->option('balance-cooldown'),
             $this->option('balance-max-shift'),
             $this->option('parent-id'),
-            $this->option('rest')
+            $this->option('rest'),
+            $autoScalingStrategy
         );
     }
 

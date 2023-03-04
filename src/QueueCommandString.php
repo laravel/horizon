@@ -27,7 +27,7 @@ class QueueCommandString
      */
     public static function toSupervisorOptionsString(SupervisorOptions $options)
     {
-        return sprintf('--workers-name=%s --balance=%s --max-processes=%s --min-processes=%s --nice=%s --balance-cooldown=%s --balance-max-shift=%s --parent-id=%s %s',
+        return sprintf('--workers-name=%s --balance=%s --max-processes=%s --min-processes=%s --nice=%s --balance-cooldown=%s --balance-max-shift=%s --parent-id=%s --auto-scaling-strategy=%s %s',
             $options->workersName,
             $options->balance,
             $options->maxProcesses,
@@ -36,6 +36,7 @@ class QueueCommandString
             $options->balanceCooldown,
             $options->balanceMaxShift,
             $options->parentId,
+            $options->autoScalingStrategy,
             static::toOptionsString($options)
         );
     }

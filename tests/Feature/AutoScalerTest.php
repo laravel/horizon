@@ -240,4 +240,22 @@ class AutoScalerTest extends IntegrationTest
         $this->assertSame(14, $supervisor->processPools['first']->totalProcessCount());
         $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
     }
+
+    public function test_scaler_assigns_more_processes_to_queue_with_more_jobs_when_using_size_strategy()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(100, [
+            'first' => ['current' => 50, 'size' => 1000, 'runtime' => 10],
+            'second' => ['current' => 50, 'size' => 500, 'runtime' => 1000],
+        ], ['autoScalingStrategy' => 'size']);
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(51, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(49, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(52, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(48, $supervisor->processPools['second']->totalProcessCount());
+    }
 }

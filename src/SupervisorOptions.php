@@ -159,6 +159,13 @@ class SupervisorOptions
     public $autoScale;
 
     /**
+     * Indicates auto-scaling strategy should use runtime (time-to-complete) or size (total count of jobs).
+     *
+     * @var string|null
+     */
+    public $autoScalingStrategy = null;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
@@ -181,6 +188,7 @@ class SupervisorOptions
      * @param  int  $balanceMaxShift
      * @param  int  $parentId
      * @param  int  $rest
+     * @param  string|null  $autoScalingStrategy
      */
     public function __construct($name,
                                 $connection,
@@ -201,7 +209,9 @@ class SupervisorOptions
                                 $balanceCooldown = 3,
                                 $balanceMaxShift = 1,
                                 $parentId = 0,
-                                $rest = 0)
+                                $rest = 0,
+                                $autoScalingStrategy = 'runtime'
+    )
     {
         $this->name = $name;
         $this->connection = $connection;
@@ -223,6 +233,7 @@ class SupervisorOptions
         $this->balanceMaxShift = $balanceMaxShift;
         $this->parentId = $parentId;
         $this->rest = $rest;
+        $this->autoScalingStrategy = $autoScalingStrategy;
     }
 
     /**
@@ -256,6 +267,16 @@ class SupervisorOptions
     public function autoScaling()
     {
         return $this->balance === 'auto';
+    }
+
+    /**
+     * Determine if auto-scaling should be based count of jobs per queue.
+     *
+     * @return bool
+     */
+    public function autoScaleByNumberOfJobs()
+    {
+        return $this->autoScalingStrategy === 'size';
     }
 
     /**
@@ -316,6 +337,7 @@ class SupervisorOptions
             'balanceMaxShift' => $this->balanceMaxShift,
             'parentId' => $this->parentId,
             'rest' => $this->rest,
+            'autoScalingStrategy' => $this->autoScalingStrategy,
         ];
     }
 
