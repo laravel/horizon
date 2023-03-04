@@ -211,8 +211,7 @@ class SupervisorOptions
                                 $parentId = 0,
                                 $rest = 0,
                                 $autoScalingStrategy = 'runtime'
-    )
-    {
+    ) {
         $this->name = $name;
         $this->connection = $connection;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
