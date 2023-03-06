@@ -203,7 +203,7 @@ class SupervisorOptions
                                 $balanceMaxShift = 1,
                                 $parentId = 0,
                                 $rest = 0,
-                                $autoScalingStrategy = 'runtime'
+                                $autoScalingStrategy = 'time'
     ) {
         $this->name = $name;
         $this->connection = $connection;
