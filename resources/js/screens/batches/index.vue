@@ -171,14 +171,17 @@
                         </router-link>
                     </td>
                     <td>
-                        <small class="badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small class="badge badge-danger badge-sm" v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small class="badge badge-success badge-sm" v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
-                        <small class="badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small class="badge badge-secondary badge-sm" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
+                        </small>
+                        <small class="badge badge-warning badge-sm" v-if="batch.cancelledAt">
+                            Cancelled
                         </small>
                     </td>
                     <td class="text-right text-muted">{{batch.totalJobs}}</td>
