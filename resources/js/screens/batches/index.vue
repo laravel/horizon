@@ -180,7 +180,7 @@
                         <small class="badge badge-secondary badge-sm" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
                         </small>
-                        <small class="badge badge-info badge-sm" v-if="batch.cancelledAt">
+                        <small class="badge badge-warning badge-sm" v-if="batch.cancelledAt">
                             Cancelled
                         </small>
                     </td>
