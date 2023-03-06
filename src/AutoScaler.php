@@ -96,11 +96,16 @@ class AutoScaler
     protected function numberOfWorkersPerQueue(Supervisor $supervisor, Collection $queues)
     {
         $timeToClearAll = $queues->sum('time');
+        $totalJobs = $queues->sum('size');
 
-        return $queues->mapWithKeys(function ($timeToClear, $queue) use ($supervisor, $timeToClearAll) {
+        return $queues->mapWithKeys(function ($timeToClear, $queue) use ($supervisor, $timeToClearAll, $totalJobs) {
             if ($timeToClearAll > 0 &&
                 $supervisor->options->autoScaling()) {
-                return [$queue => (($timeToClear['time'] / $timeToClearAll) * $supervisor->options->maxProcesses)];
+                $numberOfProcesses = $supervisor->options->autoScaleByNumberOfJobs()
+                    ? ($timeToClear['size'] / $totalJobs)
+                    : ($timeToClear['time'] / $timeToClearAll);
+
+                return [$queue => $numberOfProcesses *= $supervisor->options->maxProcesses];
             } elseif ($timeToClearAll == 0 &&
                       $supervisor->options->autoScaling()) {
                 return [

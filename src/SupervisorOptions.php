@@ -40,6 +40,13 @@ class SupervisorOptions
     public $balance = 'off';
 
     /**
+     * Indicates whether auto-scaling strategy should use "time" (time-to-complete) or "size" (total count of jobs) strategies.
+     *
+     * @var string|null
+     */
+    public $autoScalingStrategy = null;
+
+    /**
      * The maximum number of total processes to start when auto-scaling.
      *
      * @var int
@@ -152,13 +159,6 @@ class SupervisorOptions
     public $rest;
 
     /**
-     * Indicates if the supervisor should auto-scale.
-     *
-     * @var bool
-     */
-    public $autoScale;
-
-    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
@@ -181,6 +181,7 @@ class SupervisorOptions
      * @param  int  $balanceMaxShift
      * @param  int  $parentId
      * @param  int  $rest
+     * @param  string|null  $autoScalingStrategy
      */
     public function __construct($name,
                                 $connection,
@@ -201,8 +202,9 @@ class SupervisorOptions
                                 $balanceCooldown = 3,
                                 $balanceMaxShift = 1,
                                 $parentId = 0,
-                                $rest = 0)
-    {
+                                $rest = 0,
+                                $autoScalingStrategy = 'time'
+    ) {
         $this->name = $name;
         $this->connection = $connection;
         $this->queue = $queue ?: config('queue.connections.'.$connection.'.queue');
@@ -223,6 +225,7 @@ class SupervisorOptions
         $this->balanceMaxShift = $balanceMaxShift;
         $this->parentId = $parentId;
         $this->rest = $rest;
+        $this->autoScalingStrategy = $autoScalingStrategy;
     }
 
     /**
@@ -256,6 +259,16 @@ class SupervisorOptions
     public function autoScaling()
     {
         return $this->balance === 'auto';
+    }
+
+    /**
+     * Determine if auto-scaling should be based on the number of jobs on the queue instead of time-to-clear.
+     *
+     * @return bool
+     */
+    public function autoScaleByNumberOfJobs()
+    {
+        return $this->autoScalingStrategy === 'size';
     }
 
     /**
@@ -316,6 +329,7 @@ class SupervisorOptions
             'balanceMaxShift' => $this->balanceMaxShift,
             'parentId' => $this->parentId,
             'rest' => $this->rest,
+            'autoScalingStrategy' => $this->autoScalingStrategy,
         ];
     }
 
