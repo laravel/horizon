@@ -40,6 +40,13 @@ class SupervisorOptions
     public $balance = 'off';
 
     /**
+     * Indicates whether auto-scaling strategy should use "time" (time-to-complete) or "size" (total count of jobs) strategies.
+     *
+     * @var string|null
+     */
+    public $autoScalingStrategy = null;
+
+    /**
      * The maximum number of total processes to start when auto-scaling.
      *
      * @var int
@@ -150,13 +157,6 @@ class SupervisorOptions
      * @var int
      */
     public $rest;
-
-    /**
-     * Indicates whether auto-scaling strategy should use "time" (time-to-complete) or "size" (total count of jobs) strategies.
-     *
-     * @var string|null
-     */
-    public $autoScalingStrategy = null;
 
     /**
      * Create a new worker options instance.
