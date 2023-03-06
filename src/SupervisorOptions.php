@@ -262,7 +262,7 @@ class SupervisorOptions
     }
 
     /**
-     * Determine if auto-scaling should be based count of jobs per queue.
+     * Determine if auto-scaling should be based on the number of jobs on the queue instead of time-to-clear.
      *
      * @return bool
      */
