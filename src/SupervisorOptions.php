@@ -152,14 +152,7 @@ class SupervisorOptions
     public $rest;
 
     /**
-     * Indicates if the supervisor should auto-scale.
-     *
-     * @var bool
-     */
-    public $autoScale;
-
-    /**
-     * Indicates auto-scaling strategy should use runtime (time-to-complete) or size (total count of jobs).
+     * Indicates whether auto-scaling strategy should use "time" (time-to-complete) or "size" (total count of jobs) strategies.
      *
      * @var string|null
      */
