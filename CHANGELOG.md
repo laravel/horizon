@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v515.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.15.0...5.x)
+
+## [v5.15.0](https://github.com/laravel/horizon/compare/v515.0...v5.15.0) - 2023-03-07
+
+- Add cancelled status to batch overview by @markvaneijk in https://github.com/laravel/horizon/pull/1255
+- Add autoScalingStrategy option by @cosmastech in https://github.com/laravel/horizon/pull/1254
 
 ## [v515.0](https://github.com/laravel/horizon/compare/v5.14.2...v515.0) - 2023-03-07
 
