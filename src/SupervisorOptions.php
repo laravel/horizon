@@ -47,11 +47,11 @@ class SupervisorOptions
     public $autoScalingStrategy = null;
 
     /**
-      * Indicates if the supervisor should auto-scale.
-      *
-      * @var bool
-      */
-     public $autoScale;
+     * Indicates if the supervisor should auto-scale.
+     *
+     * @var bool
+     */
+    public $autoScale;
 
     /**
      * The maximum number of total processes to start when auto-scaling.
