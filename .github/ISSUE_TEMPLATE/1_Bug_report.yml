@@ -1,0 +1,63 @@
+name: Bug Report
+description: "Report a general library issue."
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Before submitting your report, [please ensure your Laravel version is still supported](https://laravel.com/docs/releases#support-policy)."
+  - type: input
+    attributes:
+      label: Horizon Version
+      description: Provide the Horizon version that you are using.
+      placeholder: 1.6.1
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Laravel Version
+      description: Provide the Laravel version that you are using.
+      placeholder: 10.4.1
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: PHP Version
+      description: Provide the PHP version that you are using.
+      placeholder: 8.1.4
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Redis Driver
+      options:
+        - PhpRedis
+        - Predis
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Redis Version
+      description: Provide the PhpRedis/Predis version that you are using.
+      placeholder: 3.4.1
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Database Driver & Version
+      description: If applicable, provide the database driver and version you are using.
+      placeholder: "MySQL 8.0.31 for macOS 13.0 on arm64 (Homebrew)"
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Description
+      description: Provide a detailed description of the issue you are facing.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Provide detailed steps to reproduce your issue. If necessary, please provide a GitHub repository to demonstrate your issue using `laravel new bug-report --github="--public"`.
+    validations:
+      required: true
+      
