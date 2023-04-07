@@ -1,6 +1,5 @@
 name: Bug Report
 description: "Report a general library issue."
-labels: ["bug"]
 body:
   - type: markdown
     attributes:
