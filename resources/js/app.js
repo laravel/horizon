@@ -4,6 +4,22 @@ import axios from 'axios';
 import Routes from './routes';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
+import VueI18n from 'vue-i18n';
+
+import en from '../lang/en.json';
+import zh from '../lang/zh.json';
+
+Vue.use(VueI18n);
+const messages = {
+    en,
+    zh
+};
+
+const i18n = new VueI18n({
+    locale: 'en',
+    fallbackLocale: 'en',
+    messages
+});
 
 window.Popper = require('popper.js').default;
 
@@ -54,6 +70,7 @@ Vue.directive('tooltip', function (el, binding) {
 });
 
 new Vue({
+    i18n,
     el: '#horizon',
 
     router,
@@ -67,8 +84,18 @@ new Vue({
                 confirmationProceed: null,
                 confirmationCancel: null,
             },
-
+            selectedLanguage: "en",
+            language: {
+                "en": "🇺🇸 English",
+                "zh": "🇨🇳 中文",
+            },
             autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
         };
     },
+    methods:{
+        changeLanguage(lang) {
+            this.selectedLanguage = lang;
+            this.$i18n.locale = this.selectedLanguage;
+        },
+    }
 });

@@ -22,7 +22,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Dashboard";
+            document.title = "Horizon - " + this.$t('Monitoring');;
 
             this.refreshStatsPeriodically();
         },
@@ -42,8 +42,13 @@
              */
             recentJobsPeriod() {
                 return !this.ready
-                    ? 'Jobs Past Hour'
-                    : `Jobs Past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
+                    ? this.$t('Jobs Past Hour')
+                    : this.$t('Jobs Past', {
+                        period: this.$d(
+                            this.stats.periods.recentJobs.start,
+                            { locale: this.$i18n.locale, ...this.$i18n.messages.timeFormat }
+                        )
+                    });
             },
 
 
@@ -52,8 +57,8 @@
              */
             failedJobsPeriod() {
                 return !this.ready
-                    ? 'Failed Jobs Past 7 Days'
-                    : `Failed Jobs Past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
+                    ? this.$t("Failed Jobs Past 7 Days")
+                    : this.$t("Failed Jobs Past", { period: this.determinePeriod(this.stats.periods.failedJobs) });
             },
         },
 
@@ -149,7 +154,14 @@
                 return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?\s/i, '').replace(/^(.)|\s(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
-            }
+            },
+
+            /**
+             * Switch the language used by the interface.
+             */
+            changeLanguage() {
+                this.$i18n.locale = this.selectedLanguage;
+            },
         }
     }
 </script>
@@ -158,14 +170,14 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Overview</h2>
+                <h2 class="h6 m-0">{{ $t("Overview") }}</h2>
             </div>
 
             <div class="card-bg-secondary">
                 <div class="d-flex">
                     <div class="w-25">
                         <div class="p-4">
-                            <small class="text-muted font-weight-bold">Jobs Per Minute</small>
+                            <small class="text-muted font-weight-bold">{{ $t("Jobs Per Minute") }}</small>
 
                             <p class="h4 mt-2 mb-0">
                                 {{ stats.jobsPerMinute ? stats.jobsPerMinute.toLocaleString() : 0 }}
@@ -195,7 +207,7 @@
 
                     <div class="w-25">
                         <div class="p-4">
-                            <small class="text-muted font-weight-bold">Status</small>
+                            <small class="text-muted font-weight-bold">{{ $t("Status") }}</small>
 
                             <div class="d-flex align-items-center mt-2">
                                 <svg v-if="stats.status == 'running'" xmlns="http://www.w3.org/2000/svg" class="text-success" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
@@ -210,7 +222,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                 </svg>
 
-                                <p class="h4 mb-0 ml-2">{{ {running: 'Active', paused: 'Paused', inactive:'Inactive'}[stats.status] }}</p>
+                                <p class="h4 mb-0 ml-2">{{ {running: $t("Active"), paused: $t("Paused"), inactive:$t("Inactive")}[stats.status] }}</p>
                                 <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ml-2">({{ stats.pausedMasters }} paused)</small>
                             </div>
                         </div>
@@ -220,7 +232,7 @@
                 <div class="d-flex">
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">Total Processes</small>
+                            <small class="text-muted font-weight-bold">{{ $t('Total Processes') }}</small>
 
                             <p class="h4 mt-2">
                                 {{ stats.processes ? stats.processes.toLocaleString() : 0 }}
@@ -230,7 +242,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">Max Wait Time</small>
+                            <small class="text-muted font-weight-bold">{{ $t('Max Wait Time') }}</small>
 
                             <p class="mt-2 mb-0">
                                 {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
@@ -242,7 +254,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">Max Runtime</small>
+                            <small class="text-muted font-weight-bold">{{ $t('Max Runtime') }}</small>
 
                             <p class="h4 mt-2">
                                 {{ stats.queueWithMaxRuntime ? stats.queueWithMaxRuntime : '-' }}
@@ -252,7 +264,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">Max Throughput</small>
+                            <small class="text-muted font-weight-bold">{{ $t('Max Throughput') }}</small>
 
                             <p class="h4 mt-2">
                                 {{ stats.queueWithMaxThroughput ? stats.queueWithMaxThroughput : '-' }}
@@ -266,16 +278,16 @@
 
         <div class="card overflow-hidden mt-4" v-if="workload.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Current Workload</h2>
+                <h2 class="h6 m-0">{{ $t('Current Workload') }}</h2>
             </div>
 
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Queue</th>
-                    <th class="text-right" style="width: 120px;">Jobs</th>
-                    <th class="text-right" style="width: 120px;">Processes</th>
-                    <th class="text-right" style="width: 180px;">Wait</th>
+                    <th>{{ $t('Queue') }}</th>
+                    <th class="text-right" style="width: 120px;">{{ $t('Jobs') }}</th>
+                    <th class="text-right" style="width: 120px;">{{ $t('Processes') }}</th>
+                    <th class="text-right" style="width: 180px;">{{ $t('Wait') }}</th>
                 </tr>
                 </thead>
 
@@ -324,10 +336,10 @@
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Supervisor</th>
-                    <th>Queues</th>
-                    <th class="text-right" style="width: 120px;">Processes</th>
-                    <th class="text-right" style="width: 180px;">Balancing</th>
+                    <th>{{ $t('Supervisor') }}</th>
+                    <th>{{ $t('Queues') }}</th>
+                    <th class="text-right" style="width: 120px;">{{ $t('Processes') }}</th>
+                    <th class="text-right" style="width: 180px;">{{ $t('Balancing') }}</th>
                 </tr>
                 </thead>
 
@@ -345,7 +357,7 @@
                         {{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }}
                     </td>
                     <td class="text-right text-muted" v-else>
-                        Disabled
+                        {{ $t('Disabled') }}
                     </td>
                 </tr>
                 </tbody>

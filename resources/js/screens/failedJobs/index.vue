@@ -22,7 +22,7 @@
          * Prepare the component.
          */
         mounted() {
-            document.title = "Horizon - Failed Jobs";
+            document.title = "Horizon - " + this.$t('Failed Jobs');
 
             this.loadJobs();
 
@@ -203,7 +203,7 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Failed Jobs</h2>
+                <h2 class="h6 m-0">{{ $t("Failed Jobs") }}</h2>
 
                 <div class="form-control-with-icon">
                     <div class="icon-wrapper">
@@ -221,7 +221,7 @@
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>Loading...</span>
+                <span>{{ $t('Loading...') }}</span>
             </div>
 
 
@@ -244,7 +244,7 @@
                     <td colspan="100" class="text-center card-bg-secondary py-2">
                         <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
 
-                        <small v-if="loadingNewEntries">Loading...</small>
+                        <small v-if="loadingNewEntries">{{ $t('Loading...') }}</small>
                     </td>
                 </tr>
 

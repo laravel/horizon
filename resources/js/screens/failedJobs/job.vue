@@ -24,7 +24,7 @@
         mounted() {
             this.loadFailedJob(this.$route.params.jobId);
 
-            document.title = "Horizon - Failed Jobs";
+            document.title = "Horizon - " + this.$t('Failed Jobs');
 
             this.interval = setInterval(() => {
                 this.reloadRetries();
@@ -125,7 +125,7 @@
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>Loading...</span>
+                <span>{{ $t('Loading...') }}</span>
             </div>
 
             <div class="card-body card-bg-secondary" v-if="ready">
@@ -178,7 +178,7 @@
 
         <div class="card overflow-hidden mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Exception</h2>
+                <h2 class="h6 m-0">{{ $t('Exception') }}</h2>
             </div>
             <div>
                 <stack-trace :trace="job.exception.split('\n')"></stack-trace>
@@ -187,7 +187,7 @@
 
         <div class="card overflow-hidden mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Exception Context</h2>
+                <h2 class="h6 m-0">{{ $t('Exception Context') }}</h2>
             </div>
 
             <div class="card-body code-bg text-white">
@@ -198,7 +198,7 @@
 
         <div class="card overflow-hidden mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Data</h2>
+                <h2 class="h6 m-0">{{ $t('Data') }}</h2>
             </div>
 
             <div class="card-body code-bg text-white">
@@ -208,7 +208,7 @@
 
         <div class="card overflow-hidden mt-4" v-if="ready && job.retried_by.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Recent Retries</h2>
+                <h2 class="h6 m-0">{{ $t('Recent Retries') }}</h2>
             </div>
 
             <table class="table table-hover mb-0">
