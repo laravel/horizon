@@ -12,13 +12,13 @@ import zh from '../lang/zh.json';
 Vue.use(VueI18n);
 const messages = {
     en,
-    zh
+    zh,
 };
 
 const i18n = new VueI18n({
     locale: 'en',
     fallbackLocale: 'en',
-    messages
+    messages,
 });
 
 window.Popper = require('popper.js').default;
@@ -84,18 +84,18 @@ new Vue({
                 confirmationProceed: null,
                 confirmationCancel: null,
             },
-            selectedLanguage: "en",
+            selectedLanguage: 'en',
             language: {
-                "en": "🇺🇸 English",
-                "zh": "🇨🇳 中文",
+                en: '🇺🇸 English',
+                zh: '🇨🇳 中文',
             },
             autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
         };
     },
-    methods:{
+    methods: {
         changeLanguage(lang) {
             this.selectedLanguage = lang;
             this.$i18n.locale = this.selectedLanguage;
         },
-    }
+    },
 });
