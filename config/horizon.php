@@ -96,7 +96,7 @@ return [
     |
     */
 
-    'notification_interval' => 300,
+    'notification_interval' => env('HORIZON_NOTIFICATION_INTERVAL', 300),
 
     /*
     |--------------------------------------------------------------------------

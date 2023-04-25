@@ -18,7 +18,7 @@ class SendNotification
     {
         $notification = $event->toNotification();
 
-        if (! app(Lock::class)->get('notification:'.$notification->signature(), config('horizon.notification_interval', 300))) {
+        if (! app(Lock::class)->get('notification:'.$notification->signature(), config('horizon.notification_interval'))) {
             return;
         }
 
