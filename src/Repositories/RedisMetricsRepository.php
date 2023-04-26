@@ -177,13 +177,13 @@ class RedisMetricsRepository implements MetricsRepository
      * Increment the metrics information for a job.
      *
      * @param  string  $job
-     * @param  float  $runtime
+     * @param  float|null  $runtime
      * @return void
      */
     public function incrementJob($job, $runtime)
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'job:'.$job, 'measured_jobs', str_replace(',', '.', $runtime)
+            'job:'.$job, 'measured_jobs', str_replace(',', '.', (string) $runtime)
         );
     }
 
@@ -191,13 +191,13 @@ class RedisMetricsRepository implements MetricsRepository
      * Increment the metrics information for a queue.
      *
      * @param  string  $queue
-     * @param  float  $runtime
+     * @param  float|null  $runtime
      * @return void
      */
     public function incrementQueue($queue, $runtime)
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
-            'queue:'.$queue, 'measured_queues', str_replace(',', '.', $runtime)
+            'queue:'.$queue, 'measured_queues', str_replace(',', '.', (string) $runtime)
         );
     }
 
