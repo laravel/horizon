@@ -82,7 +82,7 @@ interface MetricsRepository
      * Increment the metrics information for a job.
      *
      * @param  string  $job
-     * @param  float  $runtime
+     * @param  float|null  $runtime
      * @return void
      */
     public function incrementJob($job, $runtime);
@@ -91,7 +91,7 @@ interface MetricsRepository
      * Increment the metrics information for a queue.
      *
      * @param  string  $queue
-     * @param  float  $runtime
+     * @param  float|null  $runtime
      * @return void
      */
     public function incrementQueue($queue, $runtime);
