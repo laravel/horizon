@@ -109,11 +109,12 @@ class Horizon
 
     /**
      * @param  array  $config
+     * @param  string|null  $prefix
      * @return void
      */
-    protected static function setHorizonConfig($config)
+    protected static function setHorizonConfig($config, $prefix = null)
     {
-        $config['options']['prefix'] = config('horizon.prefix') ?: 'horizon:';
+        $config['options']['prefix'] = config('horizon.prefix') ?: ($prefix ?? 'horizon:');
 
         config(['database.redis.horizon' => $config]);
     }
@@ -121,16 +122,17 @@ class Horizon
     /**
      * @param  string  $connection
      * @param  callable  $callback
+     * @param  string|null  $prefix
      * @return mixed
      *
      * @throws \Exception
      */
-    public static function usingConnection($connection, $callback)
+    public static function usingConnection($connection, $callback, $prefix = null)
     {
         $initialConfig = config('database.redis.horizon');
 
         try {
-            static::use($connection);
+            static::use($connection, $prefix);
             return $callback();
         } finally {
             static::setHorizonConfig($initialConfig);
