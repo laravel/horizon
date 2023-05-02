@@ -103,9 +103,38 @@ class Horizon
             throw new Exception("Redis connection [{$connection}] has not been configured.");
         }
 
+        static::setHorizonConfig($config);
+    }
+
+
+    /**
+     * @param  array  $config
+     * @return void
+     */
+    protected static function setHorizonConfig($config)
+    {
         $config['options']['prefix'] = config('horizon.prefix') ?: 'horizon:';
 
         config(['database.redis.horizon' => $config]);
+    }
+
+    /**
+     * @param  string  $connection
+     * @param  callable  $callback
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public static function usingConnection($connection, $callback)
+    {
+        $initialConfig = config('database.redis.horizon');
+
+        try {
+            static::use($connection);
+            return $callback();
+        } finally {
+            static::setHorizonConfig($initialConfig);
+        }
     }
 
     /**
