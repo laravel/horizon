@@ -107,7 +107,6 @@ class Horizon
         static::setHorizonConfig($config, $prefix);
     }
 
-
     /**
      * @param  array  $config
      * @param  string|null  $prefix
@@ -134,6 +133,7 @@ class Horizon
 
         try {
             static::use($connection, $prefix);
+
             return $callback();
         } finally {
             static::setHorizonConfig($initialConfig, $initialConfig['options']['prefix'] ?? null);

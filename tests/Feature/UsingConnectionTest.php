@@ -17,7 +17,7 @@ class UsingConnectionTest extends IntegrationTest
 
         config(['database.redis.test' => $secondConfig]);
 
-        Horizon::usingConnection('test', function() {
+        Horizon::usingConnection('test', function () {
             $this->assertSame('100', config('database.redis.horizon.database'));
             $this->assertSame('custom:', config('database.redis.horizon.options.prefix'));
         }, 'custom:');
@@ -36,7 +36,7 @@ class UsingConnectionTest extends IntegrationTest
                 $this->assertSame('custom:', config('database.redis.horizon.options.prefix'));
             });
         } catch (Throwable $exception) {
-            $this->assertEquals("Redis connection [test] has not been configured.", $exception->getMessage());
+            $this->assertEquals('Redis connection [test] has not been configured.', $exception->getMessage());
         }
 
         $this->assertEqualsCanonicalizing($initialConfig, config('database.redis.horizon'));
