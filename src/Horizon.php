@@ -91,11 +91,12 @@ class Horizon
      * Configure the Redis databases that will store Horizon data.
      *
      * @param  string  $connection
+     * @param  string|null  $prefix
      * @return void
      *
      * @throws \Exception
      */
-    public static function use($connection)
+    public static function use($connection, $prefix = null)
     {
         if (! is_null($config = config("database.redis.clusters.{$connection}.0"))) {
             config(["database.redis.{$connection}" => $config]);
@@ -103,7 +104,7 @@ class Horizon
             throw new Exception("Redis connection [{$connection}] has not been configured.");
         }
 
-        static::setHorizonConfig($config);
+        static::setHorizonConfig($config, $prefix);
     }
 
 
@@ -114,7 +115,7 @@ class Horizon
      */
     protected static function setHorizonConfig($config, $prefix = null)
     {
-        $config['options']['prefix'] = config('horizon.prefix') ?: ($prefix ?? 'horizon:');
+        $config['options']['prefix'] = $prefix ?: config('horizon.prefix', 'horizon:');
 
         config(['database.redis.horizon' => $config]);
     }
@@ -135,7 +136,7 @@ class Horizon
             static::use($connection, $prefix);
             return $callback();
         } finally {
-            static::setHorizonConfig($initialConfig);
+            static::setHorizonConfig($initialConfig, $initialConfig['options']['prefix'] ?? null);
         }
     }
 
