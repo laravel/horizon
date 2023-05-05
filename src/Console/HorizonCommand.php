@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\ProvisioningPlan;
@@ -43,7 +44,7 @@ class HorizonCommand extends Command
             $this->option('environment') ?? config('horizon.env') ?? config('app.env')
         );
 
-        $this->info('Horizon started successfully.');
+        $this->info(sprintf('%s Horizon started successfully.', Carbon::now()->format('Y-m-d H:i:s')));
 
         pcntl_async_signals(true);
 
