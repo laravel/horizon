@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.15.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.15.1...5.x)
+
+## [v5.15.1](https://github.com/laravel/horizon/compare/v5.15.0...v5.15.1) - 2023-04-26
+
+- Fix deprecation errors for PHP 8.2 by @AntonCooper in https://github.com/laravel/horizon/pull/1270
 
 ## [v5.15.0](https://github.com/laravel/horizon/compare/v515.0...v5.15.0) - 2023-03-07
 
