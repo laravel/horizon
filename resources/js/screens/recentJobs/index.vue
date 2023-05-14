@@ -151,9 +151,9 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">{{ $t('Pending Jobs') }}</h2>
-                <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">{{ $t('Completed Jobs') }}</h2>
-                <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">{{ $t('Silenced Jobs') }}</h2>
+                <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">{{ $t("Pending Jobs") }}</h2>
+                <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">{{ $t("Completed Jobs") }}</h2>
+                <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">{{ $t("Silenced Jobs") }}</h2>
             </div>
 
             <div v-if="!ready"
@@ -163,7 +163,7 @@
                         d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>{{ $t('Loading...') }}</span>
+                <span>{{ $t("Loading...") }}</span>
             </div>
 
             <div v-if="ready && jobs.length == 0"
@@ -174,11 +174,11 @@
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>{{ $t('Job') }}</th>
-                        <th v-if="$route.params.type=='pending'" class="text-right">{{ $t('Queued') }}</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">{{ $t('Queued') }}</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">{{ $t('Completed') }}</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">{{ $t('Runtime') }}</th>
+                        <th>{{ $t("Job") }}</th>
+                        <th v-if="$route.params.type=='pending'" class="text-right">{{ $t("Queued") }}</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">{{ $t("Queued") }}</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">{{ $t("Completed") }}</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">{{ $t("Runtime") }}</th>
                     </tr>
                 </thead>
 
@@ -188,7 +188,7 @@
                             <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
                                 Entries</a></small>
 
-                            <small v-if="loadingNewEntries">{{ $t('Loading...') }}</small>
+                            <small v-if="loadingNewEntries">{{ $t("Loading...") }}</small>
                         </td>
                     </tr>
 
@@ -198,8 +198,8 @@
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t('Previous') }}</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">{{ $t('Next') }}</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t("Previous") }}</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">{{ $t("Next") }}</button>
             </div>
         </div>
     </div>

@@ -18,7 +18,7 @@
 
                 <li class="nav-item">
                     <router-link class="nav-link" active-class="active" :to="{ name: 'monitoring-failed', params: { tag:$route.params.tag }}" href="#">
-                        {{ $t('Failed Jobs') }}
+                        {{ $t("Failed Jobs") }}
                     </router-link>
                 </li>
             </ul>

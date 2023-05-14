@@ -232,7 +232,7 @@
                 <div class="d-flex">
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">{{ $t('Total Processes') }}</small>
+                            <small class="text-muted font-weight-bold">{{ $t("Total Processes") }}</small>
 
                             <p class="h4 mt-2">
                                 {{ stats.processes ? stats.processes.toLocaleString() : 0 }}
@@ -242,7 +242,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">{{ $t('Max Wait Time') }}</small>
+                            <small class="text-muted font-weight-bold">{{ $t("Max Wait Time") }}</small>
 
                             <p class="mt-2 mb-0">
                                 {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
@@ -254,7 +254,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">{{ $t('Max Runtime') }}</small>
+                            <small class="text-muted font-weight-bold">{{ $t("Max Runtime") }}</small>
 
                             <p class="h4 mt-2">
                                 {{ stats.queueWithMaxRuntime ? stats.queueWithMaxRuntime : '-' }}
@@ -264,7 +264,7 @@
 
                     <div class="w-25">
                         <div class="p-4 mb-0">
-                            <small class="text-muted font-weight-bold">{{ $t('Max Throughput') }}</small>
+                            <small class="text-muted font-weight-bold">{{ $t("Max Throughput") }}</small>
 
                             <p class="h4 mt-2">
                                 {{ stats.queueWithMaxThroughput ? stats.queueWithMaxThroughput : '-' }}
@@ -278,16 +278,16 @@
 
         <div class="card overflow-hidden mt-4" v-if="workload.length">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">{{ $t('Current Workload') }}</h2>
+                <h2 class="h6 m-0">{{ $t("Current Workload") }}</h2>
             </div>
 
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>{{ $t('Queue') }}</th>
-                    <th class="text-right" style="width: 120px;">{{ $t('Jobs') }}</th>
-                    <th class="text-right" style="width: 120px;">{{ $t('Processes') }}</th>
-                    <th class="text-right" style="width: 180px;">{{ $t('Wait') }}</th>
+                    <th>{{ $t("Queue") }}</th>
+                    <th class="text-right" style="width: 120px;">{{ $t("Jobs") }}</th>
+                    <th class="text-right" style="width: 120px;">{{ $t("Processes") }}</th>
+                    <th class="text-right" style="width: 180px;">{{ $t("Wait") }}</th>
                 </tr>
                 </thead>
 
@@ -336,10 +336,10 @@
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>{{ $t('Supervisor') }}</th>
-                    <th>{{ $t('Queues') }}</th>
-                    <th class="text-right" style="width: 120px;">{{ $t('Processes') }}</th>
-                    <th class="text-right" style="width: 180px;">{{ $t('Balancing') }}</th>
+                    <th>{{ $t("Supervisor") }}</th>
+                    <th>{{ $t("Queues") }}</th>
+                    <th class="text-right" style="width: 120px;">{{ $t("Processes") }}</th>
+                    <th class="text-right" style="width: 180px;">{{ $t("Balancing") }}</th>
                 </tr>
                 </thead>
 
@@ -357,7 +357,7 @@
                         {{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }}
                     </td>
                     <td class="text-right text-muted" v-else>
-                        {{ $t('Disabled') }}
+                        {{ $t("Disabled") }}
                     </td>
                 </tr>
                 </tbody>

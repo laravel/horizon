@@ -169,8 +169,8 @@
                 <thead>
                 <tr>
                     <th>{{ $t("Job") }}</th>
-                    <th class="text-right">{{ $t('Runtime') }}</th>
-                    <th class="text-right">{{ $t('Failed') }}</th>
+                    <th class="text-right">{{ $t("Runtime") }}</th>
+                    <th class="text-right">{{ $t("Failed") }}</th>
                 </tr>
                 </thead>
 

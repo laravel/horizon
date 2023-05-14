@@ -128,7 +128,7 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">{{ $t('Batches') }}</h2>
+                <h2 class="h6 m-0">{{ $t("Batches") }}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -136,7 +136,7 @@
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
-                <span>{{ $t('Loading...') }}</span>
+                <span>{{ $t("Loading...") }}</span>
             </div>
 
 
@@ -147,20 +147,20 @@
             <table v-if="ready && batches.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>{{ $t('Batch') }}</th>
-                    <th>{{ $t('Status') }}</th>
-                    <th class="text-right">{{ $t('Size') }}</th>
-                    <th class="text-right">{{ $t('Completion') }}</th>
-                    <th class="text-right">{{ $t('Created') }}</th>
+                    <th>{{ $t("Batch") }}</th>
+                    <th>{{ $t("Status") }}</th>
+                    <th class="text-right">{{ $t("Size") }}</th>
+                    <th class="text-right">{{ $t("Completion") }}</th>
+                    <th class="text-right">{{ $t("Created") }}</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                     <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">{{ $t('Load New Entries') }}</a></small>
+                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">{{ $t("Load New Entries") }}</a></small>
 
-                        <small v-if="loadingNewEntries">{{ $t('Loading...') }}</small>
+                        <small v-if="loadingNewEntries">{{ $t("Loading...") }}</small>
                     </td>
                 </tr>
 
@@ -195,8 +195,8 @@
             </table>
 
             <div v-if="ready && batches.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t('Previous') }}</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">{{ $t('Next') }}</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t("Previous") }}</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">{{ $t("Next") }}</button>
             </div>
         </div>
 

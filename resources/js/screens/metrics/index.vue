@@ -19,13 +19,13 @@
             <ul class="nav nav-pills card-bg-secondary">
                 <li class="nav-item">
                     <router-link class="nav-link" active-class="active" :to="{ name: 'metrics-jobs'}" href="#">
-                        {{ $t('Jobs') }}
+                        {{ $t("Jobs") }}
                     </router-link>
                 </li>
 
                 <li class="nav-item">
                     <router-link class="nav-link" active-class="active" :to="{ name: 'metrics-queues'}" href="#">
-                        {{ $t('Queues') }}
+                        {{ $t("Queues") }}
                     </router-link>
                 </li>
             </ul>
