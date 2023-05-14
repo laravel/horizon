@@ -52,13 +52,13 @@
 
 
         <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-            <span>There aren't any jobs.</span>
+            <span>{{ $t("There aren't any jobs.") }}</span>
         </div>
 
         <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
             <thead>
             <tr>
-                <th>Job</th>
+                <th>{{ $t('Job') }}</th>
             </tr>
             </thead>
 

@@ -52,13 +52,13 @@
 
 
         <div v-if="ready && queues.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-            <span>There aren't any queues.</span>
+            <span>{{ $t("There aren't any queues.") }}</span>
         </div>
 
         <table v-if="ready && queues.length > 0" class="table table-hover mb-0">
             <thead>
             <tr>
-                <th>Queue</th>
+                <th>{{ $t('Queue') }}</th>
             </tr>
             </thead>
 
