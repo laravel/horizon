@@ -153,7 +153,7 @@
                     <div class="col">{{batch.failedJobs}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2 text-muted">{{ $t("Completed Jobs") }}<br><small>(Including Failed)</small></div>
+                    <div class="col-md-2 text-muted">{{ $t("Completed Jobs") }}<br><small>({{ $t("Including Failed") }})</small></div>
                     <div class="col">{{ (batch.totalJobs-batch.pendingJobs) }} ({{batch.progress}}%)</div>
                 </div>
             </div>
@@ -169,8 +169,8 @@
                 <thead>
                 <tr>
                     <th>{{ $t("Job") }}</th>
-                    <th class="text-right">Runtime</th>
-                    <th class="text-right">Failed</th>
+                    <th class="text-right">{{ $t('Runtime') }}</th>
+                    <th class="text-right">{{ $t('Failed') }}</th>
                 </tr>
                 </thead>
 

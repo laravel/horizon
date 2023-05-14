@@ -141,24 +141,24 @@
 
 
             <div v-if="ready && batches.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any batches.</span>
+                <span>{{ $t("There aren't any batches.") }}</span>
             </div>
 
             <table v-if="ready && batches.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Batch</th>
-                    <th>Status</th>
-                    <th class="text-right">Size</th>
-                    <th class="text-right">Completion</th>
-                    <th class="text-right">Created</th>
+                    <th>{{ $t('Batch') }}</th>
+                    <th>{{ $t('Status') }}</th>
+                    <th class="text-right">{{ $t('Size') }}</th>
+                    <th class="text-right">{{ $t('Completion') }}</th>
+                    <th class="text-right">{{ $t('Created') }}</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                     <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">{{ $t('Load New Entries') }}</a></small>
 
                         <small v-if="loadingNewEntries">{{ $t('Loading...') }}</small>
                     </td>
@@ -172,16 +172,16 @@
                     </td>
                     <td>
                         <small class="badge badge-danger badge-sm" v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
-                            Failures
+                            {{ $t("Failures") }}
                         </small>
                         <small class="badge badge-success badge-sm" v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs">
-                            Finished
+                            {{ $t("Finished") }}
                         </small>
                         <small class="badge badge-secondary badge-sm" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
-                            Pending
+                            {{ $t("Pending") }}
                         </small>
                         <small class="badge badge-warning badge-sm" v-if="batch.cancelledAt">
-                            Cancelled
+                            {{ $t("Cancelled") }}
                         </small>
                     </td>
                     <td class="text-right text-muted">{{batch.totalJobs}}</td>
@@ -195,8 +195,8 @@
             </table>
 
             <div v-if="ready && batches.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">Next</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t('Previous') }}</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">{{ $t('Next') }}</button>
             </div>
         </div>
 
