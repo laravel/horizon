@@ -226,23 +226,23 @@
 
 
             <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any failed jobs.</span>
+                <span>{{ $t("There aren't any failed jobs.") }}</span>
             </div>
 
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Job</th>
-                    <th class="text-right">Runtime</th>
-                    <th>Failed</th>
-                    <th class="text-right">Retry</th>
+                    <th>{{ $t('Job') }}</th>
+                    <th class="text-right">{{ $t('Runtime') }}</th>
+                    <th>{{ $t('Failed') }}</th>
+                    <th class="text-right">{{ $t('Retry') }}</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                     <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">{{ $t("Load New Entries") }}</a></small>
 
                         <small v-if="loadingNewEntries">{{ $t('Loading...') }}</small>
                     </td>
@@ -295,8 +295,8 @@
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t('Previous') }}</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">{{ $t('Next') }}</button>
             </div>
         </div>
 

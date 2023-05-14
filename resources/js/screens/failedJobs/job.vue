@@ -108,7 +108,7 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
+                <h2 class="h6 m-0" v-if="!ready">{{ $t("Job Preview") }}</h2>
                 <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
 
                 <button class="btn btn-primary" v-on:click.prevent="retry(job.id)">
@@ -130,23 +130,23 @@
 
             <div class="card-body card-bg-secondary" v-if="ready">
                 <div class="row mb-2">
-                    <div class="col-md-2 text-muted">ID</div>
+                    <div class="col-md-2 text-muted">{{ $t('ID') }}</div>
                     <div class="col">{{job.id}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Queue</div>
+                    <div class="col-md-2 text-muted">{{ $t('Queue') }}</div>
                     <div class="col">{{job.queue}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Attempts</div>
+                    <div class="col-md-2 text-muted">{{ $t('Attempts') }}</div>
                     <div class="col">{{job.payload.attempts}}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Retries</div>
+                    <div class="col-md-2 text-muted">{{ $t('Retries') }}</div>
                     <div class="col">{{job.retried_by.length}}</div>
                 </div>
                 <div class="row mb-2" v-if="job.payload.retry_of">
-                    <div class="col-md-2 text-muted">Retry of ID</div>
+                    <div class="col-md-2 text-muted">{{ $t('Retry of ID') }}</div>
                     <div class="col">
                          <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
                             {{ job.payload.retry_of }}
@@ -154,11 +154,11 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Tags</div>
+                    <div class="col-md-2 text-muted">{{ $t('Tags') }}</div>
                     <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                 </div>
                 <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
-                    <div class="col-md-2 text-muted">Batch</div>
+                    <div class="col-md-2 text-muted">{{ $t('Batch') }}</div>
                     <div class="col">
                         <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
                             {{ prettyPrintJob(job.payload.data).batchId }}
@@ -166,11 +166,11 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Pushed</div>
+                    <div class="col-md-2 text-muted">{{ $t('Pushed') }}</div>
                     <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2 text-muted">Failed</div>
+                    <div class="col-md-2 text-muted">{{ $t('Failed') }}</div>
                     <div class="col">{{readableTimestamp(job.failed_at)}}</div>
                 </div>
             </div>
@@ -214,9 +214,9 @@
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Job</th>
-                    <th>ID</th>
-                    <th class="text-right">Retry Time</th>
+                    <th>{{ $t('Job') }}</th>
+                    <th>{{ $t('ID') }}</th>
+                    <th class="text-right">{{ $t('Retry Time') }}</th>
                 </tr>
                 </thead>
 
