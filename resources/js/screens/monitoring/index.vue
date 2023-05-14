@@ -105,7 +105,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">{{ $t("Monitoring") }}</h2>
 
-                <button @click="openNewTagModal" class="btn btn-primary btn-sm">Monitor Tag</button>
+                <button @click="openNewTagModal" class="btn btn-primary btn-sm">{{ $t("Monitor Tag") }}</button>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -118,15 +118,15 @@
 
 
             <div v-if="ready && tags.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>You're not monitoring any tags.</span>
+                <span>{{ $t("You're not monitoring any tags.") }}</span>
             </div>
 
 
             <table v-if="ready && tags.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Tag</th>
-                    <th class="text-right">Jobs</th>
+                    <th>{{ $t('Tag') }}</th>
+                    <th class="text-right">{{ $t('Jobs') }}</th>
                     <th class="text-right"></th>
                 </tr>
                 </thead>
@@ -154,7 +154,7 @@
         <div class="modal" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">Monitor New Tag</div>
+                    <div class="modal-header">{{ $t("Monitor New Tag") }}</div>
 
                     <div class="modal-body">
                         <input type="text" class="form-control" placeholder="App\Models\User:6352"
@@ -166,11 +166,11 @@
 
                     <div class="modal-footer justify-content-start flex-row-reverse">
                         <button class="btn btn-primary" @click="monitorNewTag">
-                            Monitor
+                            {{ $t("Monitor") }}
                         </button>
 
                         <button class="btn" @click="cancelNewTag">
-                            Cancel
+                            {{ $t("Cancel") }}
                         </button>
                     </div>
                 </div>
