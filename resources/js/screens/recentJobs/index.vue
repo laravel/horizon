@@ -168,17 +168,17 @@
 
             <div v-if="ready && jobs.length == 0"
                  class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any jobs.</span>
+                <span>{{ $t("There aren't any jobs.") }}</span>
             </div>
 
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>Job</th>
-                        <th v-if="$route.params.type=='pending'" class="text-right">Queued</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">Runtime</th>
+                        <th>{{ $t('Job') }}</th>
+                        <th v-if="$route.params.type=='pending'" class="text-right">{{ $t('Queued') }}</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">{{ $t('Queued') }}</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">{{ $t('Completed') }}</th>
+                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">{{ $t('Runtime') }}</th>
                     </tr>
                 </thead>
 
@@ -198,8 +198,8 @@
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">{{ $t('Previous') }}</button>
+                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">{{ $t('Next') }}</button>
             </div>
         </div>
     </div>
