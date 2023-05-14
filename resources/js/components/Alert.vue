@@ -82,19 +82,19 @@
                 <div class="modal-footer justify-content-start flex-row-reverse">
 
                     <button v-if="type == 'error'" class="btn btn-primary" @click="close">
-                        Close
+                        {{ $t("Close") }}
                     </button>
 
                     <button v-if="type == 'success'" class="btn btn-primary" @click="close">
-                        Okay
+                        {{ $t("Okay") }}
                     </button>
 
 
                     <button v-if="type == 'confirmation'" class="btn btn-danger" @click="confirm">
-                        Yes
+                        {{ $t("Yes") }}
                     </button>
                     <button v-if="type == 'confirmation'" class="btn" @click="cancel">
-                        Cancel
+                        {{ $t("Cancel") }}
                     </button>
 
                 </div>
