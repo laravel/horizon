@@ -21,19 +21,25 @@
 
             this.loadTags();
 
+            this.refreshTagsPeriodically();
+
             this.$on('addTagModalClosed', data => {
                 this.addTagModalOpened = false;
             });
         },
 
+        /**
+         * Clean up after the component is destroyed.
+         */
+        destroyed() {
+            clearInterval(this.interval);
+        },
 
         methods: {
             /**
              * Load the monitored tags.
              */
             loadTags() {
-                this.ready = false;
-
                 this.$http.get(Horizon.basePath + '/api/monitoring')
                     .then(response => {
                         this.tags = response.data;
@@ -42,6 +48,14 @@
                     });
             },
 
+            /**
+             * Refresh the tags every period of time.
+             */
+            refreshTagsPeriodically() {
+                this.interval = setInterval(() => {
+                    this.loadTags();
+                }, 3000);
+            },
 
             /**
              * Open the modal for adding a new tag.
