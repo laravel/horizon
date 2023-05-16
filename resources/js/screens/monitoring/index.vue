@@ -29,7 +29,7 @@
         },
 
         /**
-         * Clean after the component is destroyed.
+         * Clean up after the component is destroyed.
          */
         destroyed() {
             clearInterval(this.interval);
