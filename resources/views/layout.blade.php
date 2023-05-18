@@ -12,7 +12,8 @@
     <!-- Style sheets-->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
-    <link href="{{ asset(mix($cssFile, 'vendor/horizon')) }}" rel="stylesheet">
+    <link href="{{ asset(mix('app.css', 'vendor/horizon')) }}" rel="stylesheet" media="(prefers-color-scheme: light)">
+    <link href="{{ asset(mix('app-dark.css', 'vendor/horizon')) }}" rel="stylesheet" media="(prefers-color-scheme: dark)">
 </head>
 <body>
 <div id="horizon" v-cloak>
