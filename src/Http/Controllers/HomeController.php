@@ -16,7 +16,6 @@ class HomeController extends Controller
     {
         return view('horizon::layout', [
             'assetsAreCurrent' => Horizon::assetsAreCurrent(),
-            'cssFile' => Horizon::$useDarkTheme ? 'app-dark.css' : 'app.css',
             'horizonScriptVariables' => Horizon::scriptVariables(),
             'isDownForMaintenance' => App::isDownForMaintenance(),
         ]);
