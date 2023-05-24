@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.15.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.16.0...5.x)
+
+## [v5.16.0](https://github.com/laravel/horizon/compare/v5.15.1...v5.16.0) - 2023-05-18
+
+- Refreshes tags periodically by @nunomaduro in https://github.com/laravel/horizon/pull/1274
+- Respect the prefers-color-scheme setting by @ramonrietdijk in https://github.com/laravel/horizon/pull/1275
 
 ## [v5.15.1](https://github.com/laravel/horizon/compare/v5.15.0...v5.15.1) - 2023-04-26
 
