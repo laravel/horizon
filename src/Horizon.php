@@ -48,6 +48,7 @@ class Horizon
      * Indicates if Horizon should use the dark theme.
      *
      * @deprecated
+     *
      * @var bool
      */
     public static $useDarkTheme = false;
@@ -113,6 +114,7 @@ class Horizon
      * Specifies that Horizon should use the dark theme.
      *
      * @deprecated
+     *
      * @return static
      */
     public static function night()
