@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.16.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.16.1...5.x)
+
+## [v5.16.1](https://github.com/laravel/horizon/compare/v5.16.0...v5.16.1) - 2023-05-29
+
+- Mark as deprecated using `night()` and `$useDarkTheme` by @lloricode in https://github.com/laravel/horizon/pull/1279
 
 ## [v5.16.0](https://github.com/laravel/horizon/compare/v5.15.1...v5.16.0) - 2023-05-18
 
