@@ -283,7 +283,11 @@
                     <template v-for="queue in workload">
                         <tr>
                             <td :class="{'font-weight-bold': queue.split_queues}">
-                                <span>{{ queue.name.replace(/,/g, ', ') }}</span>
+                                <span>
+                                    <router-link :to="{ name: 'metrics-preview', params: { type: 'queues', slug: queue.name.replace(/,/g, ', ') }}">
+                                        {{ queue.name.replace(/,/g, ', ') }}
+                                    </router-link>
+                                </span>
                             </td>
                             <td class="text-right text-muted" :class="{'font-weight-bold': queue.split_queues}">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-right text-muted" :class="{'font-weight-bold': queue.split_queues}">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
