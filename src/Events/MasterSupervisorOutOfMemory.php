@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Laravel\Horizon\Events;
 
 use Laravel\Horizon\MasterSupervisor;
 
-class MasterSupervisorOutOfMemoryTerminated
+class MasterSupervisorOutOfMemory
 {
     /**
      * The master supervisor instance.

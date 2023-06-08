@@ -6,7 +6,7 @@ namespace Laravel\Horizon\Events;
 
 use Laravel\Horizon\Supervisor;
 
-class SupervisorOutOfMemoryTerminated
+class SupervisorOutOfMemory
 {
     /**
      * The supervisor instance.
