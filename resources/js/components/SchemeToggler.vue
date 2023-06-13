@@ -36,20 +36,14 @@
             },
 
             calculateScheme () {
-                const light = document.querySelector('link[data-scheme="light"]');
                 const dark = document.querySelector('link[data-scheme="dark"]');
 
                 if (this.scheme == 'system') {
                     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
-                    light.disabled = prefersDarkMode.matches;
                     dark.disabled = ! prefersDarkMode.matches;
-                } else if (this.scheme == 'dark') {
-                    light.disabled = true;
-                    dark.disabled = false;
                 } else {
-                    light.disabled = false;
-                    dark.disabled = true;
+                    dark.disabled = this.scheme != 'dark';
                 }
             }
         }
