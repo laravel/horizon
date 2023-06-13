@@ -4,6 +4,7 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Events\SupervisorProcessDied;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
 use Laravel\Horizon\SupervisorCommands\Terminate;
 
@@ -77,6 +78,8 @@ class SupervisorProcess extends WorkerProcess
         // other checks run because we do not care if this is cooling down here.
         if (! $this->process->isRunning() &&
             $this->process->getExitCode() === 13) {
+            event(new SupervisorProcessDied($this, $this->process->getExitCode()));
+
             return $this->markAsDead();
         }
 
@@ -92,6 +95,7 @@ class SupervisorProcess extends WorkerProcess
         // should be marked as dead and not be restarted. Typically, this could be
         // an indication that the supervisor was simply purposefully terminated.
         $exitCode = $this->process->getExitCode();
+        event(new SupervisorProcessDied($this, $exitCode));
 
         $this->markAsDead();
 
