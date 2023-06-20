@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.16.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.17.0...5.x)
+
+## [v5.17.0](https://github.com/laravel/horizon/compare/v5.16.1...v5.17.0) - 2023-06-13
+
+- Add events for when supervisors are terminated by @PrinsFrank in https://github.com/laravel/horizon/pull/1282
+- Fixed occasional flashing when toggling scheme by @ramonrietdijk in https://github.com/laravel/horizon/pull/1283
 
 ## [v5.16.1](https://github.com/laravel/horizon/compare/v5.16.0...v5.16.1) - 2023-05-29
 
