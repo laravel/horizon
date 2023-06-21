@@ -114,7 +114,6 @@ class SupervisorProcess extends WorkerProcess
     protected function reprovision()
     {
         if (isset($this->name)) {
-            // When restarting, the Supervisor checks if it is already running based on this key
             app(SupervisorRepository::class)->forget($this->name);
         }
 
