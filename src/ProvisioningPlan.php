@@ -182,6 +182,10 @@ class ProvisioningPlan
             throw new Exception("The value of [{$supervisor}.minProcesses] must be greater than 0.");
         }
 
+        if (isset($options['minProcesses']) && $options['minProcesses'] * count(explode(',', $options['queue'] ?? '')) > ($options['maxProcesses'] ?? 1)) {
+            throw new Exception("The value of minProcesses per queue times the number of queues should be less than or equal to maxProcesses per supervisor [{$supervisor}].");
+        }
+
         $options['parentId'] = getmypid();
 
         return SupervisorOptions::fromArray(
