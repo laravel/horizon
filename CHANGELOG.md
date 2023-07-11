@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.17.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.18.0...5.x)
+
+## [v5.18.0](https://github.com/laravel/horizon/compare/v5.17.0...v5.18.0) - 2023-06-30
+
+- Fix supervisor reprovisioning by [@PrinsFrank](https://github.com/PrinsFrank) in https://github.com/laravel/horizon/pull/1288
+- Display inactive supervisors in dashboard by [@PrinsFrank](https://github.com/PrinsFrank) in https://github.com/laravel/horizon/pull/1286
+- Fix autoscaler scaling down below zero when (nr. of queues * minProcesses) is higher than maxProcesses by [@PrinsFrank](https://github.com/PrinsFrank) in https://github.com/laravel/horizon/pull/1292
 
 ## [v5.17.0](https://github.com/laravel/horizon/compare/v5.16.1...v5.17.0) - 2023-06-13
 
