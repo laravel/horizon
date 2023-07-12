@@ -57,14 +57,22 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     public static $nameResolver;
 
     /**
+     * The environment that is used to provision this master supervisor.
+     *
+     * @var string|null
+     */
+    public $environment;
+
+    /**
      * Create a new master supervisor instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $environment = null)
     {
         $this->name = static::name();
         $this->supervisors = collect();
+        $this->environment = $environment;
 
         $this->output = function () {
             //

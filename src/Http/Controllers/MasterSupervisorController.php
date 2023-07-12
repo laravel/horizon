@@ -25,7 +25,7 @@ class MasterSupervisorController extends Controller
         return $masters->each(function ($master, $name) use ($supervisors) {
             $master->supervisors = ($supervisors->get($name) ?? collect())
                 ->merge(
-                    collect(ProvisioningPlan::get($name)->plan[config('horizon.env') ?? config('app.env')] ?? [])
+                    collect(ProvisioningPlan::get($name)->plan[$master->environment ?? config('horizon.env') ?? config('app.env')] ?? [])
                         ->map(function ($value, $key) use ($name) {
                             return (object) [
                                 'name' => $name.':'.$key,
