@@ -22,6 +22,13 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     use ListensForSignals;
 
     /**
+     * The environment that was used to provision this master supervisor.
+     *
+     * @var string|null
+     */
+    public $environment;
+
+    /**
      * The name of the master supervisor.
      *
      * @var string
@@ -59,10 +66,13 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     /**
      * Create a new master supervisor instance.
      *
+     * @param  string  $environment
      * @return void
      */
-    public function __construct()
+    public function __construct(string $environment = null)
     {
+        $this->environment = $environment;
+
         $this->name = static::name();
         $this->supervisors = collect();
 

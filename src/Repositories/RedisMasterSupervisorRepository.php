@@ -72,7 +72,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
     {
         $records = $this->connection()->pipeline(function ($pipe) use ($names) {
             foreach ($names as $name) {
-                $pipe->hmget('master:'.$name, ['name', 'pid', 'status', 'supervisors']);
+                $pipe->hmget('master:'.$name, ['name', 'environment', 'pid', 'status', 'supervisors']);
             }
         });
 
@@ -81,9 +81,10 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
 
             return ! $record[0] ? null : (object) [
                 'name' => $record[0],
-                'pid' => $record[1],
-                'status' => $record[2],
-                'supervisors' => json_decode($record[3], true),
+                'environment' => $record[1],
+                'pid' => $record[2],
+                'status' => $record[3],
+                'supervisors' => json_decode($record[4], true),
             ];
         })->filter()->all();
     }
@@ -102,6 +103,7 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
             $pipe->hmset(
                 'master:'.$master->name, [
                     'name' => $master->name,
+                    'environment' => $master->environment,
                     'pid' => $master->pid(),
                     'status' => $master->working ? 'running' : 'paused',
                     'supervisors' => json_encode($supervisors),

@@ -35,13 +35,13 @@ class HorizonCommand extends Command
             return $this->comment('A master supervisor is already running on this machine.');
         }
 
-        $master = (new MasterSupervisor)->handleOutputUsing(function ($type, $line) {
+        $environment = $this->option('environment') ?? config('horizon.env') ?? config('app.env');
+
+        $master = (new MasterSupervisor($environment))->handleOutputUsing(function ($type, $line) {
             $this->output->write($line);
         });
 
-        ProvisioningPlan::get(MasterSupervisor::name())->deploy(
-            $this->option('environment') ?? config('horizon.env') ?? config('app.env')
-        );
+        ProvisioningPlan::get(MasterSupervisor::name())->deploy($environment);
 
         $this->info('Horizon started successfully.');
 
