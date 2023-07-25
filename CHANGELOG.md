@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.18.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.19.0...5.x)
+
+## [v5.19.0](https://github.com/laravel/horizon/compare/v5.18.0...v5.19.0) - 2023-07-14
+
+- Make sure that missing supervisors are correctly displayed when using multiple environments by [@PrinsFrank](https://github.com/PrinsFrank) in https://github.com/laravel/horizon/pull/1294
 
 ## [v5.18.0](https://github.com/laravel/horizon/compare/v5.17.0...v5.18.0) - 2023-06-30
 
