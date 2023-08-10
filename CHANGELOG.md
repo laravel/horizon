@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.19.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.19.1...5.x)
+
+## [v5.19.1](https://github.com/laravel/horizon/compare/v5.19.0...v5.19.1) - 2023-08-09
+
+- Handle non-array parameters for "queue" setting in supervisor config by [@PrinsFrank](https://github.com/PrinsFrank) in https://github.com/laravel/horizon/pull/1299
 
 ## [v5.19.0](https://github.com/laravel/horizon/compare/v5.18.0...v5.19.0) - 2023-07-14
 
