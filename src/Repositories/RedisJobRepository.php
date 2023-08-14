@@ -52,11 +52,18 @@ class RedisJobRepository implements JobRepository
     public $pendingJobExpires;
 
     /**
-     * The number of minutes until completed and silenced jobs should be purged.
+     * The number of minutes until completed jobs should be purged.
      *
      * @var int
      */
     public $completedJobExpires;
+
+    /**
+     * The number of minutes until silenced jobs should be purged.
+     *
+     * @var int
+     */
+    public $silencedJobExpires;
 
     /**
      * The number of minutes until failed jobs should be purged.
@@ -84,6 +91,7 @@ class RedisJobRepository implements JobRepository
         $this->recentJobExpires = config('horizon.trim.recent', 60);
         $this->pendingJobExpires = config('horizon.trim.pending', 60);
         $this->completedJobExpires = config('horizon.trim.completed', 60);
+        $this->silencedJobExpires = config('horizon.trim.silenced', $this->completedJobExpires);
         $this->failedJobExpires = config('horizon.trim.failed', 10080);
         $this->recentFailedJobExpires = config('horizon.trim.recent_failed', $this->failedJobExpires);
         $this->monitoredJobExpires = config('horizon.trim.monitored', 10080);
@@ -283,7 +291,7 @@ class RedisJobRepository implements JobRepository
             case 'completed_jobs':
                 return $this->completedJobExpires;
             case 'silenced_jobs':
-                return $this->completedJobExpires;
+                return $this->silencedJobExpires;
             default:
                 return $this->recentJobExpires;
         }
@@ -474,7 +482,8 @@ class RedisJobRepository implements JobRepository
         }
 
         $this->connection()->pipeline(function ($pipe) use ($payload, $silenced) {
-            $this->storeJobReference($pipe, $silenced ? 'silenced_jobs' : 'completed_jobs', $payload);
+            $type = $silenced ? 'silenced_jobs' : 'completed_jobs';
+            $this->storeJobReference($pipe, $type, $payload);
             $this->removeJobReference($pipe, 'pending_jobs', $payload);
 
             $pipe->hmset(
@@ -484,7 +493,8 @@ class RedisJobRepository implements JobRepository
                 ]
             );
 
-            $pipe->expireat($payload->id(), CarbonImmutable::now()->addMinutes($this->completedJobExpires)->getTimestamp());
+            $expires = $this->minutesForType($type);
+            $pipe->expireat($payload->id(), CarbonImmutable::now()->addMinutes($expires)->getTimestamp());
         });
     }
 
@@ -574,7 +584,7 @@ class RedisJobRepository implements JobRepository
 
             $pipe->zremrangebyscore(
                 'silenced_jobs',
-                CarbonImmutable::now()->subMinutes($this->completedJobExpires)->getTimestamp() * -1,
+                CarbonImmutable::now()->subMinutes($this->silencedJobExpires)->getTimestamp() * -1,
                 '+inf'
             );
         });
