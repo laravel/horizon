@@ -30,15 +30,17 @@ class TrimMonitoredJobs
      */
     public function handle(MasterSupervisorLooped $event)
     {
-        if (! isset($this->lastTrimmed)) {
+        if (!isset($this->lastTrimmed)) {
             $this->frequency = max(1, intdiv(
-                config('horizon.trim.monitored', 10080), 12
-            ));
+                config('horizon.trim.monitored', 10080),
+                12
+            )
+            );
 
             $this->lastTrimmed = Chronos::now()->subMinutes($this->frequency + 1);
         }
 
-        if ($this->lastTrimmed->lte(Chronos::now()->subMinutes($this->frequency))) {
+        if ($this->lastTrimmed->lessthanOrEquals(Chronos::now()->subMinutes($this->frequency))) {
             app(JobRepository::class)->trimMonitoredJobs();
 
             $this->lastTrimmed = Chronos::now();

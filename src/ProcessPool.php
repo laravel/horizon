@@ -110,7 +110,9 @@ class ProcessPool implements Countable
         // and remove them from the active process array. We'll be adding them the array
         // of terminating processes where they'll run until they are fully terminated.
         $terminatingProcesses = array_slice(
-            $this->processes, 0, $difference
+            $this->processes,
+            0,
+            $difference
         );
 
         collect($terminatingProcesses)->each(function ($process) {
@@ -123,9 +125,9 @@ class ProcessPool implements Countable
         // terminated so they can start terminating. Terminating is a graceful operation
         // so any jobs they are already running will finish running before these quit.
         collect($this->terminatingProcesses)
-                        ->each(function ($process) {
-                            $process['process']->terminate();
-                        });
+            ->each(function ($process) {
+                $process['process']->terminate();
+            });
     }
 
     /**
@@ -137,7 +139,8 @@ class ProcessPool implements Countable
     public function markForTermination(WorkerProcess $process)
     {
         $this->terminatingProcesses[] = [
-            'process' => $process, 'terminatedAt' => Chronos::now(),
+            'process' => $process,
+            'terminatedAt' => Chronos::now(),
         ];
     }
 
@@ -176,8 +179,8 @@ class ProcessPool implements Countable
     protected function createProcess()
     {
         $class = config('horizon.fast_termination')
-                    ? BackgroundProcess::class
-                    : Process::class;
+            ? BackgroundProcess::class
+            : Process::class;
 
         return new WorkerProcess($class::fromShellCommandline(
             $this->options->toWorkerCommand(), $this->options->directory
@@ -270,7 +273,7 @@ class ProcessPool implements Countable
         foreach ($this->terminatingProcesses as $process) {
             $timeout = $this->options->timeout;
 
-            if ($process['terminatedAt']->addSeconds($timeout)->lte(Chronos::now())) {
+            if ($process['terminatedAt']->addSeconds($timeout)->lessthanOrEquals(Chronos::now())) {
                 $process['process']->stop();
             }
         }
