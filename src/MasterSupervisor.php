@@ -179,7 +179,7 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
         // process does not get stuck in an infinite loop here waiting for these.
         while (count($this->supervisors->filter->isRunning())) {
             if (Chronos::now()->subSeconds($longest)
-                        ->gte($startedTerminating)) {
+                        ->greaterThanOrEquals($startedTerminating)) {
                 break;
             }
 

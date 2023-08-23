@@ -166,7 +166,7 @@ class WorkerProcess
                 event(new UnableToLaunchProcess($this));
             }
         } else {
-            $this->restartAgainAt = Chronos::now()->addSecond();
+            $this->restartAgainAt = Chronos::now()->addSeconds(1);
         }
     }
 

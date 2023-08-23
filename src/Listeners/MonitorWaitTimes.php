@@ -99,6 +99,6 @@ class MonitorWaitTimes
      */
     protected function timeToMonitor()
     {
-        return Chronos::now()->subMinutes(1)->lte($this->lastMonitored);
+        return Chronos::now()->subMinutes(1)->lessthanOrEquals($this->lastMonitored);
     }
 }
