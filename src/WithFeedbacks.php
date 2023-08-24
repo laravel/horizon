@@ -12,18 +12,14 @@ trait WithFeedbacks
 
     protected mixed $onFailureFeedback = null;
 
-    protected array|null $onFailureFeedbackBacktrace = null;
+    protected ?array $onFailureFeedbackBacktrace = null;
 
     protected mixed $onSuccessFeedback = null;
 
-    protected array|null $onSuccessFeedbackBacktrace = null;
+    protected ?array $onSuccessFeedbackBacktrace = null;
 
     /**
      * Feedback register to do a feedback after job is done.
-     *
-     * @param  mixed|null  $onSuccess
-     * @param  mixed|null  $onFailure
-     * @return void
      */
     public function afterFeedback(mixed $onSuccess = null, mixed $onFailure = null): void
     {
@@ -40,9 +36,6 @@ trait WithFeedbacks
 
     /**
      * Do a feedback.
-     *
-     * @param  mixed  $feedback
-     * @return void
      */
     public function feedback(mixed $feedback): void
     {
@@ -51,10 +44,6 @@ trait WithFeedbacks
 
     /**
      * Do a conditional feedback.
-     *
-     * @param  bool  $condition
-     * @param  mixed  $feedback
-     * @return void
      */
     public function feedbackIf(bool $condition, mixed $feedback): void
     {
@@ -65,9 +54,6 @@ trait WithFeedbacks
 
     /**
      * Get the file and line that called the feedback.
-     *
-     * @param  array  $backtrace
-     * @return string
      */
     protected function getFeedbackCaller(array $backtrace): string
     {
@@ -85,8 +71,6 @@ trait WithFeedbacks
 
     /**
      * Initialize feedbacks bag and put job events callback to push feedback to payload after.
-     *
-     * @return void
      */
     protected function initFeedback(): void
     {
@@ -116,7 +100,6 @@ trait WithFeedbacks
     /**
      * Merge the feedback bag into job payload.
      *
-     * @return void
      *
      * @throws \RedisException
      */
@@ -138,11 +121,6 @@ trait WithFeedbacks
 
     /**
      * Put a feedback into feedbacks bag.
-     *
-     * @param  mixed  $feedback
-     * @param  array  $backtrace
-     * @param  string  $time
-     * @return void
      */
     protected function toFeedbackBag(mixed $feedback, array $backtrace, string $time): void
     {
