@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Queue;
 trait WithFeedbacks
 {
 
+    protected ?array $feedbacksBag = null;
+
+    protected mixed $onFailureFeedback = null;
+
+    protected array|null $onFailureFeedbackBacktrace = null;
+
+    protected mixed $onSuccessFeedback = null;
+
+    protected array|null $onSuccessFeedbackBacktrace = null;
+
     /**
      * Feedback register to do a feedback after job is done.
      *
@@ -18,24 +28,14 @@ trait WithFeedbacks
      */
     public function afterFeedback(mixed $onSuccess = null, mixed $onFailure = null): void
     {
-        $job = $this->job;
-        if (!$job instanceof RedisJob) {
-            return;
+        $this->initFeedback();
+        if (!empty($onSuccess)) {
+            $this->onSuccessFeedback = $onSuccess;
+            $this->onSuccessFeedbackBacktrace = debug_backtrace();
         }
-        $backtrace = debug_backtrace();
-        if ($onSuccess !== null) {
-            Queue::after(function ($e) use ($backtrace, $job, $onSuccess) {
-                if ($e->job->uuid() === $job->uuid()) {
-                    $this->mergeFeedbacksToPayload($backtrace, $onSuccess);
-                }
-            });
-        }
-        if ($onFailure !== null) {
-            Queue::failing(function ($e) use ($backtrace, $job, $onFailure) {
-                if ($e->job->uuid() === $job->uuid()) {
-                    $this->mergeFeedbacksToPayload($backtrace, $onFailure);
-                }
-            });
+        if (!empty($onFailure)) {
+            $this->onFailureFeedback = $onFailure;
+            $this->onFailureFeedbackBacktrace = debug_backtrace();
         }
     }
 
@@ -44,11 +44,10 @@ trait WithFeedbacks
      *
      * @param  mixed  $feedback
      * @return void
-     * @throws \RedisException
      */
     public function feedback(mixed $feedback): void
     {
-        $this->mergeFeedbacksToPayload(debug_backtrace(), $feedback);
+        $this->toFeedbackBag($feedback, debug_backtrace(), strval(microtime(true)));
     }
 
     /**
@@ -57,12 +56,11 @@ trait WithFeedbacks
      * @param  bool  $condition
      * @param  mixed  $feedback
      * @return void
-     * @throws \RedisException
      */
     public function feedbackIf(bool $condition, mixed $feedback): void
     {
         if ($condition) {
-            $this->mergeFeedbacksToPayload(debug_backtrace(), $feedback);
+            $this->toFeedbackBag($feedback, debug_backtrace(), strval(microtime(true)));
         }
     }
 
@@ -86,14 +84,42 @@ trait WithFeedbacks
     }
 
     /**
-     * Merge a feedback into feedbacks in job payload.
+     * Initialize feedbacks bag and put job events callback to push feedback to payload after.
      *
-     * @param  array  $backtrace
-     * @param  mixed  $feedback
+     * @return void
+     */
+    protected function initFeedback(): void
+    {
+        if ($this->feedbacksBag !== null) {
+            return;
+        }
+        $this->feedbacksBag = [];
+        $job = $this->job;
+        Queue::after(function ($e) use ($job) {
+            if ($e->job->uuid() === $job->uuid()) {
+                if ($this->onSuccessFeedback) {
+                    $this->toFeedbackBag($this->onSuccessFeedback, $this->onSuccessFeedbackBacktrace, strval(microtime(true)));
+                }
+                $this->mergeFeedbacksToPayload();
+            }
+        });
+        Queue::failing(function ($e) use ($job) {
+            if ($e->job->uuid() === $job->uuid()) {
+                if ($this->onFailureFeedback) {
+                    $this->toFeedbackBag($this->onFailureFeedback, $this->onFailureFeedbackBacktrace, strval(microtime(true)));
+                }
+                $this->mergeFeedbacksToPayload();
+            }
+        });
+    }
+
+    /**
+     * Merge the feedback bag into job payload.
+     *
      * @return void
      * @throws \RedisException
      */
-    protected function mergeFeedbacksToPayload(array $backtrace, mixed $feedback): void
+    protected function mergeFeedbacksToPayload(): void
     {
         $job = $this->job;
         if (!$job instanceof RedisJob) {
@@ -105,12 +131,24 @@ trait WithFeedbacks
             return;
         }
         $payload = json_decode($connection->hmget($uuid, ['payload'])[0], true);
-        $feedbacks = collect(Arr::get($payload, 'feedbacks', []));
-        $payload['feedbacks'] = $feedbacks->push([
-            'content' => $feedback,
-            'time' => strval(microtime(true)),
-            'where' => $this->getFeedbackCaller($backtrace),
-        ])->toArray();
+        $payload['feedbacks'] = $this->feedbacksBag;
         $connection->hmset($uuid, ['payload' => json_encode($payload)]);
+    }
+
+    /**
+     * Put a feedback into feedbacks bag.
+     *
+     * @param  mixed  $feedback
+     * @param  array  $backtrace
+     * @param  string  $time
+     * @return void
+     */
+    protected function toFeedbackBag(mixed $feedback, array $backtrace, string $time): void
+    {
+        $this->feedbacksBag[] = [
+            'content' => $feedback,
+            'time' => $time,
+            'where' => $this->getFeedbackCaller($backtrace),
+        ];
     }
 }
