@@ -254,5 +254,45 @@
             </table>
         </div>
 
+      <div class="card overflow-hidden mt-4" v-if="ready && job.payload?.feedbacks">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h2 class="h6 m-0">Feedbacks</h2>
+        </div>
+
+        <table class="table table-hover mb-0">
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>Where</th>
+            <th>When</th>
+            <th class="text-right"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <template v-for="(feedback, index) in job.payload?.feedbacks ?? []">
+            <tr>
+              <td class="table-fit text-muted">#{{ index + 1 }}</td>
+              <td class="table-fit text-muted">{{ feedback.where }}</td>
+              <td class="table-fit text-muted">
+                {{ readableTimestamp(feedback.time) }}
+                <span>({{ job.reserved_at ? (feedback.time - job.reserved_at).toFixed(2)+'s' : '-' }})</span>
+              </td>
+              <td class="text-right">
+                <a data-toggle="collapse" :href="`#collapseFeedback${index}`" role="button">
+                  See more
+                </a>
+              </td>
+            </tr>
+            <tr class="collapse" :id="`collapseFeedback${index}`">
+              <td colspan="4" class="card-bg-secondary">
+                <vue-json-pretty :data="prettyPrintJob(feedback.content)"></vue-json-pretty>
+              </td>
+            </tr>
+
+          </template>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 </template>
