@@ -2,16 +2,20 @@
 
 namespace Laravel\Horizon;
 
-use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Jobs\RedisJob;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Stringable;
 
 trait WithFeedbacks
 {
 
+    /**
+     * Feedback register to do a feedback after job is done.
+     *
+     * @param  mixed|null  $onSuccess
+     * @param  mixed|null  $onFailure
+     * @return void
+     */
     public function afterFeedback(mixed $onSuccess = null, mixed $onFailure = null): void
     {
         $job = $this->job;
@@ -20,14 +24,14 @@ trait WithFeedbacks
         }
         $backtrace = debug_backtrace();
         if ($onSuccess !== null) {
-            Queue::after(function (JobProcessed $e) use ($backtrace, $job, $onSuccess) {
+            Queue::after(function ($e) use ($backtrace, $job, $onSuccess) {
                 if ($e->job->uuid() === $job->uuid()) {
                     $this->mergeFeedbacksToPayload($backtrace, $onSuccess);
                 }
             });
         }
         if ($onFailure !== null) {
-            Queue::failing(function (JobFailed $e) use ($backtrace, $job, $onFailure) {
+            Queue::failing(function ($e) use ($backtrace, $job, $onFailure) {
                 if ($e->job->uuid() === $job->uuid()) {
                     $this->mergeFeedbacksToPayload($backtrace, $onFailure);
                 }
@@ -35,11 +39,26 @@ trait WithFeedbacks
         }
     }
 
+    /**
+     * Do a feedback.
+     *
+     * @param  mixed  $feedback
+     * @return void
+     * @throws \RedisException
+     */
     public function feedback(mixed $feedback): void
     {
         $this->mergeFeedbacksToPayload(debug_backtrace(), $feedback);
     }
 
+    /**
+     * Do a conditional feedback.
+     *
+     * @param  bool  $condition
+     * @param  mixed  $feedback
+     * @return void
+     * @throws \RedisException
+     */
     public function feedbackIf(bool $condition, mixed $feedback): void
     {
         if ($condition) {
@@ -47,19 +66,33 @@ trait WithFeedbacks
         }
     }
 
+    /**
+     * Get the file and line that called the feedback.
+     *
+     * @param  array  $backtrace
+     * @return string
+     */
     protected function getFeedbackCaller(array $backtrace): string
     {
         $caller = array_shift($backtrace);
         $file = Arr::get($caller, 'file', 'unknown');
         $line = Arr::get($caller, 'line', false);
         return str($file)
-            ->whenStartsWith(base_path(), function (Stringable $str) {
+            ->whenStartsWith(base_path(), function ($str) {
                 return $str->remove(base_path() . DIRECTORY_SEPARATOR);
             })
             ->append($line ? ':' . $line : '')
             ->toString();
     }
 
+    /**
+     * Merge a feedback into feedbacks in job payload.
+     *
+     * @param  array  $backtrace
+     * @param  mixed  $feedback
+     * @return void
+     * @throws \RedisException
+     */
     protected function mergeFeedbacksToPayload(array $backtrace, mixed $feedback): void
     {
         $job = $this->job;
@@ -67,12 +100,11 @@ trait WithFeedbacks
             return;
         }
         $uuid = $job->uuid();
-        /** @var \Illuminate\Redis\Connections\PhpRedisConnection $connection */
         $connection = $job->getRedisQueue()->getRedis()->connection('horizon');
         if (!$connection->exists($uuid)) {
             return;
         }
-        $payload = json_decode($connection->hMGet($uuid, ['payload'])[0], true);
+        $payload = json_decode($connection->hmget($uuid, ['payload'])[0], true);
         $feedbacks = collect(Arr::get($payload, 'feedbacks', []));
         $payload['feedbacks'] = $feedbacks->push([
             'content' => $feedback,
