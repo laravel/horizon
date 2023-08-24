@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Queue;
 
 trait WithFeedbacks
 {
-
     protected ?array $feedbacksBag = null;
 
     protected mixed $onFailureFeedback = null;
@@ -75,6 +74,7 @@ trait WithFeedbacks
         $caller = array_shift($backtrace);
         $file = Arr::get($caller, 'file', 'unknown');
         $line = Arr::get($caller, 'line', false);
+
         return str($file)
             ->whenStartsWith(base_path(), function ($str) {
                 return $str->remove(base_path().DIRECTORY_SEPARATOR);
@@ -117,6 +117,7 @@ trait WithFeedbacks
      * Merge the feedback bag into job payload.
      *
      * @return void
+     *
      * @throws \RedisException
      */
     protected function mergeFeedbacksToPayload(): void
