@@ -29,11 +29,11 @@ trait WithFeedbacks
     public function afterFeedback(mixed $onSuccess = null, mixed $onFailure = null): void
     {
         $this->initFeedback();
-        if (!empty($onSuccess)) {
+        if (! empty($onSuccess)) {
             $this->onSuccessFeedback = $onSuccess;
             $this->onSuccessFeedbackBacktrace = debug_backtrace();
         }
-        if (!empty($onFailure)) {
+        if (! empty($onFailure)) {
             $this->onFailureFeedback = $onFailure;
             $this->onFailureFeedbackBacktrace = debug_backtrace();
         }
@@ -77,9 +77,9 @@ trait WithFeedbacks
         $line = Arr::get($caller, 'line', false);
         return str($file)
             ->whenStartsWith(base_path(), function ($str) {
-                return $str->remove(base_path() . DIRECTORY_SEPARATOR);
+                return $str->remove(base_path().DIRECTORY_SEPARATOR);
             })
-            ->append($line ? ':' . $line : '')
+            ->append($line ? ':'.$line : '')
             ->toString();
     }
 
@@ -122,12 +122,12 @@ trait WithFeedbacks
     protected function mergeFeedbacksToPayload(): void
     {
         $job = $this->job;
-        if (!$job instanceof RedisJob) {
+        if (! $job instanceof RedisJob) {
             return;
         }
         $uuid = $job->uuid();
         $connection = $job->getRedisQueue()->getRedis()->connection('horizon');
-        if (!$connection->exists($uuid)) {
+        if (! $connection->exists($uuid)) {
             return;
         }
         $payload = json_decode($connection->hmget($uuid, ['payload'])[0], true);
