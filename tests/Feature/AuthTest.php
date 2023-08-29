@@ -6,6 +6,7 @@ use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Http\Middleware\Authenticate;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthTest extends IntegrationTest
 {
@@ -48,6 +49,23 @@ class AuthTest extends IntegrationTest
         Horizon::auth(function () {
             return false;
         });
+
+        $middleware = new Authenticate;
+
+        $middleware->handle(
+            new class {
+            },
+            function ($value) {
+                return 'response';
+            }
+        );
+    }
+
+    public function test_it_can_use_a_custom_status_code(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->app['config']->set('horizon.unauthorized_status', 404);
 
         $middleware = new Authenticate;
 

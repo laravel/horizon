@@ -15,6 +15,26 @@ class Authenticate
      */
     public function handle($request, $next)
     {
-        return Horizon::check($request) ? $next($request) : abort(403);
+        if (! Horizon::check($request)) {
+            abort($this->statusCode());
+        }
+
+        return $next($request);
+    }
+
+    /**
+     * Determine the status code returned for unauthorized requests.
+     *
+     * @return int
+     */
+    private function statusCode()
+    {
+        $code = config('horizon.unauthorized_status');
+
+        if (! in_array($code, [403, 404])) {
+            return 403;
+        }
+
+        return $code;
     }
 }
