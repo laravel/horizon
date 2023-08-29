@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Laravel\Horizon\Exceptions\UnauthorizedException;
+use Laravel\Horizon\Exceptions\ForbiddenException;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Http\Middleware\Authenticate;
 use Laravel\Horizon\Tests\IntegrationTest;
@@ -43,7 +43,7 @@ class AuthTest extends IntegrationTest
 
     public function test_authentication_middleware_throws_on_failure()
     {
-        $this->expectException(UnauthorizedException::class);
+        $this->expectException(ForbiddenException::class);
 
         Horizon::auth(function () {
             return false;
