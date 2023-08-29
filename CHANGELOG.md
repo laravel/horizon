@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.19.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.19.2...5.x)
+
+## [v5.19.2](https://github.com/laravel/horizon/compare/v5.19.1...v5.19.2) - 2023-08-29
+
+- Set 0 as the default runtime of the job by [@AsemAlalami](https://github.com/AsemAlalami) in https://github.com/laravel/horizon/pull/1307
 
 ## [v5.19.1](https://github.com/laravel/horizon/compare/v5.19.0...v5.19.1) - 2023-08-09
 
