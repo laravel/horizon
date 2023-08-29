@@ -2,9 +2,9 @@
 
 namespace Laravel\Horizon\Exceptions;
 
-use RuntimeException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class UnauthorizedException extends RuntimeException
+class UnauthorizedException extends HttpException
 {
     //
 }

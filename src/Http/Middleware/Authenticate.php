@@ -17,7 +17,7 @@ class Authenticate
     public function handle($request, $next)
     {
         if (! Horizon::check($request)) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException(401);
         }
 
         return $next($request);
