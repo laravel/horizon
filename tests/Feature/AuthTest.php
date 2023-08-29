@@ -6,8 +6,6 @@ use Laravel\Horizon\Exceptions\UnauthorizedException;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Http\Middleware\Authenticate;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthTest extends IntegrationTest
 {
