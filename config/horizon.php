@@ -61,21 +61,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Horizon Unauthorized Status Code
-    |--------------------------------------------------------------------------
-    |
-    | This status code will be used when an unauthorized request has been made.
-    | For example, you may wish to return a 404 status code to hide that the
-    | application uses Horizon.
-    |
-    | Accepted Status Codes: 403, 404
-    |
-    */
-
-    'unauthorized_status' => 403,
-
-    /*
-    |--------------------------------------------------------------------------
     | Horizon Route Middleware
     |--------------------------------------------------------------------------
     |

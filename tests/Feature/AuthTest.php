@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Laravel\Horizon\Exceptions\UnauthorizedException;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Http\Middleware\Authenticate;
 use Laravel\Horizon\Tests\IntegrationTest;
@@ -42,47 +43,13 @@ class AuthTest extends IntegrationTest
         $this->assertSame('response', $response);
     }
 
-    public function test_authentication_middleware_responds_with_403_on_failure()
+    public function test_authentication_middleware_throws_on_failure()
     {
-        $this->expectException(HttpException::class);
+        $this->expectException(UnauthorizedException::class);
 
         Horizon::auth(function () {
             return false;
         });
-
-        $middleware = new Authenticate;
-
-        $middleware->handle(
-            new class {
-            },
-            function ($value) {
-                return 'response';
-            }
-        );
-    }
-
-    public function test_authentication_middleware_responds_with_custom_status_code(): void
-    {
-        $this->expectException(NotFoundHttpException::class);
-
-        $this->app['config']->set('horizon.unauthorized_status', 404);
-
-        $middleware = new Authenticate;
-
-        $middleware->handle(
-            new class {
-            },
-            function ($value) {
-                return 'response';
-            }
-        );
-    }
-
-    public function test_authentication_middleware_defaults_unsupported_status_codes_to_403(): void
-    {
-        $this->expectException(HttpException::class);
-
-        $this->app['config']->set('horizon.unauthorized_status', 201);
 
         $middleware = new Authenticate;
 
