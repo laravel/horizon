@@ -61,11 +61,28 @@ class AuthTest extends IntegrationTest
         );
     }
 
-    public function test_it_can_use_a_custom_status_code(): void
+    public function test_authentication_middleware_responds_with_custom_status_code(): void
     {
         $this->expectException(NotFoundHttpException::class);
 
         $this->app['config']->set('horizon.unauthorized_status', 404);
+
+        $middleware = new Authenticate;
+
+        $middleware->handle(
+            new class {
+            },
+            function ($value) {
+                return 'response';
+            }
+        );
+    }
+
+    public function test_authentication_middleware_defaults_unsupported_status_codes_to_403(): void
+    {
+        $this->expectException(HttpException::class);
+
+        $this->app['config']->set('horizon.unauthorized_status', 201);
 
         $middleware = new Authenticate;
 
