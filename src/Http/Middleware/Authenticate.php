@@ -17,7 +17,7 @@ class Authenticate
     public function handle($request, $next)
     {
         if (! Horizon::check($request)) {
-            throw new ForbiddenException(403);
+            throw ForbiddenException::make();
         }
 
         return $next($request);
