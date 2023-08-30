@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class ForbiddenException extends HttpException
 {
     /**
-     * Make a new exception
+     * Make a new exception.
      *
      * @return static
      */
