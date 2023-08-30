@@ -2,10 +2,10 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Laravel\Horizon\Exceptions\ForbiddenException;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Http\Middleware\Authenticate;
 use Laravel\Horizon\Tests\IntegrationTest;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthTest extends IntegrationTest
 {
@@ -41,9 +41,9 @@ class AuthTest extends IntegrationTest
         $this->assertSame('response', $response);
     }
 
-    public function test_authentication_middleware_responds_with_403_on_failure()
+    public function test_authentication_middleware_throws_on_failure()
     {
-        $this->expectException(HttpException::class);
+        $this->expectException(ForbiddenException::class);
 
         Horizon::auth(function () {
             return false;

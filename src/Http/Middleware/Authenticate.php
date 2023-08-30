@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Http\Middleware;
 
+use Laravel\Horizon\Exceptions\ForbiddenException;
 use Laravel\Horizon\Horizon;
 
 class Authenticate
@@ -15,6 +16,10 @@ class Authenticate
      */
     public function handle($request, $next)
     {
-        return Horizon::check($request) ? $next($request) : abort(403);
+        if (! Horizon::check($request)) {
+            throw ForbiddenException::make();
+        }
+
+        return $next($request);
     }
 }
