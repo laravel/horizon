@@ -14,7 +14,8 @@ class HorizonCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon {--environment= : The environment name}';
+    protected $signature = 'horizon {--environment= : The environment name}
+                                    {--suppress-status-output : Ensure status output is suppressed during normal operation}';
 
     /**
      * The console command description.
@@ -43,12 +44,16 @@ class HorizonCommand extends Command
 
         ProvisioningPlan::get(MasterSupervisor::name())->deploy($environment);
 
-        $this->info('Horizon started successfully.');
+        if (! $this->option('suppress-status-output')) {
+            $this->info('Horizon started successfully.');
+        }
 
         pcntl_async_signals(true);
 
         pcntl_signal(SIGINT, function () use ($master) {
-            $this->line('Shutting down...');
+            if (! $this->option('suppress-status-output')) {
+                $this->line('Shutting down...');
+            }
 
             return $master->terminate();
         });
