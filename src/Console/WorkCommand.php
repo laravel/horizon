@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Console;
 
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Queue\Console\WorkCommand as BaseWorkCommand;
 
 class WorkCommand extends BaseWorkCommand
@@ -49,5 +50,9 @@ class WorkCommand extends BaseWorkCommand
         }
 
         parent::handle();
+    }
+
+    protected function writeOutput(Job $job, $status)
+    {
     }
 }
