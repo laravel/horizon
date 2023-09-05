@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.19.2...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.20.0...5.x)
+
+## [v5.20.0](https://github.com/laravel/horizon/compare/v5.19.2...v5.20.0) - 2023-08-30
+
+- Throws `Laravel\Horizon\Exceptions\ForbiddenException` on unauthorized access by [@joelbutcher](https://github.com/joelbutcher) in https://github.com/laravel/horizon/pull/1308
 
 ## [v5.19.2](https://github.com/laravel/horizon/compare/v5.19.1...v5.19.2) - 2023-08-29
 
