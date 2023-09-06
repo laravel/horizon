@@ -20,4 +20,6 @@ workbench:
     - db-wipe
     - migrate-fresh
   assets: []
-  sync: []
+  sync:
+    - from: ./public
+      to: public/vendor/horizon
