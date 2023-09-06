@@ -124,7 +124,7 @@ class LongWaitDetected extends Notification
     /**
      * Get the message content for the generic callback.
      *
-     * @param   $notifiable
+     * @param  $notifiable
      * @return string
      */
     public function toCallback($notifiable)

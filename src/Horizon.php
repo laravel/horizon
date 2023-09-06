@@ -45,7 +45,7 @@ class Horizon
     public static $email;
 
     /**
-     * The generic callback for notifications
+     * The generic callback for notifications.
      *
      * @var Closure
      */
@@ -86,7 +86,7 @@ class Horizon
     /**
      * Set the callback that should be used to authenticate Horizon users.
      *
-     * @param Closure $callback
+     * @param  Closure  $callback
      * @return static
      */
     public static function auth(Closure $callback)
@@ -187,7 +187,7 @@ class Horizon
     /**
      * Specify a generic callback for notifications, used as a custom notification handler.
      *
-     * @param Closure $callback
+     * @param  Closure  $callback
      * @return static
      */
     public static function routeGenericNotificationsTo(Closure $callback)

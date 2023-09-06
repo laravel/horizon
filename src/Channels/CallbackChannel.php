@@ -8,10 +8,10 @@ use Laravel\Horizon\Horizon;
 class CallbackChannel
 {
     /**
-     * Send the notification via the callback
+     * Send the notification via the callback.
      *
-     * @param $notifiable
-     * @param Notification $notification
+     * @param  $notifiable
+     * @param  Notification  $notification
      * @return true
      */
     public function send($notifiable, Notification $notification)
