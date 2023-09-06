@@ -25,6 +25,7 @@ class SendNotification
         Notification::route('slack', Horizon::$slackWebhookUrl)
                     ->route('nexmo', Horizon::$smsNumber)
                     ->route('mail', Horizon::$email)
+                    ->route('callback', Horizon::$genericNotificationCallback)
                     ->notify($notification);
     }
 }

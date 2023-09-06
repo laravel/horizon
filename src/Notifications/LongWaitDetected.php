@@ -7,6 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
+use Laravel\Horizon\Channels\CallbackChannel;
 use Laravel\Horizon\Horizon;
 
 class LongWaitDetected extends Notification
@@ -61,6 +62,7 @@ class LongWaitDetected extends Notification
             Horizon::$slackWebhookUrl ? 'slack' : null,
             Horizon::$smsNumber ? 'nexmo' : null,
             Horizon::$email ? 'mail' : null,
+            Horizon::$genericNotificationCallback ? CallbackChannel::class : null,
         ]);
     }
 
@@ -117,6 +119,20 @@ class LongWaitDetected extends Notification
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
             config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
         ));
+    }
+
+    /**
+     * Get the message content for the generic callback
+     *
+     * @param $notifiable
+     * @return string
+     */
+    public function toCallback($notifiable)
+    {
+        return sprintf(
+            '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+            config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
+        );
     }
 
     /**

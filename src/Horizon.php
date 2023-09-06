@@ -12,7 +12,7 @@ class Horizon
     /**
      * The callback that should be used to authenticate Horizon users.
      *
-     * @var \Closure
+     * @var Closure
      */
     public static $authUsing;
 
@@ -43,6 +43,13 @@ class Horizon
      * @var string
      */
     public static $email;
+
+    /**
+     * The generic callback for notifications
+     *
+     * @var Closure
+     */
+    public static $genericNotificationCallback;
 
     /**
      * Indicates if Horizon should use the dark theme.
@@ -79,7 +86,7 @@ class Horizon
     /**
      * Set the callback that should be used to authenticate Horizon users.
      *
-     * @param  \Closure  $callback
+     * @param Closure $callback
      * @return static
      */
     public static function auth(Closure $callback)
@@ -173,6 +180,19 @@ class Horizon
     public static function routeSmsNotificationsTo($number)
     {
         static::$smsNumber = $number;
+
+        return new static;
+    }
+
+    /**
+     * Specify a generic callback for notifications, used as a custom notification handler.
+     *
+     * @param Closure $callback
+     * @return static
+     */
+    public static function routeGenericNotificationsTo(Closure $callback)
+    {
+        static::$genericNotificationCallback = $callback;
 
         return new static;
     }
