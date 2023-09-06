@@ -1,0 +1,25 @@
+providers:
+  - Laravel\Horizon\HorizonServiceProvider
+  - Workbench\App\Providers\HorizonServiceProvider
+
+env:
+  - REDIS_CLIENT="predis"
+
+migrations: true
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
+
+workbench:
+  start: '/horizon'
+  user: 'horizon@laravel.com'
+  install: true
+  welcome: true
+  build:
+    - asset-publish
+    - create-sqlite-db
+    - db-wipe
+    - migrate-fresh
+  assets: []
+  sync:
+    - from: ./public
+      to: public/vendor/horizon
