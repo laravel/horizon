@@ -65,10 +65,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "post-autoload-dump": [
-            "@clear",
-            "@prepare"
-        ],
+        "post-autoload-dump": "@prepare",
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "build": "@php vendor/bin/testbench workbench:build --ansi",

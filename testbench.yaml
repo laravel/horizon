@@ -2,6 +2,9 @@ providers:
   - Laravel\Horizon\HorizonServiceProvider
   - Workbench\App\Providers\HorizonServiceProvider
 
+env:
+  - REDIS_CLIENT="predis"
+
 migrations: true
 seeders:
   - Workbench\Database\Seeders\DatabaseSeeder
