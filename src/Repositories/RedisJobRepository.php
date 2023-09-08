@@ -7,6 +7,7 @@ use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\LuaScripts;
 
@@ -599,6 +600,11 @@ class RedisJobRepository implements JobRepository
      */
     public function trimMonitoredJobs()
     {
+        collect(app(TagRepository::class)->monitoring())
+            ->each(fn ($tag) => $this->connection()->zremrangebyscore(
+                $tag, '-inf', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp()
+            ));
+
         $this->connection()->zremrangebyscore(
             'monitored_jobs', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp() * -1, '+inf'
         );
