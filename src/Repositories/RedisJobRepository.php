@@ -417,8 +417,6 @@ class RedisJobRepository implements JobRepository
     public function remember($connection, $queue, JobPayload $payload)
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
-            $this->storeJobReference($pipe, 'monitored_jobs', $payload);
-
             $pipe->hmset(
                 $payload->id(), [
                     'id' => $payload->id(),
@@ -604,10 +602,6 @@ class RedisJobRepository implements JobRepository
             ->each(fn ($tag) => $this->connection()->zremrangebyscore(
                 $tag, '-inf', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp()
             ));
-
-        $this->connection()->zremrangebyscore(
-            'monitored_jobs', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp() * -1, '+inf'
-        );
     }
 
     /**
