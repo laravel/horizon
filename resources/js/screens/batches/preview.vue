@@ -153,8 +153,8 @@
                     <div class="col">{{batch.failedJobs}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2 text-muted">Completed Jobs<br><small>(Including Failed)</small></div>
-                    <div class="col">{{ (batch.totalJobs-batch.pendingJobs) }} ({{batch.progress}}%)</div>
+                    <div class="col-md-2 text-muted">Processed Jobs<br><small>(Including Failed)</small></div>
+                    <div class="col">{{ (batch.processedJobs) }} ({{batch.progress}}%)</div>
                 </div>
             </div>
         </div>
