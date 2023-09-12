@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.20.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.20.1...5.x)
+
+## [v5.20.1](https://github.com/laravel/horizon/compare/v5.20.0...v5.20.1) - 2023-09-12
+
+- Use available `batch.processedJobs` value from `Illuminate\Bus\Batch` by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/horizon/pull/1315
 
 ## [v5.20.0](https://github.com/laravel/horizon/compare/v5.19.2...v5.20.0) - 2023-08-30
 
