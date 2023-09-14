@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
 use Laravel\Horizon\LuaScripts;
@@ -349,6 +350,30 @@ class RedisMetricsRepository implements MetricsRepository
         return tap(CarbonImmutable::now()->getTimestamp(), function ($timestamp) {
             $this->connection()->set('last_snapshot_at', $timestamp);
         });
+    }
+
+    /**
+     * Reset all stored metrics information.
+     *
+     * @return void
+     */
+    public function reset()
+    {
+        $this->forget('measured_jobs');
+        $this->forget('measured_queues');
+        $this->forget('last_snapshot_at');
+
+        foreach(['queue:*', 'job:*', 'snapshot:*', 'metrics:*'] as $pattern) {
+            $cursor = null;
+            do {
+                [$cursor, $keys] = $this->connection()->scan(
+                    $cursor, ['match' => config('horizon.prefix').$pattern]
+                );
+                foreach ($keys as $key) {
+                    $this->forget(Str::after($key, config('horizon.prefix')));
+                }
+            } while ($cursor > 0);
+        }
     }
 
     /**

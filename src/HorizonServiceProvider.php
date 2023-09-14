@@ -120,6 +120,7 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\PauseSupervisorCommand::class,
                 Console\PublishCommand::class,
                 Console\PurgeCommand::class,
+                Console\ResetMetricsCommand::class,
                 Console\StatusCommand::class,
                 Console\SupervisorCommand::class,
                 Console\SupervisorsCommand::class,
