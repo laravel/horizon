@@ -362,8 +362,9 @@ class RedisMetricsRepository implements MetricsRepository
         $this->forget('measured_jobs');
         $this->forget('measured_queues');
         $this->forget('last_snapshot_at');
+        $this->forget('metrics:snapshot');
 
-        foreach(['queue:*', 'job:*', 'snapshot:*', 'metrics:*'] as $pattern) {
+        foreach(['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
             $cursor = null;
             do {
                 [$cursor, $keys] = $this->connection()->scan(
