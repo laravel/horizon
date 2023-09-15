@@ -7,7 +7,6 @@ use Laravel\Horizon\Contracts\MetricsRepository;
 
 class ResetMetricsCommand extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
