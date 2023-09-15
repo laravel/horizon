@@ -599,9 +599,11 @@ class RedisJobRepository implements JobRepository
     public function trimMonitoredJobs()
     {
         collect(app(TagRepository::class)->monitoring())
-            ->each(fn ($tag) => $this->connection()->zremrangebyscore(
-                $tag, '-inf', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp()
-            ));
+            ->each(function ($tag) {
+                $this->connection()->zremrangebyscore(
+                    $tag, '-inf', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp()
+                );
+            });
     }
 
     /**
