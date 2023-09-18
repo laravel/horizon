@@ -380,9 +380,9 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function clear()
     {
+        $this->forget('last_snapshot_at');
         $this->forget('measured_jobs');
         $this->forget('measured_queues');
-        $this->forget('last_snapshot_at');
         $this->forget('metrics:snapshot');
 
         foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
