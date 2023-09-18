@@ -120,13 +120,6 @@ interface MetricsRepository
     public function snapshot();
 
     /**
-     * Reset all stored metrics information.
-     *
-     * @return void
-     */
-    public function reset();
-
-    /**
      * Attempt to acquire a lock to monitor the queue wait times.
      *
      * @return bool
@@ -140,4 +133,11 @@ interface MetricsRepository
      * @return void
      */
     public function forget($key);
+
+    /**
+     * Delete all stored metrics information.
+     *
+     * @return void
+     */
+    public function clear();
 }

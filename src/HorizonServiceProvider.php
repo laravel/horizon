@@ -110,6 +110,7 @@ class HorizonServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Console\ClearCommand::class,
+                Console\ClearMetricsCommand::class,
                 Console\ContinueCommand::class,
                 Console\ContinueSupervisorCommand::class,
                 Console\ForgetFailedCommand::class,
@@ -120,7 +121,6 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\PauseSupervisorCommand::class,
                 Console\PublishCommand::class,
                 Console\PurgeCommand::class,
-                Console\ResetMetricsCommand::class,
                 Console\StatusCommand::class,
                 Console\SupervisorCommand::class,
                 Console\SupervisorsCommand::class,

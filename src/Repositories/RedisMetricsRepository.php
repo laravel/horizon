@@ -353,31 +353,6 @@ class RedisMetricsRepository implements MetricsRepository
     }
 
     /**
-     * Reset all stored metrics information.
-     *
-     * @return void
-     */
-    public function reset()
-    {
-        $this->forget('measured_jobs');
-        $this->forget('measured_queues');
-        $this->forget('last_snapshot_at');
-        $this->forget('metrics:snapshot');
-
-        foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
-            $cursor = null;
-            do {
-                [$cursor, $keys] = $this->connection()->scan(
-                    $cursor, ['match' => config('horizon.prefix').$pattern]
-                );
-                foreach ($keys as $key) {
-                    $this->forget(Str::after($key, config('horizon.prefix')));
-                }
-            } while ($cursor > 0);
-        }
-    }
-
-    /**
      * Attempt to acquire a lock to monitor the queue wait times.
      *
      * @return bool
@@ -396,6 +371,33 @@ class RedisMetricsRepository implements MetricsRepository
     public function forget($key)
     {
         $this->connection()->del($key);
+    }
+
+    /**
+     * Delete all stored metrics information.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->forget('measured_jobs');
+        $this->forget('measured_queues');
+        $this->forget('last_snapshot_at');
+        $this->forget('metrics:snapshot');
+
+        foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
+            $cursor = null;
+
+            do {
+                [$cursor, $keys] = $this->connection()->scan(
+                    $cursor, ['match' => config('horizon.prefix').$pattern]
+                );
+
+                foreach ($keys as $key) {
+                    $this->forget(Str::after($key, config('horizon.prefix')));
+                }
+            } while ($cursor > 0);
+        }
     }
 
     /**
