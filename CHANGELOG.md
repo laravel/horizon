@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.20.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.0...5.x)
+
+## [v5.21.0](https://github.com/laravel/horizon/compare/v5.20.1...v5.21.0) - 2023-09-18
+
+- Add `horizon:reset-metrics` command by [@trevorgehman](https://github.com/trevorgehman) in https://github.com/laravel/horizon/pull/1318
 
 ## [v5.20.1](https://github.com/laravel/horizon/compare/v5.20.0...v5.20.1) - 2023-09-12
 
