@@ -393,7 +393,7 @@ class RedisMetricsRepository implements MetricsRepository
                     $cursor, ['match' => config('horizon.prefix').$pattern]
                 );
 
-                foreach ($keys as $key) {
+                foreach ($keys ?? [] as $key) {
                     $this->forget(Str::after($key, config('horizon.prefix')));
                 }
             } while ($cursor > 0);
