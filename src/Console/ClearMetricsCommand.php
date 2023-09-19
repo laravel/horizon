@@ -29,7 +29,7 @@ class ClearMetricsCommand extends Command
      */
     public function handle(MetricsRepository $metrics)
     {
-        $metrics->reset();
+        $metrics->clear();
 
         $this->info('Metrics cleared successfully.');
     }
