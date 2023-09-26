@@ -44,8 +44,6 @@ class QueueMetricsController extends Controller
      */
     public function show($id)
     {
-        $id = base64_decode($id);
-
         return collect($this->metrics->snapshotsForQueue($id))->map(function ($record) {
             $record->runtime = round($record->runtime / 1000, 3);
             $record->throughput = (int) $record->throughput;

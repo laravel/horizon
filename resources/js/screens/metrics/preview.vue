@@ -19,6 +19,13 @@
         },
 
 
+        computed: {
+            name: function () {
+                return this.$route.params.type === 'jobs' ? Buffer.from(this.$route.params.slug, 'base64').toString() : this.$route.params.slug;
+            }
+        },
+
+
         /**
          * Prepare the component.
          */
@@ -36,7 +43,7 @@
             loadMetric() {
                 this.ready = false;
 
-                this.$http.get(Horizon.basePath + '/api/metrics/' + this.$route.params.type + '/' + btoa(this.$route.params.slug))
+                this.$http.get(Horizon.basePath + '/api/metrics/' + this.$route.params.type + '/' + this.$route.params.slug)
                     .then(response => {
                         let data = this.prepareData(response.data);
 
@@ -94,7 +101,7 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Throughput - {{$route.params.slug}}</h2>
+                <h2 class="h6 m-0">Throughput - {{name}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -116,7 +123,7 @@
 
         <div class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Runtime - {{$route.params.slug}}</h2>
+                <h2 class="h6 m-0">Runtime - {{name}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">

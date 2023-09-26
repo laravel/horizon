@@ -31,8 +31,7 @@
 
                 this.$http.get(Horizon.basePath + '/api/metrics/jobs')
                     .then(response => {
-                        this.jobs = response.data;
-
+                        this.jobs = response.data.map((job) => ({'name': job, 'slug': Buffer.from(job).toString('base64')}));
                         this.ready = true;
                     });
             }
@@ -65,10 +64,10 @@
             <tbody>
 
 
-            <tr v-for="job in jobs" :key="job">
+            <tr v-for="job in jobs" :key="job.name">
                 <td>
-                    <router-link :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job }}">
-                        {{ job }}
+                    <router-link :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job.slug }}">
+                        {{ job.name }}
                     </router-link>
                 </td>
             </tr>
