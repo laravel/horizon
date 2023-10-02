@@ -159,14 +159,14 @@ class WorkerProcess
 
         if ($this->restartAgainAt) {
             $this->restartAgainAt = ! $this->process->isRunning()
-                            ? Chronos::now()->addMinute()
+                            ? Chronos::now()->addMinutes()
                             : null;
 
             if (! $this->process->isRunning()) {
                 event(new UnableToLaunchProcess($this));
             }
         } else {
-            $this->restartAgainAt = Chronos::now()->addSecond();
+            $this->restartAgainAt = Chronos::now()->addSeconds();
         }
     }
 
