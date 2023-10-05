@@ -12,7 +12,7 @@ class StatusCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:status';
+    protected $signature = 'horizon:status {--environment= : The environment name}';
 
     /**
      * The console command description.
@@ -29,13 +29,20 @@ class StatusCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masterSupervisorRepository)
     {
-        if (! $masters = $masterSupervisorRepository->all()) {
+        $masters = collect($masterSupervisorRepository->all());
+        if ($environment = $this->option('environment')) {
+            $masters->filter(function ($supervisor) use ($environment) {
+                return $supervisor->environment === $environment;
+            });
+        }
+
+        if ($masters->isEmpty()) {
             $this->error('Horizon is inactive.');
 
             return 1;
         }
 
-        if (collect($masters)->contains(function ($master) {
+        if ($masters->contains(function ($master) {
             return $master->status === 'paused';
         })) {
             $this->warn('Horizon is paused.');
