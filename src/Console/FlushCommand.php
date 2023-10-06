@@ -20,13 +20,13 @@ class FlushCommand extends Command
      * @var string
      */
     protected $description = "Truncate all horizon-related information from Redis";
-
-    /**
-     * Execute the console command.
-     *
-     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
-     * @return void
-     */
+  
+  /**
+   * Execute the console command.
+   * @param RedisFactory $redis
+   * @return void
+   * @throws \RedisException
+   */
     public function handle(RedisFactory $redis)
     {
       if(app()->environment('local')) {
