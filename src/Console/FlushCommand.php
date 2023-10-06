@@ -3,10 +3,12 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 
 class FlushCommand extends Command
 {
+    use ConfirmableTrait;
     /**
      * The name and signature of the console command.
      *
@@ -29,9 +31,10 @@ class FlushCommand extends Command
    */
     public function handle(RedisFactory $redis)
     {
-      if(app()->environment('local')) {
+        if (! $this->confirmToProceed()) {
+          return;
+        }
         $redis->connection('horizon')->client()->flushAll();
         $this->info('All queue jobs flushed successfully.');
-      }
     }
 }
