@@ -243,4 +243,12 @@ interface JobRepository
      * @return int
      */
     public function deleteFailed($id);
+
+    /**
+     * Delete pending and reserved jobs for a queue.
+     *
+     * @param  string  $queue
+     * @return int
+     */
+    public function purge($queue);
 }
