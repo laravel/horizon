@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Arr;
+use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\RedisQueue;
 use Laravel\Horizon\Repositories\RedisJobRepository;
 
@@ -34,7 +35,7 @@ class ClearCommand extends Command
      *
      * @return int|null
      */
-    public function handle(RedisJobRepository $jobRepository, QueueManager $manager)
+    public function handle(JobRepository $jobRepository, QueueManager $manager)
     {
         if (! $this->confirmToProceed()) {
             return 1;
@@ -44,6 +45,10 @@ class ClearCommand extends Command
             $this->line('<error>Clearing queues is not supported on this version of Laravel</error>');
 
             return 1;
+        }
+
+        if (! method_exists($jobRepository, 'purge')) {
+            $jobRepository = app(RedisJobRepository::class);
         }
 
         $connection = Arr::first($this->laravel['config']->get('horizon.defaults'))['connection'] ?? 'redis';
