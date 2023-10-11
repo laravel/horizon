@@ -47,13 +47,11 @@ class ClearCommand extends Command
             return 1;
         }
 
-        if (! method_exists($jobRepository, 'purge')) {
-            $jobRepository = app(RedisJobRepository::class);
-        }
-
         $connection = Arr::first($this->laravel['config']->get('horizon.defaults'))['connection'] ?? 'redis';
 
-        $jobRepository->purge($queue = $this->getQueue($connection));
+        if (method_exists($jobRepository, 'purge')) {
+            $jobRepository->purge($queue = $this->getQueue($connection));
+        }
 
         $count = $manager->connection($connection)->clear($queue);
 
