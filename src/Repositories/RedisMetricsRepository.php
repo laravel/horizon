@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
 use Laravel\Horizon\LuaScripts;
@@ -370,6 +371,33 @@ class RedisMetricsRepository implements MetricsRepository
     public function forget($key)
     {
         $this->connection()->del($key);
+    }
+
+    /**
+     * Delete all stored metrics information.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->forget('last_snapshot_at');
+        $this->forget('measured_jobs');
+        $this->forget('measured_queues');
+        $this->forget('metrics:snapshot');
+
+        foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
+            $cursor = null;
+
+            do {
+                [$cursor, $keys] = $this->connection()->scan(
+                    $cursor, ['match' => config('horizon.prefix').$pattern]
+                );
+
+                foreach ($keys ?? [] as $key) {
+                    $this->forget(Str::after($key, config('horizon.prefix')));
+                }
+            } while ($cursor > 0);
+        }
     }
 
     /**

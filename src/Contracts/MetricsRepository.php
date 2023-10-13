@@ -133,4 +133,11 @@ interface MetricsRepository
      * @return void
      */
     public function forget($key);
+
+    /**
+     * Delete all stored metrics information.
+     *
+     * @return void
+     */
+    public function clear();
 }
