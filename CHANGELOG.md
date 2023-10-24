@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.2...5.x)
+
+## [v5.21.2](https://github.com/laravel/horizon/compare/v5.21.1...v5.21.2) - 2023-10-17
+
+- Fix the job repository class based on service bindings by [@daison12006013](https://github.com/daison12006013) in https://github.com/laravel/horizon/pull/1335
 
 ## [v5.21.1](https://github.com/laravel/horizon/compare/v5.21.0...v5.21.1) - 2023-09-19
 
