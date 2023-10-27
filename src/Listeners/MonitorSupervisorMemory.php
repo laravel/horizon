@@ -18,9 +18,9 @@ class MonitorSupervisorMemory
         $supervisor = $event->supervisor;
 
         if ($supervisor->memoryUsage() > $supervisor->options->memory) {
-            $supervisor->terminate(12);
-
             event(new SupervisorOutOfMemory($supervisor));
+
+            $supervisor->terminate(12);
         }
     }
 }
