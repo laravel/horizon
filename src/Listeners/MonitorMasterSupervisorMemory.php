@@ -18,9 +18,9 @@ class MonitorMasterSupervisorMemory
         $master = $event->master;
 
         if ($master->memoryUsage() > config('horizon.memory_limit', 64)) {
-            $master->terminate(12);
-
             event(new MasterSupervisorOutOfMemory($master));
+
+            $master->terminate(12);
         }
     }
 }
