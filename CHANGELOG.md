@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.2...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.3...5.x)
+
+## [v5.21.3](https://github.com/laravel/horizon/compare/v5.21.2...v5.21.3) - 2023-10-27
+
+- Ensure out of memory events are raised before exiting the process by [@jameshulse](https://github.com/jameshulse) in https://github.com/laravel/horizon/pull/1341
 
 ## [v5.21.2](https://github.com/laravel/horizon/compare/v5.21.1...v5.21.2) - 2023-10-17
 
