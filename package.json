@@ -10,7 +10,7 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "axios": "^1.0.0",
+        "axios": "^1.6.0",
         "bootstrap": "^4.3.1",
         "chart.js": "^2.5.0",
         "highlight.js": "^10.4.1",
