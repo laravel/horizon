@@ -650,7 +650,7 @@ class RedisJobRepository implements JobRepository
             $this->connection()->del($payload->id());
             return;
         }
-        
+
         $this->connection()->pipeline(function ($pipe) use ($exception, $connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'failed_jobs', $payload);
             $this->storeJobReference($pipe, 'recent_failed_jobs', $payload);
