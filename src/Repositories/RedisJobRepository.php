@@ -417,6 +417,7 @@ class RedisJobRepository implements JobRepository
     {
         if ($this->monitoredJobExpires === 0) {
             $this->connection()->del($payload->id());
+
             return;
         }
 
@@ -480,6 +481,7 @@ class RedisJobRepository implements JobRepository
 
         if ($this->completedJobExpires === 0) {
             $this->connection()->del($payload->id());
+
             return;
         }
 
@@ -648,6 +650,7 @@ class RedisJobRepository implements JobRepository
     {
         if ($this->failedJobExpires === 0) {
             $this->connection()->del($payload->id());
+
             return;
         }
 
