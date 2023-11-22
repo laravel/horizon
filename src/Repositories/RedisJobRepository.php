@@ -675,7 +675,9 @@ class RedisJobRepository implements JobRepository
      */
     protected function storeJobReference($pipe, $key, JobPayload $payload)
     {
-        $pipe->zadd($key, str_replace(',', '.', microtime(true) * -1), $payload->id());
+        if ($this->minutesForType($key) > 0) {
+            $pipe->zadd($key, str_replace(',', '.', microtime(true) * -1), $payload->id());
+        }
     }
 
     /**
