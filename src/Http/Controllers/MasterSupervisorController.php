@@ -33,7 +33,7 @@ class MasterSupervisorController extends Controller
                                 'status' => 'inactive',
                                 'processes' => [],
                                 'options' => [
-                                    'queue' => (array_key_exists('queue', $value) && is_array($value['queue']) ? implode(',', $value['queue']) : $value['queue']) ?? '',
+                                    'queue' => array_key_exists('queue', $value) && is_array($value['queue']) ? implode(',', $value['queue']) : ($value['queue'] ?? ''),
                                     'balance' => $value['balance'] ?? null,
                                 ],
                             ];
