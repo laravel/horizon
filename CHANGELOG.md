@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.3...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.4...5.x)
+
+## [v5.21.4](https://github.com/laravel/horizon/compare/v5.21.3...v5.21.4) - 2023-11-23
+
+* Bump axios from 1.3.2 to 1.6.0 by [@dependabot](https://github.com/dependabot) in https://github.com/laravel/horizon/pull/1347
+* fix: undefined array key 'queue' by [@TomaszOnePilot](https://github.com/TomaszOnePilot) in https://github.com/laravel/horizon/pull/1351
 
 ## [v5.21.3](https://github.com/laravel/horizon/compare/v5.21.2...v5.21.3) - 2023-10-27
 
