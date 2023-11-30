@@ -65,7 +65,7 @@ class InstallCommand extends Command
                 $appConfig
             ));
         } else {
-            ServiceProvider::addProviderToBootstrapFile("{$namespace}\\Providers\\HorizonServiceProvider::class");
+            ServiceProvider::addProviderToBootstrapFile("{$namespace}\\Providers\\HorizonServiceProvider");
         }
 
         file_put_contents(app_path('Providers/HorizonServiceProvider.php'), str_replace(
