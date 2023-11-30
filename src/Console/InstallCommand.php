@@ -65,6 +65,7 @@ class InstallCommand extends Command
                 $appConfig
             ));
         } else {
+            // @phpstan-ignore-next-line
             ServiceProvider::addProviderToBootstrapFile("{$namespace}\\Providers\\HorizonServiceProvider");
         }
 
