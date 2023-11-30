@@ -5,9 +5,10 @@ namespace Laravel\Horizon\Tests\Controller;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\JobPayload;
+use Laravel\Horizon\Tests\ControllerTest;
 use Mockery;
 
-class MonitoringControllerTest extends AbstractControllerTest
+class MonitoringControllerTest extends ControllerTest
 {
     public function test_monitored_tags_and_job_counts_are_returned()
     {
