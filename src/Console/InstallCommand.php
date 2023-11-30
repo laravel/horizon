@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
 class InstallCommand extends Command
@@ -57,11 +58,15 @@ class InstallCommand extends Command
             return;
         }
 
-        file_put_contents(config_path('app.php'), str_replace(
-            "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL,
-            "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL."        {$namespace}\Providers\HorizonServiceProvider::class,".PHP_EOL,
-            $appConfig
-        ));
+        if (file_exists(config_path('app.php'))) {
+            file_put_contents(config_path('app.php'), str_replace(
+                "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL,
+                "{$namespace}\\Providers\EventServiceProvider::class,".PHP_EOL."        {$namespace}\Providers\HorizonServiceProvider::class,".PHP_EOL,
+                $appConfig
+            ));
+        } else {
+            ServiceProvider::addProviderToBootstrapFile("{$namespace}\\Providers\\HorizonServiceProvider::class");
+        }
 
         file_put_contents(app_path('Providers/HorizonServiceProvider.php'), str_replace(
             "namespace App\Providers;",
