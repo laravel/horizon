@@ -20,9 +20,9 @@ class Tags
      * @param  mixed  $job
      * @return array
      */
-    public static function for($job)
+    public static function for($job, $event = null)
     {
-        if ($tags = static::extractExplicitTags($job)) {
+        if ($tags = static::extractExplicitTags($job, $event)) {
             return $tags;
         }
 
@@ -37,11 +37,11 @@ class Tags
      * @param  mixed  $job
      * @return array
      */
-    public static function extractExplicitTags($job)
+    public static function extractExplicitTags($job, $event)
     {
         return $job instanceof CallQueuedListener
                     ? static::tagsForListener($job)
-                    : static::explicitTags(static::targetsFor($job));
+                    : static::explicitTags(static::targetsFor($job), $event);
     }
 
     /**
@@ -52,10 +52,12 @@ class Tags
      */
     protected static function tagsForListener($job)
     {
+        $event = static::extractEvent($job);
+
         return collect(
-            [static::extractListener($job), static::extractEvent($job)]
-        )->map(function ($job) {
-            return static::for($job);
+            [static::extractListener($job), $event]
+        )->map(function ($job) use ($event) {
+            return static::for($job, $event);
         })->collapse()->unique()->toArray();
     }
 
@@ -65,10 +67,10 @@ class Tags
      * @param  array  $jobs
      * @return mixed
      */
-    protected static function explicitTags(array $jobs)
+    protected static function explicitTags(array $jobs, $event = null)
     {
-        return collect($jobs)->map(function ($job) {
-            return method_exists($job, 'tags') ? $job->tags() : [];
+        return collect($jobs)->map(function ($job) use ($event) {
+            return method_exists($job, 'tags') ? $job->tags($event) : [];
         })->collapse()->unique()->all();
     }
 
