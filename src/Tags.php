@@ -25,10 +25,9 @@ class Tags
      * Determine the tags for the given job.
      *
      * @param  mixed  $job
-     * @param  bool   $clearEvent
      * @return array
      */
-    public static function for($job, $clearEvent = false)
+    public static function for($job)
     {
         if ($tags = static::extractExplicitTags($job)) {
             return $tags;
@@ -66,7 +65,7 @@ class Tags
 
         return collect(
             [static::extractListener($job), $event]
-        )->map(function ($job) use ($event) {
+        )->map(function ($job) {
             return static::for($job);
         })->collapse()->unique()->tap(function () {
             static::resetEvent();
