@@ -15,6 +15,8 @@ use stdClass;
 class Tags
 {
     /**
+     * The event that is currently being handled.
+     *
      * @var object|null
      */
     protected static $event;
@@ -28,10 +30,6 @@ class Tags
      */
     public static function for($job, $clearEvent = false)
     {
-        if ($clearEvent) {
-            static::$event = null;
-        }
-
         if ($tags = static::extractExplicitTags($job)) {
             return $tags;
         }
@@ -70,16 +68,18 @@ class Tags
             [static::extractListener($job), $event]
         )->map(function ($job) use ($event) {
             return static::for($job);
-        })->collapse()->unique()->toArray();
+        })->collapse()->unique()->tap(function () {
+            static::resetEvent();
+        })->toArray();
     }
 
     /**
      * Determine tags for the given job.
      *
      * @param  array  $jobs
-     * @return mixed
+     * @return array
      */
-    protected static function explicitTags(array $jobs, $event = null)
+    protected static function explicitTags(array $jobs)
     {
         return collect($jobs)->map(function ($job) {
             return method_exists($job, 'tags') ? $job->tags(static::$event) : [];
@@ -186,5 +186,15 @@ class Tags
     protected static function setEvent($event)
     {
         static::$event = $event;
+    }
+
+    /**
+     * Reset the event currently being handled.
+     *
+     * @return void
+     */
+    protected static function resetEvent()
+    {
+        static::$event = null;
     }
 }
