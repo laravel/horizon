@@ -15,14 +15,24 @@ use stdClass;
 class Tags
 {
     /**
+     * @var object|null
+     */
+    protected static $event;
+
+    /**
      * Determine the tags for the given job.
      *
      * @param  mixed  $job
+     * @param  bool   $clearEvent
      * @return array
      */
-    public static function for($job, $event = null)
+    public static function for($job, $clearEvent = false)
     {
-        if ($tags = static::extractExplicitTags($job, $event)) {
+        if ($clearEvent) {
+            static::$event = null;
+        }
+
+        if ($tags = static::extractExplicitTags($job)) {
             return $tags;
         }
 
@@ -37,11 +47,11 @@ class Tags
      * @param  mixed  $job
      * @return array
      */
-    public static function extractExplicitTags($job, $event)
+    public static function extractExplicitTags($job)
     {
         return $job instanceof CallQueuedListener
                     ? static::tagsForListener($job)
-                    : static::explicitTags(static::targetsFor($job), $event);
+                    : static::explicitTags(static::targetsFor($job));
     }
 
     /**
@@ -54,10 +64,12 @@ class Tags
     {
         $event = static::extractEvent($job);
 
+        static::setEvent($event);
+
         return collect(
             [static::extractListener($job), $event]
         )->map(function ($job) use ($event) {
-            return static::for($job, $event);
+            return static::for($job);
         })->collapse()->unique()->toArray();
     }
 
@@ -69,8 +81,8 @@ class Tags
      */
     protected static function explicitTags(array $jobs, $event = null)
     {
-        return collect($jobs)->map(function ($job) use ($event) {
-            return method_exists($job, 'tags') ? $job->tags($event) : [];
+        return collect($jobs)->map(function ($job) {
+            return method_exists($job, 'tags') ? $job->tags(static::$event) : [];
         })->collapse()->unique()->all();
     }
 
@@ -163,5 +175,16 @@ class Tags
         return isset($job->data[0]) && is_object($job->data[0])
                         ? $job->data[0]
                         : new stdClass;
+    }
+
+    /**
+     * Set the event currently being handled.
+     *
+     * @param  object $event
+     * @return void
+     */
+    protected static function setEvent($event)
+    {
+        static::$event = $event;
     }
 }

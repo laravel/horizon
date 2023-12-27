@@ -137,7 +137,7 @@ class JobPayload implements ArrayAccess
     {
         return array_merge(
             $this->decoded['tags'] ?? [],
-            ! $job || is_string($job) ? [] : Tags::for($job)
+            ! $job || is_string($job) ? [] : Tags::for($job, true)
         );
     }
 
