@@ -15,7 +15,7 @@ use stdClass;
 class Tags
 {
     /**
-     * The event that is currently being handled.
+     * The event that was last handled.
      *
      * @var object|null
      */
@@ -68,7 +68,7 @@ class Tags
         )->map(function ($job) {
             return static::for($job);
         })->collapse()->unique()->tap(function () {
-            static::resetEvent();
+            static::flushEventState();
         })->toArray();
     }
 
@@ -188,11 +188,11 @@ class Tags
     }
 
     /**
-     * Reset the event currently being handled.
+     * Flush the event currently being handled.
      *
      * @return void
      */
-    protected static function resetEvent()
+    protected static function flushEventState()
     {
         static::$event = null;
     }
