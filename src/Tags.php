@@ -179,7 +179,7 @@ class Tags
     /**
      * Set the event currently being handled.
      *
-     * @param  object $event
+     * @param  object  $event
      * @return void
      */
     protected static function setEvent($event)
