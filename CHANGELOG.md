@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.4...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.5...5.x)
+
+## [v5.21.5](https://github.com/laravel/horizon/compare/v5.21.4...v5.21.5) - 2023-12-29
+
+* [5.x] Pass event instance to event listeners tag() method by [@mateusjatenee](https://github.com/mateusjatenee) in https://github.com/laravel/horizon/pull/1361
 
 ## [v5.21.4](https://github.com/laravel/horizon/compare/v5.21.3...v5.21.4) - 2023-11-23
 
