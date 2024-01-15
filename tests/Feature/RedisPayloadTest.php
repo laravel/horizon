@@ -17,6 +17,7 @@ use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentModel;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithTagsMethod;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListener;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerSilenced;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithDynamicTags;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithProperties;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithTypedProperties;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeModel;
@@ -97,6 +98,19 @@ class RedisPayloadTest extends IntegrationTest
 
         $this->assertEquals([
             'listenerTag1', 'listenerTag2', 'eventTag1', 'eventTag2',
+        ], $JobPayload->decoded['tags']);
+    }
+
+    public function test_tags_are_correctly_extracted_for_listeners_with_dynamic_event_information()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $job = new CallQueuedListener(FakeListenerWithDynamicTags::class, 'handle', [new FakeEvent()]);
+
+        $JobPayload->prepare($job);
+
+        $this->assertEquals([
+            'listenerTag1', FakeEvent::class, 'eventTag1', 'eventTag2',
         ], $JobPayload->decoded['tags']);
     }
 
