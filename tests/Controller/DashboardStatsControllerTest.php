@@ -6,10 +6,11 @@ use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\Tests\ControllerTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
 
-class DashboardStatsControllerTest extends AbstractControllerTest
+class DashboardStatsControllerTest extends ControllerTest
 {
     public function test_all_stats_are_correctly_returned()
     {

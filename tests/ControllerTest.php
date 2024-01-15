@@ -1,11 +1,10 @@
 <?php
 
-namespace Laravel\Horizon\Tests\Controller;
+namespace Laravel\Horizon\Tests;
 
 use Laravel\Horizon\Horizon;
-use Laravel\Horizon\Tests\IntegrationTest;
 
-abstract class AbstractControllerTest extends IntegrationTest
+abstract class ControllerTest extends IntegrationTest
 {
     protected function setUp(): void
     {

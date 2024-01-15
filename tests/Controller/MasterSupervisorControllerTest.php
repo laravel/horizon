@@ -7,8 +7,9 @@ use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\Supervisor;
 use Laravel\Horizon\SupervisorOptions;
+use Laravel\Horizon\Tests\ControllerTest;
 
-class MasterSupervisorControllerTest extends AbstractControllerTest
+class MasterSupervisorControllerTest extends ControllerTest
 {
     public function test_master_supervisor_listing_without_supervisors()
     {

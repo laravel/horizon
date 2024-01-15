@@ -25,11 +25,6 @@ class SupervisorCommandTest extends IntegrationTest
         $this->assertFalse($factory->supervisor->working);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState disabled
-     */
     public function test_supervisor_command_can_set_process_niceness()
     {
         $this->app->instance(SupervisorFactory::class, $factory = new FakeSupervisorFactory);
