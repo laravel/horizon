@@ -3,6 +3,7 @@
 namespace Laravel\Horizon;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -50,6 +51,10 @@ class HorizonServiceProvider extends ServiceProvider
      */
     protected function registerRoutes()
     {
+        if ($this->app instanceof CachesRoutes && $this->app->routesAreCached()) {
+            return;
+        }
+
         Route::group([
             'domain' => config('horizon.domain', null),
             'prefix' => config('horizon.path'),
