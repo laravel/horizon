@@ -24,7 +24,7 @@ class ForgetFailedCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return void
+     * @return int|null
      */
     public function handle(JobRepository $repository)
     {
@@ -34,6 +34,8 @@ class ForgetFailedCommand extends Command
             $this->info('Failed job deleted successfully!');
         } else {
             $this->error('No failed job matches the given ID.');
+
+            return 1;
         }
     }
 }
