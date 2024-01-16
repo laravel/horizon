@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.21.5...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.22.0...5.x)
+
+## [v5.22.0](https://github.com/laravel/horizon/compare/v5.21.5...v5.22.0) - 2024-01-16
+
+* Add cache check before registering routes by [@serpentblade](https://github.com/serpentblade) in https://github.com/laravel/horizon/pull/1367
+* Fix the pagination of recent jobs list by [@kirba](https://github.com/kirba) in https://github.com/laravel/horizon/pull/1366
+* [5.x] Laravel v11 support by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/horizon/pull/1369
+* Add exit code to horizon:forget command by [@bytestream](https://github.com/bytestream) in https://github.com/laravel/horizon/pull/1370
 
 ## [v5.21.5](https://github.com/laravel/horizon/compare/v5.21.4...v5.21.5) - 2023-12-29
 
