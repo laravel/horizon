@@ -5,3 +5,6 @@
 /phpunit.xml
 composer.lock
 .phpunit.result.cache
+/.idea
+/.fleet
+/.vscode
