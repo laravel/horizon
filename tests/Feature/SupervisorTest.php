@@ -449,7 +449,7 @@ class SupervisorTest extends IntegrationTest
         $supervisor->lastAutoScaled = $time;
         CarbonImmutable::setTestNow($time->addSeconds($supervisor->options->balanceCooldown + 0.01));
         $supervisor->loop();
-        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->options->balanceCooldown)));
+        $this->assertTrue($supervisor->lastAutoScaled->eq($time->addSeconds($supervisor->options->balanceCooldown + 0.01)));
     }
 
     public function test_supervisor_with_duplicate_name_cant_be_started()
