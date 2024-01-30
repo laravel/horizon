@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.22.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.22.1...5.x)
+
+## [v5.22.1](https://github.com/laravel/horizon/compare/v5.22.0...v5.22.1) - 2024-01-30
+
+* Make the expiration time for temporarily failed jobs configurable by [@alirezadp10](https://github.com/alirezadp10) in https://github.com/laravel/horizon/pull/1375
+* Carbon v3 support by [@driesvints](https://github.com/driesvints) in https://github.com/laravel/horizon/pull/1380
 
 ## [v5.22.0](https://github.com/laravel/horizon/compare/v5.21.5...v5.22.0) - 2024-01-16
 
