@@ -43,6 +43,10 @@
 
                 this.$http.get(Horizon.basePath + '/api/batches/' + this.$route.params.batchId)
                     .then(response => {
+                        if (!response.data.batch) {
+                          this.$router.push({name: 'batches'})
+                        }
+
                         this.batch = response.data.batch;
                         this.failedJobs = response.data.failedJobs;
 
