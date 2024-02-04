@@ -197,7 +197,7 @@ class SupervisorOptions
      * @param  int  $parentId
      * @param  int  $rest
      * @param  string|null  $autoScalingStrategy
-     * @param  bool $scaleToMin
+     * @param  bool  $scaleToMin
      */
     public function __construct($name,
                                 $connection,
