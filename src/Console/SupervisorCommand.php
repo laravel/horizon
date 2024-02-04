@@ -25,6 +25,7 @@ class SupervisorCommand extends Command
                             {--force : Force the worker to run even in maintenance mode}
                             {--max-processes=1 : The maximum number of total workers to start}
                             {--min-processes=1 : The minimum number of workers to assign per queue}
+                            {--scale-to-min : Scale to the minimum number of processes instead of the maximum on startup}
                             {--memory=128 : The memory limit in megabytes}
                             {--nice=0 : The process priority}
                             {--paused : Start the supervisor in a paused state}
@@ -94,9 +95,11 @@ class SupervisorCommand extends Command
 
         $supervisor->working = ! $this->option('paused');
 
-        $supervisor->scale(max(
-            0, $this->option('max-processes') - $supervisor->totalSystemProcessCount()
-        ));
+        $targetProcesses = $this->option('scale-to-min')
+            ? max(0, $this->option('min-processes'))
+            : max(0, $this->option('max-processes') - $supervisor->totalSystemProcessCount());
+
+        $supervisor->scale($targetProcesses);
 
         $supervisor->monitor();
     }
@@ -137,7 +140,8 @@ class SupervisorCommand extends Command
             $this->option('balance-max-shift'),
             $this->option('parent-id'),
             $this->option('rest'),
-            $autoScalingStrategy
+            $autoScalingStrategy,
+            $this->option('scale-to-min'),
         );
     }
 

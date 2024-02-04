@@ -63,6 +63,10 @@ class QueueCommandString
             $string .= ' --paused';
         }
 
+        if ($options->scaleToMin) {
+            $string .= ' --scale-to-min';
+        }
+
         return $string;
     }
 }

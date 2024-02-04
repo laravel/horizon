@@ -68,6 +68,14 @@ class SupervisorOptions
     public $minProcesses = 1;
 
     /**
+     * Indicates if the supervisor should scale to the minimum number of processes on startup.
+     *
+     * @var bool
+     */
+    public $scaleToMin = false;
+
+
+    /**
      * The parent process identifier.
      *
      * @var int
@@ -189,6 +197,7 @@ class SupervisorOptions
      * @param  int  $parentId
      * @param  int  $rest
      * @param  string|null  $autoScalingStrategy
+     * @param bool $scaleToMin
      */
     public function __construct($name,
                                 $connection,
@@ -210,7 +219,8 @@ class SupervisorOptions
                                 $balanceMaxShift = 1,
                                 $parentId = 0,
                                 $rest = 0,
-                                $autoScalingStrategy = 'time'
+                                $autoScalingStrategy = 'time',
+                                $scaleToMin = false
     ) {
         $this->name = $name;
         $this->connection = $connection;
@@ -233,6 +243,7 @@ class SupervisorOptions
         $this->parentId = $parentId;
         $this->rest = $rest;
         $this->autoScalingStrategy = $autoScalingStrategy;
+        $this->scaleToMin = $scaleToMin;
     }
 
     /**
@@ -337,6 +348,7 @@ class SupervisorOptions
             'parentId' => $this->parentId,
             'rest' => $this->rest,
             'autoScalingStrategy' => $this->autoScalingStrategy,
+            'scaleToMin' => $this->scaleToMin,
         ];
     }
 
