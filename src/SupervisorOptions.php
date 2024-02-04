@@ -74,7 +74,6 @@ class SupervisorOptions
      */
     public $scaleToMin = false;
 
-
     /**
      * The parent process identifier.
      *
