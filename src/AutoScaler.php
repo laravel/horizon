@@ -81,7 +81,7 @@ class AutoScaler
 
             return [$queue => [
                 'size' => $size,
-                'time' =>  ($size * $this->metrics->runtimeForQueue($queue)),
+                'time' => ($size * $this->metrics->runtimeForQueue($queue)),
             ]];
         });
     }

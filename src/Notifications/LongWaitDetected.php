@@ -77,7 +77,7 @@ class LongWaitDetected extends Notification
             ->subject(config('app.name').': Long Queue Wait Detected')
             ->greeting('Oh no! Something needs your attention.')
             ->line(sprintf(
-                 'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+                'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
                 $this->longWaitQueue, $this->longWaitConnection, $this->seconds
             ));
     }
@@ -99,7 +99,7 @@ class LongWaitDetected extends Notification
                     ->attachment(function ($attachment) {
                         $attachment->title('Long Wait Detected')
                                    ->content(sprintf(
-                                        '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+                                       '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
                                        config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
                                    ));
                     });

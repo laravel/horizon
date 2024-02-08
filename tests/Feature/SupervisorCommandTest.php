@@ -27,6 +27,7 @@ class SupervisorCommandTest extends IntegrationTest
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      */
     public function test_supervisor_command_can_set_process_niceness()
