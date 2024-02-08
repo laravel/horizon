@@ -60,8 +60,7 @@ class BatchesController extends Controller
         $batch = $this->batches->find($id);
 
         $failedJobs = $batch
-            ? app(JobRepository::class)
-                        ->getJobs($batch->failedJobIds)
+            ? app(JobRepository::class)->getJobs($batch->failedJobIds)
             : null;
 
         return [
