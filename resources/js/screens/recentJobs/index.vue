@@ -1,150 +1,151 @@
 <script type="text/ecmascript-6">
-    import JobRow from './job-row';
+import JobRow from './job-row';
 
-    export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                loadingNewEntries: false,
-                hasNewEntries: false,
-                page: 1,
-                perPage: 50,
-                totalPages: 1,
-                jobs: []
-            };
-        },
+export default {
+    /**
+     * The component's data.
+     */
+    data() {
+        return {
+            ready: false,
+            loadingNewEntries: false,
+            hasNewEntries: false,
+            page: 1,
+            perPage: 50,
+            totalPages: 1,
+            jobs: [],
+            search: '',
+        };
+    },
 
-        /**
-         * Components
-         */
-        components: {
-            JobRow,
-        },
+    /**
+     * Components
+     */
+    components: {
+        JobRow,
+    },
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
+    /**
+     * Prepare the component.
+     */
+    mounted() {
+        this.updatePageTitle();
+
+        this.loadJobs();
+
+        this.refreshJobsPeriodically();
+    },
+
+    /**
+     * Clean after the component is destroyed.
+     */
+    destroyed() {
+        clearInterval(this.interval);
+    },
+
+
+    /**
+     * Watch these properties for changes.
+     */
+    watch: {
+        '$route'() {
             this.updatePageTitle();
 
+            this.page = 1;
+
             this.loadJobs();
+        }
+    },
 
-            this.refreshJobsPeriodically();
-        },
 
+    methods: {
         /**
-         * Clean after the component is destroyed.
+         * Load the jobs of the given tag.
          */
-        destroyed() {
-            clearInterval(this.interval);
-        },
-
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.updatePageTitle();
-
-                this.page = 1;
-
-                this.loadJobs();
+        loadJobs(starting = -1, refreshing = false) {
+            if (!refreshing) {
+                this.ready = false;
             }
-        },
 
+            this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage + '&search=' + this.search)
+                .then(response => {
+                    if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
+                        this.hasNewEntries = true;
+                    } else {
+                        this.jobs = response.data.jobs;
 
-        methods: {
-            /**
-             * Load the jobs of the given tag.
-             */
-            loadJobs(starting = -1, refreshing = false) {
-                if (!refreshing) {
-                    this.ready = false;
-                }
-
-                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage)
-                    .then(response => {
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
-                            this.hasNewEntries = true;
-                        } else {
-                            this.jobs = response.data.jobs;
-
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
-                        }
-
-                        this.ready = true;
-                    });
-            },
-
-
-            loadNewEntries() {
-                this.jobs = [];
-
-                this.loadJobs(-1, false);
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Refresh the jobs every period of time.
-             */
-            refreshJobsPeriodically() {
-                this.interval = setInterval(() => {
-                    if (this.page != 1) {
-                        return;
+                        this.totalPages = Math.ceil(response.data.total / this.perPage);
                     }
 
-                    this.loadJobs(-1, true);
-                }, 3000);
-            },
+                    this.ready = true;
+                });
+        },
 
 
-            /**
-             * Load the jobs for the previous page.
-             */
-            previous() {
-                this.loadJobs(
-                    (this.page - 2) * this.perPage - 1
+        loadNewEntries() {
+            this.jobs = [];
+
+            this.loadJobs(-1, false);
+
+            this.hasNewEntries = false;
+        },
+
+
+        /**
+         * Refresh the jobs every period of time.
+         */
+        refreshJobsPeriodically() {
+            this.interval = setInterval(() => {
+                if (this.page != 1) {
+                    return;
+                }
+
+                this.loadJobs(-1, true);
+            }, 3000);
+        },
+
+
+        /**
+         * Load the jobs for the previous page.
+         */
+        previous() {
+            this.loadJobs(
+                (this.page - 2) * this.perPage - 1
+            );
+
+            this.page -= 1;
+
+            this.hasNewEntries = false;
+        },
+
+
+        /**
+         * Load the jobs for the next page.
+         */
+        next() {
+            this.loadJobs(
+                this.page * this.perPage - 1
+            );
+
+            this.page += 1;
+
+            this.hasNewEntries = false;
+        },
+
+        /**
+         * Update the page title.
+         */
+        updatePageTitle() {
+            document.title = this.$route.params.type == 'pending'
+                ? 'Horizon - Pending Jobs'
+                : (
+                    this.$route.params.type == 'silenced'
+                        ? 'Horizon - Silenced Jobs'
+                        : 'Horizon - Completed Jobs'
                 );
-
-                this.page -= 1;
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Load the jobs for the next page.
-             */
-            next() {
-                this.loadJobs(
-                    this.page * this.perPage - 1
-                );
-
-                this.page += 1;
-
-                this.hasNewEntries = false;
-            },
-
-            /**
-             * Update the page title.
-             */
-            updatePageTitle() {
-                document.title = this.$route.params.type == 'pending'
-                        ? 'Horizon - Pending Jobs'
-                        : (
-                            this.$route.params.type == 'silenced'
-                                ? 'Horizon - Silenced Jobs'
-                                : 'Horizon - Completed Jobs'
-                        );
-            }
         }
     }
+}
 </script>
 
 <template>
@@ -154,6 +155,8 @@
                 <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
+
+                <input @input="loadNewEntries" class="form-control w-25" v-model="search" placeholder="Search">
             </div>
 
             <div v-if="!ready"
@@ -173,27 +176,27 @@
 
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
-                    <tr>
-                        <th>Job</th>
-                        <th v-if="$route.params.type=='pending'" class="text-right">Queued</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">Runtime</th>
-                    </tr>
+                <tr>
+                    <th>Job</th>
+                    <th v-if="$route.params.type=='pending'" class="text-right">Queued</th>
+                    <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
+                    <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
+                    <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-right">Runtime</th>
+                </tr>
                 </thead>
 
                 <tbody>
-                    <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
-                        <td colspan="100" class="text-center card-bg-secondary py-1">
-                            <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
-                                Entries</a></small>
+                <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
+                    <td colspan="100" class="text-center card-bg-secondary py-1">
+                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New
+                            Entries</a></small>
 
-                            <small v-if="loadingNewEntries">Loading...</small>
-                        </td>
-                    </tr>
+                        <small v-if="loadingNewEntries">Loading...</small>
+                    </td>
+                </tr>
 
-                    <tr v-for="job in jobs" :key="job.id" :job="job" is="job-row">
-                    </tr>
+                <tr v-for="job in jobs" :key="job.id" :job="job" is="job-row">
+                </tr>
                 </tbody>
             </table>
 

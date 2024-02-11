@@ -35,10 +35,12 @@ class CompletedJobsController extends Controller
      */
     public function index(Request $request)
     {
-        $jobs = $this->jobs->getCompleted($request->query('starting_at', -1))->map(function ($job) {
-            $job->payload = json_decode($job->payload);
+        $jobs = $this->jobs->getCompleted($request->query('starting_at', -1))->map(function ($job) use ($request) {
+            if (str_contains($job->name, $request->query('search'))) {
+                $job->payload = json_decode($job->payload);
 
-            return $job;
+                return $job;
+            }
         })->values();
 
         return [
