@@ -34,7 +34,7 @@ class SnapshotCommand extends Command
         if ($lock->get('metrics:snapshot', config('horizon.metrics.snapshot_lock', 300) - 30)) {
             $metrics->snapshot();
 
-            $this->info('Metrics snapshot stored successfully.');
+            $this->components->info('Metrics snapshot stored successfully.');
         }
     }
 }
