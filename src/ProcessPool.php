@@ -270,7 +270,7 @@ class ProcessPool implements Countable
         foreach ($this->terminatingProcesses as $process) {
             $timeout = $this->options->timeout;
 
-            if ($process['terminatedAt']->addSeconds($timeout)->lte(CarbonImmutable::now())) {
+            if ($process['terminatedAt']->addSeconds((int) $timeout)->lte(CarbonImmutable::now())) {
                 $process['process']->stop();
             }
         }
