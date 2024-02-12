@@ -38,15 +38,15 @@ class ContinueSupervisorCommand extends Command
         }))->pid;
 
         if (is_null($processId)) {
-            $this->error('Failed to find a supervisor with this name');
+            $this->components->error('Failed to find a supervisor with this name');
 
             return 1;
         }
 
-        $this->info("Sending CONT Signal To Process: {$processId}");
+        $this->components->info("Sending CONT signal to process: {$processId}");
 
         if (! posix_kill($processId, SIGCONT)) {
-            $this->error("Failed to send CONT signal to process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+            $this->components->error("Failed to send CONT signal to process: {$processId} (".posix_strerror(posix_get_last_error()).')');
         }
     }
 }
