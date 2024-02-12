@@ -130,7 +130,7 @@ class PurgeCommand extends Command
                 });
 
                 if (! $result) {
-                    $this->components->error("Failed to kill process for Orphan: {$processId} (".posix_strerror(posix_get_last_error()).')');
+                    $this->components->error("Failed to kill orphan process: {$processId} (".posix_strerror(posix_get_last_error()).')');
                 }
             })->whenNotEmpty(fn () => $this->output->writeln(''));
     }
