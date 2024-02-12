@@ -10,21 +10,21 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "ext-json": "*",
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "illuminate/contracts": "^8.17|^9.0|^10.0|^11.0",
-        "illuminate/queue": "^8.17|^9.0|^10.0|^11.0",
-        "illuminate/support": "^8.17|^9.0|^10.0|^11.0",
+        "illuminate/contracts": "^9.21|^10.0|^11.0",
+        "illuminate/queue": "^9.21|^10.0|^11.0",
+        "illuminate/support": "^9.21|^10.0|^11.0",
         "nesbot/carbon": "^2.17|^3.0",
         "ramsey/uuid": "^4.0",
-        "symfony/process": "^5.0|^6.0|^7.0",
-        "symfony/error-handler": "^5.0|^6.0|^7.0"
+        "symfony/process": "^6.0|^7.0",
+        "symfony/error-handler": "^6.0|^7.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0",
+        "orchestra/testbench": "^7.0|^8.0|^9.0",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.0|^10.4",
         "predis/predis": "^1.1|^2.0"

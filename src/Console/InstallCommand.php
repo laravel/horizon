@@ -29,18 +29,17 @@ class InstallCommand extends Command
      */
     public function handle()
     {
-        $this->comment('Publishing Horizon Service Provider...');
-        $this->callSilent('vendor:publish', ['--tag' => 'horizon-provider']);
+        $this->components->info('Installing Horizon resources.');
 
-        $this->comment('Publishing Horizon Assets...');
-        $this->callSilent('vendor:publish', ['--tag' => 'horizon-assets']);
-
-        $this->comment('Publishing Horizon Configuration...');
-        $this->callSilent('vendor:publish', ['--tag' => 'horizon-config']);
+        collect([
+            'Assets' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-assets']) == 0,
+            'Service Provider' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-provider']) == 0,
+            'Configuration' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-config']) == 0,
+        ])->each(fn ($task, $description) => $this->components->task($description, $task));
 
         $this->registerHorizonServiceProvider();
 
-        $this->info('Horizon scaffolding installed successfully.');
+        $this->components->info('Horizon scaffolding installed successfully.');
     }
 
     /**

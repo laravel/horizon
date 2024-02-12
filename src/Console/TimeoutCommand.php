@@ -38,6 +38,10 @@ class TimeoutCommand extends Command
     {
         $plan = ProvisioningPlan::get(MasterSupervisor::name())->plan;
 
-        $this->line(collect($plan[$this->argument('environment')] ?? [])->max('timeout') ?? 60);
+        $environment = $this->argument('environment');
+
+        $timeout = collect($plan[$this->argument('environment')] ?? [])->max('timeout') ?? 60;
+
+        $this->components->info('Maximum timeout for '.$environment.' environment: '.$timeout.' seconds.');
     }
 }

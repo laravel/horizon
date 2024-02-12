@@ -30,7 +30,7 @@ class StatusCommand extends Command
     public function handle(MasterSupervisorRepository $masterSupervisorRepository)
     {
         if (! $masters = $masterSupervisorRepository->all()) {
-            $this->error('Horizon is inactive.');
+            $this->components->error('Horizon is inactive.');
 
             return 1;
         }
@@ -38,12 +38,12 @@ class StatusCommand extends Command
         if (collect($masters)->contains(function ($master) {
             return $master->status === 'paused';
         })) {
-            $this->warn('Horizon is paused.');
+            $this->components->warn('Horizon is paused.');
 
             return 1;
         }
 
-        $this->info('Horizon is running.');
+        $this->components->info('Horizon is running.');
 
         return 0;
     }

@@ -32,8 +32,10 @@ class SupervisorsCommand extends Command
         $supervisors = $supervisors->all();
 
         if (empty($supervisors)) {
-            return $this->info('No supervisors are running.');
+            return $this->components->info('No supervisors are running.');
         }
+
+        $this->output->writeln('');
 
         $this->table([
             'Name', 'PID', 'Status', 'Workers', 'Balancing',
@@ -48,5 +50,7 @@ class SupervisorsCommand extends Command
                 $supervisor->options['balance'],
             ];
         })->all());
+
+        $this->output->writeln('');
     }
 }

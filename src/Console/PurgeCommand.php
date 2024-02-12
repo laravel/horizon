@@ -96,13 +96,15 @@ class PurgeCommand extends Command
             $master, $this->supervisors->longestActiveTimeout()
         );
 
-        collect($expired)->each(function ($processId) use ($master, $signal) {
-            $this->comment("Killing Process: {$processId}");
+        collect($expired)
+            ->whenNotEmpty(fn () => $this->components->info('Sending TERM signal to expired processes of ['.$master.']'))
+            ->each(function ($processId) use ($master, $signal) {
+                $this->components->task("Process: $processId", function () use ($processId, $signal) {
+                    exec("kill -s {$signal} {$processId}");
+                });
 
-            exec("kill -s {$signal} {$processId}");
-
-            $this->processes->forgetOrphans($master, [$processId]);
-        });
+                $this->processes->forgetOrphans($master, [$processId]);
+            })->whenNotEmpty(fn () => $this->output->writeln(''));
     }
 
     /**
@@ -118,12 +120,18 @@ class PurgeCommand extends Command
             $master, $orphans = $this->inspector->orphaned()
         );
 
-        foreach ($orphans as $processId) {
-            $this->info("Observed Orphan: {$processId}");
+        collect($orphans)
+            ->whenNotEmpty(fn () => $this->components->info('Sending TERM signal to orphaned processes of ['.$master.']'))
+            ->each(function ($processId) use ($signal) {
+                $result = true;
 
-            if (! posix_kill($processId, $signal)) {
-                $this->error("Failed to kill process for Orphan: {$processId} (".posix_strerror(posix_get_last_error()).')');
-            }
-        }
+                $this->components->task("Process: $processId", function () use ($processId, $signal, &$result) {
+                    return $result = posix_kill($processId, $signal);
+                });
+
+                if (! $result) {
+                    $this->components->error("Failed to kill orphan process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+                }
+            })->whenNotEmpty(fn () => $this->output->writeln(''));
     }
 }

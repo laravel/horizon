@@ -31,6 +31,6 @@ class ClearMetricsCommand extends Command
     {
         $metrics->clear();
 
-        $this->info('Metrics cleared successfully.');
+        $this->components->info('Metrics cleared successfully.');
     }
 }
