@@ -32,7 +32,7 @@ class HorizonCommand extends Command
     public function handle(MasterSupervisorRepository $masters)
     {
         if ($masters->find(MasterSupervisor::name())) {
-            return $this->comment('A master supervisor is already running on this machine.');
+            return $this->components->warn('A master supervisor is already running on this machine.');
         }
 
         $environment = $this->option('environment') ?? config('horizon.env') ?? config('app.env');
@@ -43,12 +43,14 @@ class HorizonCommand extends Command
 
         ProvisioningPlan::get(MasterSupervisor::name())->deploy($environment);
 
-        $this->info('Horizon started successfully.');
+        $this->components->info('Horizon started successfully.');
 
         pcntl_async_signals(true);
 
         pcntl_signal(SIGINT, function () use ($master) {
-            $this->line('Shutting down...');
+            $this->output->writeln('');
+
+            $this->components->info('Shutting down.');
 
             return $master->terminate();
         });
