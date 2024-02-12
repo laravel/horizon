@@ -36,12 +36,19 @@ class ContinueCommand extends Command
             return Str::startsWith($master->name, MasterSupervisor::basename());
         })->all();
 
-        foreach (Arr::pluck($masters, 'pid') as $processId) {
-            $this->info("Sending CONT Signal To Process: {$processId}");
+        collect(Arr::pluck($masters, 'pid'))
+            ->whenNotEmpty(fn () => $this->components->info('Sending CONT signal to processes.'))
+            ->whenEmpty(fn () => $this->components->info('No processes to continue.'))
+            ->each(function ($processId) {
+                $result = true;
 
-            if (! posix_kill($processId, SIGCONT)) {
-                $this->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
-            }
-        }
+                $this->components->task("Process: $processId", function () use ($processId, &$result) {
+                    return $result = posix_kill($processId, SIGCONT);
+                });
+
+                if (! $result) {
+                    $this->components->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
+                }
+            })->whenNotEmpty(fn () => $this->output->writeln(''));
     }
 }
