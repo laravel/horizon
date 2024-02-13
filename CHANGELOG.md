@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.22.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.23.0...5.x)
+
+## [v5.23.0](https://github.com/laravel/horizon/compare/v5.22.1...v5.23.0) - 2024-02-12
+
+* [5.x] Improves console output and fixes Carbon v3 support by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/horizon/pull/1387
 
 ## [v5.22.1](https://github.com/laravel/horizon/compare/v5.22.0...v5.22.1) - 2024-01-30
 
