@@ -31,17 +31,17 @@ class HorizonCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masters)
     {
-        if ($masters->find(MasterSupervisor::name())) {
+        if ($masters->find(app(MasterSupervisor::class)::name())) {
             return $this->components->warn('A master supervisor is already running on this machine.');
         }
 
         $environment = $this->option('environment') ?? config('horizon.env') ?? config('app.env');
 
-        $master = (new MasterSupervisor($environment))->handleOutputUsing(function ($type, $line) {
+        $master = app()->make(MasterSupervisor::class, ['environment' => $environment])->handleOutputUsing(function ($type, $line) {
             $this->output->write($line);
         });
 
-        ProvisioningPlan::get(MasterSupervisor::name())->deploy($environment);
+        ProvisioningPlan::get(app(MasterSupervisor::class)::name())->deploy($environment);
 
         $this->components->info('Horizon started successfully.');
 
