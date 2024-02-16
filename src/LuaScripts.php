@@ -48,6 +48,8 @@ LUA;
     public static function purge()
     {
         return <<<'LUA'
+
+            redis.replicate_commands()
             
             local count = 0
             local cursor = 0
