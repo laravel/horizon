@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.23.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.23.1...5.x)
+
+## [v5.23.1](https://github.com/laravel/horizon/compare/v5.23.0...v5.23.1) - 2024-02-20
+
+* Output console error when terminating due to memory usage by [@SanderMuller](https://github.com/SanderMuller) in https://github.com/laravel/horizon/pull/1391
 
 ## [v5.23.0](https://github.com/laravel/horizon/compare/v5.22.1...v5.23.0) - 2024-02-12
 
