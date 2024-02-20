@@ -17,6 +17,7 @@ class MonitorMasterSupervisorMemoryTest extends IntegrationTest
         $master = Mockery::mock(MasterSupervisor::class);
 
         $master->shouldReceive('memoryUsage')->andReturn(192);
+        $master->shouldReceive('output')->once()->with('error', 'Memory limit exceeded: Using 192/64MB. Consider increasing horizon.memory_limit.');
         $master->shouldReceive('terminate')->once()->with(12);
 
         $monitor->handle(new MasterSupervisorLooped($master));
