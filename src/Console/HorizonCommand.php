@@ -38,11 +38,7 @@ class HorizonCommand extends Command
         $environment = $this->option('environment') ?? config('horizon.env') ?? config('app.env');
 
         $master = (new MasterSupervisor($environment))->handleOutputUsing(function ($type, $line) {
-            if ($type === 'error') {
-                $this->components->error($line);
-            } else {
-                $this->output->write($line);
-            }
+            $this->output->write($line);
         });
 
         ProvisioningPlan::get(MasterSupervisor::name())->deploy($environment);
