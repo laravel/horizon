@@ -176,36 +176,6 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Exception</h2>
-            </div>
-            <div>
-                <stack-trace :trace="job.exception.split('\n')"></stack-trace>
-            </div>
-        </div>
-
-        <div class="card overflow-hidden mt-4" v-if="ready">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Exception Context</h2>
-            </div>
-
-            <div class="card-body code-bg text-white">
-                <vue-json-pretty :data="prettyPrintJob(job.context)"></vue-json-pretty>
-            </div>
-        </div>
-
-
-        <div class="card overflow-hidden mt-4" v-if="ready">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Data</h2>
-            </div>
-
-            <div class="card-body code-bg text-white">
-                <vue-json-pretty :data="prettyPrintJob(job.payload.data)"></vue-json-pretty>
-            </div>
-        </div>
-
         <div class="card overflow-hidden mt-4" v-if="ready && job.retried_by.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Recent Retries</h2>
@@ -254,5 +224,34 @@
             </table>
         </div>
 
+        <div class="card overflow-hidden mt-4" v-if="ready">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0">Exception</h2>
+            </div>
+            <div>
+                <stack-trace :trace="job.exception.split('\n')"></stack-trace>
+            </div>
+        </div>
+
+        <div class="card overflow-hidden mt-4" v-if="ready">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0">Exception Context</h2>
+            </div>
+
+            <div class="card-body code-bg text-white">
+                <vue-json-pretty :data="prettyPrintJob(job.context)"></vue-json-pretty>
+            </div>
+        </div>
+
+
+        <div class="card overflow-hidden mt-4" v-if="ready">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0">Data</h2>
+            </div>
+
+            <div class="card-body code-bg text-white">
+                <vue-json-pretty :data="prettyPrintJob(job.payload.data)"></vue-json-pretty>
+            </div>
+        </div>
     </div>
 </template>
