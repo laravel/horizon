@@ -3,10 +3,12 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 
+#[AsCommand(name: 'horizon:pause-supervisor')]
 class PauseSupervisorCommand extends Command
 {
     /**

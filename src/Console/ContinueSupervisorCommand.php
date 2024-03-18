@@ -6,7 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:continue-supervisor')]
 class ContinueSupervisorCommand extends Command
 {
     /**

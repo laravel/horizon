@@ -5,7 +5,9 @@ namespace Laravel\Horizon\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:install')]
 class InstallCommand extends Command
 {
     /**

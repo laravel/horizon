@@ -7,7 +7,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:pause')]
 class PauseCommand extends Command
 {
     /**

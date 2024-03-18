@@ -5,7 +5,9 @@ namespace Laravel\Horizon\Console;
 use Illuminate\Console\Command;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\ProvisioningPlan;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:timeout')]
 class TimeoutCommand extends Command
 {
     /**

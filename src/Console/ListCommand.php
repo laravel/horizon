@@ -3,8 +3,10 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
+#[AsCommand(name: 'horizon:list')]
 class ListCommand extends Command
 {
     /**

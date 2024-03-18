@@ -3,8 +3,10 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Laravel\Horizon\Contracts\JobRepository;
 
+#[AsCommand(name: 'horizon:forget')]
 class ForgetFailedCommand extends Command
 {
     /**
