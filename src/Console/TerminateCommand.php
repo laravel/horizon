@@ -3,13 +3,13 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\InteractsWithTime;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'horizon:terminate')]
 class TerminateCommand extends Command
