@@ -54,7 +54,6 @@ class InstallCommand extends Command
         $namespace = Str::replaceLast('\\', '', $this->laravel->getNamespace());
 
         if (file_exists($this->laravel->bootstrapPath('providers.php'))) {
-            // @phpstan-ignore-next-line
             ServiceProvider::addProviderToBootstrapFile("{$namespace}\\Providers\\HorizonServiceProvider");
         } else {
             $appConfig = file_get_contents(config_path('app.php'));
