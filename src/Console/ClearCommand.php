@@ -8,7 +8,9 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\RedisQueue;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:clear')]
 class ClearCommand extends Command
 {
     use ConfirmableTrait;

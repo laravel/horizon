@@ -6,7 +6,9 @@ use Exception;
 use Illuminate\Console\Command;
 use Laravel\Horizon\SupervisorFactory;
 use Laravel\Horizon\SupervisorOptions;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:supervisor')]
 class SupervisorCommand extends Command
 {
     /**

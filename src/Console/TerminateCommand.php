@@ -9,7 +9,9 @@ use Illuminate\Support\InteractsWithTime;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:terminate')]
 class TerminateCommand extends Command
 {
     use InteractsWithTime;

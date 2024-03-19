@@ -9,7 +9,9 @@ use Laravel\Horizon\Contracts\ProcessRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\ProcessInspector;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:purge')]
 class PurgeCommand extends Command
 {
     /**

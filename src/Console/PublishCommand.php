@@ -3,7 +3,9 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(name: 'horizon:publish')]
 class PublishCommand extends Command
 {
     /**
