@@ -119,6 +119,7 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\ContinueCommand::class,
                 Console\ContinueSupervisorCommand::class,
                 Console\ForgetFailedCommand::class,
+                Console\ClearCommand::class,
                 Console\HorizonCommand::class,
                 Console\InstallCommand::class,
                 Console\ListCommand::class,

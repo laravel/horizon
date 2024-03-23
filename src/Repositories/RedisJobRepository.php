@@ -743,6 +743,27 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+     * Delete a specific pending or reserved job for a queue by its job id.
+     *
+     * @param  string  $queue
+     * @param  string  $jobId
+     * @return int
+     */
+    public function purgePending($queue, $jobId)
+    {
+        return $this->connection()->eval(
+            LuaScripts::purgeSpecific(),
+            2,
+            'recent_jobs',
+            'pending_jobs',
+            config('horizon.prefix'),
+            $queue,
+            $jobId
+        );
+    }
+
+
+    /**
      * Get the Redis connection instance.
      *
      * @return \Illuminate\Redis\Connections\Connection
