@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.23.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.23.2...5.x)
+
+## [v5.23.2](https://github.com/laravel/horizon/compare/v5.23.1...v5.23.2) - 2024-03-23
+
+* [5.x] Make commands lazy by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/horizon/pull/1399
 
 ## [v5.23.1](https://github.com/laravel/horizon/compare/v5.23.0...v5.23.1) - 2024-02-20
 
