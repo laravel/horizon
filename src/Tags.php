@@ -34,7 +34,7 @@ class Tags
         }
 
         return static::modelsFor(static::targetsFor($job))->map(function ($model) {
-            return get_class($model).':'.$model->getKey();
+            return $model->getMorphClass().':'.$model->getKey();
         })->all();
     }
 
