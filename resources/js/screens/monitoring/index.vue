@@ -1,4 +1,6 @@
 <script type="text/ecmascript-6">
+    import { Modal } from 'bootstrap';
+
     export default {
         /**
          * The component's data.
@@ -7,6 +9,7 @@
             return {
                 ready: false,
                 newTag: '',
+                addTagModal: null,
                 addTagModalOpened: false,
                 tags: []
             };
@@ -61,11 +64,15 @@
              * Open the modal for adding a new tag.
              */
             openNewTagModal() {
-                $('#addTagModel').modal({
+                this.addTagModal = Modal.getOrCreateInstance(document.getElementById('addTagModel'), {
                     backdrop: 'static',
                 });
+                this.addTagModal.show();
 
-                $('#newTagInput').focus();
+                const newTagInput = document.getElementById('newTagInput');
+                if (newTagInput) {
+                    newTagInput.focus();
+                }
             },
 
 
@@ -74,18 +81,21 @@
              */
             monitorNewTag() {
                 if (!this.newTag) {
-                    $('#newTagInput').focus();
+                    const newTagInput = document.getElementById('newTagInput');
+
+                    if (newTagInput) {
+                        newTagInput.focus();
+                    }
                     return;
                 }
 
                 this.$http.post(Horizon.basePath + '/api/monitoring', {'tag': this.newTag})
                     .then(response => {
-                        $('#addTagModal').modal('hide');
+                        if (this.addTagModal) {
+                            this.addTagModal.hide();
+                        }
 
                         this.tags.push({tag: this.newTag, count: 0});
-
-                        $('#addTagModel').modal('hide');
-
                         this.newTag = '';
                     })
             },
@@ -95,7 +105,11 @@
              * Cancel adding a new tag.
              */
             cancelNewTag() {
-                $('#addTagModel').modal('hide');
+                if (this.addTagModal) {
+                    this.addTagModal.hide();
+                    this.addTagModal.dispose();
+                    this.addTagModal = null;
+                }
 
                 this.newTag = '';
             },

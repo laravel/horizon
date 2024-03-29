@@ -252,8 +252,7 @@
                     <td>
                         <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">{{ jobBaseName(job.name) }}</router-link>
 
-                        <small class="ml-1 badge badge-secondary badge-sm"
-                               v-tooltip:top="retriedJobTooltip(job)"
+                        <small class="badge badge-secondary badge-sm" :title="`Total retries: ${job.retried_by.length}`"
                                v-if="wasRetried(job)">
                             Retried
                         </small>

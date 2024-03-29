@@ -5,14 +5,6 @@ import Routes from './routes';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
 
-window.Popper = require('popper.js').default;
-
-try {
-    window.$ = window.jQuery = require('jquery');
-
-    require('bootstrap');
-} catch (e) {}
-
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -45,14 +37,6 @@ Vue.component('alert', require('./components/Alert.vue').default);
 Vue.component('scheme-toggler', require('./components/SchemeToggler.vue').default);
 
 Vue.mixin(Base);
-
-Vue.directive('tooltip', function (el, binding) {
-    $(el).tooltip({
-        title: binding.value,
-        placement: binding.arg,
-        trigger: 'hover',
-    });
-});
 
 new Vue({
     el: '#horizon',
