@@ -4,6 +4,7 @@ import axios from 'axios';
 import Routes from './routes';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
