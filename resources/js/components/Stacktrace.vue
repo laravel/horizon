@@ -29,7 +29,7 @@
             </tr>
 
             <tr v-if="! showAll">
-                <td class="card-bg-secondary"><a href="*" v-on:click.prevent="showAll = true">Show All</a></td>
+                <td class="card-bg-secondary"><a href="*" class="text-decoration-none" v-on:click.prevent="showAll = true">Show All</a></td>
             </tr>
             </tbody>
         </table>

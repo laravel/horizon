@@ -148,7 +148,7 @@
                 <div class="row mb-2" v-if="job.payload.retry_of">
                     <div class="col-md-2 text-muted">Retry of ID</div>
                     <div class="col">
-                         <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
+                         <a class="text-decoration-none" :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
                             {{ job.payload.retry_of }}
                         </a>
                     </div>
@@ -240,7 +240,7 @@
                     </td>
 
                     <td class="table-fit">
-                        <a v-if="retry.status == 'failed'" :href="Horizon.basePath + '/failed/'+retry.id">
+                        <a class="text-decoration-none" v-if="retry.status == 'failed'" :href="Horizon.basePath + '/failed/'+retry.id">
                             {{ retry.id }}
                         </a>
                         <span v-else>{{ retry.id }}</span>
