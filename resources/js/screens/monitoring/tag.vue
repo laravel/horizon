@@ -11,13 +11,13 @@
 
             <ul class="nav nav-pills card-bg-secondary">
                 <li class="nav-item">
-                    <router-link class="nav-link" active-class="active" :to="{ name: 'monitoring-jobs', params: { tag:$route.params.tag }}" href="#">
+                    <router-link class="nav-link text-decoration-none" active-class="active" :to="{ name: 'monitoring-jobs', params: { tag:$route.params.tag }}" href="#">
                         Recent Jobs
                     </router-link>
                 </li>
 
                 <li class="nav-item">
-                    <router-link class="nav-link" active-class="active" :to="{ name: 'monitoring-failed', params: { tag:$route.params.tag }}" href="#">
+                    <router-link class="nav-link text-decoration-none" active-class="active" :to="{ name: 'monitoring-failed', params: { tag:$route.params.tag }}" href="#">
                         Failed Jobs
                     </router-link>
                 </li>

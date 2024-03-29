@@ -67,7 +67,7 @@
 
             <tr v-for="queue in queues" :key="queue">
                 <td>
-                    <router-link :to="{ name: 'metrics-preview', params: { type: 'queues', slug: queue }}">
+                    <router-link class="text-decoration-none" :to="{ name: 'metrics-preview', params: { type: 'queues', slug: queue }}">
                         {{ queue }}
                     </router-link>
                 </td>

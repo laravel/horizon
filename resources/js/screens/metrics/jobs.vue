@@ -67,7 +67,7 @@
 
             <tr v-for="job in jobs" :key="job">
                 <td>
-                    <router-link :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job }}">
+                    <router-link class="text-decoration-none" :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job }}">
                         {{ job }}
                     </router-link>
                 </td>

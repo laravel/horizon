@@ -18,13 +18,13 @@
 
             <ul class="nav nav-pills card-bg-secondary">
                 <li class="nav-item">
-                    <router-link class="nav-link" active-class="active" :to="{ name: 'metrics-jobs'}" href="#">
+                    <router-link class="nav-link text-decoration-none" active-class="active" :to="{ name: 'metrics-jobs'}" href="#">
                         Jobs
                     </router-link>
                 </li>
 
                 <li class="nav-item">
-                    <router-link class="nav-link" active-class="active" :to="{ name: 'metrics-queues'}" href="#">
+                    <router-link class="nav-link text-decoration-none" active-class="active" :to="{ name: 'metrics-queues'}" href="#">
                         Queues
                     </router-link>
                 </li>

@@ -178,7 +178,7 @@
 
                 <tr v-for="failedJob in failedJobs">
                     <td>
-                        <router-link :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
+                        <router-link class="text-decoration-none" :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
                             {{ jobBaseName(failedJob.name) }}
                         </router-link>
                     </td>

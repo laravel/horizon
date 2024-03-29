@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>
-            <router-link :title="job.name" :to="{ name: $parent.type != 'failed' ? 'completed-jobs-preview' : 'failed-jobs-preview', params: { jobId: job.id }}">
+            <router-link class="text-decoration-none" :title="job.name" :to="{ name: $parent.type != 'failed' ? 'completed-jobs-preview' : 'failed-jobs-preview', params: { jobId: job.id }}">
                 {{ jobBaseName(job.name) }}
             </router-link>
 

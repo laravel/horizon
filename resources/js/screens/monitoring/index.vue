@@ -162,7 +162,7 @@
                 <tbody>
                 <tr v-for="tag in tags">
                     <td>
-                        <router-link :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}" href="#">
+                        <router-link class="text-decoration-none" :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}" href="#">
                             {{ tag.tag }}
                         </router-link>
                     </td>
