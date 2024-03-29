@@ -36,6 +36,9 @@
         color: #c3cbd3 !important;
         padding-right: 10px;
     }
+    .vjs-value {
+        @extend .text-break;
+    }
     .vjs-value-string {
         color: #c3e88d !important;
     }
