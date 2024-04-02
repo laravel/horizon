@@ -247,7 +247,6 @@ export default {
                     <tr v-for="failedJob in failedJobs">
                         <td>
                             <router-link
-                                class="text-decoration-none"
                                 :to="{
                                     name: 'failed-jobs-preview',
                                     params: { jobId: failedJob.id },

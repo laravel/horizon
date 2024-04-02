@@ -2,7 +2,6 @@
     <tr>
         <td>
             <router-link
-                class="text-decoration-none"
                 :title="job.name"
                 :to="{
                     name: $route.params.type + '-jobs-preview',

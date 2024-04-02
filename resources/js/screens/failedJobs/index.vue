@@ -294,7 +294,6 @@ export default {
                     <tr v-for="job in jobs" :key="job.id">
                         <td>
                             <router-link
-                                class="text-decoration-none"
                                 :title="job.name"
                                 :to="{
                                     name: 'failed-jobs-preview',
@@ -320,7 +319,6 @@ export default {
                                 <span v-if="isRetry(job)">
                                     | Retry of
                                     <router-link
-                                        class="text-decoration-none"
                                         :title="job.name"
                                         :to="{
                                             name: 'failed-jobs-preview',
@@ -370,7 +368,6 @@ export default {
                             <a
                                 href="#"
                                 title="Retry Job"
-                                class="text-decoration-none"
                                 @click.prevent="retry(job.id)"
                                 v-if="!hasCompleted(job)"
                             >

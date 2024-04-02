@@ -197,7 +197,6 @@ export default {
                     <tr v-for="batch in batches" :key="batch.id">
                         <td>
                             <router-link
-                                class="text-decoration-none"
                                 :title="batch.id"
                                 :to="{
                                     name: 'batches-preview',

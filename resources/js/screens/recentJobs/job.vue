@@ -5,7 +5,7 @@
                 <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
                 <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
 
-                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseDetails" role="button">
+                <a data-bs-toggle="collapse" href="#collapseDetails" role="button">
                     Collapse
                 </a>
             </div>
@@ -37,7 +37,7 @@
                 <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
                     <div class="col-md-2 text-muted">Batch</div>
                     <div class="col">
-                        <router-link class="text-decoration-none" :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
+                        <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
                             {{ prettyPrintJob(job.payload.data).batchId }}
                         </router-link>
                     </div>
@@ -60,7 +60,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
 
-                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseData" role="button">
+                <a data-bs-toggle="collapse" href="#collapseData" role="button">
                     Collapse
                 </a>
             </div>
@@ -74,7 +74,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Tags</h2>
 
-                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseTags" role="button">
+                <a data-bs-toggle="collapse" href="#collapseTags" role="button">
                     Collapse
                 </a>
             </div>

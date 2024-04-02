@@ -242,7 +242,6 @@ export default {
                             <small
                                 ><a
                                     href="#"
-                                    class="text-decoration-none"
                                     v-on:click.prevent="loadNewEntries"
                                     v-if="!loadingNewEntries"
                                     >Load New Entries</a
