@@ -89,6 +89,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Queue Wait Time Notification Sending Locks
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to configure the amount of time (in seconds) that
+    | Horizon will wait before sending another notification about long wait time
+    | for a specific connection / queue combination.
+    | Every connection / queue combination may have its own unique lock time
+    | (in seconds).
+    |
+    */
+
+    'notification_lock_times' => [
+        'redis:default' => 300,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Job Trimming Times
     |--------------------------------------------------------------------------
     |
