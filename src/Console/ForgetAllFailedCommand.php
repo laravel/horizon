@@ -48,4 +48,5 @@ class ForgetAllFailedCommand extends Command
             $this->components->info('Nothing to be deleted as failed jobs are empty');
         }
     }
+    
 }
