@@ -44,9 +44,9 @@ class ForgetFailedCommand extends Command
             } while ($repository->totalFailed() !== 0);
 
             if ($totalFailedCount) {
-                $this->components->info('All failed jobs ('.$totalFailedCount.') deleted successfully!');
+                $this->components->info($totalFailedCount.' failed jobs deleted successfully!');
             } else {
-                $this->components->info('Nothing to be deleted as failed jobs are empty');
+                $this->components->info('No failed jobs detected.');
             }
 
             return;
