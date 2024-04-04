@@ -14,7 +14,7 @@ class ForgetFailedCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:forget {id? : The ID of the failed job} {--all : To delete all failed jobs}';
+    protected $signature = 'horizon:forget {id? : The ID of the failed job} {--all : Delete all failed jobs}';
 
     /**
      * The console command description.
