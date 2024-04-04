@@ -14,7 +14,7 @@ class ForgetFailedCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:forget {id : The ID of the failed job}';
+    protected $signature = 'horizon:forget {id? : The ID of the failed job} {--all : Delete all failed jobs}';
 
     /**
      * The console command description.
@@ -30,6 +30,32 @@ class ForgetFailedCommand extends Command
      */
     public function handle(JobRepository $repository)
     {
+        if ($this->option('all')) {
+            $totalFailedCount = $repository->totalFailed();
+
+            do {
+                collect($repository->getFailed())->pluck('id')->each(function ($failedId) use ($repository): void {
+                    $repository->deleteFailed($failedId);
+
+                    if ($this->laravel['queue.failer']->forget($failedId)) {
+                        $this->components->info('Failed job (id): '.$failedId.' deleted successfully!');
+                    }
+                });
+            } while ($repository->totalFailed() !== 0);
+
+            if ($totalFailedCount) {
+                $this->components->info($totalFailedCount.' failed jobs deleted successfully!');
+            } else {
+                $this->components->info('No failed jobs detected.');
+            }
+
+            return;
+        }
+
+        if (! $this->argument('id')) {
+            $this->components->error('No failed job ID provided.');
+        }
+        
         $repository->deleteFailed($this->argument('id'));
 
         if ($this->laravel['queue.failer']->forget($this->argument('id'))) {
