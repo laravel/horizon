@@ -112,7 +112,7 @@ class HorizonServiceProvider extends ServiceProvider
      */
     protected function registerCommands()
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() && ! $this->app->runningUnitTests()) {
             $this->commands([
                 Console\ClearCommand::class,
                 Console\ClearMetricsCommand::class,
@@ -149,9 +149,11 @@ class HorizonServiceProvider extends ServiceProvider
             define('HORIZON_PATH', realpath(__DIR__.'/../'));
         }
 
-        $this->app->bind(Console\WorkCommand::class, function ($app) {
-            return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
-        });
+        if ($this->app->runningInConsole() && ! $this->app->runningUnitTests()) {
+            $this->app->bind(Console\WorkCommand::class, function ($app) {
+                return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
+            });
+        }
 
         $this->configure();
         $this->registerServices();
