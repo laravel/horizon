@@ -55,7 +55,7 @@ class ForgetFailedCommand extends Command
         if (! $this->argument('id')) {
             $this->components->error('No failed job ID provided.');
         }
-        
+
         $repository->deleteFailed($this->argument('id'));
 
         if ($this->laravel['queue.failer']->forget($this->argument('id'))) {
