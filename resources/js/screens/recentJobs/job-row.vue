@@ -5,9 +5,9 @@
                 {{ jobBaseName(job.name) }}
             </router-link>
 
-            <small class="ml-1 badge badge-secondary badge-sm"
-                    v-tooltip:top="`Delayed for ${delayed}`"
-                    v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
+            <small class="ms-1 badge bg-secondary badge-sm"
+                :title="`Delayed for ${delayed}`"
+                v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
                 Delayed
             </small>
 
@@ -30,7 +30,7 @@
             {{ readableTimestamp(job.completed_at) }}
         </td>
 
-        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-right text-muted">
+        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-end text-muted">
             <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
         </td>
     </tr>

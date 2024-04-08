@@ -217,7 +217,7 @@
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin me-2 fill-text-color">
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
@@ -233,9 +233,9 @@
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th class="text-right">Runtime</th>
+                    <th class="text-end">Runtime</th>
                     <th>Failed</th>
-                    <th class="text-right">Retry</th>
+                    <th class="text-end">Retry</th>
                 </tr>
                 </thead>
 
@@ -252,8 +252,8 @@
                     <td>
                         <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">{{ jobBaseName(job.name) }}</router-link>
 
-                        <small class="ml-1 badge badge-secondary badge-sm"
-                               v-tooltip:top="retriedJobTooltip(job)"
+                        <small class="ms-1 badge bg-secondary badge-sm"
+                               :title="retriedJobTooltip(job)"
                                v-if="wasRetried(job)">
                             Retried
                         </small>
@@ -275,7 +275,7 @@
                         </small>
                     </td>
 
-                    <td class="table-fit text-muted text-right">
+                    <td class="table-fit text-muted text-end">
                         <span>{{ job.failed_at ? String((job.failed_at - job.reserved_at).toFixed(2))+'s' : '-' }}</span>
                     </td>
 
@@ -283,7 +283,7 @@
                         {{ readableTimestamp(job.failed_at) }}
                     </td>
 
-                    <td class="text-right table-fit">
+                    <td class="text-end table-fit">
                         <a href="#" title="Retry Job" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
                             <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.25rem; height: 1.25rem;" :class="{spin: isRetrying(job.id)}">
                                 <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />

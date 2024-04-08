@@ -5,6 +5,9 @@ $font-weight-bold: 600;
 $font-size-base: 1rem;
 $badge-font-size: 0.875rem;
 
+$link-decoration: none;
+$link-hover-decoration: underline;
+
 $primary: $violet-500;
 $secondary: $gray-500;
 $success: $emerald-500;
@@ -93,14 +96,18 @@ $grid-breakpoints: (
     sm: 2px,
     md: 8px,
     lg: 9px,
-    xl: 10px
+    xl: 10px,
 ) !default;
 
 $container-max-widths: (
     sm: 1137px,
     md: 1138px,
     lg: 1139px,
-    xl: 1140px
+    xl: 1140px,
 ) !default;
 
 @import 'base';
+
+.btn-primary {
+    color: rgb(255, 255, 255);
+}

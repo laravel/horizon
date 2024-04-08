@@ -1,4 +1,6 @@
 <script type="text/ecmascript-6">
+    import { Modal } from 'bootstrap';
+
     export default {
         /**
          * The component's data.
@@ -7,6 +9,7 @@
             return {
                 ready: false,
                 newTag: '',
+                addTagModal: null,
                 addTagModalOpened: false,
                 tags: []
             };
@@ -61,11 +64,15 @@
              * Open the modal for adding a new tag.
              */
             openNewTagModal() {
-                $('#addTagModel').modal({
+                this.addTagModal = Modal.getOrCreateInstance(document.getElementById('addTagModel'), {
                     backdrop: 'static',
                 });
+                this.addTagModal.show();
 
-                $('#newTagInput').focus();
+                const newTagInput = document.getElementById('newTagInput');
+                if (newTagInput) {
+                    newTagInput.focus();
+                }
             },
 
 
@@ -74,18 +81,21 @@
              */
             monitorNewTag() {
                 if (!this.newTag) {
-                    $('#newTagInput').focus();
+                    const newTagInput = document.getElementById('newTagInput');
+
+                    if (newTagInput) {
+                        newTagInput.focus();
+                    }
                     return;
                 }
 
                 this.$http.post(Horizon.basePath + '/api/monitoring', {'tag': this.newTag})
                     .then(response => {
-                        $('#addTagModal').modal('hide');
+                        if (this.addTagModal) {
+                            this.addTagModal.hide();
+                        }
 
                         this.tags.push({tag: this.newTag, count: 0});
-
-                        $('#addTagModel').modal('hide');
-
                         this.newTag = '';
                     })
             },
@@ -95,7 +105,11 @@
              * Cancel adding a new tag.
              */
             cancelNewTag() {
-                $('#addTagModel').modal('hide');
+                if (this.addTagModal) {
+                    this.addTagModal.hide();
+                    this.addTagModal.dispose();
+                    this.addTagModal = null;
+                }
 
                 this.newTag = '';
             },
@@ -123,7 +137,7 @@
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin me-2 fill-text-color">
                     <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
                 </svg>
 
@@ -140,8 +154,8 @@
                 <thead>
                 <tr>
                     <th>Tag</th>
-                    <th class="text-right">Jobs</th>
-                    <th class="text-right"></th>
+                    <th class="text-end">Jobs</th>
+                    <th class="text-end"></th>
                 </tr>
                 </thead>
 
@@ -152,8 +166,8 @@
                             {{ tag.tag }}
                         </router-link>
                     </td>
-                    <td class="text-right text-muted">{{ tag.count }}</td>
-                    <td class="text-right">
+                    <td class="text-end text-muted">{{ tag.count }}</td>
+                    <td class="text-end">
                         <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />

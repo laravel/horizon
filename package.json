@@ -1,4 +1,5 @@
 {
+    "name": "laravel-horizon",
     "private": true,
     "scripts": {
         "dev": "npm run development",
@@ -11,22 +12,20 @@
     },
     "devDependencies": {
         "axios": "^1.6.0",
-        "bootstrap": "^4.3.1",
+        "bootstrap": "~5.1.3",
         "chart.js": "^2.5.0",
         "highlight.js": "^10.4.1",
-        "jquery": "^3.5.0",
         "laravel-mix": "^6.0.13",
         "md5": "^2.2.1",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.35",
         "phpunserialize": "1.*",
-        "popper.js": "^1.12",
         "resolve-url-loader": "^5.0.0",
-        "sass": "^1.26.3",
-        "sass-loader": "^11.0.1",
+        "sass": "^1.49.7",
+        "sass-loader": "^12.4",
         "sql-formatter": "^4.0.2",
         "vue": "^2.5.7",
-        "vue-json-pretty": "^1.4.1",
+        "vue-json-pretty": "^1.6.2",
         "vue-loader": "^15.9.6",
         "vue-router": "^3.0.1",
         "vue-template-compiler": "^2.5.21"
