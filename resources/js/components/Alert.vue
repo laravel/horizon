@@ -15,9 +15,11 @@
 
         mounted() {
             const alertModalElement = document.getElementById('alertModal');
+
             this.alertModal = Modal.getOrCreateInstance(alertModalElement, {
                 backdrop: 'static',
             })
+
             this.alertModal.show();
 
             alertModalElement.addEventListener('hidden.bs.modal', e => {
