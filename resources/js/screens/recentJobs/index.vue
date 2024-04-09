@@ -1,5 +1,5 @@
 <script type="text/ecmascript-6">
-    import JobRow from './job-row';
+    import JobRow from './job-row.vue';
 
     export default {
         /**
