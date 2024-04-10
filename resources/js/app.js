@@ -2,6 +2,7 @@ import axios from 'axios';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 import Base from './base';
 import Routes from './routes';
 import Alert from './components/Alert.vue';

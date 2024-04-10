@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\Vite;
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
 
-    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/app.scss', 'vendor/horizon') }}" data-scheme="light" />
-    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/app.scss', 'vendor/horizon') }}" data-scheme="light" />
-    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/app-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
-    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/app-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
+    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
+    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
 </head>
 <body>
 <div id="horizon" v-cloak>

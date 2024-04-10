@@ -4,13 +4,11 @@ import laravel from "laravel-vite-plugin";
 
 const config = defineConfig({
     plugins: [
-        laravel({
-            input: {
-                "app-css": "resources/sass/app.scss",
-                "app-dark-css": "resources/sass/app-dark.scss",
-                app: "resources/js/app.js",
-            },
-        }),
+        laravel([
+            "resources/sass/styles.scss",
+            "resources/sass/styles-dark.scss",
+            "resources/js/app.js",
+        ]),
         vue2(),
     ],
     resolve: {

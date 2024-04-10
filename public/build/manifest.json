@@ -12,14 +12,14 @@
       "app.css"
     ]
   },
-  "resources/sass/app-dark.scss": {
-    "file": "app-dark-css.css",
-    "src": "resources/sass/app-dark.scss",
+  "resources/sass/styles-dark.scss": {
+    "file": "styles-dark.css",
+    "src": "resources/sass/styles-dark.scss",
     "isEntry": true
   },
-  "resources/sass/app.scss": {
-    "file": "app-css.css",
-    "src": "resources/sass/app.scss",
+  "resources/sass/styles.scss": {
+    "file": "styles.css",
+    "src": "resources/sass/styles.scss",
     "isEntry": true
   }
 }
