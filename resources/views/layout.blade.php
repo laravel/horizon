@@ -14,7 +14,6 @@ $viteDataSchemeDark->useStyleTagAttributes([
 @endphp
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <!-- Meta Information -->
     <meta charset="utf-8">
