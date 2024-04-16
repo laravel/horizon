@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.1...5.x)
+
+## [v5.24.1](https://github.com/laravel/horizon/compare/v5.24.0...v5.24.1) - 2024-04-15
+
+* [5.x] Change Laravel Mix asset bundling to Vite setup by [@mmachatschek](https://github.com/mmachatschek) in https://github.com/laravel/horizon/pull/1413
+* [5.x] feature: this adds the vite integrity plugin to support assetsAreCurrent check by [@mmachatschek](https://github.com/mmachatschek) in https://github.com/laravel/horizon/pull/1415
 
 ## [v5.24.0](https://github.com/laravel/horizon/compare/v5.23.2...v5.24.0) - 2024-04-09
 
