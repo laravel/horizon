@@ -1,16 +1,12 @@
-import axios from 'axios';
 import Vue from 'vue';
+import Base from './base';
+import axios from 'axios';
+import Routes from './routes';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import Base from './base';
-import Routes from './routes';
-import Alert from './components/Alert.vue';
-import SchemeToggler from './components/SchemeToggler.vue';
 
-import.meta.glob(['../img/**']);
-
-let token = document.head.querySelector("meta[name='csrf-token']");
+let token = document.head.querySelector('meta[name="csrf-token"]');
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -38,13 +34,16 @@ const router = new VueRouter({
 });
 
 Vue.component('vue-json-pretty', VueJsonPretty);
-Vue.component('alert', Alert);
-Vue.component('scheme-toggler', SchemeToggler);
+Vue.component('alert', require('./components/Alert.vue').default);
+Vue.component('scheme-toggler', require('./components/SchemeToggler.vue').default);
 
 Vue.mixin(Base);
 
 new Vue({
+    el: '#horizon',
+
     router,
+
     data() {
         return {
             alert: {
@@ -58,4 +57,4 @@ new Vue({
             autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
         };
     },
-}).$mount('#horizon');
+});

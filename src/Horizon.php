@@ -186,12 +186,12 @@ class Horizon
      */
     public static function assetsAreCurrent()
     {
-        $publishedPath = public_path('vendor/horizon/manifest.json');
+        $publishedPath = public_path('vendor/horizon/mix-manifest.json');
 
         if (! File::exists($publishedPath)) {
             throw new RuntimeException('Horizon assets are not published. Please run: php artisan horizon:publish');
         }
 
-        return File::get($publishedPath) === File::get(__DIR__.'/../public/build/manifest.json');
+        return File::get($publishedPath) === File::get(__DIR__.'/../public/mix-manifest.json');
     }
 }

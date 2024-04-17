@@ -87,13 +87,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize';
-    import moment from 'moment-timezone';
-    import StackTrace from './../../components/Stacktrace.vue';
+    import phpunserialize from 'phpunserialize'
+    import moment from "moment-timezone";
 
     export default {
         components: {
-            'stack-trace': StackTrace,
+            'stack-trace': require('./../../components/Stacktrace').default
         },
 
         data() {
