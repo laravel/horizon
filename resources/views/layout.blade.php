@@ -1,6 +1,3 @@
-@php
-use Illuminate\Support\Facades\Vite;
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,18 +5,15 @@ use Illuminate\Support\Facades\Vite;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ Vite::asset('resources/img/favicon.png', 'vendor/horizon') }}">
+    <link rel="shortcut icon" href="{{ asset('/vendor/horizon/img/favicon.png') }}">
 
     <title>Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</title>
 
     <!-- Style sheets-->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
-
-    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
-    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
-    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
-    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
+    <link href="{{ asset(mix('app.css', 'vendor/horizon')) }}" rel="stylesheet" data-scheme="light">
+    <link href="{{ asset(mix('app-dark.css', 'vendor/horizon')) }}" rel="stylesheet" data-scheme="dark">
 </head>
 <body>
 <div id="horizon" v-cloak>
@@ -147,6 +141,6 @@ use Illuminate\Support\Facades\Vite;
     window.Horizon = @json($horizonScriptVariables);
 </script>
 
-    @vite('resources/js/app.js', 'vendor/horizon')
+<script src="{{asset(mix('app.js', 'vendor/horizon'))}}"></script>
 </body>
 </html>
