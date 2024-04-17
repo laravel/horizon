@@ -1,16 +1,5 @@
 @php
 use Illuminate\Support\Facades\Vite;
-use Illuminate\Foundation\Vite as ViteFoundation;
-
-$viteDataSchemeLight = new ViteFoundation();
-$viteDataSchemeLight->useStyleTagAttributes([
-'data-scheme' => 'light',
-]);
-
-$viteDataSchemeDark = new ViteFoundation();
-$viteDataSchemeDark->useStyleTagAttributes([
-'data-scheme' => 'dark',
-]);
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -27,8 +16,10 @@ $viteDataSchemeDark->useStyleTagAttributes([
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
 
-    {{ $viteDataSchemeLight('resources/sass/styles.scss', 'vendor/horizon') }}
-    {{ $viteDataSchemeDark('resources/sass/styles-dark.scss', 'vendor/horizon') }}
+    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
+    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
 </head>
 <body>
 <div id="horizon" v-cloak>
@@ -156,6 +147,6 @@ $viteDataSchemeDark->useStyleTagAttributes([
     window.Horizon = @json($horizonScriptVariables);
 </script>
 
-@vite('resources/js/app.js', 'vendor/horizon')
+    @vite('resources/js/app.js', 'vendor/horizon')
 </body>
 </html>
