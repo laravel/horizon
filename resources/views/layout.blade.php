@@ -2,12 +2,19 @@
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Foundation\Vite as ViteFoundation;
 
+$nonExistentFileName = '/vendor/horizon/nonExistentFile';
+
+$vite = new ViteFoundation();
+$vite->useHotFile($nonExistentFileName);
+
 $viteDataSchemeLight = new ViteFoundation();
+$viteDataSchemeLight->useHotFile($nonExistentFileName);
 $viteDataSchemeLight->useStyleTagAttributes([
 'data-scheme' => 'light',
 ]);
 
 $viteDataSchemeDark = new ViteFoundation();
+$viteDataSchemeDark->useHotFile($nonExistentFileName);
 $viteDataSchemeDark->useStyleTagAttributes([
 'data-scheme' => 'dark',
 ]);
@@ -19,7 +26,7 @@ $viteDataSchemeDark->useStyleTagAttributes([
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ Vite::asset('resources/img/favicon.png', 'vendor/horizon') }}">
+    <link rel="shortcut icon" href="{{ $vite->asset('resources/img/favicon.png', 'vendor/horizon') }}">
 
     <title>Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</title>
 
@@ -156,6 +163,6 @@ $viteDataSchemeDark->useStyleTagAttributes([
     window.Horizon = @json($horizonScriptVariables);
 </script>
 
-@vite('resources/js/app.js', 'vendor/horizon')
+{{ $vite('resources/js/app.js', 'vendor/horizon') }}
 </body>
 </html>
