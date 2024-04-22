@@ -1,0 +1,29 @@
+{
+  "resources/img/favicon.png": {
+    "file": "favicon.png",
+    "src": "resources/img/favicon.png",
+    "integrity": "sha384-tqnRilkeRgqFt3SUYaxuaQs14WOwuU8Gvk3sqRZmnyWZVhr1Kk19Ecr7dFMb4HZo"
+  },
+  "resources/js/app.js": {
+    "file": "app.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "app.css"
+    ],
+    "integrity": "sha384-EV5vlraT2g7leIzueltC7I+UzR7uBT4ndQF5b1G9I+kUrQ4XL0DREuRw/XiU/U3P"
+  },
+  "resources/sass/styles-dark.scss": {
+    "file": "styles-dark.css",
+    "src": "resources/sass/styles-dark.scss",
+    "isEntry": true,
+    "integrity": "sha384-/sLOxh+NTFEdcZ8svIuVTv/lSL65X3QGIXhExXAhntQYWjiez1CQbv4ICbtwRfd8"
+  },
+  "resources/sass/styles.scss": {
+    "file": "styles.css",
+    "src": "resources/sass/styles.scss",
+    "isEntry": true,
+    "integrity": "sha384-4HOmv1E51xgqbUYzCYXaRXPRja5nEho6eq/L/CKs0LlidzTGNTk81VtCAHqLiYSC"
+  }
+}
