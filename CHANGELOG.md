@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.2...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.3...5.x)
+
+## [v5.24.3](https://github.com/laravel/horizon/compare/v5.24.2...v5.24.3) - 2024-04-22
+
+* [5.x] Readd vite support by [@mmachatschek](https://github.com/mmachatschek) in https://github.com/laravel/horizon/pull/1421
 
 ## [v5.24.2](https://github.com/laravel/horizon/compare/v5.24.1...v5.24.2) - 2024-04-17
 
