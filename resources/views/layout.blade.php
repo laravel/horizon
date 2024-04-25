@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Foundation\Vite as ViteFoundation;
 
-$nonExistentFileName = '/vendor/horizon/nonExistentFile';
+$nonExistentFileName = 'vendor/horizon/nonExistentFile';
 
 $vite = new ViteFoundation();
 $vite->useHotFile($nonExistentFileName);
