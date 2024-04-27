@@ -222,7 +222,8 @@ class Supervisor implements Pausable, Restartable, Terminable
         });
 
         if ($this->shouldWait()) {
-            while ($this->processPools->map->runningProcesses()->collapse()->count()) {
+            while ($this->processPools->map->runningProcesses()->collapse()->isNotEmpty()
+                || $this->terminatingProcesses()->isNotEmpty()) {
                 sleep(1);
             }
         }
