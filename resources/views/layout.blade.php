@@ -1,23 +1,8 @@
 @php
-use Illuminate\Support\Facades\Vite;
-use Illuminate\Foundation\Vite as ViteFoundation;
+$nonExistentFileName = public_path('/vendor/horizon/nonExistentFile');
+$previousHotFile = Vite::hotFile();
 
-$nonExistentFileName = '/vendor/horizon/nonExistentFile';
-
-$vite = new ViteFoundation();
-$vite->useHotFile($nonExistentFileName);
-
-$viteDataSchemeLight = new ViteFoundation();
-$viteDataSchemeLight->useHotFile($nonExistentFileName);
-$viteDataSchemeLight->useStyleTagAttributes([
-'data-scheme' => 'light',
-]);
-
-$viteDataSchemeDark = new ViteFoundation();
-$viteDataSchemeDark->useHotFile($nonExistentFileName);
-$viteDataSchemeDark->useStyleTagAttributes([
-'data-scheme' => 'dark',
-]);
+Vite::useHotFile($nonExistentFileName);
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +11,7 @@ $viteDataSchemeDark->useStyleTagAttributes([
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ $vite->asset('resources/img/favicon.png', 'vendor/horizon') }}">
+    <link rel="shortcut icon" href="{{ Vite::asset('resources/img/favicon.png', 'vendor/horizon') }}">
 
     <title>Horizon{{ config('app.name') ? ' - ' . config('app.name') : '' }}</title>
 
@@ -34,8 +19,10 @@ $viteDataSchemeDark->useStyleTagAttributes([
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600" rel="stylesheet" />
 
-    {{ $viteDataSchemeLight('resources/sass/styles.scss', 'vendor/horizon') }}
-    {{ $viteDataSchemeDark('resources/sass/styles-dark.scss', 'vendor/horizon') }}
+    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles.scss', 'vendor/horizon') }}" data-scheme="light" />
+    <link rel="preload" as="style" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" />
+    <link rel="stylesheet" href="{{ Vite::asset('resources/sass/styles-dark.scss', 'vendor/horizon') }}" data-scheme="dark" />
 </head>
 <body>
 <div id="horizon" v-cloak>
@@ -163,6 +150,9 @@ $viteDataSchemeDark->useStyleTagAttributes([
     window.Horizon = @json($horizonScriptVariables);
 </script>
 
-{{ $vite('resources/js/app.js', 'vendor/horizon') }}
+@vite('resources/js/app.js', 'vendor/horizon')
 </body>
 </html>
+@php
+Vite::useHotFile($previousHotFile);
+@endphp
