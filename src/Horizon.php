@@ -4,7 +4,6 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Js;
 use RuntimeException;
