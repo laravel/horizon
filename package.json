@@ -1,12 +1,10 @@
 {
     "name": "laravel-horizon",
     "private": true,
+    "type": "module",
     "scripts": {
-        "dev": "npm run development",
-        "development": "NODE_ENV=development vite build --mode=development",
-        "watch": "NODE_ENV=development vite build --mode=development --watch",
-        "prod": "npm run production",
-        "production": "NODE_ENV=production vite build"
+        "build": "vite build",
+        "watch": "vite build --watch"
     },
     "devDependencies": {
         "@vitejs/plugin-vue2": "^2.3.1",
@@ -14,12 +12,10 @@
         "bootstrap": "~5.1.3",
         "chart.js": "^2.9.4",
         "highlight.js": "^10.7.3",
-        "laravel-vite-plugin": "^1.0.2",
         "md5": "^2.3.0",
         "moment": "^2.30.1",
         "moment-timezone": "^0.5.45",
         "phpunserialize": "^1.3.0",
-        "resolve-url-loader": "^5.0.0",
         "sass": "^1.74.1",
         "sql-formatter": "^4.0.2",
         "vite": "^5.2.8",

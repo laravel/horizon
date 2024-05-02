@@ -1,7 +1,6 @@
 /vendor
 /laravel
 /node_modules
-/public/app.js.LICENSE.txt
 /phpunit.xml
 composer.lock
 .phpunit.result.cache

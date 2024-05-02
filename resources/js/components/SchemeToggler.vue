@@ -36,14 +36,14 @@
             },
 
             calculateScheme () {
-                const dark = document.querySelector('link[data-scheme="dark"]');
+                const dark = document.querySelector('style[data-scheme="dark"]');
 
                 if (this.scheme == 'system') {
                     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
-                    dark.disabled = ! prefersDarkMode.matches;
+                    dark.media = prefersDarkMode.matches ? "" : "max-width: 1px";
                 } else {
-                    dark.disabled = this.scheme != 'dark';
+                    dark.media = this.scheme == 'dark' ? "" : "max-width: 1px";
                 }
             }
         }
