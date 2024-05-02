@@ -23,7 +23,6 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerEvents();
         $this->registerRoutes();
         $this->registerResources();
-        $this->defineAssetPublishing();
         $this->offerPublishing();
         $this->registerCommands();
     }
@@ -73,18 +72,6 @@ class HorizonServiceProvider extends ServiceProvider
     protected function registerResources()
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'horizon');
-    }
-
-    /**
-     * Define the asset publishing configuration.
-     *
-     * @return void
-     */
-    public function defineAssetPublishing()
-    {
-        $this->publishes([
-            HORIZON_PATH.'/public/build' => public_path('vendor/horizon'),
-        ], ['horizon-assets', 'laravel-assets']);
     }
 
     /**

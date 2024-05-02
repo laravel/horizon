@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Vue from 'vue';
+import Vue from 'vue/dist/vue.esm.js';
 import VueRouter from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -7,8 +7,6 @@ import Base from './base';
 import Routes from './routes';
 import Alert from './components/Alert.vue';
 import SchemeToggler from './components/SchemeToggler.vue';
-
-import.meta.glob(['../img/**']);
 
 let token = document.head.querySelector("meta[name='csrf-token']");
 
