@@ -113,6 +113,53 @@ class Horizon
     }
 
     /**
+     * Get the CSS for the Horizon dashboard.
+     *
+     * @return Illuminate\Contracts\Support\Htmlable
+     */
+    public static function css()
+    {
+        if (($light = @file_get_contents(__DIR__.'/../dist/styles.css')) === false) {
+            throw new RuntimeException('Unable to load the Horizon dashboard light CSS.');
+        }
+
+        if (($dark = @file_get_contents(__DIR__.'/../dist/styles-dark.css')) === false) {
+            throw new RuntimeException('Unable to load the Horizon dashboard dark CSS.');
+        }
+
+        if (($app = @file_get_contents(__DIR__.'/../dist/app.css')) === false) {
+            throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
+        }
+
+        return new HtmlString(<<<HTML
+            <style data-scheme="light">{$light}</style>
+            <style data-scheme="dark">{$dark}</style>
+            <style>{$app}</style>
+            HTML);
+    }
+
+    /**
+     * Get the JS for the Horizon dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Htmlable
+     */
+    public static function js()
+    {
+        if (($js = @file_get_contents(__DIR__.'/../dist/app.js')) === false) {
+            throw new RuntimeException('Unable to load the Horizon dashboard JavaScript.');
+        }
+
+        $horizon = Js::from(static::scriptVariables());
+
+        return new HtmlString(<<<HTML
+            <script type="module">
+                window.Horizon = {$horizon};
+                {$js}
+            </script>
+            HTML);
+    }
+
+    /**
      * Specifies that Horizon should use the dark theme.
      *
      * @deprecated
@@ -177,52 +224,5 @@ class Horizon
         static::$smsNumber = $number;
 
         return new static;
-    }
-
-    /**
-     * The CSS for the Horizon dashboard.
-     *
-     * @return Htmlable
-     */
-    public static function css()
-    {
-        if (($light = @file_get_contents(__DIR__.'/../dist/styles.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard light CSS.');
-        }
-
-        if (($dark = @file_get_contents(__DIR__.'/../dist/styles-dark.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard dark CSS.');
-        }
-
-        if (($app = @file_get_contents(__DIR__.'/../dist/app.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
-        }
-
-        return new HtmlString(<<<HTML
-            <style data-scheme="light">{$light}</style>
-            <style data-scheme="dark">{$dark}</style>
-            <style>{$app}</style>
-            HTML);
-    }
-
-    /**
-     * The JS for the Horizon dashboard.
-     *
-     * @return Htmlable
-     */
-    public static function js()
-    {
-        if (($js = @file_get_contents(__DIR__.'/../dist/app.js')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard JavaScript.');
-        }
-
-        $horizon = Js::from(static::scriptVariables());
-
-        return new HtmlString(<<<HTML
-            <script type="module">
-                window.Horizon = {$horizon};
-                {$js}
-            </script>
-            HTML);
     }
 }
