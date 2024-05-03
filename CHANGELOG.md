@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.3...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.4...5.x)
+
+## [v5.24.4](https://github.com/laravel/horizon/compare/v5.24.3...v5.24.4) - 2024-05-03
+
+* [5.x] Fix #1419 by [@tmayrand](https://github.com/tmayrand) in https://github.com/laravel/horizon/pull/1424
+* Prevent infinite loop when forgetting failed jobs by [@JackWH](https://github.com/JackWH) in https://github.com/laravel/horizon/pull/1429
+* [5.x] Fix setting custom ASSET_URLs and support cache busting without integrity check by [@mmachatschek](https://github.com/mmachatschek) in https://github.com/laravel/horizon/pull/1427
+* Simplify asset story by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/horizon/pull/1438
 
 ## [v5.24.3](https://github.com/laravel/horizon/compare/v5.24.2...v5.24.3) - 2024-04-22
 
