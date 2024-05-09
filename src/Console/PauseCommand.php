@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Console;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
