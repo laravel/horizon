@@ -19,7 +19,7 @@ use Throwable;
 
 class MasterSupervisor implements Pausable, Restartable, Terminable
 {
-    use ListensForSignals;
+    use ListensForSignals, Pause;
 
     /**
      * The environment that was used to provision this master supervisor.
@@ -246,6 +246,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     {
         try {
             $this->processPendingSignals();
+
+            $this->processPause();
 
             $this->processPendingCommands();
 

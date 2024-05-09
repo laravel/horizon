@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Tests\Feature;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
@@ -263,6 +264,36 @@ class SupervisorTest extends IntegrationTest
         });
     }
 
+    public function test_processes_can_be_paused_and_continued_from_cache()
+    {
+        $options = $this->supervisorOptions();
+        $options->sleep = 0;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        $supervisor->scale(1);
+        $supervisor->loop();
+        $this->assertTrue($supervisor->processPools[0]->working);
+        usleep(1100 * 1000);
+
+        Cache::forever('horizon:pause', true);
+        $supervisor->loop();
+        $this->assertFalse($supervisor->processPools[0]->working);
+        usleep(1100 * 1000);
+
+        Queue::push(new Jobs\BasicJob);
+        usleep(1100 * 1000);
+
+        $this->assertSame(1, $this->recentJobs());
+
+        Cache::forget('horizon:pause');
+        $supervisor->loop();
+        $this->assertTrue($supervisor->processPools[0]->working);
+
+        $this->wait(function () {
+            $this->assertSame('completed', app(JobRepository::class)->getRecent()[0]->status);
+        });
+    }
+
     public function test_dead_processes_are_not_restarted_when_paused()
     {
         $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
@@ -501,6 +532,31 @@ class SupervisorTest extends IntegrationTest
         $this->wait(function () use ($supervisor) {
             $this->assertSame(3, $supervisor->totalSystemProcessCount());
         });
+    }
+
+    public function test_something()
+    {
+        $options = $this->supervisorOptions();
+        $options->sleep = 0;
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        $supervisor->scale(1);
+        usleep(100 * 1000);
+
+        app(HorizonCommandQueue::class)->push(
+            $supervisor->name, Scale::class, ['scale' => 2]
+        );
+        $supervisor->pause();
+        usleep(250 * 1000);
+
+        $supervisor->loop();
+
+        $this->assertSame(2, $supervisor->totalProcessCount());
+
+        Queue::push(new Jobs\BasicJob);
+        usleep(500 * 1000);
+
+        $this->assertSame(1, $this->recentJobs());
     }
 
     public function supervisorOptions()

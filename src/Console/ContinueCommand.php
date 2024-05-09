@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
@@ -52,5 +53,7 @@ class ContinueCommand extends Command
                     $this->components->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
                 }
             })->whenNotEmpty(fn () => $this->output->writeln(''));
+
+        Cache::forget('horizon:pause');
     }
 }

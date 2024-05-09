@@ -2,8 +2,10 @@
 
 namespace Laravel\Horizon\Console;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
@@ -34,6 +36,8 @@ class PauseCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masters)
     {
+        Cache::forever('horizon:pause', true);
+
         $masters = collect($masters->all())->filter(function ($master) {
             return Str::startsWith($master->name, MasterSupervisor::basename());
         })->all();

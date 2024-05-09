@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Exception;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
@@ -171,6 +172,30 @@ class MasterSupervisorTest extends IntegrationTest
         $this->assertSame('running', $masterRecord->status);
 
         $master->pause();
+        $master->loop();
+
+        $masterRecord = resolve(MasterSupervisorRepository::class)->find($master->name);
+        $this->assertSame('paused', $masterRecord->status);
+    }
+
+    public function test_master_process_information_is_persisted_from_cache()
+    {
+        $master = new MasterSupervisor;
+        $master->working = true;
+        $master->supervisors[] = new SupervisorProcess($this->supervisorOptions(), $process = Mockery::mock());
+        $process->shouldReceive('isStarted')->andReturn(true);
+        $process->shouldReceive('isRunning')->andReturn(true);
+        $process->shouldReceive('signal');
+
+        $master->loop();
+
+        $masterRecord = resolve(MasterSupervisorRepository::class)->find($master->name);
+
+        $this->assertNotNull($masterRecord->pid);
+        $this->assertEquals([MasterSupervisor::name().':name'], $masterRecord->supervisors);
+        $this->assertSame('running', $masterRecord->status);
+
+        Cache::forever('horizon:pause', true);
         $master->loop();
 
         $masterRecord = resolve(MasterSupervisorRepository::class)->find($master->name);

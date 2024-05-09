@@ -17,7 +17,7 @@ use Throwable;
 
 class Supervisor implements Pausable, Restartable, Terminable
 {
-    use ListensForSignals;
+    use ListensForSignals, Pause;
 
     /**
      * The name of this supervisor instance.
@@ -286,6 +286,8 @@ class Supervisor implements Pausable, Restartable, Terminable
             $this->ensureParentIsRunning();
 
             $this->processPendingSignals();
+
+            $this->processPause();
 
             $this->processPendingCommands();
 
