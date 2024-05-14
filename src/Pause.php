@@ -37,7 +37,7 @@ trait Pause
     abstract protected function pause();
 
     /**
-     * Instruct the supervisors / worker processes to continue working.
+     * Instruct the supervisors and worker processes to continue working.
      *
      * @return void
      */
