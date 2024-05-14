@@ -3,8 +3,8 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\InteractsWithTime;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
@@ -34,13 +34,14 @@ class TerminateCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Illuminate\Contracts\Cache\Factory  $cache
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @return void
      */
-    public function handle(MasterSupervisorRepository $masters)
+    public function handle(CacheFactory $cache, MasterSupervisorRepository $masters)
     {
         if (config('horizon.fast_termination')) {
-            Cache::forever(
+            $cache->forever(
                 'horizon:terminate:wait', $this->option('wait')
             );
         }
@@ -64,7 +65,7 @@ class TerminateCommand extends Command
                 }
             })->whenNotEmpty(fn () => $this->output->writeln(''));
 
-        Cache::forever('illuminate:queue:restart', $this->currentTime());
-        Cache::forget('horizon:pause');
+        $cache->forever('illuminate:queue:restart', $this->currentTime());
+        $cache->forget('horizon:pause');
     }
 }
