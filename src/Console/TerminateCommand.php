@@ -22,6 +22,7 @@ class TerminateCommand extends Command
      * @var string
      */
     protected $signature = 'horizon:terminate
+                            {--fail : Fail if there are no processes to terminate}
                             {--wait : Wait for all workers to terminate}';
 
     /**
@@ -52,7 +53,7 @@ class TerminateCommand extends Command
 
         collect(Arr::pluck($masters, 'pid'))
             ->whenNotEmpty(fn () => $this->components->info('Sending TERM signal to processes.'))
-            ->whenEmpty(fn () => $this->components->info('No processes to terminate.'))
+            ->whenEmpty(fn () => $this->handleNoProcesses($this->option('fail', false)))
             ->each(function ($processId) {
                 $result = true;
 
@@ -66,5 +67,19 @@ class TerminateCommand extends Command
             })->whenNotEmpty(fn () => $this->output->writeln(''));
 
         $this->laravel['cache']->forever('illuminate:queue:restart', $this->currentTime());
+    }
+
+    /**
+     * Handle the situation where no processes are running.
+     *
+     * @return void
+     */
+    protected function handleNoProcesses(bool $fail)
+    {
+        $this->components->info('No processes to terminate.');
+        
+        if ($fail) {
+            exit(1);
+        }
     }
 }
