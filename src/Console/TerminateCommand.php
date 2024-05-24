@@ -76,7 +76,7 @@ class TerminateCommand extends Command
     protected function handleNoProcesses(bool $fail)
     {
         $this->components->info('No processes to terminate.');
-        
+
         if ($fail) {
             exit(self::FAILURE);
         }
