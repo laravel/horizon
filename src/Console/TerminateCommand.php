@@ -65,7 +65,6 @@ class TerminateCommand extends Command
                     $this->components->error("Failed to kill process: {$processId} (".posix_strerror(posix_get_last_error()).')');
                 }
             })->whenNotEmpty(fn () => $this->output->writeln(''));
-
         $this->laravel['cache']->forever('illuminate:queue:restart', $this->currentTime());
     }
 
@@ -79,7 +78,7 @@ class TerminateCommand extends Command
         $this->components->info('No processes to terminate.');
         
         if ($fail) {
-            exit(1);
+            exit(self::FAILURE);
         }
     }
 }
