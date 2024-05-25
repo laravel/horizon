@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\ProvisioningPlan;
@@ -39,13 +40,19 @@ class HorizonCommand extends Command
 
         $environment = $this->option('environment') ?? config('horizon.env') ?? config('app.env');
 
-        $master = (new MasterSupervisor($environment))->handleOutputUsing(function ($type, $line) {
-            $this->output->write($line);
-        });
+        $master = App::makeWith(MasterSupervisor::class, ['environment' => $environment])
+            ->handleOutputUsing(function ($type, $line) {
+                $this->output->write($line);
+            });
 
-        ProvisioningPlan::get(MasterSupervisor::name())->deploy($environment);
+        $provisioningPlan = ProvisioningPlan::get(MasterSupervisor::name());
+        $provisioningPlan->deploy($environment);
 
         $this->components->info('Horizon started successfully.');
+
+        if (!$provisioningPlan->hasEnvironment(($environment))) {
+            $this->components->warn("No environment configuration found for the environment: $environment. Check 'environments' on config/horizon.php");
+        }
 
         pcntl_async_signals(true);
 
