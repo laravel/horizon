@@ -50,7 +50,7 @@ class HorizonCommand extends Command
 
         $this->components->info('Horizon started successfully.');
 
-        if (!$provisioningPlan->hasEnvironment(($environment))) {
+        if (! $provisioningPlan->hasEnvironment($environment)) {
             $this->components->warn("No environment configuration found for the environment: $environment. Check 'environments' on config/horizon.php");
         }
 
