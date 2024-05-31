@@ -293,7 +293,11 @@ class ProcessPool implements Countable
      */
     public function runningProcesses()
     {
-        return collect($this->processes)->filter(function ($process) {
+        $terminatingProcesses = $this->terminatingProcesses()->map(function ($process) {
+            return $process['process'];
+        });
+
+        return collect($this->processes)->concat($terminatingProcesses)->filter(function ($process) {
             return $process->process->isRunning();
         });
     }
