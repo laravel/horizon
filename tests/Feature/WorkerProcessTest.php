@@ -10,13 +10,14 @@ use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WorkerProcess;
 use Symfony\Component\Process\Process;
 
+use function Orchestra\Testbench\package_path;
+
 class WorkerProcessTest extends IntegrationTest
 {
     public function test_worker_process_fires_event_if_stopped_process_cant_be_restarted()
     {
         Event::fake();
-
-        $process = new Process(['exit', 1]);
+        $process = Process::fromShellCommandline('exit 1', package_path());
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
@@ -31,7 +32,7 @@ class WorkerProcessTest extends IntegrationTest
     {
         Event::fake();
 
-        $process = new Process(['exit', 1]);
+        $process = Process::fromShellCommandline('exit 1', package_path());
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
@@ -47,7 +48,7 @@ class WorkerProcessTest extends IntegrationTest
     {
         Event::fake();
 
-        $process = new Process(['exit', 1]);
+        $process = Process::fromShellCommandline('exit 1', package_path());
         $workerProcess = new WorkerProcess($process);
         $workerProcess->start(function () {
         });
