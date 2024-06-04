@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.4...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.5...5.x)
+
+## [v5.24.5](https://github.com/laravel/horizon/compare/v5.24.4...v5.24.5) - 2024-05-31
+
+* Fixes tests when using Process 7.1 by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/horizon/pull/1456
+* Update runningProcesses to also include terminating processes by [@nckrtl](https://github.com/nckrtl) in https://github.com/laravel/horizon/pull/1454
 
 ## [v5.24.4](https://github.com/laravel/horizon/compare/v5.24.3...v5.24.4) - 2024-05-03
 
