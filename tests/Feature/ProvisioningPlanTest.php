@@ -46,10 +46,17 @@ class ProvisioningPlanTest extends IntegrationTest
                     'max_processes' => 20,
                 ],
             ],
+            '*' => [
+                'supervisor-1' => [
+                    'connection' => 'redis',
+                    'queue' => 'second',
+                    'max_processes' => 8,
+                ],
+            ],
         ];
 
         $plan = new ProvisioningPlan(MasterSupervisor::name(), $plan);
-        $plan->deploy('production');
+        $plan->deploy('develop');
 
         $commands = Redis::connection('horizon')->lrange(
             'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
@@ -58,8 +65,8 @@ class ProvisioningPlanTest extends IntegrationTest
         $this->assertCount(1, $commands);
         $command = (object) json_decode($commands[0], true);
         $this->assertSame(AddSupervisor::class, $command->command);
-        $this->assertSame('first', $command->options['queue']);
-        $this->assertSame(20, $command->options['maxProcesses']);
+        $this->assertSame('second', $command->options['queue']);
+        $this->assertSame(8, $command->options['maxProcesses']);
     }
 
     public function test_plan_is_converted_into_array_of_supervisor_options()
