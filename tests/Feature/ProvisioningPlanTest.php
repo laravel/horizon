@@ -62,6 +62,32 @@ class ProvisioningPlanTest extends IntegrationTest
         $this->assertSame(20, $command->options['maxProcesses']);
     }
 
+    public function test_supervisors_are_added_as_fallback_for_wildcard_environments()
+    {
+        $plan = [
+            '*' => [
+                'supervisor-1' => [
+                    'connection' => 'redis',
+                    'queue' => 'first',
+                    'max_processes' => 10,
+                ],
+            ],
+        ];
+
+        $plan = new ProvisioningPlan(MasterSupervisor::name(), $plan);
+        $plan->deploy('develop');
+
+        $commands = Redis::connection('horizon')->lrange(
+            'commands:'.MasterSupervisor::commandQueueFor(MasterSupervisor::name()), 0, -1
+        );
+
+        $this->assertCount(1, $commands);
+        $command = (object) json_decode($commands[0], true);
+        $this->assertSame(AddSupervisor::class, $command->command);
+        $this->assertSame('first', $command->options['queue']);
+        $this->assertSame(10, $command->options['maxProcesses']);
+    }
+
     public function test_plan_is_converted_into_array_of_supervisor_options()
     {
         $plan = [
