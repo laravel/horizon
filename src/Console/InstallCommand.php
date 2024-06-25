@@ -34,7 +34,6 @@ class InstallCommand extends Command
         $this->components->info('Installing Horizon resources.');
 
         collect([
-            'Assets' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-assets']) == 0,
             'Service Provider' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-provider']) == 0,
             'Configuration' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-config']) == 0,
         ])->each(fn ($task, $description) => $this->components->task($description, $task));
