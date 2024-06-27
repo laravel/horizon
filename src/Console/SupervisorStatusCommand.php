@@ -8,7 +8,7 @@ use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'horizon:pause-supervisor')]
+#[AsCommand(name: 'horizon:supervisor-status')]
 class StatusSupervisorCommand extends Command
 {
     /**
@@ -16,15 +16,15 @@ class StatusSupervisorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:status-supervisor
-                            {name : The name of the supervisor to show status}';
+    protected $signature = 'horizon:supervisor-status
+                            {name : The name of the supervisor}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Show status for a supervisor';
+    protected $description = 'Show the status for a given supervisor';
 
     /**
      * Execute the console command.
@@ -35,13 +35,14 @@ class StatusSupervisorCommand extends Command
     public function handle(SupervisorRepository $supervisors)
     {
         $name = $this->argument('name');
+
         $supervisorStatus = optional(collect($supervisors->all())->first(function ($supervisor) use ($name) {
-            return Str::startsWith($supervisor->name, MasterSupervisor::basename())
-                    && Str::endsWith($supervisor->name, $name);
+            return Str::startsWith($supervisor->name, MasterSupervisor::basename()) &&
+                   Str::endsWith($supervisor->name, $name);
         }))->status;
 
         if (is_null($supervisorStatus)) {
-            $this->components->error("Failed to find a supervisor with this name: {$name}");
+            $this->components->error('Failed to find a supervisor with this name');
 
             return 1;
         }
