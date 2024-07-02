@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.5...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.6...5.x)
+
+## [v5.24.6](https://github.com/laravel/horizon/compare/v5.24.5...v5.24.6) - 2024-06-25
+
+* Remove leftover publishing command in install command after simplified assets. by [@joveice](https://github.com/joveice) in https://github.com/laravel/horizon/pull/1468
 
 ## [v5.24.5](https://github.com/laravel/horizon/compare/v5.24.4...v5.24.5) - 2024-05-31
 
