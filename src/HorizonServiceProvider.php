@@ -56,7 +56,7 @@ class HorizonServiceProvider extends ServiceProvider
 
         Route::group([
             'domain' => config('horizon.domain', null),
-            'prefix' => config('horizon.path'),
+            'prefix' => config('horizon.path_api'),
             'namespace' => 'Laravel\Horizon\Http\Controllers',
             'middleware' => config('horizon.middleware', 'web'),
         ], function () {
