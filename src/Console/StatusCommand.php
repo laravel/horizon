@@ -34,7 +34,7 @@ class StatusCommand extends Command
         if (! $masters = $masterSupervisorRepository->all()) {
             $this->components->error('Horizon is inactive.');
 
-            return 1;
+            return 2;
         }
 
         if (collect($masters)->contains(function ($master) {
