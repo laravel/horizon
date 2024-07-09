@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.24.6...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.25.0...5.x)
+
+## [v5.25.0](https://github.com/laravel/horizon/compare/v5.24.6...v5.25.0) - 2024-07-05
+
+* Different exit codes for paused and inactive horizon status by [@CanvasCompanyHylke](https://github.com/CanvasCompanyHylke) in https://github.com/laravel/horizon/pull/1471
 
 ## [v5.24.6](https://github.com/laravel/horizon/compare/v5.24.5...v5.24.6) - 2024-06-25
 
