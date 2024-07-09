@@ -22,6 +22,7 @@ class ClearCommand extends Command
      */
     protected $signature = 'horizon:clear
                             {--queue= : The name of the queue to clear}
+                            {--all-queues : Clear all queues}
                             {--force : Force the operation to run when in production}';
 
     /**
@@ -50,28 +51,42 @@ class ClearCommand extends Command
 
         $connection = Arr::first($this->laravel['config']->get('horizon.defaults'))['connection'] ?? 'redis';
 
-        if (method_exists($jobRepository, 'purge')) {
-            $jobRepository->purge($queue = $this->getQueue($connection));
+        $queues = $this->getQueues($connection);
+
+        foreach ($queues as $queue) {
+            if (method_exists($jobRepository, 'purge')) {
+                $jobRepository->purge($queue);
+            }
+
+            $count = $manager->connection($connection)->clear($queue);
+
+            $this->components->info('Cleared '.$count.' jobs from the ['.$queue.'] queue.');
         }
-
-        $count = $manager->connection($connection)->clear($queue);
-
-        $this->components->info('Cleared '.$count.' jobs from the ['.$queue.'] queue.');
 
         return 0;
     }
 
     /**
-     * Get the queue name to clear.
+     * Get the queue names to clear.
      *
-     * @param  string  $connection
-     * @return string
+     * @return array<string>
      */
-    protected function getQueue($connection)
+    protected function getQueues(string $connection): array
     {
-        return $this->option('queue') ?: $this->laravel['config']->get(
-            "queue.connections.{$connection}.queue",
-            'default'
-        );
+        if ($this->option('queue')) {
+            $queues = [$this->option('queue')];
+        } else {
+            $queues = [$this->laravel['config']->get("queue.connections.{$connection}.queue", 'default')];
+
+            if ($this->option('all-queues')) {
+                $supervisors = $this->laravel['config']->get('horizon.defaults', []);
+                foreach ($supervisors as $supervisor) {
+                    $queues = array_merge($queues, Arr::wrap($supervisor['queue'] ?? []));
+                }
+                $queues = array_values(array_unique($queues));
+            }
+        }
+
+        return $queues;
     }
 }
