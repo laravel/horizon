@@ -2,9 +2,9 @@
 
 namespace Feature;
 
-use Laravel\Horizon\Repositories\RedisJobRepository;
 use Illuminate\Queue\QueueManager;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Repositories\RedisJobRepository;
 use Laravel\Horizon\Tests\IntegrationTest;
 
 class ClearCommandTest extends IntegrationTest
@@ -68,7 +68,6 @@ class ClearCommandTest extends IntegrationTest
             ->expectsOutputToContain('Cleared 1 jobs from the [d] queue.')
             ->expectsOutputToContain('Cleared 1 jobs from the [e] queue.')
             ->expectsOutputToContain('Cleared 1 jobs from the [f] queue.')
-            ->expectsOutputToContain('Cleared 1 jobs from the [foo] queue.')
-        ;
+            ->expectsOutputToContain('Cleared 1 jobs from the [foo] queue.');
     }
 }
