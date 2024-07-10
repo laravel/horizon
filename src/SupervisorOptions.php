@@ -265,7 +265,17 @@ class SupervisorOptions
      */
     public function autoScaling()
     {
-        return $this->balance === 'auto';
+        return in_array($this->balance, ['auto', 'single']);
+    }
+
+    /**
+     * Determine if auto-scaling single is applied.
+     *
+     * @return bool
+     */
+    public function single()
+    {
+        return $this->balance === 'single';
     }
 
     /**

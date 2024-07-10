@@ -95,6 +95,29 @@ class SupervisorTest extends IntegrationTest
         );
     }
 
+    public function test_supervisor_starts_one_pool_when_single_balancing()
+    {
+        $options = $this->supervisorOptions();
+        $options->balance = 'single';
+        $options->queue = 'first,second';
+        $this->supervisor = $supervisor = new Supervisor($options);
+
+        $supervisor->scale(2);
+        $this->assertCount(2, $supervisor->processes());
+
+        $host = MasterSupervisor::name();
+
+        $this->assertSame(
+            'exec '.$this->phpBinary.' worker.php redis --name=default --supervisor='.$host.':name --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="first,second" --sleep=3 --timeout=60 --tries=0 --rest=0',
+            $supervisor->processes()[0]->getCommandLine()
+        );
+
+        $this->assertSame(
+            'exec '.$this->phpBinary.' worker.php redis --name=default --supervisor='.$host.':name --backoff=0 --max-time=0 --max-jobs=0 --memory=128 --queue="first,second" --sleep=3 --timeout=60 --tries=0 --rest=0',
+            $supervisor->processes()[1]->getCommandLine()
+        );
+    }
+
     public function test_recent_jobs_are_correctly_maintained()
     {
         $id = Queue::push(new Jobs\BasicJob);
