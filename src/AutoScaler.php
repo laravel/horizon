@@ -77,7 +77,7 @@ class AutoScaler
     protected function timeToClearPerQueue(Supervisor $supervisor, Collection $pools)
     {
         return $pools->mapWithKeys(function ($pool, $queue) use ($supervisor) {
-            $queues = collect(explode(',', $queue))->map(function ($_queue) use ($supervisor)  {
+            $queues = collect(explode(',', $queue))->map(function ($_queue) use ($supervisor) {
                 $size = $this->queue->connection($supervisor->options->connection)->readyNow($_queue);
 
                 return [
