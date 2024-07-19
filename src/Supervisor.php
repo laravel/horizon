@@ -87,7 +87,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function createProcessPools()
     {
-        return $this->options->balancing() && ! $this->options->single()
+        return $this->options->balancing()
                         ? $this->createProcessPoolPerQueue()
                         : $this->createSingleProcessPool();
     }

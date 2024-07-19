@@ -95,10 +95,9 @@ class SupervisorTest extends IntegrationTest
         );
     }
 
-    public function test_supervisor_starts_one_pool_when_single_balancing()
+    public function test_supervisor_starts_pools_with_queues_when_balancing_is_off()
     {
         $options = $this->supervisorOptions();
-        $options->balance = 'single';
         $options->queue = 'first,second';
         $this->supervisor = $supervisor = new Supervisor($options);
 
@@ -177,6 +176,7 @@ class SupervisorTest extends IntegrationTest
     public function test_supervisor_information_is_persisted()
     {
         $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $options->balance = 'simple';
         $options->queue = 'default,another';
 
         $supervisor->scale(2);
@@ -207,7 +207,8 @@ class SupervisorTest extends IntegrationTest
 
     public function test_processes_can_be_scaled_up()
     {
-        $this->supervisor = $supervisor = new Supervisor($this->supervisorOptions());
+        $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $options->balance = 'simple';
 
         $supervisor->scale(2);
         $supervisor->loop();
@@ -221,6 +222,7 @@ class SupervisorTest extends IntegrationTest
     public function test_processes_can_be_scaled_down()
     {
         $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $options->balance = 'simple';
         $options->sleep = 0;
 
         $supervisor->scale(3);
@@ -491,6 +493,7 @@ class SupervisorTest extends IntegrationTest
     {
         SystemProcessCounter::$command = 'worker.php';
         $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $options->balance = 'simple';
 
         $supervisor->scale(3);
         $supervisor->loop();
@@ -504,6 +507,7 @@ class SupervisorTest extends IntegrationTest
     {
         SystemProcessCounter::$command = 'worker.php';
         $this->supervisor = $supervisor = new Supervisor($options = $this->supervisorOptions());
+        $options->balance = 'simple';
 
         $supervisor->scale(3);
 
