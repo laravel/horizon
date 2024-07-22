@@ -265,7 +265,7 @@ class SupervisorOptions
      */
     public function autoScaling()
     {
-        return $this->balance === 'auto';
+        return $this->balance !== 'simple';
     }
 
     /**
