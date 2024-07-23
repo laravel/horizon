@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.25.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.26.0...5.x)
+
+## [v5.26.0](https://github.com/laravel/horizon/compare/v5.25.0...v5.26.0) - 2024-07-22
+
+* [5.x] Adding new balance strategy: single by [@dbpolito](https://github.com/dbpolito) in https://github.com/laravel/horizon/pull/1473
 
 ## [v5.25.0](https://github.com/laravel/horizon/compare/v5.24.6...v5.25.0) - 2024-07-05
 
