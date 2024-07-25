@@ -105,7 +105,7 @@ class LongWaitDetected extends Notification
             $this->seconds
         );
 
-        if (class_exists('Illuminate\Notifications\Slack\SlackMessage') && !(is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://']))) {
+        if (class_exists('Illuminate\Notifications\Slack\SlackMessage') && class_exists('Illuminate\Notifications\Slack\BlockKit\Blocks\SectionBlock') && !(is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://']))) {
             return (new ChannelIdSlackMessage)
                 ->username($fromName)
                 ->image($imageUrl)
