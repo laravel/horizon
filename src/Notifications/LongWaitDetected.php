@@ -105,26 +105,26 @@ class LongWaitDetected extends Notification
             $this->seconds
         );
 
-        if (is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://'])) {
-            return (new SlackMessage) // @phpstan-ignore-line
-                ->from($fromName)
-                ->to(Horizon::$slackChannel)
+        if (class_exists('Illuminate\Notifications\Slack\SlackMessage') && !(is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://']))) {
+            return (new ChannelIdSlackMessage) // @phpstan-ignore-line
+                ->username($fromName)
                 ->image($imageUrl)
-                ->error()
-                ->content($text)
-                ->attachment(function ($attachment) use ($title, $content) {
-                    $attachment->title($title)
-                        ->content($content);
+                ->text($text)
+                ->headerBlock($title)
+                ->sectionBlock(function (SectionBlock $block) use ($content): void {
+                    $block->text($content);
                 });
         }
 
-        return (new ChannelIdSlackMessage)
-            ->username($fromName)
+        return (new SlackMessage) // @phpstan-ignore-line
+            ->from($fromName)
+            ->to(Horizon::$slackChannel)
             ->image($imageUrl)
-            ->text($text)
-            ->headerBlock($title)
-            ->sectionBlock(function (SectionBlock $block) use ($content): void {
-                $block->text($content);
+            ->error()
+            ->content($text)
+            ->attachment(function ($attachment) use ($title, $content) {
+                $attachment->title($title)
+                    ->content($content);
             });
     }
 
