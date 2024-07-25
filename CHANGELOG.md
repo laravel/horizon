@@ -4,7 +4,7 @@
 
 ## [v5.26.0](https://github.com/laravel/horizon/compare/v5.25.0...v5.26.0) - 2024-07-22
 
-* [5.x] Adding new balance strategy: single by [@dbpolito](https://github.com/dbpolito) in https://github.com/laravel/horizon/pull/1473
+* [5.x] Adding scaling to balance = false by [@dbpolito](https://github.com/dbpolito) in https://github.com/laravel/horizon/pull/1473
 
 ## [v5.25.0](https://github.com/laravel/horizon/compare/v5.24.6...v5.25.0) - 2024-07-05
 
