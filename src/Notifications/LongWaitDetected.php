@@ -94,9 +94,10 @@ class LongWaitDetected extends Notification
     public function toSlack($notifiable)
     {
         $fromName = 'Laravel Horizon';
-        $imageUrl = 'https://laravel.com/assets/img/horizon-48px.png';
-        $text = 'Oh no! Something needs your attention.';
         $title = 'Long Wait Detected';
+        $text = 'Oh no! Something needs your attention.';
+        $imageUrl = 'https://laravel.com/assets/img/horizon-48px.png';
+
         $content = sprintf(
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
             config('app.name'),
@@ -105,7 +106,9 @@ class LongWaitDetected extends Notification
             $this->seconds
         );
 
-        if (class_exists('\Illuminate\Notifications\Slack\SlackMessage') && class_exists('\Illuminate\Notifications\Slack\BlockKit\Blocks\SectionBlock') && !(is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://']))) {
+        if (class_exists('\Illuminate\Notifications\Slack\SlackMessage') &&
+            class_exists('\Illuminate\Notifications\Slack\BlockKit\Blocks\SectionBlock') &&
+            ! (is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://']))) {
             return (new ChannelIdSlackMessage)
                 ->username($fromName)
                 ->image($imageUrl)
