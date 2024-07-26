@@ -111,7 +111,7 @@ class LongWaitDetected extends Notification
                 ->image($imageUrl)
                 ->text($text)
                 ->headerBlock($title)
-                ->sectionBlock(function (SectionBlock $block) use ($content): void {
+                ->sectionBlock(function (SectionBlock $block) use ($content): void { // @phpstan-ignore-line
                     $block->text($content);
                 });
         }
