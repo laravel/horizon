@@ -7,6 +7,9 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Slack\BlockKit\Blocks\SectionBlock;
+use Illuminate\Notifications\Slack\SlackMessage as ChannelIdSlackMessage;
+use Illuminate\Support\Str;
 use Laravel\Horizon\Horizon;
 
 class LongWaitDetected extends Notification
@@ -90,19 +93,42 @@ class LongWaitDetected extends Notification
      */
     public function toSlack($notifiable)
     {
+        $fromName = 'Laravel Horizon';
+        $title = 'Long Wait Detected';
+        $text = 'Oh no! Something needs your attention.';
+        $imageUrl = 'https://laravel.com/assets/img/horizon-48px.png';
+
+        $content = sprintf(
+            '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
+            config('app.name'),
+            $this->longWaitQueue,
+            $this->longWaitConnection,
+            $this->seconds
+        );
+
+        if (class_exists('\Illuminate\Notifications\Slack\SlackMessage') &&
+            class_exists('\Illuminate\Notifications\Slack\BlockKit\Blocks\SectionBlock') &&
+            ! (is_string(Horizon::$slackWebhookUrl) && Str::startsWith(Horizon::$slackWebhookUrl, ['http://', 'https://']))) {
+            return (new ChannelIdSlackMessage)
+                ->username($fromName)
+                ->image($imageUrl)
+                ->text($text)
+                ->headerBlock($title)
+                ->sectionBlock(function (SectionBlock $block) use ($content): void { // @phpstan-ignore-line
+                    $block->text($content);
+                });
+        }
+
         return (new SlackMessage) // @phpstan-ignore-line
-                    ->from('Laravel Horizon')
-                    ->to(Horizon::$slackChannel)
-                    ->image('https://laravel.com/assets/img/horizon-48px.png')
-                    ->error()
-                    ->content('Oh no! Something needs your attention.')
-                    ->attachment(function ($attachment) {
-                        $attachment->title('Long Wait Detected')
-                                   ->content(sprintf(
-                                       '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-                                       config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
-                                   ));
-                    });
+            ->from($fromName)
+            ->to(Horizon::$slackChannel)
+            ->image($imageUrl)
+            ->error()
+            ->content($text)
+            ->attachment(function ($attachment) use ($title, $content) {
+                $attachment->title($title)
+                    ->content($content);
+            });
     }
 
     /**
