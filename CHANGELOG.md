@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.26.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.27.0...5.x)
+
+## [v5.27.0](https://github.com/laravel/horizon/compare/v5.26.0...v5.27.0) - 2024-07-26
+
+* Extend Slack Notification to work with Slack Apps for Laravel 11 support by [@travisricks](https://github.com/travisricks) in https://github.com/laravel/horizon/pull/1481
 
 ## [v5.26.0](https://github.com/laravel/horizon/compare/v5.25.0...v5.26.0) - 2024-07-22
 
