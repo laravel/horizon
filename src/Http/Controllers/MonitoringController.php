@@ -58,11 +58,12 @@ class MonitoringController extends Controller
      * Paginate the jobs for a given tag.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  string  $tag
      * @return array
      */
-    public function paginate(Request $request, $tag)
+    public function paginate(Request $request)
     {
+        $tag = $request->query('tag');
+
         $jobIds = $this->tags->paginate(
             $tag, $startingAt = $request->query('starting_at', 0),
             $request->query('limit', 25)

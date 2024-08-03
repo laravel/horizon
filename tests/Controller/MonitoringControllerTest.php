@@ -47,7 +47,7 @@ class MonitoringControllerTest extends ControllerTest
 
         // Paginate first set...
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring/tag');
+                    ->get('/horizon/api/monitoring/tag?tag=tag');
 
         $results = $response->original['jobs'];
 
@@ -57,7 +57,7 @@ class MonitoringControllerTest extends ControllerTest
 
         // Paginate second set...
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring/tag?starting_at=25');
+                    ->get('/horizon/api/monitoring/tag?starting_at=25&tag=tag');
 
         $results = $response->original['jobs'];
 
