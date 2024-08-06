@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.27.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.27.1...5.x)
+
+## [v5.27.1](https://github.com/laravel/horizon/compare/v5.27.0...v5.27.1) - 2024-08-05
+
+* Fix error when loading monitoried tags page(#1478) by [@therobfonz](https://github.com/therobfonz) in https://github.com/laravel/horizon/pull/1485
 
 ## [v5.27.0](https://github.com/laravel/horizon/compare/v5.26.0...v5.27.0) - 2024-07-26
 
