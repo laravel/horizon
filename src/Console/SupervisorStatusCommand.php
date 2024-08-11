@@ -9,7 +9,7 @@ use Laravel\Horizon\MasterSupervisor;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'horizon:supervisor-status')]
-class StatusSupervisorCommand extends Command
+class SupervisorStatusCommand extends Command
 {
     /**
      * The name and signature of the console command.

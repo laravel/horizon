@@ -115,6 +115,7 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\PurgeCommand::class,
                 Console\StatusCommand::class,
                 Console\SupervisorCommand::class,
+                Console\SupervisorStatusCommand::class,
                 Console\SupervisorsCommand::class,
                 Console\TerminateCommand::class,
                 Console\TimeoutCommand::class,
