@@ -42,7 +42,7 @@ class SupervisorStatusCommand extends Command
         }))->status;
 
         if (is_null($supervisorStatus)) {
-            $this->components->error('Failed to find a supervisor with this name');
+            $this->components->error('Unable to find a supervisor with this name.');
 
             return 1;
         }
