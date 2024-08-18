@@ -113,18 +113,13 @@ class JobPayload implements ArrayAccess
      */
     protected function determineType($job)
     {
-        switch (true) {
-            case $job instanceof BroadcastEvent:
-                return 'broadcast';
-            case $job instanceof CallQueuedListener:
-                return 'event';
-            case $job instanceof SendQueuedMailable:
-                return 'mail';
-            case $job instanceof SendQueuedNotifications:
-                return 'notification';
-            default:
-                return 'job';
-        }
+        return match (true) {
+            $job instanceof BroadcastEvent => 'broadcast',
+            $job instanceof CallQueuedListener => 'event',
+            $job instanceof SendQueuedMailable => 'mail',
+            $job instanceof SendQueuedNotifications => 'notification',
+            default => 'job',
+        };
     }
 
     /**
@@ -169,18 +164,13 @@ class JobPayload implements ArrayAccess
      */
     protected function underlyingJob($job)
     {
-        switch (true) {
-            case $job instanceof BroadcastEvent:
-                return $job->event;
-            case $job instanceof CallQueuedListener:
-                return $job->class;
-            case $job instanceof SendQueuedMailable:
-                return $job->mailable;
-            case $job instanceof SendQueuedNotifications:
-                return $job->notification;
-            default:
-                return $job;
-        }
+        return match (true) {
+            $job instanceof BroadcastEvent => $job->event,
+            $job instanceof CallQueuedListener => $job->class,
+            $job instanceof SendQueuedMailable => $job->mailable,
+            $job instanceof SendQueuedNotifications => $job->notification,
+            default => $job,
+        };
     }
 
     /**
