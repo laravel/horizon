@@ -93,18 +93,13 @@ class Tags
      */
     public static function targetsFor($job)
     {
-        switch (true) {
-            case $job instanceof BroadcastEvent:
-                return [$job->event];
-            case $job instanceof CallQueuedListener:
-                return [static::extractEvent($job)];
-            case $job instanceof SendQueuedMailable:
-                return [$job->mailable];
-            case $job instanceof SendQueuedNotifications:
-                return [$job->notification];
-            default:
-                return [$job];
-        }
+        return match (true) {
+            $job instanceof BroadcastEvent => [$job->event],
+            $job instanceof CallQueuedListener => [static::extractEvent($job)],
+            $job instanceof SendQueuedMailable => [$job->mailable],
+            $job instanceof SendQueuedNotifications => [$job->notification],
+            default => [$job],
+        };
     }
 
     /**

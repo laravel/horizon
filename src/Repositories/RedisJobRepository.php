@@ -273,20 +273,14 @@ class RedisJobRepository implements JobRepository
      */
     protected function minutesForType($type)
     {
-        switch ($type) {
-            case 'failed_jobs':
-                return $this->failedJobExpires;
-            case 'recent_failed_jobs':
-                return $this->recentFailedJobExpires;
-            case 'pending_jobs':
-                return $this->pendingJobExpires;
-            case 'completed_jobs':
-                return $this->completedJobExpires;
-            case 'silenced_jobs':
-                return $this->completedJobExpires;
-            default:
-                return $this->recentJobExpires;
-        }
+        return match ($type) {
+            'failed_jobs' => $this->failedJobExpires,
+            'recent_failed_jobs' => $this->recentFailedJobExpires,
+            'pending_jobs' => $this->pendingJobExpires,
+            'completed_jobs' => $this->completedJobExpires,
+            'silenced_jobs' => $this->completedJobExpires,
+            default => $this->recentJobExpires,
+        };
     }
 
     /**
