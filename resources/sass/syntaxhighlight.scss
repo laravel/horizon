@@ -6,6 +6,9 @@
     .vjs-tree-node {
         display: flex;
         position: relative;
+        &:hover {
+            background-color: unset;
+        }
         .vjs-indent-unit {
             &.has-line {
                 border-left: 1px dotted rgba(204, 204, 204, 0.28) !important;
