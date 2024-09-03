@@ -7,4 +7,5 @@ jobs:
     uses: laravel/.github/.github/workflows/compile-assets.yml@main
     with:
       cmd: build
+      build_path: "dist/"
       node: "21"
