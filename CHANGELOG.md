@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.27.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.28.0...5.x)
+
+## [v5.28.0](https://github.com/laravel/horizon/compare/v5.27.1...v5.28.0) - 2024-09-03
+
+* Create status command for individual supervisors by [@mfrieswyk](https://github.com/mfrieswyk) in https://github.com/laravel/horizon/pull/1467
+* [5.x] Use `match` expression by [@xurshudyan](https://github.com/xurshudyan) in https://github.com/laravel/horizon/pull/1487
+* FIX #1488 : Focused line gets hightlighted [remove .vjs-tree-node:hover] by [@srennou](https://github.com/srennou) in https://github.com/laravel/horizon/pull/1492
 
 ## [v5.27.1](https://github.com/laravel/horizon/compare/v5.27.0...v5.27.1) - 2024-08-05
 
