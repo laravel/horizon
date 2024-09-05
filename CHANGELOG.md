@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.28.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.28.1...5.x)
+
+## [v5.28.1](https://github.com/laravel/horizon/compare/v5.28.0...v5.28.1) - 2024-09-04
+
+* [5.x] Reanimate asset compilation by [@daniser](https://github.com/daniser) in https://github.com/laravel/horizon/pull/1495
 
 ## [v5.28.0](https://github.com/laravel/horizon/compare/v5.27.1...v5.28.0) - 2024-09-03
 
