@@ -47,11 +47,10 @@ export default [
         ],
     },
 
-    { path: '/metrics', redirect: '/metrics/jobs' },
-
     {
         path: '/metrics/',
         component: metrics,
+        redirect: '/metrics/jobs',
         children: [
             {
                 path: 'jobs',
