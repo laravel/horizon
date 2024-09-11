@@ -58,16 +58,12 @@ export default [
             {
                 path: 'jobs',
                 component: metrics,
-                children: [
-                    { path: '', name: 'metrics-jobs', component: metricsJobs },
-                ],
+                children: [{ path: '', name: 'metrics-jobs', component: metricsJobs }],
             },
             {
                 path: 'queues',
                 component: metrics,
-                children: [
-                    { path: '', name: 'metrics-queues', component: metricsQueues },
-                ],
+                children: [{ path: '', name: 'metrics-queues', component: metricsQueues }],
             },
             {
                 path: ':type/:slug',
@@ -122,6 +118,6 @@ export default [
                 name: 'batches-preview',
                 component: batchesPreview,
             },
-        ]
+        ],
     },
 ];
