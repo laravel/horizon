@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>
-            <router-link :title="job.name" :to="{ name: $route.params.type+'-jobs-preview', params: { jobId: job.id }}">
+            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $route.params.type }}">
                 {{ jobBaseName(job.name) }}
             </router-link>
 
