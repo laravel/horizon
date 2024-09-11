@@ -28,9 +28,9 @@
         },
 
         /**
-         * Clean up after the component is destroyed.
+         * Clean up after the component is unmounted.
          */
-        destroyed() {
+        unmounted() {
             clearInterval(this.interval);
         },
 
