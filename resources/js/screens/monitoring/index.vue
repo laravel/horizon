@@ -25,10 +25,6 @@
             this.loadTags();
 
             this.refreshTagsPeriodically();
-
-            this.$on('addTagModalClosed', data => {
-                this.addTagModalOpened = false;
-            });
         },
 
         /**

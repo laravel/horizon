@@ -191,8 +191,8 @@
                         </td>
                     </tr>
 
-                    <tr v-for="job in jobs" :key="job.id" :job="job" is="job-row">
-                    </tr>
+                    <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
+                    </component>
                 </tbody>
             </table>
 
