@@ -1,6 +1,6 @@
 import axios from 'axios';
-import Vue from 'vue/dist/vue.esm.js';
-import VueRouter from 'vue-router';
+import { createApp } from 'vue/dist/vue.esm-bundler.js';
+import { createRouter, createWebHistory } from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import Base from './base';
@@ -16,9 +16,22 @@ if (token) {
     axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 }
 
-Vue.use(VueRouter);
+const app = createApp({
+    data() {
+        return {
+            alert: {
+                type: null,
+                autoClose: 0,
+                message: '',
+                confirmationProceed: null,
+                confirmationCancel: null,
+            },
+            autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
+        };
+    },
+});
 
-Vue.prototype.$http = axios.create();
+app.config.globalProperties.$http = axios.create();
 
 window.Horizon.basePath = '/' + window.Horizon.path;
 
@@ -29,31 +42,17 @@ if (window.Horizon.path === '' || window.Horizon.path === '/') {
     window.Horizon.basePath = '';
 }
 
-const router = new VueRouter({
+const router = createRouter({
+    history: createWebHistory(routerBasePath),
     routes: Routes,
-    mode: 'history',
-    base: routerBasePath,
 });
 
-Vue.component('vue-json-pretty', VueJsonPretty);
-Vue.component('alert', Alert);
-Vue.component('scheme-toggler', SchemeToggler);
+app.use(router);
 
-Vue.mixin(Base);
+app.component('vue-json-pretty', VueJsonPretty);
+app.component('alert', Alert);
+app.component('scheme-toggler', SchemeToggler);
 
-new Vue({
-    router,
-    data() {
-        return {
-            alert: {
-                type: null,
-                autoClose: 0,
-                message: '',
-                confirmationProceed: null,
-                confirmationCancel: null,
-            },
+app.mixin(Base);
 
-            autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
-        };
-    },
-}).$mount('#horizon');
+app.mount('#horizon');

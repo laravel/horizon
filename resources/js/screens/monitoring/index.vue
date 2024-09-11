@@ -25,16 +25,12 @@
             this.loadTags();
 
             this.refreshTagsPeriodically();
-
-            this.$on('addTagModalClosed', data => {
-                this.addTagModalOpened = false;
-            });
         },
 
         /**
-         * Clean up after the component is destroyed.
+         * Clean up after the component is unmounted.
          */
-        destroyed() {
+        unmounted() {
             clearInterval(this.interval);
         },
 

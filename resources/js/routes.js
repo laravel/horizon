@@ -24,99 +24,100 @@ export default [
 
     {
         path: '/monitoring',
-        name: 'monitoring',
-        component: monitoring,
-    },
-
-    {
-        path: '/monitoring/:tag',
-        component: monitoringTag,
         children: [
             {
-                path: 'jobs',
-                name: 'monitoring-jobs',
-                component: monitoringTagJobs,
-                props: { type: 'jobs' },
+                path: '',
+                name: 'monitoring',
+                component: monitoring,
             },
             {
-                path: 'failed',
-                name: 'monitoring-failed',
-                component: monitoringTagJobs,
-                props: { type: 'failed' },
+                path: ':tag',
+                component: monitoringTag,
+                children: [
+                    {
+                        path: 'jobs',
+                        name: 'monitoring-jobs',
+                        component: monitoringTagJobs,
+                        props: { type: 'jobs' },
+                    },
+                    {
+                        path: 'failed',
+                        name: 'monitoring-failed',
+                        component: monitoringTagJobs,
+                        props: { type: 'failed' },
+                    },
+                ],
             },
         ],
     },
 
-    { path: '/metrics', redirect: '/metrics/jobs' },
-
     {
-        path: '/metrics/',
-        component: metrics,
+        path: '/metrics',
+        redirect: '/metrics/jobs',
         children: [
             {
                 path: 'jobs',
-                name: 'metrics-jobs',
-                component: metricsJobs,
+                component: metrics,
+                children: [{ path: '', name: 'metrics-jobs', component: metricsJobs }],
             },
             {
                 path: 'queues',
-                name: 'metrics-queues',
-                component: metricsQueues,
+                component: metrics,
+                children: [{ path: '', name: 'metrics-queues', component: metricsQueues }],
+            },
+            {
+                path: ':type/:slug',
+                name: 'metrics-preview',
+                component: metricsPreview,
             },
         ],
-    },
-
-    {
-        path: '/metrics/:type/:slug',
-        name: 'metrics-preview',
-        component: metricsPreview,
     },
 
     {
         path: '/jobs/:type',
-        name: 'jobs',
-        component: recentJobs,
-    },
-
-    {
-        path: '/jobs/pending/:jobId',
-        name: 'pending-jobs-preview',
-        component: recentJobsJob,
-    },
-
-    {
-        path: '/jobs/completed/:jobId',
-        name: 'completed-jobs-preview',
-        component: recentJobsJob,
-    },
-
-    {
-        path: '/jobs/silenced/:jobId',
-        name: 'silenced-jobs-preview',
-        component: recentJobsJob,
+        children: [
+            {
+                path: '',
+                name: 'jobs',
+                component: recentJobs,
+            },
+            {
+                path: ':jobId',
+                name: 'job-preview',
+                component: recentJobsJob,
+            },
+        ],
     },
 
     {
         path: '/failed',
-        name: 'failed-jobs',
-        component: failedJobs,
-    },
-
-    {
-        path: '/failed/:jobId',
-        name: 'failed-jobs-preview',
-        component: failedJobsJob,
+        children: [
+            {
+                path: '',
+                name: 'failed-jobs',
+                component: failedJobs,
+            },
+            {
+                path: ':jobId',
+                name: 'failed-jobs-preview',
+                component: failedJobsJob,
+            },
+        ],
     },
 
     {
         path: '/batches',
-        name: 'batches',
-        component: batches,
-    },
-
-    {
-        path: '/batches/:batchId',
-        name: 'batches-preview',
-        component: batchesPreview,
+        children: [
+            {
+                path: '',
+                name: 'batches',
+                component: batches,
+            },
+            {
+                path: ':batchId',
+                name: 'batches-preview',
+                component: batchesPreview,
+            },
+        ],
     },
 ];
