@@ -1,4 +1,4 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-horizon.svg"></p>
+<p align="center"><img width="373" height="60" src="/art/logo.svg" alt="Laravel Horizon"></p>
 
 <p align="center">
 <a href="https://github.com/laravel/horizon/actions"><img src="https://github.com/laravel/horizon/workflows/tests/badge.svg" alt="Build Status"></a>
