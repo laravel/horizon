@@ -27,7 +27,7 @@ const app = createApp({
                 confirmationCancel: null,
             },
             autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
-        }
+        };
     },
 });
 
