@@ -25,24 +25,28 @@ export default [
     {
         path: '/monitoring',
         name: 'monitoring',
-        component: monitoring,
-    },
-
-    {
-        path: '/monitoring/:tag',
-        component: monitoringTag,
         children: [
             {
-                path: 'jobs',
-                name: 'monitoring-jobs',
-                component: monitoringTagJobs,
-                props: { type: 'jobs' },
+                path: '',
+                component: monitoring,
             },
             {
-                path: 'failed',
-                name: 'monitoring-failed',
-                component: monitoringTagJobs,
-                props: { type: 'failed' },
+                path: ':tag',
+                component: monitoringTag,
+                children: [
+                    {
+                        path: 'jobs',
+                        name: 'monitoring-jobs',
+                        component: monitoringTagJobs,
+                        props: { type: 'jobs' },
+                    },
+                    {
+                        path: 'failed',
+                        name: 'monitoring-failed',
+                        component: monitoringTagJobs,
+                        props: { type: 'failed' },
+                    },
+                ],
             },
         ],
     },
