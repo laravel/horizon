@@ -24,10 +24,10 @@ export default [
 
     {
         path: '/monitoring',
-        name: 'monitoring',
         children: [
             {
                 path: '',
+                name: 'monitoring',
                 component: monitoring,
             },
             {
@@ -79,10 +79,10 @@ export default [
 
     {
         path: '/jobs/:type',
-        name: 'jobs',
         children: [
             {
                 path: '',
+                name: 'jobs',
                 component: recentJobs,
             },
             {
@@ -95,25 +95,33 @@ export default [
 
     {
         path: '/failed',
-        name: 'failed-jobs',
-        component: failedJobs,
-    },
-
-    {
-        path: '/failed/:jobId',
-        name: 'failed-jobs-preview',
-        component: failedJobsJob,
+        children: [
+            {
+                path: '',
+                name: 'failed-jobs',
+                component: failedJobs,
+            },
+            {
+                path: ':jobId',
+                name: 'failed-jobs-preview',
+                component: failedJobsJob,
+            },
+        ],
     },
 
     {
         path: '/batches',
-        name: 'batches',
-        component: batches,
-    },
-
-    {
-        path: '/batches/:batchId',
-        name: 'batches-preview',
-        component: batchesPreview,
+        children: [
+            {
+                path: '',
+                name: 'batches',
+                component: batches,
+            },
+            {
+                path: ':batchId',
+                name: 'batches-preview',
+                component: batchesPreview,
+            },
+        ]
     },
 ];
