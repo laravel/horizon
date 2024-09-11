@@ -52,27 +52,29 @@ export default [
     },
 
     {
-        path: '/metrics/',
-        component: metrics,
+        path: '/metrics',
         redirect: '/metrics/jobs',
         children: [
             {
                 path: 'jobs',
-                name: 'metrics-jobs',
-                component: metricsJobs,
+                component: metrics,
+                children: [
+                    { path: '', name: 'metrics-jobs', component: metricsJobs },
+                ],
             },
             {
                 path: 'queues',
-                name: 'metrics-queues',
-                component: metricsQueues,
+                component: metrics,
+                children: [
+                    { path: '', name: 'metrics-queues', component: metricsQueues },
+                ],
+            },
+            {
+                path: ':type/:slug',
+                name: 'metrics-preview',
+                component: metricsPreview,
             },
         ],
-    },
-
-    {
-        path: '/metrics/:type/:slug',
-        name: 'metrics-preview',
-        component: metricsPreview,
     },
 
     {
