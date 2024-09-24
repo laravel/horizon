@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.28.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.29.0...5.x)
+
+## [v5.29.0](https://github.com/laravel/horizon/compare/v5.28.1...v5.29.0) - 2024-09-24
+
+* [5.x] Upgrade from Vue 2 to Vue 3 by [@osbre](https://github.com/osbre) in https://github.com/laravel/horizon/pull/1496
+* Refresh the logo by [@osbre](https://github.com/osbre) in https://github.com/laravel/horizon/pull/1497
+* Bump vite from 5.2.10 to 5.4.6 by [@dependabot](https://github.com/dependabot) in https://github.com/laravel/horizon/pull/1498
+* Bump rollup from 4.21.3 to 4.22.4 by [@dependabot](https://github.com/dependabot) in https://github.com/laravel/horizon/pull/1499
 
 ## [v5.28.1](https://github.com/laravel/horizon/compare/v5.28.0...v5.28.1) - 2024-09-04
 
