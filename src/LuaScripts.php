@@ -34,8 +34,6 @@ class LuaScripts
             end
             
             redis.call('hmset', KEYS[1], 'throughput', throughput, 'runtime', runtime)
-            
-            return {throughput, runtime}
 LUA;
     }
 
@@ -74,7 +72,7 @@ LUA;
                 end
             end
             
-            return {count, start + batch_size}
+            return count
 LUA;
     }
 }
