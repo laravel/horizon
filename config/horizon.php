@@ -170,6 +170,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Process Per Queue
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to execute separate processes for every
+    | supervisor's queue if the balancing strategy is "auto".
+    | Disabling it will stop splitting queues so the worker will
+    | will handle many queues
+    |
+    */
+
+    'process_per_queue' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Worker Configuration
     |--------------------------------------------------------------------------
     |

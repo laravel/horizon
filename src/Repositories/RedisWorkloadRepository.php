@@ -80,9 +80,9 @@ class RedisWorkloadRepository implements WorkloadRepository
 
                 $splitQueues = Str::contains($queue, ',') ? $length->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait) {
                     return [
-                        'name' => $queueName,
+                        'name' => "$queueName",
                         'length' => $length,
-                        'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, $queueName, $totalProcesses),
+                        'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, "$queueName", $totalProcesses),
                     ];
                 }) : null;
 

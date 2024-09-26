@@ -87,7 +87,7 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     public function createProcessPools()
     {
-        return $this->options->balancing()
+        return $this->options->balancing() && config('horizon.process_per_queue', true)
                         ? $this->createProcessPoolPerQueue()
                         : $this->createSingleProcessPool();
     }
