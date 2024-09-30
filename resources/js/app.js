@@ -33,20 +33,29 @@ const app = createApp({
 
 app.config.globalProperties.$http = axios.create();
 
-window.Horizon.basePath = '/' + window.Horizon.path;
+const appUrl = window.Horizon.appUrl || '';
+const horizonPath = window.Horizon.path || 'horizon';
 
+// Construct the base path dynamically using APP_URL and HORIZON_PATH
+// Check if appUrl ends with a slash and handle accordingly
+window.Horizon.basePath = appUrl.replace(/\/+$/, '') + '/' + horizonPath.replace(/^\/+/, '');
+
+// Construct the router base path using the newly set basePath
 let routerBasePath = window.Horizon.basePath + '/';
 
-if (window.Horizon.path === '' || window.Horizon.path === '/') {
-    routerBasePath = '/';
-    window.Horizon.basePath = '';
+// Adjust the base path if Horizon's path is empty or set to root
+if (horizonPath === '' || horizonPath === '/') {
+    routerBasePath = appUrl + '/';
+    window.Horizon.basePath = appUrl;
 }
 
+// Use the constructed base path in the router configuration
 const router = createRouter({
     history: createWebHistory(routerBasePath),
     routes: Routes,
 });
 
+// Use the router in the Vue app
 app.use(router);
 
 app.component('vue-json-pretty', VueJsonPretty);
