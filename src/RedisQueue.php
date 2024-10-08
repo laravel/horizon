@@ -128,9 +128,9 @@ class RedisQueue extends BaseQueue
      * @param  string  $queue
      * @return \Illuminate\Contracts\Queue\Job|null
      */
-    public function pop($queue = null)
+    public function pop($queue = null, $index = 0)
     {
-        return tap(parent::pop($queue), function ($result) use ($queue) {
+        return tap(parent::pop($queue, $index), function ($result) use ($queue) {
             if ($result) {
                 $this->event($this->getQueue($queue), new JobReserved($result->getReservedJob()));
             }
