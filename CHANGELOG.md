@@ -1,6 +1,11 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.29.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.29.1...5.x)
+
+## [v5.29.1](https://github.com/laravel/horizon/compare/v5.29.0...v5.29.1) - 2024-10-08
+
+* Update logo to support dark/light theme by [@milewski](https://github.com/milewski) in https://github.com/laravel/horizon/pull/1500
+* Fix pop() method signature laravel/framework#53063 by [@it-can](https://github.com/it-can) in https://github.com/laravel/horizon/pull/1504
 
 ## [v5.29.0](https://github.com/laravel/horizon/compare/v5.28.1...v5.29.0) - 2024-09-24
 
