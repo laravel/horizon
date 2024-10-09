@@ -39,6 +39,7 @@ class RedisQueue extends BaseQueue
      * @param  string|null  $queue
      * @return mixed
      */
+    #[\Override]
     public function push($job, $data = '', $queue = null)
     {
         return $this->enqueueUsing(
@@ -62,6 +63,7 @@ class RedisQueue extends BaseQueue
      * @param  array  $options
      * @return mixed
      */
+    #[\Override]
     public function pushRaw($payload, $queue = null, array $options = [])
     {
         $payload = (new JobPayload($payload))->prepare($this->lastPushed);
@@ -81,6 +83,7 @@ class RedisQueue extends BaseQueue
      * @param  mixed  $data
      * @return array
      */
+    #[\Override]
     protected function createPayloadArray($job, $queue, $data = '')
     {
         $payload = parent::createPayloadArray($job, $queue, $data);
@@ -99,6 +102,7 @@ class RedisQueue extends BaseQueue
      * @param  string  $queue
      * @return mixed
      */
+    #[\Override]
     public function later($delay, $job, $data = '', $queue = null)
     {
         $payload = (new JobPayload($this->createPayload($job, $queue, $data)))->prepare($job)->value;
@@ -126,8 +130,10 @@ class RedisQueue extends BaseQueue
      * Pop the next job off of the queue.
      *
      * @param  string  $queue
+     * @param  int  $index
      * @return \Illuminate\Contracts\Queue\Job|null
      */
+    #[\Override]
     public function pop($queue = null, $index = 0)
     {
         return tap(parent::pop($queue, $index), function ($result) use ($queue) {
@@ -144,6 +150,7 @@ class RedisQueue extends BaseQueue
      * @param  string  $to
      * @return void
      */
+    #[\Override]
     public function migrateExpiredJobs($from, $to)
     {
         return tap(parent::migrateExpiredJobs($from, $to), function ($jobs) use ($to) {
@@ -158,6 +165,7 @@ class RedisQueue extends BaseQueue
      * @param  \Illuminate\Queue\Jobs\RedisJob  $job
      * @return void
      */
+    #[\Override]
     public function deleteReserved($queue, $job)
     {
         parent::deleteReserved($queue, $job);
@@ -173,6 +181,7 @@ class RedisQueue extends BaseQueue
      * @param  int  $delay
      * @return void
      */
+    #[\Override]
     public function deleteAndRelease($queue, $job, $delay)
     {
         parent::deleteAndRelease($queue, $job, $delay);
