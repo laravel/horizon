@@ -67,6 +67,7 @@ class SupervisorProcess extends WorkerProcess
      *
      * @return void
      */
+    #[\Override]
     public function monitor()
     {
         if (! $this->process->isStarted()) {
