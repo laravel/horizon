@@ -111,7 +111,9 @@ class ProvisioningPlan
         }
 
         foreach ($supervisors as $supervisor => $options) {
-            $this->add($options);
+            if ($options->maxProcesses > 0) {
+                $this->add($options);
+            }
         }
 
         event(new MasterSupervisorDeployed($this->master));
