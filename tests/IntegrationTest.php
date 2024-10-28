@@ -20,24 +20,18 @@ abstract class IntegrationTest extends TestCase
      */
     protected function setUp(): void
     {
+        $this->afterApplicationCreated(function () {
+            Redis::flushall();
+        });
+
+        $this->beforeApplicationDestroyed(function () {
+            Redis::flushall();
+            WorkerCommandString::reset();
+            SupervisorCommandString::reset();
+            Horizon::$authUsing = null;
+        });
+
         parent::setUp();
-
-        Redis::flushall();
-    }
-
-    /**
-     * Tear down the test case.
-     *
-     * @return void
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        Redis::flushall();
-        WorkerCommandString::reset();
-        SupervisorCommandString::reset();
-        Horizon::$authUsing = null;
     }
 
     /**
@@ -48,7 +42,7 @@ abstract class IntegrationTest extends TestCase
      */
     public function wait($callback)
     {
-        retry(10, $callback, 1000);
+        retry(10, $callback, 2000);
     }
 
     /**
