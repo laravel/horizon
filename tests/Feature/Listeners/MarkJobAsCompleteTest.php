@@ -11,25 +11,11 @@ use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Listeners\MarkJobAsComplete;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Mockery as m;
+use Orchestra\Testbench\Attributes\WithConfig;
 
+#[WithConfig('horizon.silenced', ['App\\Jobs\\ConfigJob'])]
 class MarkJobAsCompleteTest extends IntegrationTest
 {
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        m::close();
-    }
-
-    protected function getEnvironmentSetUp($app): void
-    {
-        parent::getEnvironmentSetUp($app);
-
-        $app['config']->set('horizon.silenced', [
-            'App\\Jobs\\ConfigJob',
-        ]);
-    }
-
     public function test_it_can_mark_a_job_as_complete(): void
     {
         $this->runScenario('App\\Jobs\\TestJob', false);
