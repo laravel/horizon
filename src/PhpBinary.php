@@ -2,8 +2,6 @@
 
 namespace Laravel\Horizon;
 
-use Illuminate\Support\ProcessUtils;
-
 class PhpBinary
 {
     /**
@@ -13,10 +11,8 @@ class PhpBinary
      */
     public static function path()
     {
-        if (function_exists('Illuminate\Support\php_binary')) {
-            return ProcessUtils::escapeArgument(\Illuminate\Support\php_binary());
-        }
+        $escape = '\\' === DIRECTORY_SEPARATOR ? '"' : '\'';
 
-        return ProcessUtils::escapeArgument(PHP_BINARY);
+        return $escape.PHP_BINARY.$escape;
     }
 }
