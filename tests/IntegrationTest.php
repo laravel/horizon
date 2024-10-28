@@ -42,7 +42,7 @@ abstract class IntegrationTest extends TestCase
      */
     public function wait($callback)
     {
-        retry(10, $callback, 2000);
+        retry(10, $callback, 1000);
     }
 
     /**
