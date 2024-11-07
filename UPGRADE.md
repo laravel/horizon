@@ -1,11 +1,4 @@
-# Upgrade Guide
-
-With every upgrade, make sure to publish Horizon's assets and clear the view cache:
-
-    php artisan horizon:publish
-    
-    php artisan view:clear
-    
+# Upgrade Guide 
 
 ## Upgrading To 5.0 From 4.x
 
