@@ -154,7 +154,7 @@ class RedisQueue extends BaseQueue
     public function migrateExpiredJobs($from, $to)
     {
         return tap(parent::migrateExpiredJobs($from, $to), function ($jobs) use ($to) {
-            $this->event($to, new JobsMigrated($jobs));
+            $this->event($to, new JobsMigrated($jobs === false ? [] : $jobs));
         });
     }
 
