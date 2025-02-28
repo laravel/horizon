@@ -96,8 +96,9 @@ class SupervisorCommand extends Command
 
         $supervisor->working = ! $this->option('paused');
 
+        $balancedWorkerCount = floor(($this->option('min-processes') + $this->option('max-processes')) / 2);
         $supervisor->scale(max(
-            0, $this->option('min-processes') - $supervisor->totalSystemProcessCount()
+            0, $balancedWorkerCount - $supervisor->totalSystemProcessCount()
         ));
 
         $supervisor->monitor();
