@@ -32,6 +32,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Proxy Path
+    |--------------------------------------------------------------------------
+    |
+    | This value is the base path where Horizon is accessible when behind a
+    | reverse proxy. For example, when your application is accessed at
+    | example.com/app and Horizon at example.com/app/horizon, set this to '/app'.
+    |
+    */
+
+    'proxy_path' => env('HORIZON_PROXY_PATH', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Redis Connection
     |--------------------------------------------------------------------------
     |

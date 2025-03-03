@@ -181,6 +181,7 @@ class Horizon
     {
         return [
             'path' => config('horizon.path'),
+            'proxy_path' => config('horizon.proxy_path', ''),
         ];
     }
 
