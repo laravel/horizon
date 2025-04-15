@@ -128,7 +128,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you can configure how many snapshots should be kept to display in
-    | the metrics graph. This will get used in combination with Horizon's
+    | the metrics graph. This must be used in combination with Horizon's
     | `horizon:snapshot` schedule to define how long to retain metrics.
     |
     */
