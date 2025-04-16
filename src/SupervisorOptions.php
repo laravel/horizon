@@ -166,6 +166,13 @@ class SupervisorOptions
     public $rest;
 
     /**
+     * The number of seconds to wait before retrying a job that encountered an uncaught exception.
+     *
+     * @var int
+     */
+    public $retryAfter;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
