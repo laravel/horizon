@@ -16,7 +16,7 @@ class SupervisorOutOfMemory
     /**
      * The memory usage that exceeded the allowable limit.
      *
-     * @var float|int
+     * @var int|float
      */
     public $memoryUsage;
 
