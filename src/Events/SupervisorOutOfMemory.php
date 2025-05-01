@@ -18,7 +18,7 @@ class SupervisorOutOfMemory
      *
      * @var float|int
      */
-    protected $memoryUsage;
+    public $memoryUsage;
 
     /**
      * Create a new event instance.
@@ -32,9 +32,19 @@ class SupervisorOutOfMemory
     }
 
     /**
+     * Get the memory usage that triggered the event.
+     *
+     * @return int|float
+     */
+    public function getMemoryUsage()
+    {
+        return $this->memoryUsage ?? $this->supervisor->memoryUsage();
+    }
+
+    /**
      * Set the memory usage that was recorded when the event was dispatched.
      *
-     * @param float|int $memoryUsage
+     * @param  int|float $memoryUsage
      * @return $this
      */
     public function setMemoryUsage($memoryUsage)
@@ -42,15 +52,5 @@ class SupervisorOutOfMemory
         $this->memoryUsage = $memoryUsage;
 
         return $this;
-    }
-
-    /**
-     * Get the memory usage that triggered the event.
-     *
-     * @return float|int
-     */
-    public function getMemoryUsage()
-    {
-        return $this->memoryUsage ?? $this->supervisor->memoryUsage();
     }
 }
