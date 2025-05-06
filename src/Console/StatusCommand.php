@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -46,7 +47,9 @@ class StatusCommand extends Command
         }
 
         $this->components->info('Horizon is running.');
-
+        $jobMetrics = resolve(JobRepository::class);
+        $this->line('Processed Jobs: ' . $jobMetrics->countCompleted());
+        $this->line('Failed Jobs: ' . $jobMetrics->countFailed());
         return 0;
     }
 }
