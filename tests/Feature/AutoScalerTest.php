@@ -148,6 +148,9 @@ class AutoScalerTest extends IntegrationTest
         $this->assertSame(2, $supervisor->processPools['second']->totalProcessCount());
     }
 
+    /**
+     * @return array{0: AutoScaler, 1: Supervisor}
+     */
     protected function with_scaling_scenario($maxProcesses, array $pools, array $extraOptions = [])
     {
         // Mock dependencies...
@@ -257,5 +260,24 @@ class AutoScalerTest extends IntegrationTest
 
         $this->assertSame(52, $supervisor->processPools['first']->totalProcessCount());
         $this->assertSame(48, $supervisor->processPools['second']->totalProcessCount());
+    }
+
+    public function test_scaler_works_with_a_single_process_pool_with_no_runtime()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
+            'default' => ['current' => 10, 'size' => 1, 'runtime' => 0],
+        ], ['autoScalingStrategy' => 'size', 'balance' => false]);
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(9, $supervisor->processPools['default']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(8, $supervisor->processPools['default']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(7, $supervisor->processPools['default']->totalProcessCount());
     }
 }

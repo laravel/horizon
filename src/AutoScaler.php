@@ -115,6 +115,15 @@ class AutoScaler
                 return [$queue => $numberOfProcesses *= $supervisor->options->maxProcesses];
             } elseif ($timeToClearAll == 0 &&
                       $supervisor->options->autoScaling()) {
+                if (! $supervisor->options->balancing()) {
+                    $targetProcesses = min(
+                        $supervisor->options->maxProcesses,
+                        max($supervisor->options->minProcesses, $timeToClear['size'])
+                    );
+
+                    return [$queue => $targetProcesses];
+                }
+
                 return [
                     $queue => $timeToClear['size']
                                 ? $supervisor->options->maxProcesses
