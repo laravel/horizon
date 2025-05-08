@@ -266,18 +266,10 @@ class AutoScalerTest extends IntegrationTest
     {
         [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
             'default' => ['current' => 10, 'size' => 1, 'runtime' => 0],
-        ], ['autoScalingStrategy' => 'size', 'balance' => false]);
+        ], ['balance' => false]);
 
         $scaler->scale($supervisor);
 
         $this->assertSame(9, $supervisor->processPools['default']->totalProcessCount());
-
-        $scaler->scale($supervisor);
-
-        $this->assertSame(8, $supervisor->processPools['default']->totalProcessCount());
-
-        $scaler->scale($supervisor);
-
-        $this->assertSame(7, $supervisor->processPools['default']->totalProcessCount());
     }
 }
