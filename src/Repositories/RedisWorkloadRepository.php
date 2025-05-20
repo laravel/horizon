@@ -65,9 +65,10 @@ class RedisWorkloadRepository implements WorkloadRepository
     public function get()
     {
         $processes = $this->processes();
+        $metrics = app(\Laravel\Horizon\Contracts\MetricsRepository::class);
 
         return collect($this->waitTime->calculate())
-            ->map(function ($waitTime, $queue) use ($processes) {
+            ->map(function ($waitTime, $queue) use ($processes, $metrics) {
                 [$connection, $queueName] = explode(':', $queue, 2);
 
                 $totalProcesses = $processes[$queue] ?? 0;
@@ -78,11 +79,19 @@ class RedisWorkloadRepository implements WorkloadRepository
                         return [$queueName => $this->queue->connection($connection)->readyNow($queueName)];
                     });
 
-                $splitQueues = Str::contains($queue, ',') ? $length->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait) {
+                // Get memory usage for the queue if available
+                $memoryUsage = ! Str::contains($queue, ',') 
+                    ? $metrics->memoryForQueue($queueName) 
+                    : 0;
+
+                $splitQueues = Str::contains($queue, ',') ? $length->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait, $metrics) {
+                    $queueMemory = $metrics->memoryForQueue($queueName) ?: 0;
+                    
                     return [
                         'name' => $queueName,
                         'length' => $length,
                         'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, $queueName, $totalProcesses),
+                        'memory' => $queueMemory,
                     ];
                 }) : null;
 
@@ -91,6 +100,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                     'length' => $length->sum(),
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
+                    'memory' => $memoryUsage,
                     'split_queues' => $splitQueues,
                 ];
             })->values()->toArray();

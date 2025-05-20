@@ -298,6 +298,7 @@
                     <th>Queue</th>
                     <th class="text-end" style="width: 120px;">Jobs</th>
                     <th class="text-end" style="width: 120px;">Processes</th>
+                    <th class="text-end" style="width: 120px;">Memory</th>
                     <th class="text-end" style="width: 180px;">Wait</th>
                 </tr>
                 </thead>
@@ -310,6 +311,7 @@
                             </td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                            <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.memory ? queue.memory.toFixed(2) + ' MB' : '-' }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ humanTime(queue.wait) }}</td>
                         </tr>
 
@@ -323,6 +325,7 @@
                             </td>
                             <td class="text-end text-muted">{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted">-</td>
+                            <td class="text-end text-muted">{{ split_queue.memory ? split_queue.memory.toFixed(2) + ' MB' : '-' }}</td>
                             <td class="text-end text-muted">{{ humanTime(split_queue.wait) }}</td>
                         </tr>
                     </template>
