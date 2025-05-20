@@ -36,12 +36,12 @@ LUA;
     }
 
     /**
-     * Update the metrics for a job, including memory usage.
+     * Update the metrics for a job with memory usage information.
      *
      * KEYS[1] - The name of the key being updated
      * KEYS[2] - The name of the key of the metrics group
      * ARGV[1] - The runtime in milliseconds of the current job
-     * ARGV[2] - The memory usage in megabytes of the current job
+     * ARGV[2] - The memory usage in MB of the current job
      *
      * @return string
      */
