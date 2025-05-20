@@ -65,6 +65,36 @@ interface MetricsRepository
     public function runtimeForQueue($queue);
 
     /**
+     * Get the average memory usage for a given job in megabytes.
+     *
+     * @param  string  $job
+     * @return float
+     */
+    public function memoryForJob($job);
+
+    /**
+     * Get the average memory usage for a given queue in megabytes.
+     *
+     * @param  string  $queue
+     * @return float
+     */
+    public function memoryForQueue($queue);
+
+    /**
+     * Get the job that has the highest memory usage.
+     *
+     * @return string|null
+     */
+    public function jobWithMaximumMemory();
+
+    /**
+     * Get the queue that has the highest memory usage.
+     *
+     * @return string|null
+     */
+    public function queueWithMaximumMemory();
+
+    /**
      * Get the queue that has the longest runtime.
      *
      * @return int
@@ -88,6 +118,16 @@ interface MetricsRepository
     public function incrementJob($job, $runtime);
 
     /**
+     * Increment the metrics information for a job with memory usage.
+     *
+     * @param  string  $job
+     * @param  float|null  $runtime
+     * @param  float|null  $memory
+     * @return void
+     */
+    public function incrementJobWithMemory($job, $runtime, $memory);
+
+    /**
      * Increment the metrics information for a queue.
      *
      * @param  string  $queue
@@ -95,6 +135,16 @@ interface MetricsRepository
      * @return void
      */
     public function incrementQueue($queue, $runtime);
+
+    /**
+     * Increment the metrics information for a queue with memory usage.
+     *
+     * @param  string  $queue
+     * @param  float|null  $runtime
+     * @param  float|null  $memory
+     * @return void
+     */
+    public function incrementQueueWithMemory($queue, $runtime, $memory);
 
     /**
      * Get all of the snapshots for the given job.

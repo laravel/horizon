@@ -47,14 +47,16 @@ class UpdateJobMetrics
             return;
         }
 
-        $time = $this->watch->check($id = $event->payload->id()) ?: 0;
-
-        $this->metrics->incrementQueue(
-            $event->job->getQueue(), $time
+        $id = $event->payload->id();
+        $time = $this->watch->check($id) ?: 0;
+        $memory = $this->watch->checkMemory($id) ?: 0;
+        
+        $this->metrics->incrementQueueWithMemory(
+            $event->job->getQueue(), $time, $memory
         );
 
-        $this->metrics->incrementJob(
-            $event->payload->displayName(), $time
+        $this->metrics->incrementJobWithMemory(
+            $event->payload->displayName(), $time, $memory
         );
 
         $this->watch->forget($id);

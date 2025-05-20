@@ -260,6 +260,30 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="d-flex">
+                    <div class="w-25">
+                        <div class="p-4 mb-0">
+                            <small class="text-muted fw-bold">Max Memory Usage (Queue)</small>
+
+                            <p class="h4 mt-2">
+                                {{ stats.queueWithMaxMemory ? stats.queueWithMaxMemory : '-' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w-25">
+                        <div class="p-4 mb-0">
+                            <small class="text-muted fw-bold">Max Memory Usage (Job)</small>
+
+                            <p class="h4 mt-2">
+                                {{ stats.jobWithMaxMemory ? stats.jobWithMaxMemory : '-' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w-50"></div>
+                </div>
             </div>
         </div>
 

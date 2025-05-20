@@ -45,6 +45,8 @@
                         this.metric.throughPutChart = this.buildChartData(data, 'throughput', 'Times');
 
                         this.metric.runTimeChart = this.buildChartData(data, 'runtime', 'Seconds');
+                        
+                        this.metric.memoryUsageChart = this.buildChartData(data, 'memory', 'MB');
 
                         this.ready = true;
                     });
@@ -61,6 +63,7 @@
                 })), 'time')).map(value => value.reduce((sum, value) => ({
                     runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
                     throughput: parseInt(sum.throughput) + parseInt(value.throughput),
+                    memory: parseFloat(sum.memory || 0) + parseFloat(value.memory || 0),
                     time: value.time
                 })))
             },
@@ -133,6 +136,28 @@
                 </p>
 
                 <line-chart v-if="ready && rawData.length" :data="metric.runTimeChart"/>
+            </div>
+        </div>
+
+        <div class="card overflow-hidden mt-4" v-if="ready && rawData.some(item => item.memory)">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0">Memory Usage (MB) - {{$route.params.slug}}</h2>
+            </div>
+
+            <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin me-2 fill-text-color">
+                    <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
+                </svg>
+
+                <span>Loading...</span>
+            </div>
+
+            <div class="card-body card-bg-secondary" v-if="ready">
+                <p class="text-center m-0 p-5" v-if="ready && !rawData.length">
+                    Not Enough Data
+                </p>
+
+                <line-chart v-if="ready && rawData.length" :data="metric.memoryUsageChart"/>
             </div>
         </div>
     </div>

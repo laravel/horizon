@@ -36,6 +36,46 @@ LUA;
     }
 
     /**
+     * Update the metrics for a job, including memory usage.
+     *
+     * KEYS[1] - The name of the key being updated
+     * KEYS[2] - The name of the key of the metrics group
+     * ARGV[1] - The runtime in milliseconds of the current job
+     * ARGV[2] - The memory usage in megabytes of the current job
+     *
+     * @return string
+     */
+    public static function updateMetricsWithMemory()
+    {
+        return <<<'LUA'
+            redis.call('hsetnx', KEYS[1], 'throughput', 0)
+            redis.call('hsetnx', KEYS[1], 'memory', 0)
+            
+            redis.call('sadd', KEYS[2], KEYS[1])
+            
+            local hash = redis.call('hmget', KEYS[1], 'throughput', 'runtime', 'memory')
+
+            local throughput = hash[1] + 1
+            local runtime = 0
+            local memory = 0
+
+            if hash[2] then
+                runtime = ((hash[1] * tonumber(hash[2])) + tonumber(ARGV[1])) / throughput
+            else
+                runtime = tonumber(ARGV[1])
+            end
+
+            if hash[3] then
+                memory = ((hash[1] * tonumber(hash[3])) + tonumber(ARGV[2])) / throughput
+            else
+                memory = tonumber(ARGV[2])
+            end
+
+            redis.call('hmset', KEYS[1], 'throughput', throughput, 'runtime', runtime, 'memory', memory)
+LUA;
+    }
+
+    /**
      * Get the Lua script for purging recent and pending jobs off of the queue.
      *
      * KEYS[1] - The name of the recent jobs sorted set

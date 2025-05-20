@@ -12,6 +12,13 @@ class Stopwatch
     public $timers = [];
 
     /**
+     * All of the initial memory readings.
+     *
+     * @var array
+     */
+    public $memory = [];
+
+    /**
      * Start a new timer.
      *
      * @param  string  $key
@@ -20,6 +27,7 @@ class Stopwatch
     public function start($key)
     {
         $this->timers[$key] = microtime(true);
+        $this->memory[$key] = memory_get_usage(true);
     }
 
     /**
@@ -36,6 +44,20 @@ class Stopwatch
     }
 
     /**
+     * Check the memory usage for a given job in megabytes.
+     *
+     * @param  string  $key
+     * @return float|null
+     */
+    public function checkMemory($key)
+    {
+        if (isset($this->memory[$key])) {
+            $memoryUsed = memory_get_peak_usage(true) - $this->memory[$key];
+            return round($memoryUsed / 1024 / 1024, 2);
+        }
+    }
+
+    /**
      * Forget a given timer.
      *
      * @param  string  $key
@@ -44,5 +66,6 @@ class Stopwatch
     public function forget($key)
     {
         unset($this->timers[$key]);
+        unset($this->memory[$key]);
     }
 }

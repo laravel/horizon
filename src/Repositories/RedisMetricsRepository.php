@@ -147,6 +147,71 @@ class RedisMetricsRepository implements MetricsRepository
     }
 
     /**
+     * Get the average memory usage for a given job in megabytes.
+     *
+     * @param  string  $job
+     * @return float
+     */
+    public function memoryForJob($job)
+    {
+        return $this->memoryFor('job:'.$job);
+    }
+
+    /**
+     * Get the average memory usage for a given queue in megabytes.
+     *
+     * @param  string  $queue
+     * @return float
+     */
+    public function memoryForQueue($queue)
+    {
+        return $this->memoryFor('queue:'.$queue);
+    }
+
+    /**
+     * Get the average memory usage for a given key in megabytes.
+     *
+     * @param  string  $key
+     * @return float
+     */
+    protected function memoryFor($key)
+    {
+        return (float) $this->connection()->hget($key, 'memory') ?: 0;
+    }
+
+    /**
+     * Get the job that has the highest memory usage.
+     *
+     * @return string|null
+     */
+    public function jobWithMaximumMemory()
+    {
+        return collect($this->measuredJobs())->sortBy(function ($job) {
+            if ($snapshots = $this->connection()->zrange('snapshot:job:'.$job, -1, 1)) {
+                $snapshot = json_decode($snapshots[0], true);
+                return $snapshot['memory'] ?? 0;
+            }
+            return 0;
+        })->last();
+    }
+
+    /**
+     * Get the queue that has the highest memory usage.
+     *
+     * @return string|null
+     */
+    public function queueWithMaximumMemory()
+    {
+        return collect($this->measuredQueues())->sortBy(function ($queue) {
+            if ($snapshots = $this->connection()->zrange('snapshot:queue:'.$queue, -1, 1)) {
+                $snapshot = json_decode($snapshots[0], true);
+                return $snapshot['memory'] ?? 0;
+            }
+            return 0;
+        })->last();
+    }
+
+    /**
      * Get the queue that has the longest runtime.
      *
      * @return int
@@ -189,6 +254,21 @@ class RedisMetricsRepository implements MetricsRepository
     }
 
     /**
+     * Increment the metrics information for a job with memory usage.
+     *
+     * @param  string  $job
+     * @param  float|null  $runtime
+     * @param  float|null  $memory
+     * @return void
+     */
+    public function incrementJobWithMemory($job, $runtime, $memory)
+    {
+        $this->connection()->eval(LuaScripts::updateMetricsWithMemory(), 3,
+            'job:'.$job, 'measured_jobs', str_replace(',', '.', (string) $runtime), str_replace(',', '.', (string) $memory)
+        );
+    }
+
+    /**
      * Increment the metrics information for a queue.
      *
      * @param  string  $queue
@@ -199,6 +279,21 @@ class RedisMetricsRepository implements MetricsRepository
     {
         $this->connection()->eval(LuaScripts::updateMetrics(), 2,
             'queue:'.$queue, 'measured_queues', str_replace(',', '.', (string) $runtime)
+        );
+    }
+
+    /**
+     * Increment the metrics information for a queue with memory usage.
+     *
+     * @param  string  $queue
+     * @param  float|null  $runtime
+     * @param  float|null  $memory
+     * @return void
+     */
+    public function incrementQueueWithMemory($queue, $runtime, $memory)
+    {
+        $this->connection()->eval(LuaScripts::updateMetricsWithMemory(), 3,
+            'queue:'.$queue, 'measured_queues', str_replace(',', '.', (string) $runtime), str_replace(',', '.', (string) $memory)
         );
     }
 
@@ -270,6 +365,7 @@ class RedisMetricsRepository implements MetricsRepository
             'snapshot:'.$key, $time = CarbonImmutable::now()->getTimestamp(), json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
+                'memory' => $data['memory'],
                 'time' => $time,
             ])
         );
@@ -293,6 +389,7 @@ class RedisMetricsRepository implements MetricsRepository
             'snapshot:'.$key, $time = CarbonImmutable::now()->getTimestamp(), json_encode([
                 'throughput' => $data['throughput'],
                 'runtime' => $data['runtime'],
+                'memory' => $data['memory'],
                 'wait' => app(WaitTimeCalculator::class)->calculateFor($queue),
                 'time' => $time,
             ])
@@ -312,7 +409,7 @@ class RedisMetricsRepository implements MetricsRepository
     protected function baseSnapshotData($key)
     {
         $responses = $this->connection()->transaction(function ($trans) use ($key) {
-            $trans->hmget($key, ['throughput', 'runtime']);
+            $trans->hmget($key, ['throughput', 'runtime', 'memory']);
 
             $trans->del($key);
         });
@@ -322,6 +419,8 @@ class RedisMetricsRepository implements MetricsRepository
         return [
             'throughput' => $snapshot[0],
             'runtime' => $snapshot[1],
+            'memory' => $snapshot[2],
+            'time' => time(),
         ];
     }
 

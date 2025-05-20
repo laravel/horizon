@@ -47,6 +47,12 @@ class JobMetricsController extends Controller
         return collect($this->metrics->snapshotsForJob($id))->map(function ($record) {
             $record->runtime = round($record->runtime / 1000, 3);
             $record->throughput = (int) $record->throughput;
+            
+            if (property_exists($record, 'memory')) {
+                $record->memory = round($record->memory, 2);
+            } else {
+                $record->memory = 0;
+            }
 
             return $record;
         });

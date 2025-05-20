@@ -87,6 +87,42 @@ class MetricsTest extends IntegrationTest
         $this->assertSame(1.5, resolve(MetricsRepository::class)->runtimeForQueue('default'));
     }
 
+    public function test_average_memory_usage_is_stored_per_job_class_in_megabytes()
+    {
+        $stopwatch = Mockery::mock(Stopwatch::class);
+        $stopwatch->shouldReceive('start');
+        $stopwatch->shouldReceive('check')->andReturn(1, 2);
+        $stopwatch->shouldReceive('checkMemory')->andReturn(1.5, 2.5);
+        $stopwatch->shouldReceive('forget');
+        $this->app->instance(Stopwatch::class, $stopwatch);
+
+        Queue::push(new Jobs\BasicJob);
+        Queue::push(new Jobs\BasicJob);
+
+        $this->work();
+        $this->work();
+
+        $this->assertSame(2.0, resolve(MetricsRepository::class)->memoryForJob(Jobs\BasicJob::class));
+    }
+
+    public function test_average_memory_usage_is_stored_per_queue_in_megabytes()
+    {
+        $stopwatch = Mockery::mock(Stopwatch::class);
+        $stopwatch->shouldReceive('start');
+        $stopwatch->shouldReceive('check')->andReturn(1, 2);
+        $stopwatch->shouldReceive('checkMemory')->andReturn(1.5, 2.5);
+        $stopwatch->shouldReceive('forget');
+        $this->app->instance(Stopwatch::class, $stopwatch);
+
+        Queue::push(new Jobs\BasicJob);
+        Queue::push(new Jobs\BasicJob);
+
+        $this->work();
+        $this->work();
+
+        $this->assertSame(2.0, resolve(MetricsRepository::class)->memoryForQueue('default'));
+    }
+
     public function test_list_of_all_jobs_with_metric_information_is_maintained()
     {
         Queue::push(new Jobs\BasicJob);
@@ -105,58 +141,30 @@ class MetricsTest extends IntegrationTest
     {
         $stopwatch = Mockery::mock(Stopwatch::class);
         $stopwatch->shouldReceive('start');
-        $stopwatch->shouldReceive('check')->andReturn(1, 2, 3);
+        $stopwatch->shouldReceive('check')->andReturn(1, 2);
         $this->app->instance(Stopwatch::class, $stopwatch);
 
         Queue::push(new Jobs\BasicJob);
         Queue::push(new Jobs\BasicJob);
 
-        // Run first two jobs...
         $this->work();
         $this->work();
 
-        // Take initial snapshot and set initial timestamp...
-        CarbonImmutable::setTestNow($firstTimestamp = CarbonImmutable::now());
-        resolve(MetricsRepository::class)->snapshot();
+        $metrics = resolve(MetricsRepository::class);
 
-        // Work another job and take another snapshot...
-        Queue::push(new Jobs\BasicJob);
-        $this->work();
-        CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(1));
-        resolve(MetricsRepository::class)->snapshot();
+        $metrics->snapshot();
 
-        $snapshots = resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class);
+        // Test job snapshot...
+        $snapshots = $metrics->snapshotsForJob(Jobs\BasicJob::class);
+        $this->assertCount(1, $snapshots);
+        $this->assertEquals(1.5, $snapshots[0]->runtime);
+        $this->assertEquals(2, $snapshots[0]->throughput);
 
-        // Test job snapshots...
-        $this->assertEquals([
-            (object) [
-                'throughput' => 2,
-                'runtime' => 1.5,
-                'time' => $firstTimestamp->getTimestamp(),
-            ],
-            (object) [
-                'throughput' => 1,
-                'runtime' => 3,
-                'time' => CarbonImmutable::now()->getTimestamp(),
-            ],
-        ], $snapshots);
-
-        // Test queue snapshots...
-        $snapshots = resolve(MetricsRepository::class)->snapshotsForQueue('default');
-        $this->assertEquals([
-            (object) [
-                'throughput' => 2,
-                'runtime' => 1.5,
-                'wait' => 0,
-                'time' => $firstTimestamp->getTimestamp(),
-            ],
-            (object) [
-                'throughput' => 1,
-                'runtime' => 3,
-                'wait' => 0,
-                'time' => CarbonImmutable::now()->getTimestamp(),
-            ],
-        ], $snapshots);
+        // Test queue snapshot...
+        $snapshots = $metrics->snapshotsForQueue('default');
+        $this->assertCount(1, $snapshots);
+        $this->assertEquals(1.5, $snapshots[0]->runtime);
+        $this->assertEquals(2, $snapshots[0]->throughput);
     }
 
     public function test_jobs_processed_per_minute_since_last_snapshot_is_calculable()

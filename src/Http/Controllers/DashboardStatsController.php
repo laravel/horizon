@@ -28,6 +28,8 @@ class DashboardStatsController extends Controller
             'processes' => $this->totalProcessCount(),
             'queueWithMaxRuntime' => app(MetricsRepository::class)->queueWithMaximumRuntime(),
             'queueWithMaxThroughput' => app(MetricsRepository::class)->queueWithMaximumThroughput(),
+            'queueWithMaxMemory' => app(MetricsRepository::class)->queueWithMaximumMemory(),
+            'jobWithMaxMemory' => app(MetricsRepository::class)->jobWithMaximumMemory(),
             'recentJobs' => app(JobRepository::class)->countRecent(),
             'status' => $this->currentStatus(),
             'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
