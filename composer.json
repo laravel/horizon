@@ -38,7 +38,10 @@
     "autoload": {
         "psr-4": {
             "Laravel\\Horizon\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
