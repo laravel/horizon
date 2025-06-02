@@ -210,8 +210,8 @@ class RedisQueue extends BaseQueue
     /**
      * Delete specific job from the queue.
      *
-     * @param string $queue
-     * @param string $job
+     * @param  string $queue
+     * @param  string $job
      * @return int
      */
     public function clearSpecificJob($queue, $job)
