@@ -81,6 +81,35 @@ class RedisJobRepositoryTest extends IntegrationTest
         $this->assertCount(2, $repository->getJobs([1, 2, 3, 4, 5]));
     }
 
+    public function test_it_removes_recent_jobs_when_queue_is_purged_with_specific_job_name()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 1, 'displayName' => 'first'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 2, 'displayName' => 'second'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 3, 'displayName' => 'third'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 4, 'displayName' => 'fourth'])));
+        $repository->pushed('horizon', 'email-processing', new JobPayload(json_encode(['id' => 5, 'displayName' => 'fifth'])));
+
+        $repository->completed(new JobPayload(json_encode(['id' => 1, 'displayName' => 'first'])));
+        $repository->completed(new JobPayload(json_encode(['id' => 2, 'displayName' => 'second'])));
+
+        $this->assertEquals(0, $repository->purgeSpecificJob('email-processing', 'first'));
+        $this->assertEquals(0, $repository->purgeSpecificJob('email-processing', 'second'));
+        $this->assertEquals(1, $repository->purgeSpecificJob('email-processing', 'third'));
+        $this->assertEquals(1, $repository->purgeSpecificJob('email-processing', 'fourth'));
+        $this->assertEquals(1, $repository->purgeSpecificJob('email-processing', 'fifth'));
+
+        $this->assertEquals(2, $repository->countRecent());
+        $this->assertEquals(0, $repository->countPending());
+        $this->assertEquals(2, $repository->countCompleted());
+
+        $recent = collect($repository->getRecent());
+        $this->assertNotNull($recent->firstWhere('id', 1));
+        $this->assertNotNull($recent->firstWhere('id', 2));
+        $this->assertCount(2, $repository->getJobs([1, 2, 3, 4, 5]));
+    }
+
     public function test_it_will_delete_a_failed_job()
     {
         $repository = $this->app->make(JobRepository::class);
