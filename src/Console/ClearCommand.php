@@ -23,6 +23,7 @@ class ClearCommand extends Command
     protected $signature = 'horizon:clear
                             {connection? : The name of the queue connection}
                             {--queue= : The name of the queue to clear}
+                            {--job= : The namespace of the job to clear}
                             {--force : Force the operation to run when in production}';
 
     /**
@@ -52,8 +53,25 @@ class ClearCommand extends Command
         $connection = $this->argument('connection')
             ?: Arr::first($this->laravel['config']->get('horizon.defaults'))['connection'] ?? 'redis';
 
+        $queue = $this->getQueue($connection);
+        $job = $this->getJob();
+
+        if ($job) {
+            if (method_exists($jobRepository, 'purgeSpecificJob')) {
+                $jobRepository->purgeSpecificJob($queue, $job);
+            }
+
+            if (method_exists(RedisQueue::class, 'clearSpecificJob')) {
+                $count = $manager->connection($connection)->clearSpecificJob($queue, $job);
+            }
+
+            $this->components->info('Cleared ' . $count . ' jobs from the [' . $queue . '] queue.');
+
+            return 0;
+        }
+
         if (method_exists($jobRepository, 'purge')) {
-            $jobRepository->purge($queue = $this->getQueue($connection));
+            $jobRepository->purge($queue);
         }
 
         $count = $manager->connection($connection)->clear($queue);
@@ -75,5 +93,15 @@ class ClearCommand extends Command
             "queue.connections.{$connection}.queue",
             'default'
         );
+    }
+
+    /**
+     * Get the job namespace to clear.
+     *
+     * @return string
+     */
+    protected function getJob()
+    {
+        return $this->option('job');
     }
 }

@@ -206,4 +206,22 @@ class RedisQueue extends BaseQueue
             );
         }
     }
+
+    /**
+     * Delete specific job from the queue.
+     *
+     * @param string $queue
+     * @param string $job
+     * @return int
+     */
+    public function clearSpecificJob($queue, $job)
+    {
+        $connection = $this->getConnection();
+        $queue = $this->getQueue($queue);
+
+        return $connection->eval(LuaScripts::clearSpecificJobFromPrimaryQueue(), 1, $queue, $job)
+             + $connection->eval(LuaScripts::clearSpecificJobFromDelayedQueue(), 1, $queue.':delayed', $job)
+             + $connection->eval(LuaScripts::clearSpecificJobFromReservedQueue(), 1, $queue.':reserved', $job)
+             + $connection->eval(LuaScripts::clearNotifyQueue(), 1, $queue.':notify');
+    }
 }
