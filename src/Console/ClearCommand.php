@@ -65,7 +65,7 @@ class ClearCommand extends Command
                 $count = $manager->connection($connection)->clearSpecificJob($queue, $job);
             }
 
-            $this->components->info('Cleared '.$count.' jobs from the ['.$queue.'] queue.');
+            $this->components->info('Cleared ' . $count . ' jobs from the [' . $queue . '] queue.');
 
             return 0;
         }
