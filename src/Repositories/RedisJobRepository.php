@@ -739,8 +739,8 @@ class RedisJobRepository implements JobRepository
     /**
      * Delete specific pending and reserved job for a queue.
      *
-     * @param string $queue
-     * @param string $job
+     * @param  string $queue
+     * @param  string $job
      * @return int
      */
     public function purgeSpecificJob($queue, $job)
