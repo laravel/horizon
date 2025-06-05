@@ -115,7 +115,6 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\PurgeCommand::class,
                 Console\SupervisorCommand::class,
                 Console\SupervisorStatusCommand::class,
-                
                 Console\TerminateCommand::class,
                 Console\TimeoutCommand::class,
                 Console\WorkCommand::class,
@@ -125,7 +124,7 @@ class HorizonServiceProvider extends ServiceProvider
         $this->commands([
             Console\SnapshotCommand::class,
             Console\StatusCommand::class,
-            Console\SupervisorsCommand::class
+            Console\SupervisorsCommand::class,
         ]);
     }
 
