@@ -33,10 +33,10 @@ class StoreMonitoredTags
      */
     public function handle(JobPushed $event)
     {
-        $monitoring = $this->tags->monitored($event->payload->tags());
+        $monitoring = $this->tags->monitored($event->payload->tags(), $event->connectionName);
 
         if (! empty($monitoring)) {
-            $this->tags->add($event->payload->id(), $monitoring);
+            $this->tags->add($event->payload->id(), $monitoring, $event->connectionName);
         }
     }
 }

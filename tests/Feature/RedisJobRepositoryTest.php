@@ -3,8 +3,10 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Exception;
+use Illuminate\Contracts\Redis\Factory;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
+use Laravel\Horizon\Repositories\RedisJobRepository;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Throwable;
 
@@ -105,5 +107,29 @@ class RedisJobRepositoryTest extends IntegrationTest
 
         $this->assertSame(0, $result);
         $this->assertSame('1', $repository->getRecent()[0]->id);
+    }
+
+    public function test_it_uses_specified_connection_when_connection_is_configured()
+    {
+        // Mock the config to have a 'custom' redis connection
+        config(['database.redis.custom_redis' => ['host' => 'localhost']]);
+        config(['queue.connections.custom' => ['connection' => 'custom_redis']]);
+
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        // Mock the Redis factory to verify which connection is called
+        $redisFactory = $this->createMock(Factory::class);
+
+        // just a mock, the real deal would use the custom connection
+        $redisConnection = $this->app->make('redis')->connection('horizon');
+
+        // Expect that 'custom' connection is used when it exists in config
+        $redisFactory->expects($this->once())
+            ->method('connection')
+            ->with('custom_redis')
+            ->willReturn($redisConnection);
+
+        $repository = new RedisJobRepository($redisFactory);
+        $repository->pushed('custom', 'default', $payload);
     }
 }

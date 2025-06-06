@@ -134,5 +134,6 @@ abstract class IntegrationTest extends TestCase
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('queue.default', 'redis');
+        $app['config']->set('queue.connections.redis.connection', 'horizon');
     }
 }

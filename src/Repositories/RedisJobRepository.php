@@ -335,7 +335,7 @@ class RedisJobRepository implements JobRepository
      */
     public function pushed($connection, $queue, JobPayload $payload)
     {
-        $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
+        $this->connection($connection)->pipeline(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'recent_jobs', $payload);
             $this->storeJobReference($pipe, 'pending_jobs', $payload);
 
@@ -739,10 +739,19 @@ class RedisJobRepository implements JobRepository
     /**
      * Get the Redis connection instance.
      *
+     * @param  string|null  $connection
      * @return \Illuminate\Redis\Connections\Connection
      */
-    protected function connection()
+    protected function connection($connection = null)
     {
-        return $this->redis->connection('horizon');
+        if ($connection && config()->has('queue.connections.'.$connection)) {
+            $connection = config('queue.connections.'.$connection.'.connection');
+        }
+
+        if ($connection && ! config()->has('database.redis.'.$connection)) {
+            $connection = null;
+        }
+
+        return $this->redis->connection($connection ?? 'horizon');
     }
 }

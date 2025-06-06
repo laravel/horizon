@@ -52,6 +52,8 @@ class SupervisorTest extends IntegrationTest
     /** @requires extension redis */
     public function test_supervisor_can_start_worker_process_with_given_options()
     {
+        config(['queue.connections.redis.connection' => null]);
+
         Queue::push(new Jobs\BasicJob);
         $this->assertSame(1, $this->recentJobs());
 
@@ -264,6 +266,8 @@ class SupervisorTest extends IntegrationTest
     /** @requires extension redis */
     public function test_processes_can_be_paused_and_continued()
     {
+        config(['queue.connections.redis.connection' => null]);
+
         $options = $this->supervisorOptions();
         $options->sleep = 0;
         $this->supervisor = $supervisor = new Supervisor($options);

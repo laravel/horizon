@@ -78,4 +78,41 @@ class MonitoringTest extends IntegrationTest
         dispatch(new StopMonitoringTag('first'));
         $this->assertSame(0, $this->monitoredJobs('first'));
     }
+
+    public function test_store_monitored_tags_uses_connection_from_job_pushed_event()
+    {
+        // Add second Redis connection pointing to same instance
+        config(['database.redis.redis2' => config('database.redis.default')]);
+
+        // Set up a second queue connection using the new Redis connection
+        config(['queue.connections.queue_connection' => [
+            'driver' => 'redis',
+            'connection' => 'redis2',
+            'queue' => 'default',
+        ]]);
+
+        // Force rebuild Redis connections
+        $this->app->forgetInstance('redis');
+        $this->app->forgetInstance('redis.connection');
+
+        $mockRepository = $this->createMock(TagRepository::class);
+
+        $mockRepository->method('monitored')
+            ->willReturnCallback(function ($tags, $connection) {
+                // Verify connection parameter is passed
+                $this->assertEquals('queue_connection', $connection);
+
+                return in_array('first', $tags) ? ['first'] : [];
+            });
+
+        $mockRepository->expects($this->once())
+            ->method('add')
+            ->with($this->anything(), ['first'], 'queue_connection');
+
+        $mockRepository->method('monitor');
+
+        $this->app->instance(TagRepository::class, $mockRepository);
+
+        Queue::connection('queue_connection')->push(new Jobs\BasicJob);
+    }
 }

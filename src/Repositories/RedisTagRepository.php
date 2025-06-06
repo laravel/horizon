@@ -28,22 +28,24 @@ class RedisTagRepository implements TagRepository
     /**
      * Get the currently monitored tags.
      *
+     * @param  string|null  $connectionName
      * @return array
      */
-    public function monitoring()
+    public function monitoring($connectionName = null)
     {
-        return (array) $this->connection()->smembers('monitoring');
+        return (array) $this->connection($connectionName)->smembers('monitoring');
     }
 
     /**
      * Return the tags which are being monitored.
      *
      * @param  array  $tags
+     * @param  string|null  $connectionName
      * @return array
      */
-    public function monitored(array $tags)
+    public function monitored(array $tags, $connectionName = null)
     {
-        return array_intersect($tags, $this->monitoring());
+        return array_intersect($tags, $this->monitoring($connectionName));
     }
 
     /**
@@ -73,11 +75,12 @@ class RedisTagRepository implements TagRepository
      *
      * @param  string  $id
      * @param  array  $tags
+     * @param  string|null  $connection
      * @return void
      */
-    public function add($id, array $tags)
+    public function add($id, array $tags, ?string $connection = null)
     {
-        $this->connection()->pipeline(function ($pipe) use ($id, $tags) {
+        $this->connection($connection)->pipeline(function ($pipe) use ($id, $tags) {
             foreach ($tags as $tag) {
                 $pipe->zadd($tag, str_replace(',', '.', microtime(true)), $id);
             }
@@ -176,10 +179,19 @@ class RedisTagRepository implements TagRepository
     /**
      * Get the Redis connection instance.
      *
+     * @param  string|null  $connection
      * @return \Illuminate\Redis\Connections\Connection
      */
-    protected function connection()
+    protected function connection($connection = null)
     {
-        return $this->redis->connection('horizon');
+        if ($connection && config()->has('queue.connections.'.$connection)) {
+            $connection = config('queue.connections.'.$connection.'.connection');
+        }
+
+        if ($connection && ! config()->has('database.redis.'.$connection)) {
+            $connection = null;
+        }
+
+        return $this->redis->connection($connection ?? 'horizon');
     }
 }
