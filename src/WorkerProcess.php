@@ -86,7 +86,7 @@ class WorkerProcess
      */
     public function monitor()
     {
-        if ($this->process->isRunning() || $this->coolingDown()) {
+        if ($this->process->isRunning() || ($this->coolingDown() && $this->process->getExitCode() !== 0)) {
             return;
         }
 
