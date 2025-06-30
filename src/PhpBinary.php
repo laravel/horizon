@@ -11,8 +11,6 @@ class PhpBinary
      */
     public static function path()
     {
-        $escape = '\\' === DIRECTORY_SEPARATOR ? '"' : '\'';
-
-        return $escape.PHP_BINARY.$escape;
+        return env('PHP_BINARY', escapeshellcmd(PHP_BINARY));
     }
 }
