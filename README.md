@@ -1,38 +1,47 @@
-<p align="center"><img width="373" height="60" src="/art/logo.svg" alt="Laravel Horizon"></p>
+## ✨ Feature: Date Range Filtering for Horizon Job Lists
 
-<p align="center">
-<a href="https://github.com/laravel/horizon/actions"><img src="https://github.com/laravel/horizon/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/horizon"><img src="https://img.shields.io/packagist/dt/laravel/horizon" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/horizon"><img src="https://img.shields.io/packagist/v/laravel/horizon" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/horizon"><img src="https://img.shields.io/packagist/l/laravel/horizon" alt="License"></a>
-</p>
+This PR adds support for filtering jobs in the Laravel Horizon dashboard by a **date range**, applicable to the following job lists:
 
-## Introduction
+- Pending
+- Completed
+- Silenced
 
-Horizon provides a beautiful dashboard and code-driven configuration for your Laravel powered Redis queues. Horizon allows you to easily monitor key metrics of your queue system such as job throughput, runtime, and job failures.
+---
 
-All of your worker configuration is stored in a single, simple configuration file, allowing your configuration to stay in source control where your entire team can collaborate.
+### 🔍 Motivation
 
-<p align="center">
-<img src="https://laravel.com/img/docs/horizon-example.png">
-</p>
+Operations and developers often need to inspect job execution logs within a specific timeframe (e.g. during a deployment, incident window, etc.). This feature improves traceability and helps narrow down job lists to relevant time periods.
 
-## Official Documentation
+---
 
-Documentation for Horizon can be found on the [Laravel website](https://laravel.com/docs/horizon).
+### 🛠 What’s Included
 
-## Contributing
+- ✅ UI enhancement: "From" and "To" date inputs added to relevant job views
+- ✅ Backend update: Filtering logic added to job queries based on `created_at`
+- ✅ Non-breaking: If no date is selected, full job list remains visible (default behavior)
+- ✅ Tests: Unit test(s) included to validate filtering behavior
 
-Thank you for considering contributing to Horizon! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### 🧪 How to Test
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Open Horizon dashboard
+2. Navigate to **Pending**, **Completed**, or **Silenced** tabs
+3. Select a `from` and `to` date range
+4. Observe the filtered results
+5. Clear the filters to return to the full list
 
-## Security Vulnerabilities
+---
 
-Please review [our security policy](https://github.com/laravel/horizon/security/policy) on how to report security vulnerabilities.
+### 📸 Screenshots (if applicable)
 
-## License
+_Add screenshots here if you have visual changes._
+
+---
+
+### ✅ Notes
+
+This is fully backward-compatible and should not interfere with any existing Horizon behavior.
+
 
 Laravel Horizon is open-sourced software licensed under the [MIT license](LICENSE.md).
