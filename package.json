@@ -22,5 +22,8 @@
         "vue": "^3.5.4",
         "vue-json-pretty": "^2.4.0",
         "vue-router": "^4.4.4"
+    },
+    "dependencies": {
+        "@vuepic/vue-datepicker": "^11.0.2"
     }
 }
