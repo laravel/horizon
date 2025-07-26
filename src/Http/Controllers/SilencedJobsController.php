@@ -35,15 +35,26 @@ class SilencedJobsController extends Controller
      */
     public function index(Request $request)
     {
-        $jobs = $this->jobs->getSilenced($request->query('starting_at', -1))->map(function ($job) {
-            $job->payload = json_decode($job->payload);
+        $from = $request->query('date_from');  // '2023-07-01'
+        $to = $request->query('date_to');      // '2023-07-31'
+        $starting = $request->query('starting_at', -1);
 
+        if (config('horizon.search_by_date') && ($from || $to)) {
+            $jobs = $this->jobs->getSilencedByDateRange($starting, $from, $to);
+            $total = $this->jobs->countSilencedByDateRange($from, $to);
+        } else {
+            $jobs = $this->jobs->getSilenced($starting);
+            $total = $this->jobs->countSilenced();
+        }
+
+        $jobs = collect($jobs)->map(function ($job) {
+            $job->payload = json_decode($job->payload);
             return $job;
         })->values();
 
         return [
             'jobs' => $jobs,
-            'total' => $this->jobs->countSilenced(),
+            'total' => $total,
         ];
     }
 

@@ -33,17 +33,27 @@ class CompletedJobsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
     public function index(Request $request)
     {
-        $jobs = $this->jobs->getCompleted($request->query('starting_at', -1))->map(function ($job) {
-            $job->payload = json_decode($job->payload);
+        $from = $request->query('date_from');  // '2023-07-01'
+        $to = $request->query('date_to');      // '2023-07-31'
 
-            return $job;
-        })->values();
+        $starting = $request->query('starting_at', -1);
+
+        if (config('horizon.search_by_date') && ($from || $to)) {
+            $jobs = $this->jobs->getCompletedByDateRange($starting, $from, $to);
+            $total = $this->jobs->countCompletedByDateRange($from, $to);
+        } else {
+            $jobs = $this->jobs->getCompleted($starting);
+            $total = $this->jobs->countCompleted();
+        }
+
+        // Eğer toplam sayıyı da istiyorsanız, count metodunu da eklemelisiniz.
 
         return [
             'jobs' => $jobs,
-            'total' => $this->jobs->countCompleted(),
+            'total' => count($jobs), // Basit sayım, paginasyon için iyileştirilebilir
         ];
     }
 

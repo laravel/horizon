@@ -243,4 +243,59 @@ interface JobRepository
      * @return int
      */
     public function deleteFailed($id);
+    
+    /**
+     * Get completed jobs within a given date range.
+     *
+     * @param  int         $afterIndex  Offset index for pagination
+     * @param  string|null $from        Start date (Y-m-d or datetime string)
+     * @param  string|null $to          End date (Y-m-d or datetime string)
+     * @return array
+     */
+    public function getCompletedByDateRange($afterIndex, $from, $to);
+
+    /**
+     * Count completed jobs within a given date range.
+     *
+     * @param  string|null $from  Start date (Y-m-d or datetime string)
+     * @param  string|null $to    End date (Y-m-d or datetime string)
+     *@return \Illuminate\Support\Collection
+     */
+    public function countCompletedByDateRange($from, $to);
+
+    /**
+     * Get silenced jobs within a given date range.
+     *
+     * @param  string|null $from  Start date (Y-m-d or datetime string)
+     * @param  string|null $to    End date (Y-m-d or datetime string)
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSilencedByDateRange($from, $to);
+
+    /**
+     * Count silenced jobs within a given date range.
+     *
+     * @param  string|null $from  Start date (Y-m-d or datetime string)
+     * @param  string|null $to    End date (Y-m-d or datetime string)
+     * @return \Illuminate\Support\Collection
+     */
+    public function countSilencedByDateRange($from, $to);
+
+    /**
+     * Get pending jobs within a given date range.
+     *
+     * @param  string|null $from  Start date (Y-m-d or datetime string)
+     * @param  string|null $to    End date (Y-m-d or datetime string)
+     * @return \Illuminate\Support\Collection
+     */
+    public function getPendingByDateRange($from, $to);
+
+    /**
+     * Count pending jobs within a given date range.
+     *
+     * @param  string|null $from  Start date (Y-m-d or datetime string)
+     * @param  string|null $to    End date (Y-m-d or datetime string)
+     * @return \Illuminate\Support\Collection
+     */
+    public function countPendingByDateRange($from, $to);
 }

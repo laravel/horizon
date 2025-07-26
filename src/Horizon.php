@@ -182,6 +182,7 @@ class Horizon
         return [
             'path' => config('horizon.path'),
             'proxy_path' => config('horizon.proxy_path', ''),
+            'search_by_date' => config('horizon.search_by_date', false),
         ];
     }
 
