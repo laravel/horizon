@@ -53,7 +53,7 @@ class ManyPendingJobsDetected extends Notification implements ManyPendingJobsDet
     {
         return (new MailMessage())
             ->error()
-            ->subject(config('app.name') . ': Many Pending Jobs Detected')
+            ->subject(config('app.name').': Many Pending Jobs Detected')
             ->greeting('Oh no! Something needs your attention.')
             ->line(sprintf(
                 'Horizon has %s pending jobs.',
