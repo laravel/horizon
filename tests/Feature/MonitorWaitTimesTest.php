@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
@@ -49,5 +50,72 @@ class MonitorWaitTimesTest extends IntegrationTest
         $listener->handle();
 
         Event::assertNotDispatched(LongWaitDetected::class);
+    }
+
+    public function test_monitor_wait_times_skips_when_lock_is_not_acquired()
+    {
+        config(['horizon.waits' => ['redis:default' => 60]]);
+
+        Event::fake();
+
+        $calc = Mockery::mock(WaitTimeCalculator::class);
+        $calc->expects('calculate')->never();
+        $this->app->instance(WaitTimeCalculator::class, $calc);
+
+        $metrics = Mockery::mock(MetricsRepository::class);
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->andReturnFalse();
+        $this->app->instance(MetricsRepository::class, $metrics);
+
+        $listener = new MonitorWaitTimes($metrics);
+
+        $listener->handle();
+
+        Event::assertNotDispatched(LongWaitDetected::class);
+    }
+
+    public function test_monitor_wait_times_skips_when_not_due_to_monitor()
+    {
+        config(['horizon.waits' => ['redis:default' => 60]]);
+
+        Event::fake();
+
+        $calc = Mockery::mock(WaitTimeCalculator::class);
+        $calc->expects('calculate')->never();
+        $this->app->instance(WaitTimeCalculator::class, $calc);
+
+        $metrics = Mockery::mock(MetricsRepository::class);
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->never();
+        $this->app->instance(MetricsRepository::class, $metrics);
+
+        $listener = new MonitorWaitTimes($metrics);
+        $listener->lastMonitored = CarbonImmutable::now(); // Too soon
+
+        $listener->handle();
+
+        Event::assertNotDispatched(LongWaitDetected::class);
+    }
+
+    public function test_monitor_wait_times_executes_once_when_called_twice()
+    {
+        config(['horizon.waits' => ['redis:default' => 60]]);
+
+        Event::fake();
+
+        $calc = Mockery::mock(WaitTimeCalculator::class);
+        $calc->expects('calculate')->once()->andReturn([
+            'redis:default' => 70,
+        ]);
+        $this->app->instance(WaitTimeCalculator::class, $calc);
+
+        $metrics = Mockery::mock(MetricsRepository::class);
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->andReturnTrue();
+        $this->app->instance(MetricsRepository::class, $metrics);
+
+        $listener = new MonitorWaitTimes($metrics);
+        $listener->handle();
+        // Call it again to ensure it doesn't execute twice
+        $listener->handle();
+
+        Event::assertDispatchedTimes(LongWaitDetected::class, 1);
     }
 }
