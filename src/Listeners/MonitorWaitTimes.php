@@ -83,7 +83,6 @@ class MonitorWaitTimes
         $lock = $this->metrics->acquireWaitTimeMonitorLock();
 
         if (! $lock) {
-            // If we cannot acquire the lock, it means another supervisor is already monitoring.
             return false;
         }
 
