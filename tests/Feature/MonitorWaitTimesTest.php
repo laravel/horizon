@@ -95,6 +95,36 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::assertNotDispatched(LongWaitDetected::class);
     }
 
+    public function test_monitor_wait_times_skips_when_not_due_to_monitor_and_executes_after_2_minutes()
+    {
+        config(['horizon.waits' => ['redis:default' => 60]]);
+
+        Event::fake();
+
+        $calc = Mockery::mock(WaitTimeCalculator::class);
+        $calc->expects('calculate')->once()->andReturn([
+            'redis:default' => 70,
+        ]);
+        $this->app->instance(WaitTimeCalculator::class, $calc);
+
+        $metrics = Mockery::mock(MetricsRepository::class);
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->andReturnTrue();
+        $this->app->instance(MetricsRepository::class, $metrics);
+
+        $listener = new MonitorWaitTimes($metrics);
+        $listener->lastMonitored = CarbonImmutable::now(); // Too soon
+
+        $listener->handle();
+
+        Event::assertNotDispatched(LongWaitDetected::class);
+
+        CarbonImmutable::setTestNow(now()->addMinutes(2)); // Simulate time passing
+
+        $listener->handle();
+
+        Event::assertDispatched(LongWaitDetected::class);
+    }
+
     public function test_monitor_wait_times_executes_once_when_called_twice()
     {
         config(['horizon.waits' => ['redis:default' => 60]]);
