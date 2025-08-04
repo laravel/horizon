@@ -53,6 +53,7 @@ trait EventMap
             Listeners\TrimMonitoredJobs::class,
             Listeners\ExpireSupervisors::class,
             Listeners\MonitorMasterSupervisorMemory::class,
+            Listeners\MonitorManyPendingJobs::class,
         ],
 
         Events\SupervisorLooped::class => [
@@ -70,6 +71,10 @@ trait EventMap
         ],
 
         Events\LongWaitDetected::class => [
+            Listeners\SendNotification::class,
+        ],
+
+        Events\ManyPendingJobsDetected::class => [
             Listeners\SendNotification::class,
         ],
     ];

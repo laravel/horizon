@@ -89,6 +89,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Queue Pending Jobs Thresholds
+    |--------------------------------------------------------------------------
+    |
+    | This option determines how many pending jobs will trigger an event
+    | across all queues and connections in your application.
+    | Set to null to disable this monitoring entirely.
+    |
+    */
+
+    'pending_jobs_monitor_threshold' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Job Trimming Times
     |--------------------------------------------------------------------------
     |

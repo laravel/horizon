@@ -30,5 +30,6 @@ trait ServiceBindings
 
         // Notifications...
         Contracts\LongWaitDetectedNotification::class => Notifications\LongWaitDetected::class,
+        Contracts\ManyPendingJobsDetectedNotification::class => Notifications\ManyPendingJobsDetected::class,
     ];
 }
