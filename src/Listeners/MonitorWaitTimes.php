@@ -76,11 +76,15 @@ class MonitorWaitTimes
         // We will keep track of the amount of time between attempting to acquire the
         // lock to monitor the wait times. We only want a single supervisor to run
         // the checks on a given interval so that we don't fire too many events.
-        if (! $this->lastMonitored) {
-            $this->lastMonitored = CarbonImmutable::now();
-        }
 
         if (! $this->timeToMonitor()) {
+            return false;
+        }
+
+        $lock = $this->metrics->acquireWaitTimeMonitorLock();
+
+        if (! $lock) {
+            // If we cannot acquire the lock, it means another supervisor is already monitoring.
             return false;
         }
 
@@ -89,7 +93,7 @@ class MonitorWaitTimes
         // operation required. This will avoid any deadlocks or race conditions.
         $this->lastMonitored = CarbonImmutable::now();
 
-        return $this->metrics->acquireWaitTimeMonitorLock();
+        return true;
     }
 
     /**
@@ -99,6 +103,10 @@ class MonitorWaitTimes
      */
     protected function timeToMonitor()
     {
-        return CarbonImmutable::now()->subMinutes(1)->lte($this->lastMonitored);
+        if ($this->lastMonitored === null) {
+            return true;
+        }
+
+        return CarbonImmutable::now()->gte($this->lastMonitored->addMinute());
     }
 }
