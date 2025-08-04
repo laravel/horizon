@@ -76,7 +76,6 @@ class MonitorWaitTimes
         // We will keep track of the amount of time between attempting to acquire the
         // lock to monitor the wait times. We only want a single supervisor to run
         // the checks on a given interval so that we don't fire too many events.
-
         if (! $this->timeToMonitor()) {
             return false;
         }
