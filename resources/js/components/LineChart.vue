@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { Chart, ChartConfiguration, ChartData, registerables } from 'chart.js';
-
-// Register all Chart.js components
-Chart.register(...registerables);
+import Chart from 'chart.js';
 
 interface Props {
-    data: ChartData<'line'>;
+    data: any;
 }
 
 const props = defineProps<Props>();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
-const chart = ref<Chart<'line'> | null>(null);
+const chart = ref<Chart | null>(null);
 
 onMounted(() => {
     if (!canvas.value) return;
@@ -20,61 +17,50 @@ onMounted(() => {
     const context = canvas.value.getContext('2d');
     if (!context) return;
 
-    const config: ChartConfiguration<'line'> = {
+    chart.value = new Chart(context, {
         type: 'line',
         data: props.data,
         options: {
-            interaction: {
+            legend: {
+                display: false,
+            },
+            tooltips: {
                 intersect: false,
             },
-            plugins: {
-                legend: {
-                    display: false,
-                },
-                tooltip: {
-                    intersect: false,
-                },
-            },
             scales: {
-                y: {
-                    beginAtZero: true,
+                yAxes: [{
                     ticks: {
-                        callback: function(value) {
+                        beginAtZero: true,
+                        callback: function(value: any) {
                             return props.data.datasets[0].label === "Seconds"
                                 ? `${value} secs`
                                 : value;
                         },
                     },
-                    grid: {
-                        display: true
-                    },
-                    beforeBuildTicks: function(scale) {
+                    beforeBuildTicks: function(scale: any) {
                         const dataset = scale.chart.data.datasets[0];
                         if (dataset && dataset.data) {
                             const max = Math.max(...(dataset.data as number[]));
                             scale.max = max + (max * 0.25);
                         }
                     },
-                },
-                x: {
-                    grid: {
-                        display: true
-                    },
-                    afterTickToLabelConversion: function(axis) {
+                }],
+                xAxes: [{
+                    display: true,
+                    afterTickToLabelConversion: function(axis: any) {
                         const ticks = axis.ticks;
                         
-                        ticks.forEach((tick, i) => {
+                        ticks.forEach((_tick: any, i: any) => {
                             if (i % 6 !== 0 && (i + 1) !== ticks.length) {
-                                tick.label = '';
+                                ticks[i] = '';
                             }
                         });
                     }
-                },
-            }
-        }
-    };
-
-    chart.value = new Chart(context, config);
+                }],
+            },
+            maintainAspectRatio: false,
+        },
+    });
 });
 </script>
 

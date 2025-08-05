@@ -75,6 +75,7 @@
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
+            "Composer\\Config::disableProcessTimeout",
             "@build",
             "@php vendor/bin/testbench serve"
         ],
@@ -86,7 +87,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#FF2D20,#38BDF8\" --kill-others --handle-input \"composer serve\" \"npm run watch\" --names=server,vite"
+            "npx concurrently -c \"#FF2D20,#38BDF8\" --kill-others --handle-input \"@serve\" \"npm run watch\" --names=server,vite"
         ]
     }
 }

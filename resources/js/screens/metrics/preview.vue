@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, getCurrentInstance } from 'vue';
 import { useRoute } from 'vue-router';
-import { ChartData } from 'chart.js';
 import LineChart from '../../components/LineChart.vue';
 
 interface MetricData {
@@ -17,8 +16,8 @@ interface PreparedData {
 }
 
 interface MetricCharts {
-    throughPutChart?: ChartData<'line'>;
-    runTimeChart?: ChartData<'line'>;
+    throughPutChart?: any;
+    runTimeChart?: any;
 }
 
 const route = useRoute();
@@ -78,7 +77,7 @@ const prepareData = (data: MetricData[]): PreparedData[] => {
 /**
  * Build the given chart data.
  */
-const buildChartData = (data: PreparedData[], attribute: keyof PreparedData, label: string): ChartData<'line'> => {
+const buildChartData = (data: PreparedData[], attribute: keyof PreparedData, label: string): any => {
     return {
         labels: data.map(entry => entry.time),
         datasets: [
