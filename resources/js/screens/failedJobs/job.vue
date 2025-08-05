@@ -1,96 +1,114 @@
-<script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize'
-    import StackTrace from '@/components/Stacktrace.vue'
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import { unserialize } from 'phpunserialize';
+import VueJsonPretty from 'vue-json-pretty';
+import StackTrace from '@/components/Stacktrace.vue';
+import Poll from '../../components/Poll.vue';
 
-    export default {
-        components: {
-            'stack-trace': StackTrace,
-        },
+interface RetryInfo {
+    id: string;
+    status: 'completed' | 'reserved' | 'pending' | 'failed';
+    retried_at: number;
+}
 
+interface JobPayload {
+    attempts: number;
+    retry_of?: string;
+    tags?: string[];
+    pushedAt: number;
+    data: any;
+}
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                retrying: false,
-                job: {}
-            };
-        },
+interface FailedJobDetails {
+    id: string;
+    name: string;
+    queue: string;
+    failed_at: number;
+    exception: string;
+    context: any;
+    retried_by: RetryInfo[];
+    payload: JobPayload;
+}
 
+const route = useRoute();
+const instance = getCurrentInstance();
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            this.loadFailedJob(this.$route.params.jobId);
+const ready = ref(false);
+const retrying = ref(false);
+const job = ref<FailedJobDetails>({} as FailedJobDetails);
 
-            document.title = "Horizon - Failed Jobs";
-        },
+onMounted(() => {
+    loadFailedJob(route.params.jobId as string);
+    document.title = "Horizon - Failed Jobs";
+});
 
+const loadFailedJob = (id: string) => {
+    ready.value = false;
 
-        methods: {
-            loadFailedJob(id) {
-                this.ready = false;
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
 
-                this.$http.get(Horizon.basePath + '/api/jobs/failed/' + id)
-                    .then(response => {
-                        this.job = response.data;
+    $http.get<FailedJobDetails>(window.Horizon.basePath + '/api/jobs/failed/' + id)
+        .then(response => {
+            job.value = response.data;
+            ready.value = true;
+        });
+};
 
-                        this.ready = true;
-                    });
-            },
+/**
+ * Reload the job retries.
+ */
+const reloadRetries = () => {
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
 
+    $http.get<FailedJobDetails>(window.Horizon.basePath + '/api/jobs/failed/' + route.params.jobId)
+        .then(response => {
+            job.value.retried_by = response.data.retried_by;
+        });
+};
 
-            /**
-             * Reload the job retries.
-             */
-            reloadRetries() {
-                this.$http.get(Horizon.basePath + '/api/jobs/failed/' + this.$route.params.jobId)
-                    .then(response => {
-                        this.job.retried_by = response.data.retried_by;
-                    });
-            },
-
-
-            /**
-             * Retry the given failed job.
-             */
-            retry(id) {
-                if (this.retrying) {
-                    return;
-                }
-
-                this.retrying = true;
-
-                this.$http.post(Horizon.basePath + '/api/jobs/retry/' + id)
-                    .then(() => {
-                        setTimeout(() => {
-                            this.reloadRetries();
-
-                            this.retrying = false;
-                        }, 3000);
-                    });
-            },
-
-
-            /**
-             * Pretty print serialized job.
-             *
-             * @param data
-             * @returns {string}
-             */
-            prettyPrintJob(data) {
-                try {
-                    return data.command && !data.command.includes('CallQueuedClosure')
-                        ? phpunserialize(data.command) : data;
-                } catch (err) {
-                    return data;
-                }
-            }
-        }
+/**
+ * Retry the given failed job.
+ */
+const retry = (id: string) => {
+    if (retrying.value) {
+        return;
     }
+
+    retrying.value = true;
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.post(window.Horizon.basePath + '/api/jobs/retry/' + id)
+        .then(() => {
+            setTimeout(() => {
+                reloadRetries();
+                retrying.value = false;
+            }, 3000);
+        });
+};
+
+/**
+ * Pretty print serialized job.
+ */
+const prettyPrintJob = (data: any): any => {
+    try {
+        return data.command && !data.command.includes('CallQueuedClosure')
+            ? unserialize(data.command) : data;
+    } catch (err) {
+        return data;
+    }
+};
+
+const readableTimestamp = (timestamp: number) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.readableTimestamp(timestamp);
+};
+
+const Horizon = window.Horizon;
 </script>
 
 <template>
@@ -213,7 +231,7 @@
 
                 <tbody>
 
-                <tr v-for="retry in job.retried_by">
+                <tr v-for="retry in job.retried_by" :key="retry.id">
                     <td>
                         <svg v-if="retry.status == 'completed'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="fill-success" style="width: 1.5rem; height: 1.5rem;">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />

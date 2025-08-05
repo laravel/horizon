@@ -1,30 +1,25 @@
-<script type="text/ecmascript-6">
-    export default {
-        props: ['trace'],
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                minimumLines: 5,
-                showAll: false,
-            };
-        },
+interface Props {
+    trace: string[];
+}
 
-        computed: {
-            lines() {
-                return this.trace.slice(0, this.showAll ? 1000 : this.minimumLines);
-            }
-        }
-    }
+const props = defineProps<Props>();
+
+const minimumLines = 5;
+const showAll = ref(false);
+
+const lines = computed(() => {
+    return props.trace.slice(0, showAll.value ? 1000 : minimumLines);
+});
 </script>
 
 <template>
     <div class="table-responsive">
         <table class="table mb-0">
             <tbody>
-            <tr v-for="line in lines">
+            <tr v-for="(line, index) in lines" :key="index">
                 <td class="card-bg-secondary"><code>{{line}}</code></td>
             </tr>
 

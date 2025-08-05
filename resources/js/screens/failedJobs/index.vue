@@ -1,192 +1,203 @@
-<script type="text/ecmascript-6">
-    export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                tagSearchPhrase: '',
-                searchTimeout: null,
-                ready: false,
-                loadingNewEntries: false,
-                hasNewEntries: false,
-                page: 1,
-                perPage: 50,
-                totalPages: 1,
-                jobs: [],
-                retryingJobs: [],
-            };
-        },
+<script setup lang="ts">
+import { ref, watch, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import Poll from '../../components/Poll.vue';
 
+interface RetryInfo {
+    id: string;
+    status: string;
+}
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Failed Jobs";
-        },
+interface JobPayload {
+    attempts: number;
+    retry_of?: string;
+    tags?: string[];
+}
 
+interface FailedJob {
+    id: string;
+    name: string;
+    queue: string;
+    failed_at: number;
+    reserved_at: number;
+    retried_by: RetryInfo[];
+    payload: JobPayload;
+}
 
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.page = 1;
+interface FailedJobsResponse {
+    jobs: FailedJob[];
+    total: number;
+}
 
-                this.loadJobs();
-            },
+const route = useRoute();
+const instance = getCurrentInstance();
 
+const tagSearchPhrase = ref('');
+const searchTimeout = ref<number | null>(null);
+const ready = ref(false);
+const loadingNewEntries = ref(false);
+const hasNewEntries = ref(false);
+const page = ref(1);
+const perPage = ref(50);
+const totalPages = ref(1);
+const jobs = ref<FailedJob[]>([]);
+const retryingJobs = ref<string[]>([]);
 
-            tagSearchPhrase() {
-                clearTimeout(this.searchTimeout);
+onMounted(() => {
+    document.title = "Horizon - Failed Jobs";
+});
 
-                this.searchTimeout = setTimeout(() => {
-                    this.loadJobs();
-                    this.refreshJobsPeriodically();
-                }, 500);
-            }
-        },
+watch(() => route.path, () => {
+    page.value = 1;
+    loadJobs();
+});
 
-
-        methods: {
-            /**
-             * Load the jobs of the given tag.
-             */
-            loadJobs(starting = 0, refreshing = false) {
-                if (!refreshing) {
-                    this.ready = false;
-                }
-
-                var tagQuery = this.tagSearchPhrase ? 'tag=' + this.tagSearchPhrase + '&' : '';
-
-                this.$http.get(Horizon.basePath + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
-                    .then(response => {
-                        if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
-                            return;
-                        }
-
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
-                            this.hasNewEntries = true;
-                        } else {
-                            this.jobs = response.data.jobs;
-
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
-                        }
-
-                        this.ready = true;
-                    });
-            },
-
-
-            loadNewEntries() {
-                this.jobs = [];
-
-                this.loadJobs(0, false);
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Retry the given failed job.
-             */
-            retry(id) {
-                if (this.isRetrying(id)) {
-                    return;
-                }
-
-                this.retryingJobs.push(id);
-
-                this.$http.post(Horizon.basePath + '/api/jobs/retry/' + id)
-                    .then((response) => {
-                        setTimeout(() => {
-                            this.retryingJobs = this.retryingJobs.filter(job => job != id);
-                        }, 5000);
-                    }).catch(error => {
-                        this.retryingJobs = this.retryingJobs.filter(job => job != id);
-                    });
-            },
-
-
-            /**
-             * Determine if the given job is currently retrying.
-             */
-            isRetrying(id) {
-                return this.retryingJobs.includes(id);
-            },
-
-
-            /**
-             * Determine if the given job has completed.
-             */
-            hasCompleted(job) {
-                return job.retried_by.find(retry => retry.status === 'completed');
-            },
-
-
-            /**
-             * Determine if the given job was retried.
-             */
-            wasRetried(job) {
-                return job.retried_by && job.retried_by.length;
-            },
-
-
-            /**
-             * Determine if the given job is a retry.
-             */
-            isRetry(job) {
-                return job.payload.retry_of;
-            },
-
-
-            /**
-             * Construct the tooltip label for a retried job.
-             */
-            retriedJobTooltip(job) {
-                let lastRetry = job.retried_by[job.retried_by.length - 1];
-
-                return `Total retries: ${job.retried_by.length}, Last retry status: ${this.upperFirst(lastRetry.status)}`;
-            },
-
-
-            /**
-             * Poll handler to refresh the jobs at regular intervals.
-             */
-            refreshJobsPeriodically() {
-                this.loadJobs((this.page - 1) * this.perPage, true);
-            },
-
-
-            /**
-             * Load the jobs for the previous page.
-             */
-            previous() {
-                this.loadJobs(
-                    (this.page - 2) * this.perPage
-                );
-
-                this.page -= 1;
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Load the jobs for the next page.
-             */
-            next() {
-                this.loadJobs(
-                    this.page * this.perPage
-                );
-
-                this.page += 1;
-
-                this.hasNewEntries = false;
-            }
-        }
+watch(tagSearchPhrase, () => {
+    if (searchTimeout.value) {
+        clearTimeout(searchTimeout.value);
     }
+
+    searchTimeout.value = window.setTimeout(() => {
+        loadJobs();
+        refreshJobsPeriodically();
+    }, 500);
+});
+
+/**
+ * Load the jobs of the given tag.
+ */
+const loadJobs = (starting = 0, refreshing = false) => {
+    if (!refreshing) {
+        ready.value = false;
+    }
+
+    const tagQuery = tagSearchPhrase.value ? 'tag=' + tagSearchPhrase.value + '&' : '';
+    const $http = instance?.appContext.config.globalProperties.$http;
+    const $root = instance?.appContext.config.globalProperties.$root as any;
+    
+    if (!$http) return;
+
+    $http.get<FailedJobsResponse>(window.Horizon.basePath + '/api/jobs/failed?' + tagQuery + 'starting_at=' + starting)
+        .then(response => {
+            if (!$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
+                return;
+            }
+
+            if (!$root.autoLoadsNewEntries && refreshing && jobs.value.length && response.data.jobs[0]?.id !== jobs.value[0]?.id) {
+                hasNewEntries.value = true;
+            } else {
+                jobs.value = response.data.jobs;
+                totalPages.value = Math.ceil(response.data.total / perPage.value);
+            }
+
+            ready.value = true;
+        });
+};
+
+const loadNewEntries = () => {
+    jobs.value = [];
+    loadJobs(0, false);
+    hasNewEntries.value = false;
+};
+
+/**
+ * Retry the given failed job.
+ */
+const retry = (id: string) => {
+    if (isRetrying(id)) {
+        return;
+    }
+
+    retryingJobs.value.push(id);
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.post(window.Horizon.basePath + '/api/jobs/retry/' + id)
+        .then(() => {
+            setTimeout(() => {
+                retryingJobs.value = retryingJobs.value.filter(job => job !== id);
+            }, 5000);
+        }).catch(() => {
+            retryingJobs.value = retryingJobs.value.filter(job => job !== id);
+        });
+};
+
+/**
+ * Determine if the given job is currently retrying.
+ */
+const isRetrying = (id: string): boolean => {
+    return retryingJobs.value.includes(id);
+};
+
+/**
+ * Determine if the given job has completed.
+ */
+const hasCompleted = (job: FailedJob): boolean => {
+    return !!job.retried_by.find(retry => retry.status === 'completed');
+};
+
+/**
+ * Determine if the given job was retried.
+ */
+const wasRetried = (job: FailedJob): boolean => {
+    return !!(job.retried_by && job.retried_by.length);
+};
+
+/**
+ * Determine if the given job is a retry.
+ */
+const isRetry = (job: FailedJob): boolean => {
+    return !!job.payload.retry_of;
+};
+
+/**
+ * Construct the tooltip label for a retried job.
+ */
+const retriedJobTooltip = (job: FailedJob): string => {
+    const lastRetry = job.retried_by[job.retried_by.length - 1];
+    return `Total retries: ${job.retried_by.length}, Last retry status: ${upperFirst(lastRetry.status)}`;
+};
+
+/**
+ * Poll handler to refresh the jobs at regular intervals.
+ */
+const refreshJobsPeriodically = () => {
+    loadJobs((page.value - 1) * perPage.value, true);
+};
+
+/**
+ * Load the jobs for the previous page.
+ */
+const previous = () => {
+    loadJobs((page.value - 2) * perPage.value);
+    page.value -= 1;
+    hasNewEntries.value = false;
+};
+
+/**
+ * Load the jobs for the next page.
+ */
+const next = () => {
+    loadJobs(page.value * perPage.value);
+    page.value += 1;
+    hasNewEntries.value = false;
+};
+
+const jobBaseName = (name: string) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.jobBaseName(name);
+};
+
+const readableTimestamp = (timestamp: number) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.readableTimestamp(timestamp);
+};
+
+const upperFirst = (string: string) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.upperFirst(string);
+};
 </script>
 
 <template>
@@ -258,7 +269,7 @@
                             <span v-if="isRetry(job)">
                             | Retry of
                             <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
-                                {{ job.payload.retry_of.split('-')[0] }}
+                                {{ job.payload.retry_of?.split('-')[0] }}
                             </router-link>
                             </span>
                             <span v-if="job.payload.tags && job.payload.tags.length" class="text-break">

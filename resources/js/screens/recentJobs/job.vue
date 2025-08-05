@@ -3,7 +3,7 @@
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
-                <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
+                <h2 class="h6 m-0" v-if="ready && job">{{job.name}}</h2>
 
                 <a data-bs-toggle="collapse" href="#collapseDetails" role="button">
                     Collapse
@@ -18,7 +18,7 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary collapse show" id="collapseDetails" v-if="ready">
+            <div class="card-body card-bg-secondary collapse show" id="collapseDetails" v-if="ready && job">
                 <div class="row mb-2">
                     <div class="col-md-2 text-muted">ID</div>
                     <div class="col">{{job.id}}</div>
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div class="card overflow-hidden mt-4" v-if="ready && job">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
 
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready && job.payload.tags.length">
+        <div class="card overflow-hidden mt-4" v-if="ready && job && job.payload.tags.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Tags</h2>
 
@@ -86,83 +86,114 @@
     </div>
 </template>
 
-<script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize';
-    import moment from 'moment-timezone';
-    import StackTrace from './../../components/Stacktrace.vue';
+<script setup lang="ts">
+import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import { unserialize } from 'phpunserialize';
+import moment from 'moment-timezone';
 
-    export default {
-        components: {
-            'stack-trace': StackTrace,
-        },
+interface JobPayload {
+    pushedAt: number;
+    tags: string[];
+    data: {
+        command: string;
+        [key: string]: any;
+    };
+}
 
-        data() {
-            return {
-                ready: false,
-                job: {}
-            };
-        },
+interface Job {
+    id: string;
+    name: string;
+    queue: string;
+    status: string;
+    payload: JobPayload;
+    completed_at?: number;
+    reserved_at: number;
+}
 
-        computed: {
-            unserialized() {
-                return phpunserialize(this.job.payload.data.command);
-            },
+interface DelayData {
+    delay?: {
+        date?: string;
+        timezone?: string;
+    } | number;
+}
 
-            delayed() {
-                let unserialized;
+interface JobData {
+    command?: string;
+    batchId?: string;
+    [key: string]: any;
+}
 
-                try {
-                    unserialized = phpunserialize(this.job.payload.data.command);
-                }catch(err){
-                    //
-                }
+const route = useRoute();
+const instance = getCurrentInstance();
 
-                if (unserialized && unserialized.delay && unserialized.delay.date) {
-                    return moment.tz(unserialized.delay.date, unserialized.delay.timezone)
-                        .local()
-                        .format('YYYY-MM-DD HH:mm:ss');
-                } else if (unserialized && unserialized.delay) {
-                    return this.formatDate(this.job.payload.pushedAt).add(unserialized.delay, 'seconds')
-                        .local()
-                        .format('YYYY-MM-DD HH:mm:ss');
-                }
+const ready = ref(false);
+const job = ref<Job | null>(null);
 
-                return null;
-            },
-        },
 
-        mounted() {
-            this.loadJob(this.$route.params.jobId);
+const delayed = computed<string | null>(() => {
+    if (!job.value) return null;
+    
+    let unserializedData: DelayData | null = null;
 
-            document.title = "Horizon - Job Detail";
-        },
+    try {
+        unserializedData = unserialize(job.value.payload.data.command) as DelayData;
+    } catch (err) {
+        // Ignore errors
+    }
 
-        methods: {
-            /**
-             * Load a job by the given ID.
-             */
-            loadJob(id) {
-                this.ready = false;
-
-                this.$http.get(Horizon.basePath + '/api/jobs/' + id)
-                    .then(response => {
-                        this.job = response.data;
-
-                        this.ready = true;
-                    });
-            },
-
-            /**
-             * Pretty print serialized job.
-             */
-            prettyPrintJob(data) {
-                try {
-                    return data.command && !data.command.includes('CallQueuedClosure')
-                        ? phpunserialize(data.command) : data;
-                } catch (err) {
-                    return data;
-                }
-            }
+    if (unserializedData && unserializedData.delay) {
+        if (typeof unserializedData.delay === 'object' && unserializedData.delay.date) {
+            return moment.tz(unserializedData.delay.date, unserializedData.delay.timezone || 'UTC')
+                .local()
+                .format('YYYY-MM-DD HH:mm:ss');
+        } else if (typeof unserializedData.delay === 'number') {
+            const baseMixin = instance?.appContext.config.globalProperties as any;
+            return baseMixin.formatDate(job.value.payload.pushedAt).add(unserializedData.delay, 'seconds')
+                .local()
+                .format('YYYY-MM-DD HH:mm:ss');
         }
     }
+
+    return null;
+});
+
+onMounted(() => {
+    loadJob(route.params.jobId as string);
+    document.title = "Horizon - Job Detail";
+});
+
+/**
+ * Load a job by the given ID.
+ */
+const loadJob = (id: string) => {
+    ready.value = false;
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.get<Job>(window.Horizon.basePath + '/api/jobs/' + id)
+        .then(response => {
+            job.value = response.data;
+            ready.value = true;
+        });
+};
+
+/**
+ * Pretty print serialized job.
+ */
+const prettyPrintJob = (data: JobData): any => {
+    try {
+        return data.command && !data.command.includes('CallQueuedClosure')
+            ? unserialize(data.command) : data;
+    } catch (err) {
+        return data;
+    }
+};
+
+const readableTimestamp = (timestamp: number | undefined) => {
+    if (!timestamp) return '-';
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.readableTimestamp(timestamp);
+};
 </script>

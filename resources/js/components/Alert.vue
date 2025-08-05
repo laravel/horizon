@@ -1,80 +1,83 @@
-<script type="text/ecmascript-6">
-    import { Modal } from 'bootstrap';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { Modal } from 'bootstrap';
+import { getCurrentInstance } from 'vue';
 
-    export default {
-        props: ['type', 'message', 'autoClose', 'confirmationProceed', 'confirmationCancel'],
+interface Props {
+    type: 'error' | 'success' | 'confirmation' | null;
+    message: string;
+    autoClose: number;
+    confirmationProceed?: () => void;
+    confirmationCancel?: () => void;
+}
 
-        data(){
-            return {
-                timeout: null,
-                alertModal: null,
-                anotherModalOpened: document.body.classList.contains('modal-open')
-            }
-        },
+const props = defineProps<Props>();
 
+const timeout = ref<number | null>(null);
+const alertModal = ref<Modal | null>(null);
+const anotherModalOpened = ref(document.body.classList.contains('modal-open'));
 
-        mounted() {
-            const alertModalElement = document.getElementById('alertModal');
+const instance = getCurrentInstance();
 
-            this.alertModal = Modal.getOrCreateInstance(alertModalElement, {
-                backdrop: 'static',
-            })
+onMounted(() => {
+    const alertModalElement = document.getElementById('alertModal');
+    
+    if (!alertModalElement) return;
 
-            this.alertModal.show();
+    alertModal.value = Modal.getOrCreateInstance(alertModalElement, {
+        backdrop: 'static',
+    });
 
-            alertModalElement.addEventListener('hidden.bs.modal', e => {
-                this.$root.alert.type = null;
-                this.$root.alert.autoClose = false;
-                this.$root.alert.message = '';
-                this.$root.alert.confirmationProceed = null;
-                this.$root.alert.confirmationCancel = null;
+    alertModal.value.show();
 
-                if (this.anotherModalOpened) {
-                    document.body.classList.add('modal-open');
-                }
-            }, this);
-
-            if (this.autoClose) {
-                this.timeout = setTimeout(() => {
-                    this.close();
-                }, this.autoClose);
-            }
-        },
-
-
-        methods: {
-            /**
-             * Close the modal.
-             */
-            close(){
-                clearTimeout(this.timeout);
-
-                this.alertModal.hide();
-            },
-
-
-            /**
-             * Confirm and close the modal.
-             */
-            confirm(){
-                this.confirmationProceed();
-
-                this.close();
-            },
-
-
-            /**
-             * Cancel and close the modal.
-             */
-            cancel(){
-                if (this.confirmationCancel) {
-                    this.confirmationCancel();
-                }
-
-                this.close();
-            }
+    alertModalElement.addEventListener('hidden.bs.modal', () => {
+        if (instance?.appContext.config.globalProperties.$root) {
+            const root = instance.appContext.config.globalProperties.$root as any;
+            root.alert.type = null;
+            root.alert.autoClose = 0;
+            root.alert.message = '';
+            root.alert.confirmationProceed = null;
+            root.alert.confirmationCancel = null;
         }
+
+        if (anotherModalOpened.value) {
+            document.body.classList.add('modal-open');
+        }
+    });
+
+    if (props.autoClose) {
+        timeout.value = window.setTimeout(() => {
+            close();
+        }, props.autoClose);
     }
+});
+
+/**
+ * Close the modal.
+ */
+const close = () => {
+    if (timeout.value) {
+        clearTimeout(timeout.value);
+    }
+
+    alertModal.value?.hide();
+};
+
+/**
+ * Confirm and close the modal.
+ */
+const confirm = () => {
+    props.confirmationProceed?.();
+    close();
+};
+
+/**
+ * Cancel and close the modal.
+ */
+const cancel = () => {
+    props.confirmationCancel?.();
+    close();
+};
 </script>
 
 <template>

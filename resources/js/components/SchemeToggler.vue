@@ -1,53 +1,50 @@
-<script type="text/ecmascript-6">
-    export default {
-        data () {
-            return {
-                scheme: 'system'
-            }
-        },
+<script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
 
-        watch: {
-            scheme (value) {
-                localStorage.setItem('scheme', value);
-            }
-        },
+type ColorScheme = 'system' | 'dark' | 'light';
 
-        mounted () {
-            this.scheme = localStorage.getItem('scheme') ?? 'system';
+const scheme = ref<ColorScheme>('system');
 
-            window
-                .matchMedia('(prefers-color-scheme: dark)')
-                .addEventListener('change', () => this.calculateScheme())
+const calculateScheme = () => {
+    const dark = document.querySelector<HTMLStyleElement>('style[data-scheme="dark"]');
+    
+    if (!dark) return;
 
-            this.calculateScheme()
-        },
-
-        methods: {
-            toggleScheme () {
-                if (this.scheme == 'system') {
-                    this.scheme = 'dark'
-                } else if (this.scheme == 'dark') {
-                    this.scheme = 'light'
-                } else {
-                    this.scheme = 'system'
-                }
-
-                this.calculateScheme()
-            },
-
-            calculateScheme () {
-                const dark = document.querySelector('style[data-scheme="dark"]');
-
-                if (this.scheme == 'system') {
-                    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
-
-                    dark.media = prefersDarkMode.matches ? "" : "max-width: 1px";
-                } else {
-                    dark.media = this.scheme == 'dark' ? "" : "max-width: 1px";
-                }
-            }
-        }
+    if (scheme.value === 'system') {
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+        dark.media = prefersDarkMode.matches ? "" : "max-width: 1px";
+    } else {
+        dark.media = scheme.value === 'dark' ? "" : "max-width: 1px";
     }
+};
+
+const toggleScheme = () => {
+    if (scheme.value === 'system') {
+        scheme.value = 'dark';
+    } else if (scheme.value === 'dark') {
+        scheme.value = 'light';
+    } else {
+        scheme.value = 'system';
+    }
+
+    calculateScheme();
+};
+
+watch(scheme, (value) => {
+    localStorage.setItem('scheme', value);
+});
+
+onMounted(() => {
+    const storedScheme = localStorage.getItem('scheme');
+    if (storedScheme === 'dark' || storedScheme === 'light' || storedScheme === 'system') {
+        scheme.value = storedScheme;
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', () => calculateScheme());
+
+    calculateScheme();
+});
 </script>
 
 <template>

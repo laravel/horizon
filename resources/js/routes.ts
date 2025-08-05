@@ -1,3 +1,4 @@
+import type { RouteRecordRaw } from 'vue-router';
 import dashboard from './screens/dashboard.vue';
 import monitoring from './screens/monitoring/index.vue';
 import monitoringTag from './screens/monitoring/tag.vue';
@@ -13,7 +14,7 @@ import failedJobsJob from './screens/failedJobs/job.vue';
 import batches from './screens/batches/index.vue';
 import batchesPreview from './screens/batches/preview.vue';
 
-export default [
+const routes: RouteRecordRaw[] = [
     { path: '/', redirect: '/dashboard' },
 
     {
@@ -121,3 +122,5 @@ export default [
         ],
     },
 ];
+
+export default routes;

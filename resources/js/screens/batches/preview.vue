@@ -1,64 +1,103 @@
-<script type="text/ecmascript-6">
-    export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                retrying: false,
-                batch: {},
-                failedJobs : []
-            };
-        },
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import Poll from '../../components/Poll.vue';
 
+interface BatchOptions {
+    queue?: string;
+    connection?: string;
+}
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Batches";
-        },
+interface Batch {
+    id: string;
+    name: string;
+    totalJobs: number;
+    pendingJobs: number;
+    failedJobs: number;
+    processedJobs: number;
+    progress: number;
+    createdAt: string;
+    finishedAt?: string;
+    cancelledAt?: string;
+    options: BatchOptions;
+}
 
+interface FailedJob {
+    id: string;
+    name: string;
+    failed_at: number;
+    reserved_at: number;
+}
 
-        methods: {
-            loadBatch(reload = true) {
-                if (reload) {
-                    this.ready = false;
-                }
+interface BatchResponse {
+    batch: Batch;
+    failedJobs: FailedJob[];
+}
 
-                this.$http.get(Horizon.basePath + '/api/batches/' + this.$route.params.batchId)
-                    .then(response => {
-                        this.batch = response.data.batch;
-                        this.failedJobs = response.data.failedJobs;
+const route = useRoute();
+const instance = getCurrentInstance();
 
-                        this.ready = true;
-                    });
-            },
+const ready = ref(false);
+const retrying = ref(false);
+const batch = ref<Batch>({} as Batch);
+const failedJobs = ref<FailedJob[]>([]);
 
+onMounted(() => {
+    document.title = "Horizon - Batches";
+});
 
-            /**
-             * Retry the given failed job.
-             */
-            retry(id) {
-                if (this.retrying) {
-                    return;
-                }
-
-                this.retrying = true;
-
-                this.$http.post(Horizon.basePath + '/api/batches/retry/' + id)
-                    .then(() => {
-                        setTimeout(() => {
-                            this.loadBatch(false);
-
-                            this.retrying = false;
-                        }, 3000);
-                    });
-            },
-
-        }
+const loadBatch = (reload = true) => {
+    if (reload) {
+        ready.value = false;
     }
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.get<BatchResponse>(window.Horizon.basePath + '/api/batches/' + route.params.batchId)
+        .then(response => {
+            batch.value = response.data.batch;
+            failedJobs.value = response.data.failedJobs;
+            ready.value = true;
+        });
+};
+
+/**
+ * Retry the given failed job.
+ */
+const retry = (id: string) => {
+    if (retrying.value) {
+        return;
+    }
+
+    retrying.value = true;
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.post(window.Horizon.basePath + '/api/batches/retry/' + id)
+        .then(() => {
+            setTimeout(() => {
+                loadBatch(false);
+                retrying.value = false;
+            }, 3000);
+        });
+};
+
+const formatDateIso = (date: string) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.formatDateIso(date);
+};
+
+const readableTimestamp = (timestamp: number) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.readableTimestamp(timestamp);
+};
+
+const jobBaseName = (name: string) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.jobBaseName(name);
+};
 </script>
 
 <template>
@@ -163,7 +202,7 @@
 
                 <tbody>
 
-                <tr v-for="failedJob in failedJobs">
+                <tr v-for="failedJob in failedJobs" :key="failedJob.id">
                     <td>
                         <router-link :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
                             {{ jobBaseName(failedJob.name) }}

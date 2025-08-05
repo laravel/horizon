@@ -1,43 +1,30 @@
-<script type="text/ecmascript-6">
-    export default {
-        components: {},
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
 
+const instance = getCurrentInstance();
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                queues: []
-            };
-        },
+const ready = ref(false);
+const queues = ref<string[]>([]);
 
+onMounted(() => {
+    loadQueues();
+});
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            this.loadQueues();
-        },
+/**
+ * Load the queues.
+ */
+const loadQueues = () => {
+    ready.value = false;
 
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
 
-        methods: {
-            /**
-             * Load the queues.
-             */
-            loadQueues() {
-                this.ready = false;
-
-                this.$http.get(Horizon.basePath + '/api/metrics/queues')
-                    .then(response => {
-                        this.queues = response.data;
-
-                        this.ready = true;
-                    });
-            }
-        }
-    }
+    $http.get<string[]>(window.Horizon.basePath + '/api/metrics/queues')
+        .then(response => {
+            queues.value = response.data;
+            ready.value = true;
+        });
+};
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>
-            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $route.params.type }}">
+            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: route.params.type }}">
                 {{ jobBaseName(job.name) }}
             </router-link>
 
@@ -26,48 +26,86 @@
             {{ readableTimestamp(job.payload.pushedAt) }}
         </td>
 
-        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-muted">
+        <td v-if="route.params.type=='completed' || route.params.type=='silenced'" class="table-fit text-muted">
             {{ readableTimestamp(job.completed_at) }}
         </td>
 
-        <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-end text-muted">
+        <td v-if="route.params.type=='completed' || route.params.type=='silenced'" class="table-fit text-end text-muted">
             <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
         </td>
     </tr>
 </template>
 
-<script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize'
-    import moment from 'moment-timezone';
+<script setup lang="ts">
+import { computed, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import { unserialize } from 'phpunserialize';
+import moment from 'moment-timezone';
 
-    export default {
-        props: {
-            job: {
-                type: Object,
-                required: true
-            }
-        },
+interface JobPayload {
+    pushedAt: number;
+    tags: string[];
+    data: {
+        command: string;
+    };
+}
 
-        computed: {
-            unserialized() {
-                try {
-                    return phpunserialize(this.job.payload.data.command);
-                }catch(err){
-                    //
-                }
-            },
+interface Job {
+    id: string;
+    name: string;
+    queue: string;
+    status: string;
+    payload: JobPayload;
+    completed_at?: number;
+    reserved_at: number;
+}
 
-            delayed() {
-                if (this.unserialized && this.unserialized.delay && this.unserialized.delay.date) {
-                    return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
-                        .fromNow(true);
-                } else if (this.unserialized && this.unserialized.delay) {
-                    return this.formatDate(this.job.payload.pushedAt).add(this.unserialized.delay, 'seconds')
-                        .fromNow(true);
-                }
+interface Props {
+    job: Job;
+}
 
-                return null;
-            },
-        },
+interface DelayData {
+    delay?: {
+        date?: string;
+        timezone?: string;
+    } | number;
+}
+
+const props = defineProps<Props>();
+const route = useRoute();
+const instance = getCurrentInstance();
+
+const unserialized = computed<DelayData | null>(() => {
+    try {
+        return unserialize(props.job.payload.data.command) as DelayData;
+    } catch (err) {
+        return null;
     }
+});
+
+const delayed = computed<string | null>(() => {
+    if (unserialized.value && unserialized.value.delay) {
+        if (typeof unserialized.value.delay === 'object' && unserialized.value.delay.date) {
+            return moment.tz(unserialized.value.delay.date, unserialized.value.delay.timezone || 'UTC')
+                .fromNow(true);
+        } else if (typeof unserialized.value.delay === 'number') {
+            const baseMixin = instance?.appContext.config.globalProperties as any;
+            return baseMixin.formatDate(props.job.payload.pushedAt).add(unserialized.value.delay, 'seconds')
+                .fromNow(true);
+        }
+    }
+
+    return null;
+});
+
+const jobBaseName = (name: string) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.jobBaseName(name);
+};
+
+const readableTimestamp = (timestamp: number | undefined) => {
+    if (!timestamp) return '-';
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.readableTimestamp(timestamp);
+};
 </script>

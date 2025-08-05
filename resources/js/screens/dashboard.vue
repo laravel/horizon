@@ -1,143 +1,178 @@
-<script type="text/ecmascript-6">
-    import moment from 'moment';
+<script setup lang="ts">
+import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+import moment from 'moment';
+import Poll from '../components/Poll.vue';
 
-    export default {
-        components: {},
+interface Stats {
+    jobsPerMinute: number;
+    recentJobs: number;
+    failedJobs: number;
+    status: 'running' | 'paused' | 'inactive';
+    pausedMasters: number;
+    processes: number;
+    queueWithMaxRuntime: string;
+    queueWithMaxThroughput: string;
+    wait: Record<string, number>;
+    max_wait_time?: number;
+    max_wait_queue?: string;
+    periods: {
+        recentJobs: number;
+        failedJobs: number;
+    };
+}
 
+interface SupervisorOptions {
+    queue: string;
+    balance?: string;
+}
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                stats: {},
-                workers: [],
-                workload: [],
-                ready: false,
-            };
-        },
+interface Supervisor {
+    name: string;
+    status: 'running' | 'paused' | 'inactive';
+    processes: Record<string, number>;
+    options: SupervisorOptions;
+}
 
+interface Worker {
+    name: string;
+    status: 'running' | 'paused';
+    supervisors: Supervisor[];
+}
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Dashboard";
-        },
+interface SplitQueue {
+    name: string;
+    length: number;
+    wait: number;
+}
 
+interface Workload {
+    name: string;
+    length: number;
+    processes: number;
+    wait: number;
+    split_queues?: SplitQueue[];
+}
 
-        computed: {
-            /**
-             * Determine the recent job period label.
-             */
-            recentJobsPeriod() {
-                return !this.ready
-                    ? 'Jobs Past Hour'
-                    : `Jobs Past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
-            },
+const instance = getCurrentInstance();
 
+const stats = ref<Stats>({} as Stats);
+const workers = ref<Worker[]>([]);
+const workload = ref<Workload[]>([]);
+const ready = ref(false);
 
-            /**
-             * Determine the recently failed job period label.
-             */
-            failedJobsPeriod() {
-                return !this.ready
-                    ? 'Failed Jobs Past 7 Days'
-                    : `Failed Jobs Past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
-            },
-        },
+onMounted(() => {
+    document.title = "Horizon - Dashboard";
+});
 
+/**
+ * Determine the recent job period label.
+ */
+const recentJobsPeriod = computed(() => {
+    return !ready.value || !stats.value.periods
+        ? 'Jobs Past Hour'
+        : `Jobs Past ${determinePeriod(stats.value.periods.recentJobs)}`;
+});
 
-        methods: {
-            /**
-             * Load the general stats.
-             */
-            loadStats() {
-                return this.$http.get(Horizon.basePath + '/api/stats')
-                    .then(response => {
-                        this.stats = response.data;
+/**
+ * Determine the recently failed job period label.
+ */
+const failedJobsPeriod = computed(() => {
+    return !ready.value || !stats.value.periods
+        ? 'Failed Jobs Past 7 Days'
+        : `Failed Jobs Past ${determinePeriod(stats.value.periods.failedJobs)}`;
+});
 
-                        if (Object.values(response.data.wait)[0]) {
-                            this.stats.max_wait_time = Object.values(response.data.wait)[0];
-                            this.stats.max_wait_queue = Object.keys(response.data.wait)[0].split(':')[1];
-                        }
-                    });
-            },
+/**
+ * Load the general stats.
+ */
+const loadStats = () => {
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return Promise.resolve();
 
+    return $http.get<Stats>(window.Horizon.basePath + '/api/stats')
+        .then(response => {
+            stats.value = response.data;
 
-            /**
-             * Load the workers stats.
-             */
-            loadWorkers() {
-                return this.$http.get(Horizon.basePath + '/api/masters')
-                    .then(response => {
-                        this.workers = response.data;
-                    });
-            },
-
-
-            /**
-             * Load the workload stats.
-             */
-            loadWorkload() {
-                return this.$http.get(Horizon.basePath + '/api/workload')
-                    .then(response => {
-                        this.workload = response.data;
-                    });
-            },
-
-
-            /**
-             * Poll handler to refresh the stats at regular intervals.
-             */
-            refreshStatsPeriodically() {
-                Promise.all([
-                    this.loadStats(),
-                    this.loadWorkers(),
-                    this.loadWorkload(),
-                ]).then(() => {
-                    this.ready = true;
-                });
-            },
-
-
-            /**
-             *  Count processes for the given supervisor.
-             */
-            countProcesses(processes) {
-                return Object.values(processes).reduce((total, value) => total + value, 0).toLocaleString();
-            },
-
-
-            /**
-             *  Format the Supervisor display name.
-             */
-            superVisorDisplayName(supervisor, worker) {
-                return supervisor.replace(worker + ':', '');
-            },
-
-
-            /**
-             *
-             * @returns {string}
-             */
-            humanTime(time) {
-                return moment.duration(time, "seconds").humanize().replace(/^(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
-            },
-
-
-            /**
-             * Determine the unit for the given timeframe.
-             */
-            determinePeriod(minutes) {
-                return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?\s/i, '').replace(/^(.)|\s(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
+            const waitValues = Object.values(response.data.wait);
+            const waitKeys = Object.keys(response.data.wait);
+            
+            if (waitValues[0]) {
+                stats.value.max_wait_time = waitValues[0];
+                stats.value.max_wait_queue = waitKeys[0].split(':')[1];
             }
-        }
-    }
+        });
+};
+
+/**
+ * Load the workers stats.
+ */
+const loadWorkers = () => {
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return Promise.resolve();
+
+    return $http.get<Worker[]>(window.Horizon.basePath + '/api/masters')
+        .then(response => {
+            workers.value = response.data;
+        });
+};
+
+/**
+ * Load the workload stats.
+ */
+const loadWorkload = () => {
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return Promise.resolve();
+
+    return $http.get<Workload[]>(window.Horizon.basePath + '/api/workload')
+        .then(response => {
+            workload.value = response.data;
+        });
+};
+
+/**
+ * Poll handler to refresh the stats at regular intervals.
+ */
+const refreshStatsPeriodically = () => {
+    Promise.all([
+        loadStats(),
+        loadWorkers(),
+        loadWorkload(),
+    ]).then(() => {
+        ready.value = true;
+    });
+};
+
+/**
+ * Count processes for the given supervisor.
+ */
+const countProcesses = (processes: Record<string, number>) => {
+    return Object.values(processes).reduce((total, value) => total + value, 0).toLocaleString();
+};
+
+/**
+ * Format the Supervisor display name.
+ */
+const superVisorDisplayName = (supervisor: string, worker: string) => {
+    return supervisor.replace(worker + ':', '');
+};
+
+/**
+ * Format human-readable time.
+ */
+const humanTime = (time: number) => {
+    return moment.duration(time, "seconds").humanize().replace(/^(.)/g, function ($1) {
+        return $1.toUpperCase();
+    });
+};
+
+/**
+ * Determine the unit for the given timeframe.
+ */
+const determinePeriod = (minutes: number) => {
+    return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?\s/i, '').replace(/^(.)|\s(.)/g, function ($1) {
+        return $1.toUpperCase();
+    });
+};
 </script>
 
 <template>

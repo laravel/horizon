@@ -1,7 +1,78 @@
+<script setup lang="ts">
+import { computed, getCurrentInstance } from 'vue';
+import { unserialize } from 'phpunserialize';
+import moment from 'moment-timezone';
+
+interface JobPayload {
+    pushedAt: number;
+    tags: string[];
+    data: {
+        command: string;
+    };
+}
+
+interface Job {
+    id: string;
+    name: string;
+    queue: string;
+    status: string;
+    payload: JobPayload;
+    completed_at?: number;
+    reserved_at: number;
+    failed_at?: number;
+}
+
+interface Props {
+    job: Job;
+}
+
+interface DelayData {
+    delay?: {
+        date: string;
+        timezone: string;
+    };
+}
+
+const props = defineProps<Props>();
+const instance = getCurrentInstance();
+
+const unserialized = computed<DelayData | null>(() => {
+    try {
+        return unserialize(props.job.payload.data.command) as DelayData;
+    } catch (err) {
+        return null;
+    }
+});
+
+const delayed = computed<string | null>(() => {
+    if (unserialized.value && unserialized.value.delay) {
+        return moment.tz(unserialized.value.delay.date, unserialized.value.delay.timezone)
+            .fromNow(true);
+    }
+
+    return null;
+});
+
+const jobBaseName = (name: string) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.jobBaseName(name);
+};
+
+const readableTimestamp = (timestamp: number) => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.readableTimestamp(timestamp);
+};
+
+// Access parent component's type property
+const parentType = computed(() => {
+    return (instance?.parent as any)?.type || 'jobs';
+});
+</script>
+
 <template>
     <tr>
         <td>
-            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $parent.type }}">
+            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: parentType }}">
                 {{ jobBaseName(job.name) }}
             </router-link>
 
@@ -25,49 +96,16 @@
             {{ readableTimestamp(job.payload.pushedAt) }}
         </td>
 
-        <td v-if="$parent.type == 'jobs'" class="table-fit text-muted">
+        <td v-if="parentType == 'jobs'" class="table-fit text-muted">
             {{ job.completed_at ? readableTimestamp(job.completed_at) : '-' }}
         </td>
 
-        <td v-if="$parent.type == 'jobs'" class="table-fit text-muted">
+        <td v-if="parentType == 'jobs'" class="table-fit text-muted">
             <span>{{ job.completed_at ? (job.completed_at - job.reserved_at).toFixed(2)+'s' : '-' }}</span>
         </td>
 
-        <td v-if="$parent.type == 'failed'" class="table-fit text-muted">
-            {{ readableTimestamp(job.failed_at) }}
+        <td v-if="parentType == 'failed'" class="table-fit text-muted">
+            {{ job.failed_at ? readableTimestamp(job.failed_at) : '-' }}
         </td>
     </tr>
 </template>
-
-<script type="text/ecmascript-6">
-    import phpunserialize from 'phpunserialize'
-    import moment from 'moment-timezone';
-
-    export default {
-        props: {
-            job: {
-                type: Object,
-                required: true
-            }
-        },
-
-        computed: {
-            unserialized() {
-                try {
-                    return phpunserialize(this.job.payload.data.command);
-                }catch(err){
-                    //
-                }
-            },
-
-            delayed() {
-                if (this.unserialized && this.unserialized.delay) {
-                    return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
-                        .fromNow(true);
-                }
-
-                return null;
-            },
-        },
-    }
-</script>

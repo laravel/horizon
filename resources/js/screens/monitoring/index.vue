@@ -1,117 +1,114 @@
-<script type="text/ecmascript-6">
-    import { Modal } from 'bootstrap';
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
+import { Modal } from 'bootstrap';
+import Poll from '../../components/Poll.vue';
 
-    export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                newTag: '',
-                addTagModal: null,
-                addTagModalOpened: false,
-                tags: []
-            };
-        },
+interface Tag {
+    tag: string;
+    count: number;
+}
 
+const instance = getCurrentInstance();
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Monitoring";
-        },
+const ready = ref(false);
+const newTag = ref('');
+const addTagModal = ref<Modal | null>(null);
+const tags = ref<Tag[]>([]);
 
+onMounted(() => {
+    document.title = "Horizon - Monitoring";
+});
 
-        methods: {
-            /**
-             * Load the monitored tags.
-             */
-            loadTags() {
-                this.$http.get(Horizon.basePath + '/api/monitoring')
-                    .then(response => {
-                        this.tags = response.data;
+/**
+ * Load the monitored tags.
+ */
+const loadTags = () => {
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
 
-                        this.ready = true;
-                    });
-            },
+    $http.get<Tag[]>(window.Horizon.basePath + '/api/monitoring')
+        .then(response => {
+            tags.value = response.data;
+            ready.value = true;
+        });
+};
 
+/**
+ * Poll handler to refresh the tags at regular intervals.
+ */
+const refreshTagsPeriodically = () => {
+    loadTags();
+};
 
-            /**
-             * Poll handler to refresh the tags at regular intervals.
-             */
-            refreshTagsPeriodically() {
-                this.loadTags();
-            },
+/**
+ * Open the modal for adding a new tag.
+ */
+const openNewTagModal = () => {
+    const modalElement = document.getElementById('addTagModel');
+    if (!modalElement) return;
 
+    addTagModal.value = Modal.getOrCreateInstance(modalElement, {
+        backdrop: 'static',
+    });
+    addTagModal.value.show();
 
-            /**
-             * Open the modal for adding a new tag.
-             */
-            openNewTagModal() {
-                this.addTagModal = Modal.getOrCreateInstance(document.getElementById('addTagModel'), {
-                    backdrop: 'static',
-                });
-                this.addTagModal.show();
-
-                const newTagInput = document.getElementById('newTagInput');
-                if (newTagInput) {
-                    newTagInput.focus();
-                }
-            },
-
-
-            /**
-             * Monitor the given tag.
-             */
-            monitorNewTag() {
-                if (!this.newTag) {
-                    const newTagInput = document.getElementById('newTagInput');
-
-                    if (newTagInput) {
-                        newTagInput.focus();
-                    }
-                    return;
-                }
-
-                this.$http.post(Horizon.basePath + '/api/monitoring', {'tag': this.newTag})
-                    .then(response => {
-                        if (this.addTagModal) {
-                            this.addTagModal.hide();
-                        }
-
-                        this.tags.push({tag: this.newTag, count: 0});
-                        this.newTag = '';
-                    })
-            },
-
-
-            /**
-             * Cancel adding a new tag.
-             */
-            cancelNewTag() {
-                if (this.addTagModal) {
-                    this.addTagModal.hide();
-                    this.addTagModal.dispose();
-                    this.addTagModal = null;
-                }
-
-                this.newTag = '';
-            },
-
-
-            /**
-             * Stop monitoring the given tag.
-             */
-            stopMonitoring(tag) {
-                this.$http.delete(Horizon.basePath + '/api/monitoring/' + encodeURIComponent(tag))
-                    .then(() => {
-                        this.tags = this.tags.filter(existing => existing.tag !== tag)
-                    })
-            }
-        }
+    const newTagInput = document.getElementById('newTagInput') as HTMLInputElement;
+    if (newTagInput) {
+        newTagInput.focus();
     }
+};
+
+/**
+ * Monitor the given tag.
+ */
+const monitorNewTag = () => {
+    if (!newTag.value) {
+        const newTagInput = document.getElementById('newTagInput') as HTMLInputElement;
+        if (newTagInput) {
+            newTagInput.focus();
+        }
+        return;
+    }
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.post(window.Horizon.basePath + '/api/monitoring', { tag: newTag.value })
+        .then(() => {
+            if (addTagModal.value) {
+                addTagModal.value.hide();
+            }
+
+            tags.value.push({ tag: newTag.value, count: 0 });
+            newTag.value = '';
+        });
+};
+
+/**
+ * Cancel adding a new tag.
+ */
+const cancelNewTag = () => {
+    if (addTagModal.value) {
+        addTagModal.value.hide();
+        addTagModal.value.dispose();
+        addTagModal.value = null;
+    }
+
+    newTag.value = '';
+};
+
+/**
+ * Stop monitoring the given tag.
+ */
+const stopMonitoring = (tag: string) => {
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
+
+    $http.delete(window.Horizon.basePath + '/api/monitoring/' + encodeURIComponent(tag))
+        .then(() => {
+            tags.value = tags.value.filter(existing => existing.tag !== tag);
+        });
+};
 </script>
 
 <template>
@@ -149,7 +146,7 @@
                 </thead>
 
                 <tbody>
-                <tr v-for="tag in tags">
+                <tr v-for="tag in tags" :key="tag.tag">
                     <td>
                         <router-link :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}" href="#">
                             {{ tag.tag }}
@@ -157,7 +154,7 @@
                     </td>
                     <td class="text-end text-muted">{{ tag.count }}</td>
                     <td class="text-end">
-                        <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
+                        <a href="#" @click.prevent="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                             </svg>

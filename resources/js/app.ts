@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { createApp } from 'vue/dist/vue.esm-bundler.js';
+import axios, { AxiosInstance } from 'axios';
+import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -9,7 +9,27 @@ import Alert from './components/Alert.vue';
 import SchemeToggler from './components/SchemeToggler.vue';
 import Poll from './components/Poll.vue';
 
-let token = document.head.querySelector("meta[name='csrf-token']");
+// Extend Vue's ComponentCustomProperties to include $http
+declare module '@vue/runtime-core' {
+    interface ComponentCustomProperties {
+        $http: AxiosInstance;
+    }
+}
+
+interface AlertData {
+    type: string | null;
+    autoClose: number;
+    message: string;
+    confirmationProceed: (() => void) | null;
+    confirmationCancel: (() => void) | null;
+}
+
+interface AppData {
+    alert: AlertData;
+    autoLoadsNewEntries: boolean;
+}
+
+const token = document.head.querySelector<HTMLMetaElement>("meta[name='csrf-token']");
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -18,7 +38,7 @@ if (token) {
 }
 
 const app = createApp({
-    data() {
+    data(): AppData {
         return {
             alert: {
                 type: null,
@@ -34,7 +54,7 @@ const app = createApp({
 
 app.config.globalProperties.$http = axios.create();
 
-let proxyPath = window.Horizon.proxy_path;
+const proxyPath = window.Horizon.proxy_path;
 window.Horizon.basePath = proxyPath + '/' + window.Horizon.path;
 
 let routerBasePath = window.Horizon.basePath + '/';

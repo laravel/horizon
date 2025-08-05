@@ -1,142 +1,125 @@
-<script type="text/ecmascript-6">
-    import JobRow from './job-row.vue';
+<script setup lang="ts">
+import { ref, watch, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import JobRow from './job-row.vue';
+import Poll from '../../components/Poll.vue';
 
-    export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                loadingNewEntries: false,
-                hasNewEntries: false,
-                page: 1,
-                perPage: 50,
-                totalPages: 1,
-                jobs: []
-            };
-        },
+interface Job {
+    id: string;
+    name: string;
+    queue: string;
+    status: string;
+    payload: {
+        pushedAt: number;
+        tags: string[];
+        data: {
+            command: string;
+        };
+    };
+    completed_at?: number;
+    reserved_at: number;
+}
 
+interface JobsResponse {
+    jobs: Job[];
+    total: number;
+}
 
-        /**
-         * Components
-         */
-        components: {
-            JobRow,
-        },
+const route = useRoute();
+const instance = getCurrentInstance();
 
+const ready = ref(false);
+const loadingNewEntries = ref(false);
+const hasNewEntries = ref(false);
+const page = ref(1);
+const perPage = ref(50);
+const totalPages = ref(1);
+const jobs = ref<Job[]>([]);
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            this.updatePageTitle();
+onMounted(() => {
+    updatePageTitle();
+    loadJobs();
+});
 
-            this.loadJobs();
-        },
+watch(() => route.path, () => {
+    updatePageTitle();
+    page.value = 1;
+    loadJobs();
+});
 
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.updatePageTitle();
-
-                this.page = 1;
-
-                this.loadJobs();
-            }
-        },
-
-
-        methods: {
-            /**
-             * Load the jobs of the given tag.
-             */
-            loadJobs(starting = -1, refreshing = false) {
-                if (!refreshing) {
-                    this.ready = false;
-                }
-
-                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage)
-                    .then(response => {
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
-                            this.hasNewEntries = true;
-                        } else {
-                            this.jobs = response.data.jobs;
-
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
-                        }
-
-                        this.ready = true;
-                    });
-            },
-
-
-            loadNewEntries() {
-                this.jobs = [];
-
-                this.loadJobs(-1, false);
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Poll handler to refresh the jobs at regular intervals.
-             */
-            refreshJobsPeriodically() {
-                if (this.page != 1) {
-                    return;
-                }
-
-                this.loadJobs(-1, true);
-            },
-
-
-            /**
-             * Load the jobs for the previous page.
-             */
-            previous() {
-                this.loadJobs(
-                    (this.page - 2) * this.perPage - 1
-                );
-
-                this.page -= 1;
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Load the jobs for the next page.
-             */
-            next() {
-                this.loadJobs(
-                    this.page * this.perPage - 1
-                );
-
-                this.page += 1;
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Update the page title.
-             */
-            updatePageTitle() {
-                document.title = this.$route.params.type == 'pending'
-                        ? 'Horizon - Pending Jobs'
-                        : (
-                            this.$route.params.type == 'silenced'
-                                ? 'Horizon - Silenced Jobs'
-                                : 'Horizon - Completed Jobs'
-                        );
-            }
-        }
+/**
+ * Load the jobs of the given tag.
+ */
+const loadJobs = (starting = -1, refreshing = false) => {
+    if (!refreshing) {
+        ready.value = false;
     }
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    const $root = instance?.appContext.config.globalProperties.$root as any;
+    
+    if (!$http) return;
+
+    $http.get<JobsResponse>(window.Horizon.basePath + '/api/jobs/' + route.params.type + '?starting_at=' + starting + '&limit=' + perPage.value)
+        .then(response => {
+            if (!$root.autoLoadsNewEntries && refreshing && jobs.value.length && response.data.jobs[0]?.id !== jobs.value[0]?.id) {
+                hasNewEntries.value = true;
+            } else {
+                jobs.value = response.data.jobs;
+                totalPages.value = Math.ceil(response.data.total / perPage.value);
+            }
+
+            ready.value = true;
+        });
+};
+
+const loadNewEntries = () => {
+    jobs.value = [];
+    loadJobs(-1, false);
+    hasNewEntries.value = false;
+};
+
+/**
+ * Poll handler to refresh the jobs at regular intervals.
+ */
+const refreshJobsPeriodically = () => {
+    if (page.value !== 1) {
+        return;
+    }
+
+    loadJobs(-1, true);
+};
+
+/**
+ * Load the jobs for the previous page.
+ */
+const previous = () => {
+    loadJobs((page.value - 2) * perPage.value - 1);
+    page.value -= 1;
+    hasNewEntries.value = false;
+};
+
+/**
+ * Load the jobs for the next page.
+ */
+const next = () => {
+    loadJobs(page.value * perPage.value - 1);
+    page.value += 1;
+    hasNewEntries.value = false;
+};
+
+/**
+ * Update the page title.
+ */
+const updatePageTitle = () => {
+    document.title = route.params.type === 'pending'
+        ? 'Horizon - Pending Jobs'
+        : (
+            route.params.type === 'silenced'
+                ? 'Horizon - Silenced Jobs'
+                : 'Horizon - Completed Jobs'
+        );
+};
 </script>
 
 <template>
@@ -145,9 +128,9 @@
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
-                <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
-                <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
+                <h2 class="h6 m-0" v-if="route.params.type == 'pending'">Pending Jobs</h2>
+                <h2 class="h6 m-0" v-if="route.params.type == 'completed'">Completed Jobs</h2>
+                <h2 class="h6 m-0" v-if="route.params.type == 'silenced'">Silenced Jobs</h2>
             </div>
 
             <div v-if="!ready"
@@ -169,10 +152,10 @@
                 <thead>
                     <tr>
                         <th>Job</th>
-                        <th v-if="$route.params.type=='pending'" class="text-end">Queued</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
-                        <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-end">Runtime</th>
+                        <th v-if="route.params.type=='pending'" class="text-end">Queued</th>
+                        <th v-if="route.params.type=='completed' || route.params.type=='silenced'">Queued</th>
+                        <th v-if="route.params.type=='completed' || route.params.type=='silenced'">Completed</th>
+                        <th v-if="route.params.type=='completed' || route.params.type=='silenced'" class="text-end">Runtime</th>
                     </tr>
                 </thead>
 
@@ -185,8 +168,7 @@
                         </td>
                     </tr>
 
-                    <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
-                    </component>
+                    <job-row v-for="job in jobs" :key="job.id" :job="job" />
                 </tbody>
             </table>
 

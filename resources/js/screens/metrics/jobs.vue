@@ -1,43 +1,30 @@
-<script type="text/ecmascript-6">
-    export default {
-        components: {},
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
 
+const instance = getCurrentInstance();
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                jobs: []
-            };
-        },
+const ready = ref(false);
+const jobs = ref<string[]>([]);
 
+onMounted(() => {
+    loadJobs();
+});
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            this.loadJobs();
-        },
+/**
+ * Load the jobs.
+ */
+const loadJobs = () => {
+    ready.value = false;
 
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
 
-        methods: {
-            /**
-             * Load the jobs.
-             */
-            loadJobs() {
-                this.ready = false;
-
-                this.$http.get(Horizon.basePath + '/api/metrics/jobs')
-                    .then(response => {
-                        this.jobs = response.data;
-
-                        this.ready = true;
-                    });
-            }
-        }
-    }
+    $http.get<string[]>(window.Horizon.basePath + '/api/metrics/jobs')
+        .then(response => {
+            jobs.value = response.data;
+            ready.value = true;
+        });
+};
 </script>
 
 <template>

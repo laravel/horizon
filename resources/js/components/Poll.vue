@@ -1,118 +1,103 @@
-<script>
-    export default {
-        data() {
-            return {
-                loading: 0,
-                lastExecutionTime: 0,
-                pollingInterval: null,
-            }
-        },
+<script setup lang="ts">
+import { ref, onBeforeMount, onMounted, onBeforeUnmount } from 'vue';
 
+interface Props {
+    interval?: number;
+    keepAlive?: boolean;
+    immediate?: boolean;
+}
 
-        props: {
-            interval: {
-                type: Number,
-                default: 3,
-            },
+const props = withDefaults(defineProps<Props>(), {
+    interval: 3,
+    keepAlive: false,
+    immediate: true
+});
 
-            keepAlive: {
-                type: Boolean,
-                default: false,
-            },
+const emit = defineEmits<{
+    poll: [];
+}>();
 
-            immediate: {
-                type: Boolean,
-                default: true,
-            }
-        },
+const loading = ref(0);
+const lastExecutionTime = ref(0);
+const pollingInterval = ref(0);
+const poll = ref<number | null>(null);
+const visibilitychangeListener = ref<(() => void) | null>(null);
 
-
-        beforeMount() {
-            this.updatePollingInterval();
-
-            if (this.immediate) {
-                this.emitPoll();
-            }
-        },
-
-
-        mounted() {
-            this.createListener();
-
-            if (!this.keepAlive) {
-                document.addEventListener('visibilitychange', this.visibilitychangeListener = this.changedVisibility);
-            }
-        },
-
-
-        beforeUnmount() {
-            this.removeListener();
-
-            if (this.visibilitychangeListener) {
-                document.removeEventListener('visibilitychange', this.visibilitychangeListener);
-            }
-        },
-
-
-        methods: {
-            emitPoll() {
-                if (this.loading) {
-                    return;
-                }
-
-                this.loading++;
-                this.$emit('poll');
-                this.loading--;
-                this.lastExecutionTime = Date.now();
-            },
-
-
-            removeListener() {
-                if (this.poll) {
-                    clearInterval(this.poll);
-
-                    this.poll = null;
-                }
-            },
-
-
-            createListener() {
-                this.poll = setInterval(() => {
-                    this.emitPoll();
-                }, this.pollingInterval);
-            },
-
-
-            updatePollingInterval() {
-                if (this.keepAlive) {
-                    this.pollingInterval = this.interval * 1000;
-                    return;
-                }
-
-                if (document.visibilityState === 'visible') {
-                    this.pollingInterval = 1000 * this.interval;
-                } else if (document.visibilityState === 'hidden') {
-                    // One hour...
-                    this.pollingInterval = 1000 * 60 * 60;
-                }
-            },
-
-
-            changedVisibility() {
-                this.updatePollingInterval();
-                this.removeListener();
-                this.createListener();
-
-                // throttling
-                if ((Date.now() - this.lastExecutionTime) >= this.pollingInterval) {
-                    this.emitPoll();
-                }
-            },
-        },
-
-
-        render(h) {
-            return null;
-        }
+const emitPoll = () => {
+    if (loading.value) {
+        return;
     }
+
+    loading.value++;
+    emit('poll');
+    loading.value--;
+    lastExecutionTime.value = Date.now();
+};
+
+const removeListener = () => {
+    if (poll.value) {
+        clearInterval(poll.value);
+        poll.value = null;
+    }
+};
+
+const createListener = () => {
+    poll.value = window.setInterval(() => {
+        emitPoll();
+    }, pollingInterval.value);
+};
+
+const updatePollingInterval = () => {
+    if (props.keepAlive) {
+        pollingInterval.value = props.interval * 1000;
+        return;
+    }
+
+    if (document.visibilityState === 'visible') {
+        pollingInterval.value = 1000 * props.interval;
+    } else if (document.visibilityState === 'hidden') {
+        // One hour...
+        pollingInterval.value = 1000 * 60 * 60;
+    }
+};
+
+const changedVisibility = () => {
+    updatePollingInterval();
+    removeListener();
+    createListener();
+
+    // throttling
+    if ((Date.now() - lastExecutionTime.value) >= pollingInterval.value) {
+        emitPoll();
+    }
+};
+
+onBeforeMount(() => {
+    updatePollingInterval();
+
+    if (props.immediate) {
+        emitPoll();
+    }
+});
+
+onMounted(() => {
+    createListener();
+
+    if (!props.keepAlive) {
+        visibilitychangeListener.value = changedVisibility;
+        document.addEventListener('visibilitychange', visibilitychangeListener.value);
+    }
+});
+
+onBeforeUnmount(() => {
+    removeListener();
+
+    if (visibilitychangeListener.value) {
+        document.removeEventListener('visibilitychange', visibilitychangeListener.value);
+    }
+});
 </script>
+
+<template>
+    <!-- This component doesn't render anything -->
+</template>

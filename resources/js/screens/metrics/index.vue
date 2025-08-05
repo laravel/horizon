@@ -1,12 +1,9 @@
-<script type="text/ecmascript-6">
-    export default {
-        /**
-         * Prepare the component.
-         */
-        created() {
-            document.title = "Horizon - Metrics";
-        }
-    }
+<script setup lang="ts">
+import { onBeforeMount } from 'vue';
+
+onBeforeMount(() => {
+    document.title = "Horizon - Metrics";
+});
 </script>
 
 <template>

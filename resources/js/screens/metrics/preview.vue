@@ -1,100 +1,107 @@
-<script type="text/ecmascript-6">
-    import LineChart from '../../components/LineChart.vue';
+<script setup lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import { ChartData } from 'chart.js';
+import LineChart from '../../components/LineChart.vue';
 
-    export default {
-        components: {
-            LineChart
-        },
+interface MetricData {
+    runtime: number;
+    throughput: number;
+    time: number;
+}
 
+interface PreparedData {
+    runtime: number;
+    throughput: number;
+    time: string;
+}
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                rawData: {},
-                metric: {}
-            };
-        },
+interface MetricCharts {
+    throughPutChart?: ChartData<'line'>;
+    runTimeChart?: ChartData<'line'>;
+}
 
+const route = useRoute();
+const instance = getCurrentInstance();
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Metrics";
+const ready = ref(false);
+const rawData = ref<MetricData[]>([]);
+const metric = ref<MetricCharts>({});
 
-            this.loadMetric();
-        },
+onMounted(() => {
+    document.title = "Horizon - Metrics";
+    loadMetric();
+});
 
+/**
+ * Load the metric.
+ */
+const loadMetric = () => {
+    ready.value = false;
 
-        methods: {
-            /**
-             * Load the metric.
-             */
-            loadMetric() {
-                this.ready = false;
+    const $http = instance?.appContext.config.globalProperties.$http;
+    if (!$http) return;
 
-                this.$http.get(Horizon.basePath + '/api/metrics/' + this.$route.params.type + '/' + encodeURIComponent(this.$route.params.slug))
-                    .then(response => {
-                        let data = this.prepareData(response.data);
+    $http.get<MetricData[]>(window.Horizon.basePath + '/api/metrics/' + route.params.type + '/' + encodeURIComponent(route.params.slug as string))
+        .then(response => {
+            const data = prepareData(response.data);
 
-                        this.rawData = response.data;
+            rawData.value = response.data;
 
-                        this.metric.throughPutChart = this.buildChartData(data, 'throughput', 'Times');
+            metric.value.throughPutChart = buildChartData(data, 'throughput', 'Times');
+            metric.value.runTimeChart = buildChartData(data, 'runtime', 'Seconds');
 
-                        this.metric.runTimeChart = this.buildChartData(data, 'runtime', 'Seconds');
+            ready.value = true;
+        });
+};
 
-                        this.ready = true;
-                    });
+/**
+ * Prepare the response data for charts.
+ */
+const prepareData = (data: MetricData[]): PreparedData[] => {
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    
+    const grouped = baseMixin.groupBy(data.map((value: MetricData) => ({
+        ...value,
+        time: baseMixin.formatDate(value.time).format("MMM-D hh:mmA"),
+    })), 'time');
+    
+    return Object.values(grouped).map((group: any) => 
+        group.reduce((sum: any, value: any) => ({
+            runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
+            throughput: parseInt(sum.throughput) + parseInt(value.throughput),
+            time: value.time
+        }))
+    );
+};
+
+/**
+ * Build the given chart data.
+ */
+const buildChartData = (data: PreparedData[], attribute: keyof PreparedData, label: string): ChartData<'line'> => {
+    return {
+        labels: data.map(entry => entry.time),
+        datasets: [
+            {
+                label: label,
+                data: data.map(entry => entry[attribute] as number),
+                tension: 0,
+                backgroundColor: 'transparent',
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#7746ec',
+                borderColor: '#7746ec',
+                borderWidth: 2,
             },
-
-
-            /**
-             * Prepare the response data for charts.
-             */
-            prepareData(data) {
-                return Object.values(this.groupBy(data.map(value => ({
-                    ...value,
-                    time: this.formatDate(value.time).format("MMM-D hh:mmA"),
-                })), 'time')).map(value => value.reduce((sum, value) => ({
-                    runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
-                    throughput: parseInt(sum.throughput) + parseInt(value.throughput),
-                    time: value.time
-                })))
-            },
-
-
-            /**
-             * Build the given chart data.
-             */
-            buildChartData(data, attribute, label) {
-                return {
-                    labels: data.map(entry => entry.time),
-                    datasets: [
-                        {
-                            label: label,
-                            data: data.map(entry => entry[attribute]),
-                            lineTension: 0,
-                            backgroundColor: 'transparent',
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#7746ec',
-                            borderColor: '#7746ec',
-                            borderWidth: 2,
-                        },
-                    ],
-                };
-            },
-        }
-    }
+        ],
+    };
+};
 </script>
 
 <template>
     <div>
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Throughput - {{$route.params.slug}}</h2>
+                <h2 class="h6 m-0">Throughput - {{route.params.slug}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -110,13 +117,13 @@
                     Not Enough Data
                 </p>
 
-                <line-chart v-if="ready && rawData.length" :data="metric.throughPutChart"/>
+                <line-chart v-if="ready && rawData.length && metric.throughPutChart" :data="metric.throughPutChart"/>
             </div>
         </div>
 
         <div class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">Runtime - {{$route.params.slug}}</h2>
+                <h2 class="h6 m-0">Runtime - {{route.params.slug}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -132,7 +139,7 @@
                     Not Enough Data
                 </p>
 
-                <line-chart v-if="ready && rawData.length" :data="metric.runTimeChart"/>
+                <line-chart v-if="ready && rawData.length && metric.runTimeChart" :data="metric.runTimeChart"/>
             </div>
         </div>
     </div>

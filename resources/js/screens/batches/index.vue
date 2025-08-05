@@ -1,114 +1,116 @@
-<script type="text/ecmascript-6">
-    export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                loadingNewEntries: false,
-                hasNewEntries: false,
-                page: 1,
-                previousFirstId: null,
-                batches: [],
-            };
-        },
+<script setup lang="ts">
+import { ref, watch, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import Poll from '../../components/Poll.vue';
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Batches";
-        },
+interface Batch {
+    id: string;
+    name: string;
+    totalJobs: number;
+    pendingJobs: number;
+    failedJobs: number;
+    progress: number;
+    createdAt: string;
+    cancelledAt: string | null;
+}
 
+interface BatchesResponse {
+    batches: Batch[];
+}
 
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.page = 1;
+const route = useRoute();
+const instance = getCurrentInstance();
 
-                this.loadBatches();
-            },
-        },
+const ready = ref(false);
+const loadingNewEntries = ref(false);
+const hasNewEntries = ref(false);
+const page = ref(1);
+const previousFirstId = ref<string | null>(null);
+const batches = ref<Batch[]>([]);
 
+onMounted(() => {
+    document.title = "Horizon - Batches";
+});
 
-        methods: {
-            /**
-             * Load the batches.
-             */
-            loadBatches(beforeId = '', refreshing = false) {
-                if (!refreshing) {
-                    this.ready = false;
-                }
+watch(() => route.path, () => {
+    page.value = 1;
+    loadBatches();
+});
 
-                this.$http.get(Horizon.basePath + '/api/batches?before_id=' + beforeId)
-                    .then(response => {
-                        if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.batches.length) {
-                            return;
-                        }
-
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.batches.length && response.data.batches[0]?.id !== this.batches[0]?.id) {
-                            this.hasNewEntries = true;
-                        } else {
-                            this.batches = response.data.batches;
-                        }
-
-                        this.ready = true;
-                    });
-            },
-
-
-            loadNewEntries() {
-                this.batches = [];
-
-                this.loadBatches(0, false);
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Poll handler to refresh the batches at regular intervals.
-             */
-            refreshBatchesPeriodically() {
-                if (this.page != 1) return;
-
-                this.loadBatches('', true);
-            },
-
-
-            /**
-             * Load the batches for the previous page.
-             */
-            previous() {
-                this.loadBatches(
-                    this.page == 2 ? '' : this.previousFirstId
-                );
-
-                this.page -= 1;
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Load the batches for the next page.
-             */
-            next() {
-                this.previousFirstId = this.batches[0]?.id + '0';
-
-                this.loadBatches(
-                    this.batches.slice(-1)[0]?.id
-                );
-
-                this.page += 1;
-
-                this.hasNewEntries = false;
-            }
-        }
+/**
+ * Load the batches.
+ */
+const loadBatches = (beforeId = '', refreshing = false) => {
+    if (!refreshing) {
+        ready.value = false;
     }
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    const $root = instance?.appContext.config.globalProperties.$root as any;
+    
+    if (!$http) return;
+
+    $http.get<BatchesResponse>(window.Horizon.basePath + '/api/batches?before_id=' + beforeId)
+        .then(response => {
+            if (!$root.autoLoadsNewEntries && refreshing && !response.data.batches.length) {
+                return;
+            }
+
+            if (!$root.autoLoadsNewEntries && refreshing && batches.value.length && response.data.batches[0]?.id !== batches.value[0]?.id) {
+                hasNewEntries.value = true;
+            } else {
+                batches.value = response.data.batches;
+            }
+
+            ready.value = true;
+        });
+};
+
+const loadNewEntries = () => {
+    batches.value = [];
+    loadBatches('0', false);
+    hasNewEntries.value = false;
+};
+
+/**
+ * Poll handler to refresh the batches at regular intervals.
+ */
+const refreshBatchesPeriodically = () => {
+    if (page.value !== 1) return;
+    loadBatches('', true);
+};
+
+/**
+ * Load the batches for the previous page.
+ */
+const previous = () => {
+    loadBatches(
+        page.value === 2 ? '' : previousFirstId.value || ''
+    );
+
+    page.value -= 1;
+    hasNewEntries.value = false;
+};
+
+/**
+ * Load the batches for the next page.
+ */
+const next = () => {
+    previousFirstId.value = batches.value[0]?.id + '0';
+
+    loadBatches(
+        batches.value.slice(-1)[0]?.id
+    );
+
+    page.value += 1;
+    hasNewEntries.value = false;
+};
+
+const formatDateIso = (date: string) => {
+    const instance = getCurrentInstance();
+    const baseMixin = instance?.appContext.config.globalProperties as any;
+    return baseMixin.formatDateIso(date);
+};
 </script>
 
 <template>

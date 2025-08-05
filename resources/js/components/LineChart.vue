@@ -1,71 +1,81 @@
-<script type="text/ecmascript-6">
-    import Chart from 'chart.js';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { Chart, ChartConfiguration, ChartData, registerables } from 'chart.js';
 
-    export default {
-        props: ['data'],
+// Register all Chart.js components
+Chart.register(...registerables);
 
-        data(){
-            return {
-                context: null,
-                chart:null
-            }
-        },
+interface Props {
+    data: ChartData<'line'>;
+}
 
-        mounted(){
-            this.context = this.$refs.canvas.getContext('2d');
+const props = defineProps<Props>();
 
-            this.chart = new Chart(this.context, {
-                type: 'line',
-                options: {
-                    tooltips: {
-                        intersect: false,
+const canvas = ref<HTMLCanvasElement | null>(null);
+const chart = ref<Chart<'line'> | null>(null);
+
+onMounted(() => {
+    if (!canvas.value) return;
+    
+    const context = canvas.value.getContext('2d');
+    if (!context) return;
+
+    const config: ChartConfiguration<'line'> = {
+        type: 'line',
+        data: props.data,
+        options: {
+            interaction: {
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    intersect: false,
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return props.data.datasets[0].label === "Seconds"
+                                ? `${value} secs`
+                                : value;
+                        },
                     },
-                    legend: {
-                        display: false,
+                    grid: {
+                        display: true
                     },
-                    scales: {
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero: true,
-                                     callback: (value, index, values) => {
-                                        return this.data.datasets[0].label === "Seconds"
-                                            ? `${value} secs`
-                                            : value;
-                                    },
-                                },
-                                gridLines: {
-                                    display: true
-                                },
-                                beforeBuildTicks: function (scale) {
-                                    var max = scale.chart.data.datasets[0].data.reduce((max, value) => value > max ? value : max)
-
-                                    scale.max = parseFloat(max) + parseFloat(max * 0.25);
-                                },
+                    beforeBuildTicks: function(scale) {
+                        const dataset = scale.chart.data.datasets[0];
+                        if (dataset && dataset.data) {
+                            const max = Math.max(...(dataset.data as number[]));
+                            scale.max = max + (max * 0.25);
+                        }
+                    },
+                },
+                x: {
+                    grid: {
+                        display: true
+                    },
+                    afterTickToLabelConversion: function(axis) {
+                        const ticks = axis.ticks;
+                        
+                        ticks.forEach((tick, i) => {
+                            if (i % 6 !== 0 && (i + 1) !== ticks.length) {
+                                tick.label = '';
                             }
-                        ],
-                        xAxes: [
-                            {
-                                gridLines: {
-                                    display: true
-                                },
-                                afterTickToLabelConversion: function (data) {
-                                    var xLabels = data.ticks;
-
-                                    xLabels.forEach(function (labels, i) {
-                                        if (i % 6 != 0 && (i + 1) != xLabels.length) {
-                                            xLabels[i] = '';
-                                        }
-                                    });
-                                }
-                            },
-                        ]
+                        });
                     }
                 },
-                data: this.data
-            });
-        },
-    }
+            }
+        }
+    };
+
+    chart.value = new Chart(context, config);
+});
 </script>
 
 <template>

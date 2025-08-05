@@ -1,133 +1,122 @@
-<script type="text/ecmascript-6">
-    import JobRow from './job-row.vue';
+<script setup lang="ts">
+import { ref, watch, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
+import JobRow from './job-row.vue';
+import Poll from '../../components/Poll.vue';
 
-    export default {
-        props: ['type'],
+interface Props {
+    type: 'jobs' | 'failed';
+}
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                loadingNewEntries: false,
-                hasNewEntries: false,
-                page: 1,
-                perPage: 50,
-                totalPages: 1,
-                jobs: []
-            };
-        },
+interface Job {
+    id: string;
+    name: string;
+    queue: string;
+    status: string;
+    payload: {
+        pushedAt: number;
+        tags: string[];
+        data: {
+            command: string;
+        };
+    };
+    completed_at?: number;
+    reserved_at: number;
+    failed_at?: number;
+}
 
+interface JobsResponse {
+    jobs: Job[];
+    total: number;
+}
 
-        /**
-         * Components
-         */
-        components: {
-            JobRow,
-        },
+const props = defineProps<Props>();
+const route = useRoute();
+const instance = getCurrentInstance();
 
+const ready = ref(false);
+const loadingNewEntries = ref(false);
+const hasNewEntries = ref(false);
+const page = ref(1);
+const perPage = ref(50);
+const totalPages = ref(1);
+const jobs = ref<Job[]>([]);
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Monitoring";
+onMounted(() => {
+    document.title = "Horizon - Monitoring";
+    loadJobs(route.params.tag as string);
+});
 
-            this.loadJobs(this.$route.params.tag);
-        },
+watch(() => route.path, () => {
+    page.value = 1;
+    loadJobs(route.params.tag as string);
+});
 
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.page = 1;
-
-                this.loadJobs(this.$route.params.tag);
-            }
-        },
-
-
-        methods: {
-            /**
-             * Load the jobs of the given tag.
-             */
-            loadJobs(tag, starting = 0, refreshing = false) {
-                if (!refreshing) {
-                    this.ready = false;
-                }
-
-                tag = this.type == 'failed' ? 'failed:' + tag : tag;
-
-                this.$http.get(Horizon.basePath + '/api/monitoring/' + encodeURIComponent(tag) + '?starting_at=' + starting + '&limit=' + this.perPage + '&tag=' + encodeURIComponent(tag))
-                    .then(response => {
-                        if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
-                            this.hasNewEntries = true;
-                        } else {
-                            this.jobs = response.data.jobs;
-
-                            this.totalPages = Math.ceil(response.data.total / this.perPage);
-                        }
-
-                        this.ready = true;
-                    });
-            },
-
-
-            /**
-             * Load new entries.
-             */
-            loadNewEntries() {
-                this.jobs = [];
-
-                this.loadJobs(this.$route.params.tag, 0, false);
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Poll handler to refresh the jobs at regular intervals.
-             */
-            refreshJobsPeriodically() {
-                if (this.page != 1) {
-                    return;
-                }
-
-                this.loadJobs(this.$route.params.tag, 0, true);
-            },
-
-
-            /**
-             * Load the jobs for the previous page.
-             */
-            previous() {
-                this.loadJobs(this.$route.params.tag,
-                    (this.page - 2) * this.perPage
-                );
-
-                this.page -= 1;
-
-                this.hasNewEntries = false;
-            },
-
-
-            /**
-             * Load the jobs for the next page.
-             */
-            next() {
-                this.loadJobs(this.$route.params.tag,
-                    this.page * this.perPage
-                );
-
-                this.page += 1;
-
-                this.hasNewEntries = false;
-            }
-        }
+/**
+ * Load the jobs of the given tag.
+ */
+const loadJobs = (tag: string, starting = 0, refreshing = false) => {
+    if (!refreshing) {
+        ready.value = false;
     }
+
+    const tagParam = props.type === 'failed' ? 'failed:' + tag : tag;
+
+    const $http = instance?.appContext.config.globalProperties.$http;
+    const $root = instance?.appContext.config.globalProperties.$root as any;
+    
+    if (!$http) return;
+
+    $http.get<JobsResponse>(window.Horizon.basePath + '/api/monitoring/' + encodeURIComponent(tagParam) + '?starting_at=' + starting + '&limit=' + perPage.value + '&tag=' + encodeURIComponent(tagParam))
+        .then(response => {
+            if (!$root.autoLoadsNewEntries && refreshing && jobs.value.length && response.data.jobs[0]?.id !== jobs.value[0]?.id) {
+                hasNewEntries.value = true;
+            } else {
+                jobs.value = response.data.jobs;
+                totalPages.value = Math.ceil(response.data.total / perPage.value);
+            }
+
+            ready.value = true;
+        });
+};
+
+/**
+ * Load new entries.
+ */
+const loadNewEntries = () => {
+    jobs.value = [];
+    loadJobs(route.params.tag as string, 0, false);
+    hasNewEntries.value = false;
+};
+
+/**
+ * Poll handler to refresh the jobs at regular intervals.
+ */
+const refreshJobsPeriodically = () => {
+    if (page.value !== 1) {
+        return;
+    }
+
+    loadJobs(route.params.tag as string, 0, true);
+};
+
+/**
+ * Load the jobs for the previous page.
+ */
+const previous = () => {
+    loadJobs(route.params.tag as string, (page.value - 2) * perPage.value);
+    page.value -= 1;
+    hasNewEntries.value = false;
+};
+
+/**
+ * Load the jobs for the next page.
+ */
+const next = () => {
+    loadJobs(route.params.tag as string, page.value * perPage.value);
+    page.value += 1;
+    hasNewEntries.value = false;
+};
 </script>
 
 <template>
@@ -167,8 +156,7 @@
                 </td>
             </tr>
 
-            <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
-            </component>
+            <job-row v-for="job in jobs" :key="job.id" :job="job" />
             </tbody>
         </table>
 
