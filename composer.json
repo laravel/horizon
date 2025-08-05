@@ -1,7 +1,10 @@
 {
     "name": "laravel/horizon",
     "description": "Dashboard and code-driven configuration for Laravel queues.",
-    "keywords": ["laravel", "queue"],
+    "keywords": [
+        "laravel",
+        "queue"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -80,6 +83,10 @@
         ],
         "test": [
             "@php vendor/bin/phpunit"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#FF2D20,#38BDF8\" --kill-others --handle-input \"composer serve\" \"npm run watch\" --names=server,vite"
         ]
     }
 }
