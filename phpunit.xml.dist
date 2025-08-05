@@ -3,6 +3,7 @@
          backupStaticAttributes="false"
          beStrictAboutTestsThatDoNotTestAnything="false"
          bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
          colors="true"
          convertDeprecationsToExceptions="true"
          convertErrorsToExceptions="true"
