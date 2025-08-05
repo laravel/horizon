@@ -13,6 +13,13 @@ Horizon provides a beautiful dashboard and code-driven configuration for your La
 
 All of your worker configuration is stored in a single, simple configuration file, allowing your configuration to stay in source control where your entire team can collaborate.
 
+### Redis and Valkey Support
+
+Horizon supports both Redis and Valkey as backend storage systems. You can use any of the following drivers:
+- `ext-redis` - The Redis PHP extension
+- `ext-valkey` - The Valkey PHP extension
+- `predis/predis` - A pure PHP Redis/Valkey client
+
 <p align="center">
 <img src="https://laravel.com/img/docs/horizon-example.png">
 </p>

@@ -1,0 +1,57 @@
+name: tests-valkey
+
+on:
+  push:
+    branches:
+      - master
+      - '*.x'
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  tests:
+    runs-on: ubuntu-22.04
+
+    services:
+      valkey:
+        image: valkey/valkey:7-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd="valkey-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.2, 8.3, 8.4]
+        laravel: [10, 11, 12]
+        driver: ['predis', 'phpredis']
+        exclude:
+          - php: 8.4
+            laravel: 10
+
+    name: Valkey - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.driver }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, ${{ matrix.driver == 'phpredis' && 'redis' || '' }}, zip
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts:^${{ matrix.laravel }}"
+
+      - name: Configure Redis client
+        run: |
+          echo "REDIS_CLIENT=${{ matrix.driver }}" >> $GITHUB_ENV
+
+      - name: Execute tests
+        run: vendor/bin/phpunit ${{ matrix.laravel >= 10 && '--display-deprecations --fail-on-deprecation' || '' }}

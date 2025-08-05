@@ -33,7 +33,8 @@
     },
     "suggest": {
         "ext-redis": "Required to use the Redis PHP driver.",
-        "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0)."
+        "ext-valkey": "Required to use the Valkey PHP driver (Redis-compatible).",
+        "predis/predis": "Required when not using the Redis/Valkey PHP driver (^1.1|^2.0)."
     },
     "autoload": {
         "psr-4": {

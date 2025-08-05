@@ -39,6 +39,9 @@ return [
     | meta information required for it to function. It includes the list
     | of supervisors, failed jobs, job metrics, and other information.
     |
+    | Horizon supports both Redis and Valkey as the backend storage. You can
+    | use either ext-redis, ext-valkey, or predis/predis as the PHP driver.
+    |
     */
 
     'use' => 'default',
