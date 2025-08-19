@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\LuaScripts;
@@ -81,12 +82,12 @@ class RedisJobRepository implements JobRepository
     public function __construct(RedisFactory $redis)
     {
         $this->redis = $redis;
-        $this->recentJobExpires = (int) config('horizon.trim.recent', 60);
-        $this->pendingJobExpires = (int) config('horizon.trim.pending', 60);
-        $this->completedJobExpires = (int) config('horizon.trim.completed', 60);
-        $this->failedJobExpires = (int) config('horizon.trim.failed', 10080);
-        $this->recentFailedJobExpires = (int) config('horizon.trim.recent_failed', $this->failedJobExpires);
-        $this->monitoredJobExpires = (int) config('horizon.trim.monitored', 10080);
+        $this->recentJobExpires = Config::integer('horizon.trim.recent', 60);
+        $this->pendingJobExpires = Config::integer('horizon.trim.pending', 60);
+        $this->completedJobExpires = Config::integer('horizon.trim.completed', 60);
+        $this->failedJobExpires = Config::integer('horizon.trim.failed', 10080);
+        $this->recentFailedJobExpires = Config::integer('horizon.trim.recent_failed', $this->failedJobExpires);
+        $this->monitoredJobExpires = Config::integer('horizon.trim.monitored', 10080);
     }
 
     /**
