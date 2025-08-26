@@ -110,7 +110,7 @@ class ProvisioningPlan
             return;
         }
 
-        foreach ($supervisors as $supervisor => $options) {
+        foreach ($supervisors as $options) {
             if ($options->maxProcesses > 0) {
                 $this->add($options);
             }
@@ -156,9 +156,11 @@ class ProvisioningPlan
     public function toSupervisorOptions()
     {
         return collect($this->plan)->mapWithKeys(function ($plan, $environment) {
-            return [$environment => collect($plan)->mapWithKeys(function ($options, $supervisor) {
-                return [$supervisor => $this->convert($supervisor, $options)];
-            })];
+            return [
+                    $environment => collect($plan)->mapWithKeys(function ($options, $supervisor) {
+                    return [$supervisor => $this->convert($supervisor, $options)];
+                })
+            ];
         })->all();
     }
 
