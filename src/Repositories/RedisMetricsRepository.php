@@ -155,6 +155,7 @@ class RedisMetricsRepository implements MetricsRepository
     {
         return collect($this->measuredQueues())->sortBy(function ($queue) {
             $snapshots = $this->connection()->zrange('snapshot:queue:'.$queue, -1, 1);
+
             return count($snapshots) > 0
                 ? json_decode($snapshots[0])->runtime
                 : null;
@@ -171,6 +172,7 @@ class RedisMetricsRepository implements MetricsRepository
     {
         return collect($this->measuredQueues())->sortBy(function ($queue) {
             $snapshots = $this->connection()->zrange('snapshot:queue:'.$queue, -1, 1);
+
             return count($snapshots) > 0
                 ? json_decode($snapshots[0])->throughput
                 : null;
