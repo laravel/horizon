@@ -110,7 +110,7 @@ class ProvisioningPlan
             return;
         }
 
-        foreach ($supervisors as $supervisor => $options) {
+        foreach ($supervisors as $options) {
             if ($options->maxProcesses > 0) {
                 $this->add($options);
             }
