@@ -86,12 +86,10 @@ class AutoScaler
                 ];
             });
 
-            return [
-                $queue => [
+            return [$queue => [
                     'size' => $queues->sum('size'),
                     'time' => $queues->sum('time'),
-                ]
-            ];
+            ]];
         });
     }
 
