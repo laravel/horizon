@@ -158,7 +158,6 @@ class RedisMetricsRepository implements MetricsRepository
 
             return count($snapshots) > 0 ? json_decode($snapshots[0])->runtime : null;
         })->last();
-
     }
 
     /**
