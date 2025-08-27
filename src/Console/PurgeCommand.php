@@ -101,7 +101,7 @@ class PurgeCommand extends Command
         collect($expired)
             ->whenNotEmpty(fn () => $this->components->info('Sending TERM signal to expired processes of ['.$master.']'))
             ->each(function ($processId) use ($master, $signal) {
-                $this->components->task("Process: $processId", function () use ($processId, $signal) {
+                $this->components->task("Process: {$processId}", function () use ($processId, $signal) {
                     exec("kill -s {$signal} {$processId}");
                 });
 
@@ -127,7 +127,7 @@ class PurgeCommand extends Command
             ->each(function ($processId) use ($signal) {
                 $result = true;
 
-                $this->components->task("Process: $processId", function () use ($processId, $signal, &$result) {
+                $this->components->task("Process: {$processId}", function () use ($processId, $signal, &$result) {
                     return $result = posix_kill($processId, $signal);
                 });
 

@@ -56,7 +56,7 @@ class TerminateCommand extends Command
             ->each(function ($processId) {
                 $result = true;
 
-                $this->components->task("Process: $processId", function () use ($processId, &$result) {
+                $this->components->task("Process: {$processId}", function () use ($processId, &$result) {
                     return $result = posix_kill($processId, SIGTERM);
                 });
 
