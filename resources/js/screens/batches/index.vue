@@ -46,6 +46,7 @@
                 this.$http.get(Horizon.basePath + '/api/batches?before_id=' + beforeId)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.batches.length) {
+                            this.ready = true;
                             return;
                         }
 
