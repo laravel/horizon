@@ -162,7 +162,10 @@
 
             <div v-if="ready && jobs.length == 0"
                  class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any jobs.</span>
+                <span v-if="$route.params.type == 'pending'">There aren't any pending jobs.</span>
+                <span v-else-if="$route.params.type == 'completed'">There aren't any completed jobs.</span>
+                <span v-else-if="$route.params.type == 'silenced'">There aren't any silenced jobs.</span>
+                <span v-else>There aren't any jobs.</span>
             </div>
 
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
