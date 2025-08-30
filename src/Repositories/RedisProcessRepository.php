@@ -76,7 +76,7 @@ class RedisProcessRepository implements ProcessRepository
     {
         $expiresAt = CarbonImmutable::now()->getTimestamp() - $seconds;
 
-        return collect($this->allOrphans($master))->filter(fn($recordedAt, $_) => $expiresAt > $recordedAt)->keys()->all();
+        return collect($this->allOrphans($master))->filter(fn ($recordedAt, $_) => $expiresAt > $recordedAt)->keys()->all();
     }
 
     /**

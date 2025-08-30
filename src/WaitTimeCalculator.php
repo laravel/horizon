@@ -104,7 +104,7 @@ class WaitTimeCalculator
      */
     protected function totalProcessesFor($allSupervisors, $queue)
     {
-        return $allSupervisors->sum(fn($supervisor) => $supervisor->processes[$queue] ?? 0);
+        return $allSupervisors->sum(fn ($supervisor) => $supervisor->processes[$queue] ?? 0);
     }
 
     /**

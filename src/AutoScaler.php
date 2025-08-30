@@ -49,7 +49,7 @@ class AutoScaler
             $supervisor, $this->timeToClearPerQueue($supervisor, $pools)
         );
 
-        $workers->each(fn($workers, $queue) => $this->scalePool($supervisor, $pools[$queue], $workers));
+        $workers->each(fn ($workers, $queue) => $this->scalePool($supervisor, $pools[$queue], $workers));
     }
 
     /**

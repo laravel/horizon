@@ -74,7 +74,7 @@ class RedisWorkloadRepository implements WorkloadRepository
 
                 $length = ! Str::contains($queue, ',')
                     ? collect([$queueName => $this->queue->connection($connection)->readyNow($queueName)])
-                    : collect(explode(',', $queueName))->mapWithKeys(fn($queueName) => [$queueName => $this->queue->connection($connection)->readyNow($queueName)]);
+                    : collect(explode(',', $queueName))->mapWithKeys(fn ($queueName) => [$queueName => $this->queue->connection($connection)->readyNow($queueName)]);
 
                 $splitQueues = Str::contains($queue, ',') ? $length->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait) {
                     return [

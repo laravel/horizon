@@ -114,7 +114,7 @@ class RedisQueue extends BaseQueue
                 $queue,
                 $delay,
                 function ($payload, $queue, $delay) {
-                    return tap(parent::laterRaw($delay, $payload, $queue), fn() => $this->event($this->getQueue($queue), new JobPushed($payload)));
+                    return tap(parent::laterRaw($delay, $payload, $queue), fn () => $this->event($this->getQueue($queue), new JobPushed($payload)));
                 }
             );
         }
@@ -151,7 +151,7 @@ class RedisQueue extends BaseQueue
     #[\Override]
     public function migrateExpiredJobs($from, $to)
     {
-        return tap(parent::migrateExpiredJobs($from, $to), fn($jobs) => $this->event($to, new JobsMigrated($jobs === false ? [] : $jobs)));
+        return tap(parent::migrateExpiredJobs($from, $to), fn ($jobs) => $this->event($to, new JobsMigrated($jobs === false ? [] : $jobs)));
     }
 
     /**
