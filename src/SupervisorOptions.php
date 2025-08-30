@@ -250,9 +250,7 @@ class SupervisorOptions
      */
     public function withQueue($queue)
     {
-        return tap(clone $this, function ($options) use ($queue) {
-            $options->queue = $queue;
-        });
+        return tap(clone $this, fn($options) => $options->queue = $queue);
     }
 
     /**

@@ -68,9 +68,7 @@ class ProvisioningPlan
      */
     protected function applyDefaultOptions(array $plan, array $defaults = [])
     {
-        return collect($plan)->map(function ($plan) use ($defaults) {
-            return array_replace_recursive($defaults, $plan);
-        })->all();
+        return collect($plan)->map(fn($plan) => array_replace_recursive($defaults, $plan))->all();
     }
 
     /**

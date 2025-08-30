@@ -139,9 +139,7 @@ class Supervisor implements Pausable, Restartable, Terminable
             $processes, count($this->processPools)
         );
 
-        $this->balance($this->processPools->mapWithKeys(function ($pool) use ($processes) {
-            return [$pool->queue() => floor($processes / count($this->processPools))];
-        })->all());
+        $this->balance($this->processPools->mapWithKeys(fn($pool) => [$pool->queue() => floor($processes / count($this->processPools))])->all());
     }
 
     /**
