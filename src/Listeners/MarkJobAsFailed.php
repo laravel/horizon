@@ -8,21 +8,14 @@ use Laravel\Horizon\Events\JobFailed;
 class MarkJobAsFailed
 {
     /**
-     * The job repository implementation.
-     *
-     * @var \Laravel\Horizon\Contracts\JobRepository
-     */
-    public $jobs;
-
-    /**
      * Create a new listener instance.
      *
-     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs  The job repository implementation.
      * @return void
      */
-    public function __construct(JobRepository $jobs)
-    {
-        $this->jobs = $jobs;
+    public function __construct(
+        public JobRepository $jobs,
+    ) {
     }
 
     /**

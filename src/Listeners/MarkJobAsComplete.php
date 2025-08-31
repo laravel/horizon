@@ -9,30 +9,16 @@ use Laravel\Horizon\Events\JobDeleted;
 class MarkJobAsComplete
 {
     /**
-     * The job repository implementation.
-     *
-     * @var \Laravel\Horizon\Contracts\JobRepository
-     */
-    public $jobs;
-
-    /**
-     * The tag repository implementation.
-     *
-     * @var \Laravel\Horizon\Contracts\TagRepository
-     */
-    public $tags;
-
-    /**
      * Create a new listener instance.
      *
-     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
-     * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs  The job repository implementation.
+     * @param  \Laravel\Horizon\Contracts\TagRepository  $tags  The tag repository implementation.
      * @return void
      */
-    public function __construct(JobRepository $jobs, TagRepository $tags)
-    {
-        $this->jobs = $jobs;
-        $this->tags = $tags;
+    public function __construct(
+        public JobRepository $jobs,
+        public TagRepository $tags,
+    ) {
     }
 
     /**

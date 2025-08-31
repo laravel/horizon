@@ -10,13 +10,6 @@ use Laravel\Horizon\WaitTimeCalculator;
 class MonitorWaitTimes
 {
     /**
-     * The metrics repository implementation.
-     *
-     * @var \Laravel\Horizon\Contracts\MetricsRepository
-     */
-    public $metrics;
-
-    /**
      * The time at which we last checked if monitoring was due.
      *
      * @var \Carbon\CarbonImmutable
@@ -26,12 +19,12 @@ class MonitorWaitTimes
     /**
      * Create a new listener instance.
      *
-     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics  The metrics repository implementation.
      * @return void
      */
-    public function __construct(MetricsRepository $metrics)
-    {
-        $this->metrics = $metrics;
+    public function __construct(
+        public MetricsRepository $metrics,
+    ) {
     }
 
     /**

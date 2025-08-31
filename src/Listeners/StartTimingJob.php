@@ -8,21 +8,14 @@ use Laravel\Horizon\Stopwatch;
 class StartTimingJob
 {
     /**
-     * The stopwatch instance.
-     *
-     * @var \Laravel\Horizon\Stopwatch
-     */
-    public $watch;
-
-    /**
      * Create a new listener instance.
      *
-     * @param  \Laravel\Horizon\Stopwatch  $watch
+     * @param  \Laravel\Horizon\Stopwatch  $watch  The stopwatch instance.
      * @return void
      */
-    public function __construct(Stopwatch $watch)
-    {
-        $this->watch = $watch;
+    public function __construct(
+        public Stopwatch $watch,
+    ) {
     }
 
     /**
