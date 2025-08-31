@@ -46,12 +46,12 @@ class FailedJobsController extends Controller
     public function index(Request $request)
     {
         $jobs = ! $request->query('tag')
-                ? $this->paginate($request)
-                : $this->paginateByTag($request, $request->query('tag'));
+            ? $this->paginate($request)
+            : $this->paginateByTag($request, $request->query('tag'));
 
         $total = $request->query('tag')
-                ? $this->tags->count('failed:'.$request->query('tag'))
-                : $this->jobs->countFailed();
+            ? $this->tags->count('failed:'.$request->query('tag'))
+            : $this->jobs->countFailed();
 
         return [
             'jobs' => $jobs,
