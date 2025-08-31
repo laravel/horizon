@@ -15,8 +15,7 @@ class MasterSupervisorController extends Controller
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
      * @return \Illuminate\Support\Collection
      */
-    public function index(MasterSupervisorRepository $masters,
-                          SupervisorRepository $supervisors)
+    public function index(MasterSupervisorRepository $masters, SupervisorRepository $supervisors)
     {
         $masters = collect($masters->all())->keyBy('name')->sortBy('name');
 
