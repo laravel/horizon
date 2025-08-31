@@ -48,9 +48,12 @@ class RedisWorkloadRepository implements WorkloadRepository
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
      * @return void
      */
-    public function __construct(QueueFactory $queue, WaitTimeCalculator $waitTime,
-                                MasterSupervisorRepository $masters, SupervisorRepository $supervisors)
-    {
+    public function __construct(
+        QueueFactory $queue,
+        WaitTimeCalculator $waitTime,
+        MasterSupervisorRepository $masters,
+        SupervisorRepository $supervisors,
+    ) {
         $this->queue = $queue;
         $this->masters = $masters;
         $this->waitTime = $waitTime;

@@ -38,10 +38,11 @@ class WaitTimeCalculator
      * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
      * @return void
      */
-    public function __construct(QueueFactory $queue,
-                                SupervisorRepository $supervisors,
-                                MetricsRepository $metrics)
-    {
+    public function __construct(
+        QueueFactory $queue,
+        SupervisorRepository $supervisors,
+        MetricsRepository $metrics,
+    ) {
         $this->queue = $queue;
         $this->metrics = $metrics;
         $this->supervisors = $supervisors;
