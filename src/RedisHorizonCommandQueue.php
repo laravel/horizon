@@ -61,9 +61,9 @@ class RedisHorizonCommandQueue implements HorizonCommandQueue
             $pipe->ltrim('commands:'.$name, $length, -1);
         });
 
-        return collect($results[0])->map(function ($result) {
-            return (object) json_decode($result, true);
-        })->all();
+        return collect($results[0])
+            ->map(fn ($result) => (object) json_decode($result, true))
+            ->all();
     }
 
     /**

@@ -34,9 +34,9 @@ class PauseCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masters)
     {
-        $masters = collect($masters->all())->filter(function ($master) {
-            return Str::startsWith($master->name, MasterSupervisor::basename());
-        })->all();
+        $masters = collect($masters->all())
+            ->filter(fn ($master) => Str::startsWith($master->name, MasterSupervisor::basename()))
+            ->all();
 
         collect(Arr::pluck($masters, 'pid'))
             ->whenNotEmpty(fn () => $this->components->info('Sending USR2 signal to processes.'))

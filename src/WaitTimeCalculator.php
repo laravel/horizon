@@ -77,7 +77,10 @@ class WaitTimeCalculator
             [$connection, $queueName] = explode(':', $queue, 2);
 
             return [$queue => $this->calculateTimeToClear($connection, $queueName, $totalProcesses)];
-        })->sort()->reverse()->all();
+        })
+            ->sort()
+            ->reverse()
+            ->all();
     }
 
     /**
@@ -89,9 +92,10 @@ class WaitTimeCalculator
      */
     protected function queueNames($supervisors, $queue = null)
     {
-        $queues = $supervisors->map(function ($supervisor) {
-            return array_keys($supervisor->processes);
-        })->collapse()->unique()->values();
+        $queues = $supervisors->map(fn ($supervisor) => array_keys($supervisor->processes))
+            ->collapse()
+            ->unique()
+            ->values();
 
         return $queue ? $queues->intersect([$queue]) : $queues;
     }

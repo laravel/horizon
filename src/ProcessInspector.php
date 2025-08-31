@@ -65,8 +65,7 @@ class ProcessInspector
 
                 return $processes;
             })
-            ->merge(
-                Arr::pluck(app(MasterSupervisorRepository::class)->all(), 'pid')
-            )->all();
+            ->merge(Arr::pluck(app(MasterSupervisorRepository::class)->all(), 'pid'))
+            ->all();
     }
 }

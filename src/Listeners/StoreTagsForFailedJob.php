@@ -33,9 +33,9 @@ class StoreTagsForFailedJob
      */
     public function handle(JobFailed $event)
     {
-        $tags = collect($event->payload->tags())->map(function ($tag) {
-            return 'failed:'.$tag;
-        })->all();
+        $tags = collect($event->payload->tags())
+            ->map(fn ($tag) => 'failed:' . $tag)
+            ->all();
 
         $this->tags->addTemporary(
             config('horizon.trim.failed', 2880), $event->payload->id(), $tags

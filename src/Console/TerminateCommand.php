@@ -46,9 +46,9 @@ class TerminateCommand extends Command
             );
         }
 
-        $masters = collect($masters->all())->filter(function ($master) {
-            return Str::startsWith($master->name, MasterSupervisor::basename());
-        })->all();
+        $masters = collect($masters->all())
+            ->filter(fn ($master) => Str::startsWith($master->name, MasterSupervisor::basename()))
+            ->all();
 
         collect(Arr::pluck($masters, 'pid'))
             ->whenNotEmpty(fn () => $this->components->info('Sending TERM signal to processes.'))

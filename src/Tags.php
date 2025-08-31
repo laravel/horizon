@@ -33,9 +33,9 @@ class Tags
             return $tags;
         }
 
-        return static::modelsFor(static::targetsFor($job))->map(function ($model) {
-            return get_class($model).':'.$model->getKey();
-        })->all();
+        return static::modelsFor(static::targetsFor($job))
+            ->map(fn ($model) => get_class($model) . ':' . $model->getKey())
+            ->all();
     }
 
     /**
@@ -63,13 +63,14 @@ class Tags
 
         static::setEvent($event);
 
-        return collect(
-            [static::extractListener($job), $event]
-        )->map(function ($job) {
-            return static::for($job);
-        })->collapse()->unique()->tap(function () {
-            static::flushEventState();
-        })->toArray();
+        return collect([static::extractListener($job), $event])
+            ->map(fn ($job) => static::for($job))
+            ->collapse()
+            ->unique()
+            ->tap(function () {
+                static::flushEventState();
+            })
+            ->toArray();
     }
 
     /**
@@ -80,9 +81,11 @@ class Tags
      */
     protected static function explicitTags(array $jobs)
     {
-        return collect($jobs)->map(function ($job) {
-            return method_exists($job, 'tags') ? $job->tags(static::$event) : [];
-        })->collapse()->unique()->all();
+        return collect($jobs)
+            ->map(fn ($job) => method_exists($job, 'tags') ? $job->tags(static::$event) : [])
+            ->collapse()
+            ->unique()
+            ->all();
     }
 
     /**
@@ -113,19 +116,21 @@ class Tags
         $models = [];
 
         foreach ($targets as $target) {
-            $models[] = collect(
-                (new ReflectionClass($target))->getProperties()
-            )->map(function ($property) use ($target) {
-                $property->setAccessible(true);
+            $models[] = collect((new ReflectionClass($target))->getProperties())
+                ->map(function ($property) use ($target) {
+                    $property->setAccessible(true);
 
-                $value = static::getValue($property, $target);
+                    $value = static::getValue($property, $target);
 
-                if ($value instanceof Model) {
-                    return [$value];
-                } elseif ($value instanceof EloquentCollection) {
-                    return $value->all();
-                }
-            })->collapse()->filter()->all();
+                    if ($value instanceof Model) {
+                        return [$value];
+                    } elseif ($value instanceof EloquentCollection) {
+                        return $value->all();
+                    }
+                })
+                ->collapse()
+                ->filter()
+                ->all();
         }
 
         return collect($models)->collapse()->unique();

@@ -44,11 +44,12 @@ class JobMetricsController extends Controller
      */
     public function show($id)
     {
-        return collect($this->metrics->snapshotsForJob($id))->map(function ($record) {
-            $record->runtime = round($record->runtime / 1000, 3);
-            $record->throughput = (int) $record->throughput;
+        return collect($this->metrics->snapshotsForJob($id))
+            ->map(function ($record) {
+                $record->runtime = round($record->runtime / 1000, 3);
+                $record->throughput = (int) $record->throughput;
 
-            return $record;
-        });
+                return $record;
+            });
     }
 }

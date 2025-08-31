@@ -512,11 +512,13 @@ class RedisJobRepository implements JobRepository
      */
     protected function updateRetryStatus(JobPayload $payload, $retries, $failed)
     {
-        return collect($retries)->map(function ($retry) use ($payload, $failed) {
-            return $retry['id'] === $payload->id()
-                ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
-                : $retry;
-        })->all();
+        return collect($retries)
+            ->map(function ($retry) use ($payload, $failed) {
+                return $retry['id'] === $payload->id()
+                    ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
+                    : $retry;
+            })
+            ->all();
     }
 
     /**

@@ -68,9 +68,9 @@ class ProvisioningPlan
      */
     protected function applyDefaultOptions(array $plan, array $defaults = [])
     {
-        return collect($plan)->map(function ($plan) use ($defaults) {
-            return array_replace_recursive($defaults, $plan);
-        })->all();
+        return collect($plan)
+            ->map(fn ($plan) => array_replace_recursive($defaults, $plan))
+            ->all();
     }
 
     /**
@@ -155,11 +155,13 @@ class ProvisioningPlan
      */
     public function toSupervisorOptions()
     {
-        return collect($this->plan)->mapWithKeys(function ($plan, $environment) {
-            return [$environment => collect($plan)->mapWithKeys(function ($options, $supervisor) {
-                return [$supervisor => $this->convert($supervisor, $options)];
-            })];
-        })->all();
+        return collect($this->plan)
+            ->mapWithKeys(function ($plan, $environment) {
+                return [$environment => collect($plan)->mapWithKeys(function ($options, $supervisor) {
+                    return [$supervisor => $this->convert($supervisor, $options)];
+                })];
+            })
+            ->all();
     }
 
     /**

@@ -46,12 +46,13 @@ class MonitoringController extends Controller
      */
     public function index()
     {
-        return collect($this->tags->monitoring())->map(function ($tag) {
-            return [
-                'tag' => $tag,
-                'count' => $this->tags->count($tag) + $this->tags->count('failed:'.$tag),
-            ];
-        })->sortBy('tag')->values();
+        return collect($this->tags->monitoring())
+            ->map(fn ($tag) => [
+                'tag'   => $tag,
+                'count' => $this->tags->count($tag) + $this->tags->count('failed:' . $tag),
+            ])
+            ->sortBy('tag')
+            ->values();
     }
 
     /**
@@ -84,11 +85,14 @@ class MonitoringController extends Controller
      */
     protected function getJobs($jobIds, $startingAt = 0)
     {
-        return $this->jobs->getJobs($jobIds, $startingAt)->map(function ($job) {
-            $job->payload = json_decode($job->payload);
+        return $this->jobs
+            ->getJobs($jobIds, $startingAt)
+            ->map(function ($job) {
+                $job->payload = json_decode($job->payload);
 
-            return $job;
-        })->values();
+                return $job;
+            })
+            ->values();
     }
 
     /**

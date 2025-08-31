@@ -35,11 +35,14 @@ class SilencedJobsController extends Controller
      */
     public function index(Request $request)
     {
-        $jobs = $this->jobs->getSilenced($request->query('starting_at', -1))->map(function ($job) {
-            $job->payload = json_decode($job->payload);
+        $jobs = $this->jobs
+            ->getSilenced($request->query('starting_at', -1))
+            ->map(function ($job) {
+                $job->payload = json_decode($job->payload);
 
-            return $job;
-        })->values();
+                return $job;
+            })
+            ->values();
 
         return [
             'jobs' => $jobs,

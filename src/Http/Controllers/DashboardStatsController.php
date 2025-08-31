@@ -43,9 +43,8 @@ class DashboardStatsController extends Controller
     {
         $supervisors = app(SupervisorRepository::class)->all();
 
-        return collect($supervisors)->reduce(function ($carry, $supervisor) {
-            return $carry + collect($supervisor->processes)->sum();
-        }, 0);
+        return collect($supervisors)
+            ->reduce(fn ($carry, $supervisor) => $carry + collect($supervisor->processes)->sum(), 0);
     }
 
     /**
@@ -59,9 +58,8 @@ class DashboardStatsController extends Controller
             return 'inactive';
         }
 
-        return collect($masters)->every(function ($master) {
-            return $master->status === 'paused';
-        }) ? 'paused' : 'running';
+        return collect($masters)
+            ->every(fn ($master) => $master->status === 'paused') ? 'paused' : 'running';
     }
 
     /**
@@ -75,8 +73,8 @@ class DashboardStatsController extends Controller
             return 0;
         }
 
-        return collect($masters)->filter(function ($master) {
-            return $master->status === 'paused';
-        })->count();
+        return collect($masters)
+            ->filter(fn ($master) => $master->status === 'paused')
+            ->count();
     }
 }

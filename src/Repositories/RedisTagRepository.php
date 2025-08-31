@@ -139,9 +139,10 @@ class RedisTagRepository implements TagRepository
             $tag, $startingAt, $startingAt + $limit - 1
         );
 
-        return collect($tags)->values()->mapWithKeys(function ($tag, $index) use ($startingAt) {
-            return [$index + $startingAt => $tag];
-        })->all();
+        return collect($tags)
+            ->values()
+            ->mapWithKeys(fn ($tag, $index) => [$index + $startingAt => $tag])
+            ->all();
     }
 
     /**

@@ -75,18 +75,22 @@ class RedisSupervisorRepository implements SupervisorRepository
             }
         });
 
-        return collect($records)->filter()->map(function ($record) {
-            $record = array_values($record);
+        return collect($records)
+            ->filter()
+            ->map(function ($record) {
+                $record = array_values($record);
 
-            return ! $record[0] ? null : (object) [
-                'name' => $record[0],
-                'master' => $record[1],
-                'pid' => $record[2],
-                'status' => $record[3],
-                'processes' => json_decode($record[4], true),
-                'options' => json_decode($record[5], true),
-            ];
-        })->filter()->all();
+                return ! $record[0] ? null : (object) [
+                    'name' => $record[0],
+                    'master' => $record[1],
+                    'pid' => $record[2],
+                    'status' => $record[3],
+                    'processes' => json_decode($record[4], true),
+                    'options' => json_decode($record[5], true),
+                ];
+            })
+            ->filter()
+            ->all();
     }
 
     /**
@@ -96,9 +100,8 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     public function longestActiveTimeout()
     {
-        return collect($this->all())->max(function ($supervisor) {
-            return $supervisor->options['timeout'];
-        }) ?: 0;
+        return collect($this->all())
+            ->max(fn ($supervisor) => $supervisor->options['timeout']) ?: 0;
     }
 
     /**
@@ -109,9 +112,9 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     public function update(Supervisor $supervisor)
     {
-        $processes = $supervisor->processPools->mapWithKeys(function ($pool) use ($supervisor) {
-            return [$supervisor->options->connection.':'.$pool->queue() => count($pool->processes())];
-        })->toJson();
+        $processes = $supervisor->processPools
+            ->mapWithKeys(fn ($pool) => [$supervisor->options->connection . ':' . $pool->queue() => count($pool->processes())])
+            ->toJson();
 
         $this->connection()->pipeline(function ($pipe) use ($supervisor, $processes) {
             $pipe->hmset(

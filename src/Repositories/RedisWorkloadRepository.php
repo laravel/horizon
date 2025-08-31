@@ -96,7 +96,9 @@ class RedisWorkloadRepository implements WorkloadRepository
                     'processes' => $totalProcesses,
                     'split_queues' => $splitQueues,
                 ];
-            })->values()->toArray();
+            })
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -106,12 +108,14 @@ class RedisWorkloadRepository implements WorkloadRepository
      */
     private function processes()
     {
-        return collect($this->supervisors->all())->pluck('processes')->reduce(function ($final, $queues) {
-            foreach ($queues as $queue => $processes) {
-                $final[$queue] = isset($final[$queue]) ? $final[$queue] + $processes : $processes;
-            }
+        return collect($this->supervisors->all())
+            ->pluck('processes')
+            ->reduce(function ($final, $queues) {
+                foreach ($queues as $queue => $processes) {
+                    $final[$queue] = isset($final[$queue]) ? $final[$queue] + $processes : $processes;
+                }
 
-            return $final;
-        }, []);
+                return $final;
+            }, []);
     }
 }

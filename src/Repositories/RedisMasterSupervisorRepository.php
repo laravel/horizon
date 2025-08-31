@@ -76,17 +76,20 @@ class RedisMasterSupervisorRepository implements MasterSupervisorRepository
             }
         });
 
-        return collect($records)->map(function ($record) {
-            $record = array_values($record);
+        return collect($records)
+            ->map(function ($record) {
+                $record = array_values($record);
 
-            return ! $record[0] ? null : (object) [
-                'name' => $record[0],
-                'environment' => $record[4],
-                'pid' => $record[1],
-                'status' => $record[2],
-                'supervisors' => json_decode($record[3], true),
-            ];
-        })->filter()->all();
+                return ! $record[0] ? null : (object) [
+                    'name' => $record[0],
+                    'environment' => $record[4],
+                    'pid' => $record[1],
+                    'status' => $record[2],
+                    'supervisors' => json_decode($record[3], true),
+                ];
+            })
+            ->filter()
+            ->all();
     }
 
     /**

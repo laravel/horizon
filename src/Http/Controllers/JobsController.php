@@ -34,9 +34,10 @@ class JobsController extends Controller
      */
     public function show($id)
     {
-        return (array) $this->jobs->getJobs([$id])->map(function ($job) {
-            return $this->decode($job);
-        })->first();
+        return (array) $this->jobs
+            ->getJobs([$id])
+            ->map(fn ($job) => $this->decode($job))
+            ->first();
     }
 
     /**

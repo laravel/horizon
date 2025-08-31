@@ -99,9 +99,8 @@ class Supervisor implements Pausable, Restartable, Terminable
      */
     protected function createProcessPoolPerQueue()
     {
-        return collect(explode(',', $this->options->queue))->map(function ($queue) {
-            return $this->createProcessPool($this->options->withQueue($queue));
-        });
+        return collect(explode(',', $this->options->queue))
+            ->map(fn ($queue) => $this->createProcessPool($this->options->withQueue($queue)));
     }
 
     /**

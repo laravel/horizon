@@ -39,9 +39,11 @@ class RedisMetricsRepository implements MetricsRepository
     {
         $classes = (array) $this->connection()->smembers('measured_jobs');
 
-        return collect($classes)->map(function ($class) {
-            return preg_match('/job:(.*)$/', $class, $matches) ? $matches[1] : $class;
-        })->sort()->values()->all();
+        return collect($classes)
+            ->map(fn ($class) => preg_match('/job:(.*)$/', $class, $matches) ? $matches[1] : $class)
+            ->sort()
+            ->values()
+            ->all();
     }
 
     /**
@@ -53,9 +55,11 @@ class RedisMetricsRepository implements MetricsRepository
     {
         $queues = (array) $this->connection()->smembers('measured_queues');
 
-        return collect($queues)->map(function ($class) {
-            return preg_match('/queue:(.*)$/', $class, $matches) ? $matches[1] : $class;
-        })->sort()->values()->all();
+        return collect($queues)
+            ->map(fn ($class) => preg_match('/queue:(.*)$/', $class, $matches) ? $matches[1] : $class)
+            ->sort()
+            ->values()
+            ->all();
     }
 
     /**
@@ -75,9 +79,8 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function throughput()
     {
-        return collect($this->measuredQueues())->reduce(function ($carry, $queue) {
-            return $carry + $this->connection()->hget('queue:'.$queue, 'throughput');
-        }, 0);
+        return collect($this->measuredQueues())
+            ->reduce(fn ($carry, $queue) => $carry + $this->connection()->hget('queue:'.$queue, 'throughput'), 0);
     }
 
     /**
@@ -153,11 +156,13 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function queueWithMaximumRuntime()
     {
-        return collect($this->measuredQueues())->sortBy(function ($queue) {
-            if ($snapshots = $this->connection()->zrange('snapshot:queue:'.$queue, -1, 1)) {
-                return json_decode($snapshots[0])->runtime;
-            }
-        })->last();
+        return collect($this->measuredQueues())
+            ->sortBy(function ($queue) {
+                if ($snapshots = $this->connection()->zrange('snapshot:queue:' . $queue, -1, 1)) {
+                    return json_decode($snapshots[0])->runtime;
+                }
+            })
+            ->last();
     }
 
     /**
@@ -167,11 +172,13 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function queueWithMaximumThroughput()
     {
-        return collect($this->measuredQueues())->sortBy(function ($queue) {
-            if ($snapshots = $this->connection()->zrange('snapshot:queue:'.$queue, -1, 1)) {
-                return json_decode($snapshots[0])->throughput;
-            }
-        })->last();
+        return collect($this->measuredQueues())
+            ->sortBy(function ($queue) {
+                if ($snapshots = $this->connection()->zrange('snapshot:queue:' . $queue, -1, 1)) {
+                    return json_decode($snapshots[0])->throughput;
+                }
+            })
+            ->last();
     }
 
     /**
@@ -233,9 +240,9 @@ class RedisMetricsRepository implements MetricsRepository
     protected function snapshotsFor($key)
     {
         return collect($this->connection()->zrange('snapshot:'.$key, 0, -1))
-            ->map(function ($snapshot) {
-                return (object) json_decode($snapshot, true);
-            })->values()->all();
+            ->map(fn ($snapshot) => (object) json_decode($snapshot, true))
+            ->values()
+            ->all();
     }
 
     /**
