@@ -34,7 +34,7 @@ class StoreTagsForFailedJob
     public function handle(JobFailed $event)
     {
         $tags = collect($event->payload->tags())
-            ->map(fn ($tag) => 'failed:' . $tag)
+            ->map(fn ($tag) => 'failed:'.$tag)
             ->all();
 
         $this->tags->addTemporary(

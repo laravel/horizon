@@ -48,8 +48,8 @@ class MonitoringController extends Controller
     {
         return collect($this->tags->monitoring())
             ->map(fn ($tag) => [
-                'tag'   => $tag,
-                'count' => $this->tags->count($tag) + $this->tags->count('failed:' . $tag),
+                'tag' => $tag,
+                'count' => $this->tags->count($tag) + $this->tags->count('failed:'.$tag),
             ])
             ->sortBy('tag')
             ->values();

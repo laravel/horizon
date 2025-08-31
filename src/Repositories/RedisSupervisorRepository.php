@@ -113,7 +113,7 @@ class RedisSupervisorRepository implements SupervisorRepository
     public function update(Supervisor $supervisor)
     {
         $processes = $supervisor->processPools
-            ->mapWithKeys(fn ($pool) => [$supervisor->options->connection . ':' . $pool->queue() => count($pool->processes())])
+            ->mapWithKeys(fn ($pool) => [$supervisor->options->connection.':'.$pool->queue() => count($pool->processes())])
             ->toJson();
 
         $this->connection()->pipeline(function ($pipe) use ($supervisor, $processes) {
