@@ -7,22 +7,14 @@ use Laravel\Horizon\Contracts\TagRepository;
 class MonitorTag
 {
     /**
-     * The tag to monitor.
-     *
-     * @var string
-     */
-    public $tag;
-
-    /**
      * Create a new job instance.
      *
-     * @param  string  $tag
+     * @param  string  $tag  The tag to monitor.
      * @return void
      */
-    public function __construct($tag)
-    {
-        $this->tag = $tag;
-    }
+    public function __construct(
+        public $tag,
+    ) {}
 
     /**
      * Execute the job.

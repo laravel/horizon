@@ -8,22 +8,14 @@ use Laravel\Horizon\Contracts\TagRepository;
 class StopMonitoringTag
 {
     /**
-     * The tag to stop monitoring.
-     *
-     * @var string
-     */
-    public $tag;
-
-    /**
      * Create a new job instance.
      *
-     * @param  string  $tag
+     * @param  string  $tag  The tag to stop monitoring.
      * @return void
      */
-    public function __construct($tag)
-    {
-        $this->tag = $tag;
-    }
+    public function __construct(
+        public $tag,
+    ) {}
 
     /**
      * Execute the job.
