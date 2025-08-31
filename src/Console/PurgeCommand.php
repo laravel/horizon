@@ -55,7 +55,7 @@ class PurgeCommand extends Command
     public function __construct(
         SupervisorRepository $supervisors,
         ProcessRepository $processes,
-        ProcessInspector $inspector
+        ProcessInspector $inspector,
     ) {
         parent::__construct();
 
