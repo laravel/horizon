@@ -14,7 +14,8 @@ class MonitorTag
      */
     public function __construct(
         public $tag,
-    ) {}
+    ) {
+    }
 
     /**
      * Execute the job.

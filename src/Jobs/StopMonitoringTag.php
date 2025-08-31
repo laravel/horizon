@@ -15,7 +15,8 @@ class StopMonitoringTag
      */
     public function __construct(
         public $tag,
-    ) {}
+    ) {
+    }
 
     /**
      * Execute the job.

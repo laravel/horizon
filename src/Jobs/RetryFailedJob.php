@@ -17,7 +17,8 @@ class RetryFailedJob
      */
     public function __construct(
         public $id,
-    ) {}
+    ) {
+    }
 
     /**
      * Execute the job.
