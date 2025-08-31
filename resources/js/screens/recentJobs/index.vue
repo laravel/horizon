@@ -128,12 +128,12 @@
              */
             updatePageTitle() {
                 document.title = this.$route.params.type == 'pending'
-                        ? 'Horizon - Pending Jobs'
-                        : (
-                            this.$route.params.type == 'silenced'
-                                ? 'Horizon - Silenced Jobs'
-                                : 'Horizon - Completed Jobs'
-                        );
+                    ? 'Horizon - Pending Jobs'
+                    : (
+                        this.$route.params.type == 'silenced'
+                            ? 'Horizon - Silenced Jobs'
+                            : 'Horizon - Completed Jobs'
+                    );
             }
         }
     }

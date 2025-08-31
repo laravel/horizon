@@ -238,7 +238,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     protected function shouldWait()
     {
         return ! config('horizon.fast_termination') ||
-               app(CacheFactory::class)->get('horizon:terminate:wait');
+            app(CacheFactory::class)->get('horizon:terminate:wait');
     }
 
     /**
@@ -341,7 +341,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     protected function autoScale()
     {
         $this->lastAutoScaled = $this->lastAutoScaled ?:
-                    CarbonImmutable::now()->subSeconds($this->options->balanceCooldown + 1);
+            CarbonImmutable::now()->subSeconds($this->options->balanceCooldown + 1);
 
         if (CarbonImmutable::now()->subSeconds($this->options->balanceCooldown)->gte($this->lastAutoScaled)) {
             $this->lastAutoScaled = CarbonImmutable::now();

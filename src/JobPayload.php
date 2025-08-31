@@ -153,7 +153,7 @@ class JobPayload implements ArrayAccess
         $jobClass = is_string($underlyingJob) ? $underlyingJob : get_class($underlyingJob);
 
         return in_array($jobClass, config('horizon.silenced', [])) ||
-               is_a($jobClass, Silenced::class, true);
+            is_a($jobClass, Silenced::class, true);
     }
 
     /**

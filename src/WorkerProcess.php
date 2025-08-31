@@ -178,7 +178,7 @@ class WorkerProcess
     public function coolingDown()
     {
         return isset($this->restartAgainAt) &&
-               CarbonImmutable::now()->lt($this->restartAgainAt);
+            CarbonImmutable::now()->lt($this->restartAgainAt);
     }
 
     /**

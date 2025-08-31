@@ -38,7 +38,7 @@ class SupervisorStatusCommand extends Command
 
         $supervisorStatus = optional(collect($supervisors->all())->first(function ($supervisor) use ($name) {
             return Str::startsWith($supervisor->name, MasterSupervisor::basename()) &&
-                   Str::endsWith($supervisor->name, $name);
+                Str::endsWith($supervisor->name, $name);
         }))->status;
 
         if (is_null($supervisorStatus)) {
