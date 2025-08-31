@@ -514,8 +514,8 @@ class RedisJobRepository implements JobRepository
     {
         return collect($retries)->map(function ($retry) use ($payload, $failed) {
             return $retry['id'] === $payload->id()
-                    ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
-                    : $retry;
+                ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
+                : $retry;
         })->all();
     }
 

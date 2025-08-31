@@ -112,8 +112,8 @@ class SupervisorCommand extends Command
     protected function supervisorOptions()
     {
         $backoff = $this->hasOption('backoff')
-                    ? $this->option('backoff')
-                    : $this->option('delay');
+            ? $this->option('backoff')
+            : $this->option('delay');
 
         $balance = $this->option('balance');
 

@@ -159,8 +159,8 @@ class WorkerProcess
 
         if ($this->restartAgainAt) {
             $this->restartAgainAt = ! $this->process->isRunning()
-                            ? CarbonImmutable::now()->addMinute()
-                            : null;
+                ? CarbonImmutable::now()->addMinute()
+                : null;
 
             if (! $this->process->isRunning()) {
                 event(new UnableToLaunchProcess($this));

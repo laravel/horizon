@@ -333,7 +333,7 @@ class RedisMetricsRepository implements MetricsRepository
     protected function minutesSinceLastSnapshot()
     {
         $lastSnapshotAt = (int) ($this->connection()->get('last_snapshot_at')
-                                    ?: $this->storeSnapshotTimestamp());
+            ?: $this->storeSnapshotTimestamp());
 
         return max(
             (CarbonImmutable::now()->getTimestamp() - $lastSnapshotAt) / 60, 1

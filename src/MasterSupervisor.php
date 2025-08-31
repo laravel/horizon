@@ -107,8 +107,8 @@ class MasterSupervisor implements Pausable, Restartable, Terminable
     public static function basename()
     {
         return static::$nameResolver
-                        ? call_user_func(static::$nameResolver)
-                        : Str::slug(gethostname());
+            ? call_user_func(static::$nameResolver)
+            : Str::slug(gethostname());
     }
 
     /**
