@@ -10,21 +10,14 @@ use Laravel\Horizon\Events\JobFailed;
 class MarshalFailedEvent
 {
     /**
-     * The event dispatcher implementation.
-     *
-     * @var \Illuminate\Contracts\Events\Dispatcher
-     */
-    public $events;
-
-    /**
      * Create a new listener instance.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $events  The event dispatcher implementation.
      * @return void
      */
-    public function __construct(Dispatcher $events)
-    {
-        $this->events = $events;
+    public function __construct(
+        public Dispatcher $events,
+    ) {
     }
 
     /**

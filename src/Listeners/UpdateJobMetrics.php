@@ -9,30 +9,16 @@ use Laravel\Horizon\Stopwatch;
 class UpdateJobMetrics
 {
     /**
-     * The metrics repository implementation.
-     *
-     * @var \Laravel\Horizon\Contracts\MetricsRepository
-     */
-    public $metrics;
-
-    /**
-     * The stopwatch instance.
-     *
-     * @var \Laravel\Horizon\Stopwatch
-     */
-    public $watch;
-
-    /**
      * Create a new listener instance.
      *
-     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
-     * @param  \Laravel\Horizon\Stopwatch  $watch
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics  The metrics repository implementation.
+     * @param  \Laravel\Horizon\Stopwatch  $watch  The stopwatch instance.
      * @return void
      */
-    public function __construct(MetricsRepository $metrics, Stopwatch $watch)
-    {
-        $this->watch = $watch;
-        $this->metrics = $metrics;
+    public function __construct(
+        public MetricsRepository $metrics,
+        public Stopwatch $watch,
+    ) {
     }
 
     /**
