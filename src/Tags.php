@@ -82,7 +82,17 @@ class Tags
     protected static function explicitTags(array $jobs)
     {
         return collect($jobs)
-            ->map(fn ($job) => method_exists($job, 'tags') ? $job->tags(static::$event) : [])
+            ->map(function ($job) {
+                if (method_exists($job, 'tags')) {
+                    $tags = $job->tags(static::$event);
+                } elseif (property_exists($job, 'tags')) {
+                    $tags = $job->tags;
+                } else {
+                    $tags = [];
+                }
+
+                return $tags;
+            })
             ->collapse()
             ->unique()
             ->all();

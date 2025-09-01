@@ -15,6 +15,7 @@ use Laravel\Horizon\Tests\Feature\Fixtures\FakeEventWithModel;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentCollection;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithEloquentModel;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithTagsMethod;
+use Laravel\Horizon\Tests\Feature\Fixtures\FakeJobWithTagsProperty;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListener;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerSilenced;
 use Laravel\Horizon\Tests\Feature\Fixtures\FakeListenerWithDynamicTags;
@@ -168,6 +169,14 @@ class RedisPayloadTest extends IntegrationTest
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
 
         $JobPayload->prepare(new FakeJobWithTagsMethod);
+        $this->assertEquals(['first', 'second'], $JobPayload->decoded['tags']);
+    }
+
+    public function test_jobs_can_have_tags_property_to_override_auto_tagging()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $JobPayload->prepare(new FakeJobWithTagsProperty);
         $this->assertEquals(['first', 'second'], $JobPayload->decoded['tags']);
     }
 
