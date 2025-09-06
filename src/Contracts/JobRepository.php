@@ -31,7 +31,7 @@ interface JobRepository
     /**
      * Get a chunk of recent jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getRecent($afterIndex = null);
@@ -39,7 +39,7 @@ interface JobRepository
     /**
      * Get a chunk of failed jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getFailed($afterIndex = null);
@@ -47,7 +47,7 @@ interface JobRepository
     /**
      * Get a chunk of pending jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getPending($afterIndex = null);
@@ -55,7 +55,7 @@ interface JobRepository
     /**
      * Get a chunk of completed jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getCompleted($afterIndex = null);
@@ -63,7 +63,7 @@ interface JobRepository
     /**
      * Get a chunk of silenced jobs.
      *
-     * @param  string  $afterIndex
+     * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
     public function getSilenced($afterIndex = null);

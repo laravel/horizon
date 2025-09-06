@@ -59,7 +59,7 @@ class RedisQueue extends BaseQueue
      * Push a raw payload onto the queue.
      *
      * @param  string  $payload
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @param  array  $options
      * @return mixed
      */
@@ -99,7 +99,7 @@ class RedisQueue extends BaseQueue
      * @param  \DateTimeInterface|\DateInterval|int  $delay
      * @param  string  $job
      * @param  mixed  $data
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @return mixed
      */
     #[\Override]
@@ -129,7 +129,7 @@ class RedisQueue extends BaseQueue
     /**
      * Pop the next job off of the queue.
      *
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @param  int  $index
      * @return \Illuminate\Contracts\Queue\Job|null
      */

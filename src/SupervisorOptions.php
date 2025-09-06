@@ -177,7 +177,7 @@ class SupervisorOptions
      *
      * @param  string  $name
      * @param  string  $connection
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @param  string  $workersName
      * @param  string  $balance
      * @param  int  $backoff
