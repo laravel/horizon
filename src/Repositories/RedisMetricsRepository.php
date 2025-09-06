@@ -58,7 +58,7 @@ class RedisMetricsRepository implements MetricsRepository
             }
 
             if ($totalThroughput > 0) {
-                $averageRuntime = ($totalRuntimeInSeconds / $totalThroughput) * 1000; // Convert back to milliseconds
+                $averageRuntime = round($totalRuntimeInSeconds / $totalThroughput, 3);
             } else {
                 $averageRuntime = 0;
             }
