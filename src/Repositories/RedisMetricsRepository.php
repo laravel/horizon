@@ -45,10 +45,6 @@ class RedisMetricsRepository implements MetricsRepository
 
             $snapshots = $this->snapshotsForJob($jobName);
 
-            if (empty($snapshots)) {
-                return null;
-            }
-
             $totalRuntimeInSeconds = 0;
             $totalThroughput = 0;
 
@@ -62,18 +58,21 @@ class RedisMetricsRepository implements MetricsRepository
             }
 
             if ($totalThroughput > 0) {
-                return [
-                    'name' => $jobName,
-                    'average_runtime' => round($totalRuntimeInSeconds / $totalThroughput, 3),
-                    'total_throughput' => $totalThroughput,
-                ];
+                $averageRuntime = ($totalRuntimeInSeconds / $totalThroughput) * 1000; // Convert back to milliseconds
+            } else {
+                $averageRuntime = 0;
             }
 
-            return null;
-        })->filter()
-        ->sortByDesc('average_runtime')
-        ->values()
-        ->all();
+            return [
+                'name' => $jobName,
+                'average_runtime' => $averageRuntime,
+                'total_throughput' => $totalThroughput,
+            ];
+        })
+            ->filter()
+            ->sortByDesc('average_runtime')
+            ->values()
+            ->all();
     }
 
     /**
