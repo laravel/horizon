@@ -282,7 +282,11 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function snapshot()
     {
-        collect($this->measuredJobs())->each(function ($job) {
+        $jobs = (array) $this->connection()->smembers('measured_jobs');
+
+        collect($jobs)->map(function ($class) {
+            return preg_match('/job:(.*)$/', $class, $matches) ? $matches[1] : $class;
+        })->each(function ($job) {
             $this->storeSnapshotForJob($job);
         });
 

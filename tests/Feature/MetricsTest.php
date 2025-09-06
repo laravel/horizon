@@ -95,10 +95,12 @@ class MetricsTest extends IntegrationTest
         $this->work();
         $this->work();
 
-        $jobs = resolve(MetricsRepository::class)->measuredJobs();
-        $this->assertCount(2, $jobs);
-        $this->assertContains(Jobs\ConditionallyFailingJob::class, $jobs);
-        $this->assertContains(Jobs\BasicJob::class, $jobs);
+        $metrics = resolve(MetricsRepository::class)->measuredJobs();
+        $this->assertCount(2, $metrics);
+
+        $jobNames = collect($metrics)->pluck('name')->all();
+        $this->assertContains(Jobs\ConditionallyFailingJob::class, $jobNames);
+        $this->assertContains(Jobs\BasicJob::class, $jobNames);
     }
 
     public function test_snapshot_of_metrics_performance_can_be_stored()
