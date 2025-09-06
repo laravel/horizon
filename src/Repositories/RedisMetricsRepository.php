@@ -31,7 +31,8 @@ class RedisMetricsRepository implements MetricsRepository
     }
 
     /**
-     * Get all of the class names that have metrics measurements.
+     * Get all of the class names that have metrics measurements,
+     * including their average runtime and throughput.
      *
      * @return array
      */
@@ -39,11 +40,40 @@ class RedisMetricsRepository implements MetricsRepository
     {
         $classes = (array) $this->connection()->smembers('measured_jobs');
 
-        return collect($classes)
-            ->map(fn ($class) => preg_match('/job:(.*)$/', $class, $matches) ? $matches[1] : $class)
-            ->sort()
-            ->values()
-            ->all();
+        return collect($classes)->map(function ($class) {
+            $jobName = preg_match('/job:(.*)$/', $class, $matches) ? $matches[1] : $class;
+
+            $snapshots = $this->snapshotsForJob($jobName);
+
+            if (empty($snapshots)) {
+                return null;
+            }
+
+            $totalRuntimeInSeconds = 0;
+            $totalThroughput = 0;
+
+            foreach ($snapshots as $snapshot) {
+                if (isset($snapshot->runtime) && $snapshot->runtime > 0 && isset($snapshot->throughput) && $snapshot->throughput > 0) {
+                    $runtimeInSeconds = $snapshot->runtime / 1000;
+
+                    $totalRuntimeInSeconds += $runtimeInSeconds * $snapshot->throughput;
+                    $totalThroughput += $snapshot->throughput;
+                }
+            }
+
+            if ($totalThroughput > 0) {
+                return [
+                    'name' => $jobName,
+                    'average_runtime' => round($totalRuntimeInSeconds / $totalThroughput, 3),
+                    'total_throughput' => $totalThroughput,
+                ];
+            }
+
+            return null;
+        })->filter()
+        ->sortByDesc('average_runtime')
+        ->values()
+        ->all();
     }
 
     /**

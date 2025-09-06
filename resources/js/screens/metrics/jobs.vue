@@ -59,6 +59,8 @@
             <thead>
             <tr>
                 <th>Job</th>
+                <th>Throughput</th>
+                <th>Runtime Average</th>
             </tr>
             </thead>
 
@@ -67,9 +69,15 @@
 
             <tr v-for="job in jobs" :key="job">
                 <td>
-                    <router-link class="text-decoration-none" :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job }}">
-                        {{ job }}
+                    <router-link class="text-decoration-none" :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job.name }}">
+                        {{ job.name }}
                     </router-link>
+                </td>
+                <td>
+                    {{ job.total_throughput }}
+                </td>
+                <td>
+                    {{ job.average_runtime }}s
                 </td>
             </tr>
             </tbody>
