@@ -200,4 +200,13 @@ class RedisPayloadTest extends IntegrationTest
         $JobPayload->prepare(new SendQueuedMailable($mailableMock));
         $this->assertTrue($JobPayload->isSilenced());
     }
+
+    public function test_it_determines_if_job_is_silenced_correctly_by_tags()
+    {
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        config(['horizon.silenced_tags' => ['first', 'noisy']]);
+        $JobPayload->prepare(new FakeJobWithTagsMethod());
+        $this->assertTrue($JobPayload->isSilenced());
+    }
 }
