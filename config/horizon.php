@@ -122,20 +122,8 @@ return [
         // App\Jobs\ExampleJob::class,
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Silenced Tags
-    |--------------------------------------------------------------------------
-    |
-    | Silencing a job by tag will instruct Horizon to not place any job
-    | with the specified tag(s) in the list of completed jobs within
-    | the Horizon dashboard. This setting is useful for filtering out
-    | noisy categories of jobs without specifying individual classes.
-    |
-    */
-
     'silenced_tags' => [
-        // 'noisy'
+        // 'notifications',
     ],
 
     /*
