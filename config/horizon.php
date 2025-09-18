@@ -32,6 +32,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Proxy Path
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to define a proxy prefix when serving Horizon
+    | from behind a reverse proxy or within a subdirectory of your domain.
+    |
+    | For example, if Horizon should be accessible from "/myapp/horizon",
+    | you may set the environment variable:
+    |
+    |   HORIZON_PROXY_PATH=/myapp
+    |
+    | By default, this value is null and Horizon will be served directly
+    | from the path defined in the "path" configuration option.
+    |
+    */
+    'proxy_path' => env('HORIZON_PROXY_PATH', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Redis Connection
     |--------------------------------------------------------------------------
     |
