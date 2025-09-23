@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Support\Facades\App;
+use Inertia\Inertia;
 
 class HomeController extends Controller
 {
@@ -11,9 +12,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function __invoke()
     {
-        return view('horizon::layout', [
+        return Inertia::render('horizon::layout', [
             'isDownForMaintenance' => App::isDownForMaintenance(),
         ]);
     }

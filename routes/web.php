@@ -58,4 +58,4 @@ Route::prefix('api')->group(function () {
 });
 
 // Catch-all Route...
-Route::get('/{view?}', [HomeController::class, 'index'])->where('view', '(.*)')->name('horizon.index');
+Route::get('/{view?}', HomeController::class)->where('view', '(.*)')->name('horizon.index');
