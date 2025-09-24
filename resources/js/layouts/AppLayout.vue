@@ -1,6 +1,7 @@
 <template>
   <div id="horizon" v-cloak>
-    <alert
+    <!--
+    <AlertModal
       :message="alert.message"
       :type="alert.type"
       :auto-close="alert.autoClose"
@@ -8,6 +9,7 @@
       :confirmation-cancel="alert.confirmationCancel"
       v-if="alert.type"
     />
+    -->
 
     <div class="container mb-5">
       <div class="d-flex align-items-center py-4 header">

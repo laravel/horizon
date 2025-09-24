@@ -1,11 +1,11 @@
-<template>
-  Home page
-</template>
-
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue'
 
 defineOptions({
-  layout: AppLayout
+    layout: AppLayout
 })
 </script>
+
+<template>
+    <div>Home page</div>
+</template>
