@@ -4,6 +4,8 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Http\Request;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Js;
 use RuntimeException;
@@ -12,65 +14,51 @@ class Horizon
 {
     /**
      * The callback that should be used to authenticate Horizon users.
-     *
-     * @var \Closure
      */
-    public static $authUsing;
+    public static ?Closure $authUsing = null;
 
     /**
      * The Slack notifications webhook URL.
-     *
-     * @var string
      */
-    public static $slackWebhookUrl;
+    public static ?string $slackWebhookUrl = null;
 
     /**
      * The Slack notifications channel.
-     *
-     * @var string
      */
-    public static $slackChannel;
+    public static ?string $slackChannel = null;
 
     /**
      * The SMS notifications phone number.
-     *
-     * @var string
      */
-    public static $smsNumber;
+    public static ?string $smsNumber = null;
 
     /**
      * The email address for notifications.
-     *
-     * @var string
      */
-    public static $email;
-
-    /**
-     * Indicates if Horizon should use the dark theme.
-     *
-     * @deprecated
-     *
-     * @var bool
-     */
-    public static $useDarkTheme = false;
+    public static ?string $email = null;
 
     /**
      * The database configuration methods.
      *
-     * @var array
+     * @var array<int, string>
      */
-    public static $databases = [
+    public static array $databases = [
         'Jobs', 'Supervisors', 'CommandQueue', 'Tags',
         'Metrics', 'Locks', 'Processes',
     ];
 
     /**
-     * Determine if the given request can access the Horizon dashboard.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
+     * Get the Horizon application name.
      */
-    public static function check($request)
+    public static function title(): string
+    {
+        return with(config('app.name'), fn ($name) => 'Horizon'.($name ? ' - '.$name : ''));
+    }
+
+    /**
+     * Determine if the given request can access the Horizon dashboard.
+     */
+    public static function check(Request $request): bool
     {
         return (static::$authUsing ?: function () {
             return app()->environment('local');
@@ -80,7 +68,6 @@ class Horizon
     /**
      * Set the callback that should be used to authenticate Horizon users.
      *
-     * @param  \Closure  $callback
      * @return static
      */
     public static function auth(Closure $callback)
@@ -93,12 +80,9 @@ class Horizon
     /**
      * Configure the Redis databases that will store Horizon data.
      *
-     * @param  string  $connection
-     * @return void
-     *
      * @throws \Exception
      */
-    public static function use($connection)
+    public static function use(string $connection): void
     {
         if (! is_null($config = config("database.redis.clusters.{$connection}.0"))) {
             config(["database.redis.{$connection}" => $config]);
@@ -114,35 +98,25 @@ class Horizon
     /**
      * Get the CSS for the Horizon dashboard.
      *
-     * @return Illuminate\Contracts\Support\Htmlable
+     * @throws \RuntimeException
      */
-    public static function css()
+    public static function css(): Htmlable
     {
-        if (($light = @file_get_contents(__DIR__.'/../dist/styles.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard light CSS.');
-        }
-
-        if (($dark = @file_get_contents(__DIR__.'/../dist/styles-dark.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard dark CSS.');
-        }
-
-        if (($app = @file_get_contents(__DIR__.'/../dist/app.css')) === false) {
+        if (($css = @file_get_contents(__DIR__.'/../dist/app.css')) === false) {
             throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
         }
 
         return new HtmlString(<<<HTML
-            <style data-scheme="light">{$light}</style>
-            <style data-scheme="dark">{$dark}</style>
-            <style>{$app}</style>
+            <style>{$css}</style>
             HTML);
     }
 
     /**
      * Get the JS for the Horizon dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Htmlable
+     * @throws \RuntimeException
      */
-    public static function js()
+    public static function js(): Htmlable
     {
         if (($js = @file_get_contents(__DIR__.'/../dist/app.js')) === false) {
             throw new RuntimeException('Unable to load the Horizon dashboard JavaScript.');
@@ -159,29 +133,15 @@ class Horizon
     }
 
     /**
-     * Specifies that Horizon should use the dark theme.
-     *
-     * @deprecated
-     *
-     * @return static
-     */
-    public static function night()
-    {
-        static::$useDarkTheme = true;
-
-        return new static;
-    }
-
-    /**
      * Get the default JavaScript variables for Horizon.
-     *
-     * @return array
      */
-    public static function scriptVariables()
+    public static function scriptVariables(): array
     {
         return [
+            'appName' => static::title(),
+            'isDownForMaintenance' => app()->isDownForMaintenance(),
             'path' => config('horizon.path'),
-            'proxy_path' => config('horizon.proxy_path', ''),
+            'proxyPath' => config('horizon.proxy_path', ''),
         ];
     }
 

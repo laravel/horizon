@@ -14,8 +14,6 @@ class HomeController extends Controller
      */
     public function __invoke()
     {
-        return Inertia::render('horizon::layout', [
-            'isDownForMaintenance' => App::isDownForMaintenance(),
-        ]);
+        return Inertia::render('Horizon.Home');
     }
 }
