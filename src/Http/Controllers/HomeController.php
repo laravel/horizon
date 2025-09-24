@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
-use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 
 class HomeController extends Controller
