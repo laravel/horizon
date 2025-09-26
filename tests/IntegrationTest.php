@@ -131,7 +131,7 @@ abstract class IntegrationTest extends TestCase
      * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
-    protected function getEnvironmentSetUp($app)
+    protected function defineEnvironment($app)
     {
         $app['config']->set('queue.default', 'redis');
     }
