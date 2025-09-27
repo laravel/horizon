@@ -37,7 +37,6 @@ class ListCommand extends Command
         $this->option('json')
             ? $this->displayJson($masters)
             : $this->displayForCli($masters);
-
     }
 
     /**
