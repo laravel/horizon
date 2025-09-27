@@ -14,7 +14,8 @@ class SupervisorsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:supervisors';
+    protected $signature = 'horizon:supervisors 
+                            {--json : Output all of the supervisors information as JSON}';
 
     /**
      * The console command description.
@@ -33,6 +34,44 @@ class SupervisorsCommand extends Command
     {
         $supervisors = $supervisors->all();
 
+        $this->option('json')
+            ? $this->displayJson($supervisors)
+            : $this->displayForCli($supervisors);
+    }
+
+    /**
+     * Render all of the supervisors information as JSON.
+     *
+     * @param  array  $supervisors
+     * @return void
+     */
+    protected function displayJson(array $supervisors)
+    {
+        if (empty($supervisors)) {
+            return $this->output->writeln('[]');
+        }
+
+        $this->output->writeln(collect($supervisors)->map(function ($supervisor) {
+            return [
+                'name' => $supervisor->name,
+                'pid' => $supervisor->pid,
+                'status' => $supervisor->status,
+                'workers' => collect($supervisor->processes)->map(function ($count, $queue) {
+                    return $queue.' ('.$count.')';
+                })->implode(', '),
+                'balancing' => $supervisor->options['balance'],
+            ];
+        })->toJson());
+    }
+
+    /**
+     * Render all of the supervisors information for the CLI.
+     *
+     * @param  array  $supervisors
+     * @return void
+     */
+    protected function displayForCli(array $supervisors)
+    {
         if (empty($supervisors)) {
             return $this->components->info('No supervisors are running.');
         }
