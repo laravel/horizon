@@ -26,6 +26,7 @@ class StoreTagsForFailedTest extends IntegrationTest
         $tagRepository = m::mock(TagRepository::class);
 
         $tagRepository->shouldReceive('addTemporary')->once()->with(120, '1', ['failed:foobar'])->andReturn([]);
+        $tagRepository->shouldReceive('forgetJobs')->once()->with(['pending_jobs:foobar'], '1')->andReturn([]);
 
         $this->instance(TagRepository::class, $tagRepository);
 

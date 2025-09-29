@@ -81,6 +81,15 @@ interface TagRepository
     public function paginate($tag, $startingAt = 0, $limit = 25);
 
     /**
+     * Remove the given job IDs from the given tag.
+     *
+     * @param  array|string  $tags
+     * @param  array|string  $ids
+     * @return void
+     */
+    public function forgetJobs($tags, $ids);
+
+    /**
      * Delete the given tag from storage.
      *
      * @param  string  $tag
