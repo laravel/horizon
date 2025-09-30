@@ -29,7 +29,7 @@ class WorkCommand extends BaseWorkCommand
                             {--supervisor= : The name of the supervisor the worker belongs to}
                             {--timeout=60 : The number of seconds a child process can run}
                             {--tries=0 : Number of times to attempt a job before logging it failed}
-                            {--json : Output the result in JSON format}';
+                            {--json : Output the queue worker information as JSON}';
 
     /**
      * Indicates whether the command should be shown in the Artisan command list.
