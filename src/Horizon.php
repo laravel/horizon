@@ -101,9 +101,9 @@ class Horizon
      */
     public static function use($connection)
     {
-        if ($connection === 'horizon' || ! is_null(config("database.redis.horizon"))) {
+        if ($connection === 'horizon' || ! is_null(config('database.redis.horizon'))) {
             throw new InvalidArgumentException(
-                "The Redis connection name [horizon] is reserved for internal use."
+                'The Redis connection name [horizon] is reserved for internal use.'
             );
         }
 
