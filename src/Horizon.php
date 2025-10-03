@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Js;
+use InvalidArgumentException;
 use RuntimeException;
 
 class Horizon
@@ -100,6 +101,12 @@ class Horizon
      */
     public static function use($connection)
     {
+        if ($connection === 'horizon' || ! is_null(config("database.redis.horizon"))) {
+            throw new InvalidArgumentException(
+                "The Redis connection name [horizon] is reserved for internal use."
+            );
+        }
+
         if (! is_null($config = config("database.redis.clusters.{$connection}.0"))) {
             config(["database.redis.{$connection}" => $config]);
         } elseif (is_null($config) && is_null($config = config("database.redis.{$connection}"))) {
