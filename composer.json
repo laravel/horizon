@@ -71,11 +71,19 @@
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@clear",
             "@build",
-            "@php vendor/bin/testbench serve"
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@clear",
+            "@build",
+            "npx concurrently -c \"#93c5fd,#fdba74\" \"php vendor/bin/testbench serve --ansi\" \"npm run watch\" --names=server,vite --kill-others"
         ],
         "lint": [
-            "@php vendor/bin/phpstan analyse"
+            "@php vendor/bin/phpstan analyse --verbose"
         ],
         "test": [
             "@php vendor/bin/phpunit"

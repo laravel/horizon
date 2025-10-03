@@ -1,23 +1,14 @@
-<script type="text/ecmascript-6">
-    export default {
-        props: ['trace'],
+<script setup>
+import { computed } from 'vue';
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                minimumLines: 5,
-                showAll: false,
-            };
-        },
+const props = defineProps(['trace']);
 
-        computed: {
-            lines() {
-                return this.trace.slice(0, this.showAll ? 1000 : this.minimumLines);
-            }
-        }
-    }
+const minimumLines = ref(5);
+const showAll = ref(false);
+
+const lines = computed(() => {
+    return props.trace.slice(0, showAll.value ? 1000 : minimumLines.value)
+});
 </script>
 
 <template>
