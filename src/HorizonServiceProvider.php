@@ -159,6 +159,8 @@ class HorizonServiceProvider extends ServiceProvider
             __DIR__.'/../config/horizon.php', 'horizon'
         );
 
+        Horizon::checkReservedConnectionName(config('horizon.use', 'default'));
+
         Horizon::use(config('horizon.use', 'default'));
     }
 
