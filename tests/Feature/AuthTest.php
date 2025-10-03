@@ -2,24 +2,27 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Illuminate\Http\Request;
 use Laravel\Horizon\Exceptions\ForbiddenException;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Http\Middleware\Authenticate;
 use Laravel\Horizon\Tests\IntegrationTest;
+use Mockery as m;
 
 class AuthTest extends IntegrationTest
 {
     public function test_authentication_callback_works()
     {
-        $this->assertFalse(Horizon::check('taylor'));
+        $request = Request::create('/', 'GET', ['name' => 'taylor']);
+
+        $this->assertFalse(Horizon::check($request));
 
         Horizon::auth(function ($request) {
-            return $request === 'taylor';
+            return $request->input('name') === 'taylor';
         });
 
-        $this->assertTrue(Horizon::check('taylor'));
-        $this->assertFalse(Horizon::check('adam'));
-        $this->assertFalse(Horizon::check(null));
+        $this->assertTrue(Horizon::check($request));
+        $this->assertFalse(Horizon::check(Request::create('/', 'GET')));
     }
 
     public function test_authentication_middleware_can_pass()
@@ -31,8 +34,7 @@ class AuthTest extends IntegrationTest
         $middleware = new Authenticate;
 
         $response = $middleware->handle(
-            new class {
-            },
+            m::mock(Request::class),
             function ($value) {
                 return 'response';
             }
@@ -52,8 +54,7 @@ class AuthTest extends IntegrationTest
         $middleware = new Authenticate;
 
         $middleware->handle(
-            new class {
-            },
+            m::mock(Request::class),
             function ($value) {
                 return 'response';
             }

@@ -17,7 +17,12 @@ const alert = {
 
 <template>
   <div id="horizon" v-cloak>
+<<<<<<< HEAD
     <Alert
+=======
+    <!--
+    <AlertModal
+>>>>>>> origin/next
       :message="alert.message"
       :type="alert.type"
       :auto-close="alert.autoClose"
@@ -25,6 +30,7 @@ const alert = {
       :confirmation-cancel="alert.confirmationCancel"
       v-if="alert.type"
     />
+    -->
 
     <div class="container mb-5">
       <div class="d-flex align-items-center py-4 header">

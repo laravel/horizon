@@ -1,3 +1,11 @@
+<script setup>
+import AppLayout from '@/layouts/AppLayout.vue'
+
+defineOptions({
+    layout: AppLayout
+})
+</script>
+
 <template>
-  Loading page
+    <div>Loading page</div>
 </template>
