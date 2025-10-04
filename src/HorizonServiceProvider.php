@@ -160,11 +160,15 @@ class HorizonServiceProvider extends ServiceProvider
             __DIR__.'/../config/horizon.php', 'horizon'
         );
 
-        $horizonRedisConnectionName = config('horizon.use', 'default');
+        $connection = config('horizon.use', 'default');
 
-        $this->checkIsReservedConnectionName($horizonRedisConnectionName);
+        if ($connection === 'horizon' || config()->has('database.redis.horizon')) {
+            throw new InvalidArgumentException(
+                'The Redis connection name [horizon] is reserved for internal use.'
+            );
+        }
 
-        Horizon::use($horizonRedisConnectionName);
+        Horizon::use($connection);
     }
 
     /**
@@ -193,22 +197,5 @@ class HorizonServiceProvider extends ServiceProvider
                 return new RedisConnector($this->app['redis']);
             });
         });
-    }
-
-    /**
-     * Check if a given Redis connection name is reserved by Horizon.
-     *
-     * @param  string  $connection
-     * @return void
-     *
-     * @throws \Exception
-     */
-    protected function checkIsReservedConnectionName(string $connection): void
-    {
-        if ($connection === 'horizon' || config()->has('database.redis.horizon')) {
-            throw new InvalidArgumentException(
-                'The Redis connection name [horizon] is reserved for internal use.'
-            );
-        }
     }
 }
