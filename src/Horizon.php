@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Js;
-use InvalidArgumentException;
 use RuntimeException;
 
 class Horizon
@@ -89,23 +88,6 @@ class Horizon
         static::$authUsing = $callback;
 
         return new static;
-    }
-
-    /**
-     * Check if a given Redis connection name is reserved by Horizon.
-     *
-     * @param  string  $connection
-     * @return void
-     *
-     * @throws \Exception
-     */
-    public static function checkReservedConnectionName(string $connection): void
-    {
-        if ($connection === 'horizon' || config()->has('database.redis.horizon')) {
-            throw new InvalidArgumentException(
-                'The Redis connection name [horizon] is reserved for internal use.'
-            );
-        }
     }
 
     /**

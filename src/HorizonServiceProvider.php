@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use InvalidArgumentException;
 use Laravel\Horizon\Connectors\RedisConnector;
 
 class HorizonServiceProvider extends ServiceProvider
@@ -159,9 +160,11 @@ class HorizonServiceProvider extends ServiceProvider
             __DIR__.'/../config/horizon.php', 'horizon'
         );
 
-        Horizon::checkReservedConnectionName(config('horizon.use', 'default'));
+        $horizonRedisConnectionName = config('horizon.use', 'default');
 
-        Horizon::use(config('horizon.use', 'default'));
+        $this->checkIsReservedConnectionName($horizonRedisConnectionName);
+
+        Horizon::use($horizonRedisConnectionName);
     }
 
     /**
@@ -190,5 +193,22 @@ class HorizonServiceProvider extends ServiceProvider
                 return new RedisConnector($this->app['redis']);
             });
         });
+    }
+
+    /**
+     * Check if a given Redis connection name is reserved by Horizon.
+     *
+     * @param  string  $connection
+     * @return void
+     *
+     * @throws \Exception
+     */
+    protected function checkIsReservedConnectionName(string $connection): void
+    {
+        if ($connection === 'horizon' || config()->has('database.redis.horizon')) {
+            throw new InvalidArgumentException(
+                'The Redis connection name [horizon] is reserved for internal use.'
+            );
+        }
     }
 }
