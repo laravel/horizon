@@ -13,6 +13,6 @@ class HomeController extends Controller
      */
     public function __invoke()
     {
-        return Inertia::render('Horizon.Home');
+        return Inertia::render('Horizon.Dashboard');
     }
 }

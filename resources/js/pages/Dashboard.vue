@@ -1,147 +1,99 @@
-<script type="text/ecmascript-6">
-    import moment from 'moment';
+<script setup>
+import { Head } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { DateTime } from 'luxon';
+import AppLayout from '@/layouts/AppLayout.vue';
 
-    export default {
-        components: {},
+defineOptions({
+    layout: AppLayout
+})
 
+const stats = ref({});
+const workers = ref([]);
+const workload = ref([]);
+const ready = ref(false);
 
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                stats: {},
-                workers: [],
-                workload: [],
-                ready: false,
-            };
-        },
+const recentJobsPeriod = computed(() => {
+    return !ready.value 
+        ? 'Jobs Past Hour'
+        : `Jobs Past ${determinePeriod(stats.value.periods.recentJobs)}`;
+});
 
+const failedJobsPeriod = computed(() => {
+    return !ready.value
+        ? 'Failed Jobs Past 7 Days'
+        : `Failed Jobs Past ${determinePeriod(stats.value.periods.failedJobs)}`;
+});
 
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Dashboard";
-        },
+function loadStats() {
+    return this.$http.get(Horizon.basePath + '/api/stats')
+        .then(response => {
+            stats.value = response.data;
 
-
-        computed: {
-            /**
-             * Determine the recent job period label.
-             */
-            recentJobsPeriod() {
-                return !this.ready
-                    ? 'Jobs Past Hour'
-                    : `Jobs Past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
-            },
-
-
-            /**
-             * Determine the recently failed job period label.
-             */
-            failedJobsPeriod() {
-                return !this.ready
-                    ? 'Failed Jobs Past 7 Days'
-                    : `Failed Jobs Past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
-            },
-        },
-
-
-        methods: {
-            /**
-             * Load the general stats.
-             */
-            loadStats() {
-                return this.$http.get(Horizon.basePath + '/api/stats')
-                    .then(response => {
-                        this.stats = response.data;
-
-                        if (Object.values(response.data.wait)[0]) {
-                            this.stats.max_wait_time = Object.values(response.data.wait)[0];
-                            this.stats.max_wait_queue = Object.keys(response.data.wait)[0].split(':')[1];
-                        }
-                    });
-            },
-
-
-            /**
-             * Load the workers stats.
-             */
-            loadWorkers() {
-                return this.$http.get(Horizon.basePath + '/api/masters')
-                    .then(response => {
-                        this.workers = response.data;
-                    });
-            },
-
-
-            /**
-             * Load the workload stats.
-             */
-            loadWorkload() {
-                return this.$http.get(Horizon.basePath + '/api/workload')
-                    .then(response => {
-                        this.workload = response.data;
-                    });
-            },
-
-
-            /**
-             * Poll handler to refresh the stats at regular intervals.
-             */
-            refreshStatsPeriodically() {
-                Promise.all([
-                    this.loadStats(),
-                    this.loadWorkers(),
-                    this.loadWorkload(),
-                ]).then(() => {
-                    this.ready = true;
-                });
-            },
-
-
-            /**
-             *  Count processes for the given supervisor.
-             */
-            countProcesses(processes) {
-                return Object.values(processes).reduce((total, value) => total + value, 0).toLocaleString();
-            },
-
-
-            /**
-             *  Format the Supervisor display name.
-             */
-            superVisorDisplayName(supervisor, worker) {
-                return supervisor.replace(worker + ':', '');
-            },
-
-
-            /**
-             *
-             * @returns {string}
-             */
-            humanTime(time) {
-                return moment.duration(time, "seconds").humanize().replace(/^(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
-            },
-
-
-            /**
-             * Determine the unit for the given timeframe.
-             */
-            determinePeriod(minutes) {
-                return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?\s/i, '').replace(/^(.)|\s(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
+            if (Object.values(response.data.wait)[0]) {
+                stats.value.max_wait_time = Object.values(response.data.wait)[0];
+                stats.value.max_wait_queue = Object.keys(response.data.wait)[0].split(':')[1];
             }
-        }
-    }
+        });
+};
+
+function loadWorkers() {
+    return this.$http.get(Horizon.basePath + '/api/masters')
+        .then(response => {
+            workers.value = response.data;
+        });
+};
+
+
+function loadWorkload() {
+    return this.$http.get(Horizon.basePath + '/api/workload')
+        .then(response => {
+            workload.value = response.data;
+        });
+};
+
+function refreshStatsPeriodically() {
+    Promise.all([
+        loadStats(),
+        loadWorkers(),
+        loadWorkload(),
+    ]).then(() => {
+        ready.value = true;
+    });
+};
+
+function countProcesses(processes) {
+    return Object.values(processes).reduce((total, value) => total + value, 0).toLocaleString();
+};
+
+function superVisorDisplayName(supervisor, worker) {
+    return supervisor.replace(worker + ':', '');
+};
+
+function humanTime(time) {
+    return DateTime.fromISO(time)
+        .toRelative({ numeric: 'auto' })
+        .replace(/^(.)/g, function ($1) {
+            return $1.toUpperCase();
+        });
+};
+
+function determinePeriod(minutes) {
+    return DateTime.now()
+        .subtract(DateTime.fromISO(minutes))
+        .toRelative({ numeric: 'auto' })
+        .replace(/^An?\s/i, '')
+        .replace(/^(.)|\s(.)/g, function ($1) {
+            return $1.toUpperCase();
+        });
+};
+
 </script>
 
 <template>
     <div>
+        <Head>Horizon - Dashboard</Head>
+
         <poll @poll="refreshStatsPeriodically" :interval="5" />
 
         <div class="card overflow-hidden">

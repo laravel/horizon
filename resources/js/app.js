@@ -2,7 +2,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { createApp, h } from 'vue';
 
 const pages = {
-    'Horizon.Home': 'Home',
+    'Horizon.Dashboard': 'Dashboard',
 };
 
 createInertiaApp({
