@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Inertia\Inertia;
 use Inertia\Middleware;
-use Inertia\ResponseFactory;
 use Laravel\Horizon\Horizon;
 
 class HandleInertiaRequests extends Middleware
