@@ -1,10 +1,13 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import AlertModal from '@/components/AlertModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
   downForMaintenance: true
-})
+});
+
+const autoLoadsNewEntries = ref(false);
 
 const alert = {
   message: '',
@@ -12,6 +15,10 @@ const alert = {
   autoClose: true,
   confirmationProceed: 'Process',
   confirmationCancel: 'Cancel'
+};
+
+function autoLoadNewEntries() {
+  autoLoadNewEntries.value = !autoLoadNewEntries.value
 };
 </script>
 

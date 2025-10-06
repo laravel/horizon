@@ -1,65 +1,43 @@
 <script setup>
+import { onMounted, ref } from 'vue';
+
 const scheme = ref('system');
 
 function toggleScheme() {
     if (scheme.value === 'system') {
         scheme.value = 'light';
     } else if (scheme.value === 'dark') {
-        scheme.value = 'light'
+        scheme.value = 'light';
     } else {
-        scheme.value = 'system'
+        scheme.value = 'system';
     }
 };
 
-    // export default {
-    //     data () {
-    //         return {
-    //             scheme: 'system'
-    //         }
-    //     },
+function calculateScheme() {
+    const dark = document.querySelector('style[data-scheme="dark"]');
 
-    //     watch: {
-    //         scheme (value) {
-    //             localStorage.setItem('scheme', value);
-    //         }
-    //     },
+    if (scheme.value == 'system') {
+        const prefersDarkMode = window.matchMedia('(prefer-color-scheme: dark)');
 
-    //     mounted () {
-    //         this.scheme = localStorage.getItem('scheme') ?? 'system';
+        dark.media = prefersDarkMode.matches ? '' : "max-width: 1px";
+    } else {
+        dark.media = scheme.value === 'dark' ? '' : "max-width: 1px";
+    }
+}
 
-    //         window
-    //             .matchMedia('(prefers-color-scheme: dark)')
-    //             .addEventListener('change', () => this.calculateScheme())
+onMounted(() => {
+    scheme.value = localStorage.getItem('scheme') ?? 'system';
 
-    //         this.calculateScheme()
-    //     },
+    window
+        .matchMedia('(prefer-color-scheme: dark)')
+        .addEventListener('change', () => calculateScheme());
 
-    //     methods: {
-    //         toggleScheme () {
-    //             if (this.scheme == 'system') {
-    //                 this.scheme = 'dark'
-    //             } else if (this.scheme == 'dark') {
-    //                 this.scheme = 'light'
-    //             } else {
-    //                 this.scheme = 'system'
-    //             }
+    calculateScheme();
+});
 
-    //             this.calculateScheme()
-    //         },
-
-    //         calculateScheme () {
-    //             const dark = document.querySelector('style[data-scheme="dark"]');
-
-    //             if (this.scheme == 'system') {
-    //                 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
-
-    //                 dark.media = prefersDarkMode.matches ? "" : "max-width: 1px";
-    //             } else {
-    //                 dark.media = this.scheme == 'dark' ? "" : "max-width: 1px";
-    //             }
-    //         }
-    //     }
-    // }
+watch(scheme, (newValue) => {
+    localStorage.setItem('scheme', newValue);
+});
 </script>
 
 <template>
