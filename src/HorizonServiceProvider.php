@@ -162,7 +162,7 @@ class HorizonServiceProvider extends ServiceProvider
 
         $connection = config('horizon.use', 'default');
 
-        if ($connection === 'horizon') {
+        if (! $this->app->configurationIsCached() && ($connection === 'horizon' || config()->has('database.redis.horizon'))) {
             throw new InvalidArgumentException(
                 'The Redis connection name [horizon] is reserved for internal use.'
             );
