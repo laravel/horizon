@@ -160,15 +160,7 @@ class HorizonServiceProvider extends ServiceProvider
             __DIR__.'/../config/horizon.php', 'horizon'
         );
 
-        $connection = config('horizon.use', 'default');
-
-        if ($connection === 'horizon') {
-            throw new InvalidArgumentException(
-                'The Redis connection name [horizon] is reserved for internal use.'
-            );
-        }
-
-        Horizon::use($connection);
+        Horizon::use(config('horizon.use', 'default'));
     }
 
     /**
