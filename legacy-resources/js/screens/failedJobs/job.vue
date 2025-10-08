@@ -95,14 +95,14 @@
 
 <template>
     <div>
-        <poll @poll="reloadRetries" :immediate="false" />
+        <poll :immediate="false" @poll="reloadRetries" />
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
-                <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
+                <h2 v-if="!ready" class="h6 m-0">Job Preview</h2>
+                <h2 v-if="ready" class="h6 m-0">{{job.name}}</h2>
 
-                <button class="btn btn-primary" v-on:click.prevent="retry(job.id)">
+                <button class="btn btn-primary" @click.prevent="retry(job.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor" :class="{spin: retrying}">
                         <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                     </svg>
@@ -119,7 +119,7 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary" v-if="ready">
+            <div v-if="ready" class="card-body card-bg-secondary">
                 <div class="row mb-2">
                     <div class="col-md-2 text-muted">ID</div>
                     <div class="col">{{job.id}}</div>
@@ -136,7 +136,7 @@
                     <div class="col-md-2 text-muted">Retries</div>
                     <div class="col">{{job.retried_by.length}}</div>
                 </div>
-                <div class="row mb-2" v-if="job.payload.retry_of">
+                <div v-if="job.payload.retry_of" class="row mb-2">
                     <div class="col-md-2 text-muted">Retry of ID</div>
                     <div class="col">
                          <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
@@ -148,7 +148,7 @@
                     <div class="col-md-2 text-muted">Tags</div>
                     <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
                 </div>
-                <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
+                <div v-if="prettyPrintJob(job.payload.data).batchId" class="row mb-2">
                     <div class="col-md-2 text-muted">Batch</div>
                     <div class="col">
                         <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
@@ -167,7 +167,7 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div v-if="ready" class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Exception</h2>
             </div>
@@ -176,7 +176,7 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div v-if="ready" class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Exception Context</h2>
             </div>
@@ -187,7 +187,7 @@
         </div>
 
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div v-if="ready" class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
             </div>
@@ -197,7 +197,7 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready && job.retried_by.length">
+        <div v-if="ready && job.retried_by.length" class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Recent Retries</h2>
             </div>

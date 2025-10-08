@@ -122,7 +122,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Monitoring</h2>
 
-                <button @click="openNewTagModal" class="btn btn-primary btn-sm">Monitor Tag</button>
+                <button class="btn btn-primary btn-sm" @click="openNewTagModal">Monitor Tag</button>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -157,7 +157,7 @@
                     </td>
                     <td class="text-end text-muted">{{ tag.count }}</td>
                     <td class="text-end">
-                        <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
+                        <a href="#" class="control-action" title="Stop Monitoring" @click="stopMonitoring(tag.tag)">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                             </svg>
@@ -168,16 +168,17 @@
             </table>
         </div>
 
-        <div class="modal" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div id="addTagModel" class="modal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">Monitor New Tag</div>
 
                     <div class="modal-body">
-                        <input type="text" class="form-control" placeholder="App\Models\User:6352"
-                               v-on:keyup.enter="monitorNewTag"
-                               v-model="newTag"
-                               id="newTagInput">
+                        <input
+id="newTagInput" v-model="newTag" type="text"
+                               class="form-control"
+                               placeholder="App\Models\User:6352"
+                               @keyup.enter="monitorNewTag">
                     </div>
 
 

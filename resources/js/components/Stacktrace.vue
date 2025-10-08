@@ -23,7 +23,7 @@ const lines = computed(() => {
 
                 <tr v-if="! showAll">
                     <td class="card-bg-secondary">
-                        <a href="*" class="text-decoration-none" v-on:click.prevent="showAll = true">Show All</a>
+                        <a href="*" class="text-decoration-none" @click.prevent="showAll = true">Show All</a>
                     </td>
                 </tr>
             </tbody>

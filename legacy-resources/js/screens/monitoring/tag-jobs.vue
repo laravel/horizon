@@ -2,6 +2,14 @@
     import JobRow from './job-row.vue';
 
     export default {
+
+
+        /**
+         * Components
+         */
+        components: {
+            JobRow,
+        },
         props: ['type'],
 
         /**
@@ -21,10 +29,14 @@
 
 
         /**
-         * Components
+         * Watch these properties for changes.
          */
-        components: {
-            JobRow,
+        watch: {
+            '$route'() {
+                this.page = 1;
+
+                this.loadJobs(this.$route.params.tag);
+            }
         },
 
 
@@ -35,18 +47,6 @@
             document.title = "Horizon - Monitoring";
 
             this.loadJobs(this.$route.params.tag);
-        },
-
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.page = 1;
-
-                this.loadJobs(this.$route.params.tag);
-            }
         },
 
 
@@ -153,28 +153,28 @@
                 <th>Job</th>
                 <th>Queued</th>
                 <th v-if="type == 'jobs'">Completed</th>
-                <th class="text-end" v-if="type == 'jobs'">Runtime</th>
-                <th class="text-end" v-if="type == 'failed'">Failed</th>
+                <th v-if="type == 'jobs'" class="text-end">Runtime</th>
+                <th v-if="type == 'failed'" class="text-end">Failed</th>
             </tr>
             </thead>
 
             <tbody>
             <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                 <td colspan="100" class="text-center card-bg-secondary py-2">
-                    <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                    <small><a v-if="!loadingNewEntries" href="#" @click.prevent="loadNewEntries">Load New Entries</a></small>
 
                     <small v-if="loadingNewEntries">Loading...</small>
                 </td>
             </tr>
 
-            <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
+            <component is="job-row" v-for="job in jobs" :key="job.id" :job="job">
             </component>
             </tbody>
         </table>
 
         <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-            <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-            <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+            <button class="btn btn-secondary btn-sm" :disabled="page==1" @click="previous">Previous</button>
+            <button class="btn btn-secondary btn-sm" :disabled="page>=totalPages" @click="next">Next</button>
         </div>
     </div>
 

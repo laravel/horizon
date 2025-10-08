@@ -5,48 +5,30 @@ namespace Laravel\Horizon\Http\Controllers;
 use Illuminate\Bus\BatchRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Jobs\RetryFailedJob;
 
 class BatchesController extends Controller
 {
     /**
-     * The job repository implementation.
-     *
-     * @var \Illuminate\Bus\BatchRepository
-     */
-    public $batches;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @param  \Illuminate\Bus\BatchRepository  $batches
-     * @return void
-     */
-    public function __construct(BatchRepository $batches)
-    {
-        parent::__construct();
-
-        $this->batches = $batches;
-    }
-
-    /**
      * Get all of the batches.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Bus\BatchRepository  $repository
      * @return array
      */
-    public function index(Request $request)
+    public function index(Request $request, BatchRepository $repository)
     {
         try {
-            $batches = $this->batches->get(50, $request->query('before_id') ?: null);
+            $batches = $repository->get(50, $request->query('before_id') ?: null);
         } catch (QueryException $e) {
             $batches = [];
         }
 
-        return [
-            'batches' => $batches,
-        ];
+        return Inertia::render('Horizone.Batches.Index', [
+            'batches' => Inertia::merge($batches),
+        ]);
     }
 
     /**

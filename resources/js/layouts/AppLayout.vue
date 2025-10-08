@@ -1,7 +1,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import AlertModal from '@/components/AlertModal.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   downForMaintenance: true
@@ -20,17 +20,19 @@ const alert = {
 function autoLoadNewEntries() {
   autoLoadNewEntries.value = !autoLoadNewEntries.value
 };
+
+const appName = computed(() => window.Horizon.config('appName'))
 </script>
 
 <template>
-  <div id="horizon" v-cloak>
+  <div v-cloak id="horizon">
     <AlertModal
+      v-if="alert.type"
       :message="alert.message"
       :type="alert.type"
       :auto-close="alert.autoClose"
       :confirmation-proceed="alert.confirmationProceed"
       :confirmation-cancel="alert.confirmationCancel"
-      v-if="alert.type"
     />
 
     <div class="container mb-5">
@@ -41,14 +43,14 @@ function autoLoadNewEntries() {
             </svg>
 
             <h1 class="h4 mb-0 ms-2">
-              <strong>Laravel</strong> Horizon [ config('app.name') ? ' - ' . config('app.name') : '' ]
+              <strong>Laravel</strong> Horizon {{ appName ? ' - ' . appName : '' }}
             </h1>
           </Link>
 
           <div class="ms-auto">
               <scheme-toggler></scheme-toggler>
 
-              <button class="btn btn-muted ms-2" :class="{active: autoLoadsNewEntries}" v-on:click.prevent="autoLoadNewEntries" title="Auto Load Entries">
+              <button class="btn btn-muted ms-2" :class="{active: autoLoadsNewEntries}" title="Auto Load Entries" @click.prevent="autoLoadNewEntries">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor">
                       <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                   </svg>
@@ -84,7 +86,7 @@ function autoLoadNewEntries() {
               </Link>
             </li>
             <li class="nav-item">
-              <Link href="/batches" class="nav-link d-flex align-items-center">
+              <Link href="$url('/batches')" class="nav-link d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M2 3.75A.75.75 0 012.75 3h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 3.75zm0 4.167a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.166a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.167a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
                 </svg>
@@ -127,7 +129,7 @@ function autoLoadNewEntries() {
         </div>
 
         <div class="col-10">
-          <div class="alert alert-warning" v-if="props.downForMaintenance">
+          <div v-if="props.downForMaintenance" class="alert alert-warning">
               This application is in "maintenance mode". Queued jobs may not be processed unless your worker is using the "force" flag.
           </div>
 

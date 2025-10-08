@@ -6,7 +6,7 @@ export default {
     build: {
         assetsDir: '',
         rollupOptions: {
-            input: ['resources/js/app.js', 'resources/css/app.css'],
+            input: ['resources/js/horizon.js', 'resources/css/horizon.css'],
             output: {
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',

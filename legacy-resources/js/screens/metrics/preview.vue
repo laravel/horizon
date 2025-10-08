@@ -105,12 +105,12 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary" v-if="ready">
-                <p class="text-center m-0 p-5" v-if="ready && !rawData.length">
+            <div v-if="ready" class="card-body card-bg-secondary">
+                <p v-if="ready && !rawData.length" class="text-center m-0 p-5">
                     Not Enough Data
                 </p>
 
-                <line-chart v-if="ready && rawData.length" :data="metric.throughPutChart"/>
+                <LineChart v-if="ready && rawData.length" :data="metric.throughPutChart"/>
             </div>
         </div>
 
@@ -127,12 +127,12 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary" v-if="ready">
-                <p class="text-center m-0 p-5" v-if="ready && !rawData.length">
+            <div v-if="ready" class="card-body card-bg-secondary">
+                <p v-if="ready && !rawData.length" class="text-center m-0 p-5">
                     Not Enough Data
                 </p>
 
-                <line-chart v-if="ready && rawData.length" :data="metric.runTimeChart"/>
+                <LineChart v-if="ready && rawData.length" :data="metric.runTimeChart"/>
             </div>
         </div>
     </div>

@@ -1,12 +1,5 @@
 <script>
     export default {
-        data() {
-            return {
-                loading: 0,
-                lastExecutionTime: 0,
-                pollingInterval: null,
-            }
-        },
 
 
         props: {
@@ -23,6 +16,13 @@
             immediate: {
                 type: Boolean,
                 default: true,
+            }
+        },
+        data() {
+            return {
+                loading: 0,
+                lastExecutionTime: 0,
+                pollingInterval: null,
             }
         },
 

@@ -87,14 +87,13 @@ function determinePeriod(minutes) {
             return $1.toUpperCase();
         });
 };
-
 </script>
 
 <template>
     <div>
-        <Head>Horizon - Dashboard</Head>
+        <Head title="Horizon - Dashboard" />
 
-        <poll @poll="refreshStatsPeriodically" :interval="5" />
+        <poll :interval="5" @poll="refreshStatsPeriodically" />
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
@@ -176,7 +175,7 @@ function determinePeriod(minutes) {
                                 {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
                             </p>
 
-                            <small class="mt-1" v-if="stats.max_wait_queue">({{ stats.max_wait_queue }})</small>
+                            <small v-if="stats.max_wait_queue" class="mt-1">({{ stats.max_wait_queue }})</small>
                         </div>
                     </div>
 
@@ -203,7 +202,7 @@ function determinePeriod(minutes) {
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="workload.length">
+        <div v-if="workload.length" class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Current Workload</h2>
             </div>
@@ -247,7 +246,7 @@ function determinePeriod(minutes) {
         </div>
 
 
-        <div class="card overflow-hidden mt-4" v-for="worker in workers" :key="worker.name">
+        <div v-for="worker in workers" :key="worker.name" class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">{{ worker.name }}</h2>
 
@@ -283,10 +282,10 @@ function determinePeriod(minutes) {
                     </td>
                     <td class="text-muted">{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
                     <td class="text-end text-muted">{{ countProcesses(supervisor.processes) }}</td>
-                    <td class="text-end text-muted" v-if="supervisor.options.balance">
+                    <td v-if="supervisor.options.balance" class="text-end text-muted">
                         {{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }}
                     </td>
-                    <td class="text-end text-muted" v-else>
+                    <td v-else class="text-end text-muted">
                         Disabled
                     </td>
                 </tr>

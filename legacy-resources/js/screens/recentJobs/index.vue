@@ -2,6 +2,14 @@
     import JobRow from './job-row.vue';
 
     export default {
+
+
+        /**
+         * Components
+         */
+        components: {
+            JobRow,
+        },
         /**
          * The component's data.
          */
@@ -19,24 +27,6 @@
 
 
         /**
-         * Components
-         */
-        components: {
-            JobRow,
-        },
-
-
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            this.updatePageTitle();
-
-            this.loadJobs();
-        },
-
-
-        /**
          * Watch these properties for changes.
          */
         watch: {
@@ -47,6 +37,16 @@
 
                 this.loadJobs();
             }
+        },
+
+
+        /**
+         * Prepare the component.
+         */
+        mounted() {
+            this.updatePageTitle();
+
+            this.loadJobs();
         },
 
 
@@ -145,12 +145,13 @@
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
-                <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
-                <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
+                <h2 v-if="$route.params.type == 'pending'" class="h6 m-0">Pending Jobs</h2>
+                <h2 v-if="$route.params.type == 'completed'" class="h6 m-0">Completed Jobs</h2>
+                <h2 v-if="$route.params.type == 'silenced'" class="h6 m-0">Silenced Jobs</h2>
             </div>
 
-            <div v-if="!ready"
+            <div
+v-if="!ready"
                  class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin me-2 fill-text-color">
                     <path
@@ -160,7 +161,8 @@
                 <span>Loading...</span>
             </div>
 
-            <div v-if="ready && jobs.length == 0"
+            <div
+v-if="ready && jobs.length == 0"
                  class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
                 <span v-if="$route.params.type == 'pending'">There aren't any pending jobs.</span>
                 <span v-else-if="$route.params.type == 'completed'">There aren't any completed jobs.</span>
@@ -182,20 +184,20 @@
                 <tbody>
                     <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                         <td colspan="100" class="text-center card-bg-secondary py-1">
-                            <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                            <small><a v-if="!loadingNewEntries" href="#" @click.prevent="loadNewEntries">Load New Entries</a></small>
 
                             <small v-if="loadingNewEntries">Loading...</small>
                         </td>
                     </tr>
 
-                    <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
+                    <component is="job-row" v-for="job in jobs" :key="job.id" :job="job">
                     </component>
                 </tbody>
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+                <button class="btn btn-secondary btn-sm" :disabled="page==1" @click="previous">Previous</button>
+                <button class="btn btn-secondary btn-sm" :disabled="page>=totalPages" @click="next">Next</button>
             </div>
         </div>
     </div>

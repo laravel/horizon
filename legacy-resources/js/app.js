@@ -51,10 +51,10 @@ const router = createRouter({
 
 app.use(router);
 
-app.component('vue-json-pretty', VueJsonPretty);
-app.component('alert', Alert);
-app.component('scheme-toggler', SchemeToggler);
-app.component('poll', Poll);
+app.component('VueJsonPretty', VueJsonPretty);
+app.component('Alert', Alert);
+app.component('SchemeToggler', SchemeToggler);
+app.component('Poll', Poll);
 
 app.mixin(Base);
 

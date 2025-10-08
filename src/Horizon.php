@@ -50,9 +50,9 @@ class Horizon
     /**
      * Get the Horizon application name.
      */
-    public static function title(): string
+    public static function title(): ?string
     {
-        return with(config('app.name'), fn ($name) => 'Horizon'.($name ? ' - '.$name : ''));
+        return transform(config('app.name'), fn ($title) => $title === 'Laravel' ? null : $title);
     }
 
     /**
@@ -102,7 +102,7 @@ class Horizon
      */
     public static function css(): Htmlable
     {
-        if (($css = @file_get_contents(__DIR__.'/../dist/app.css')) === false) {
+        if (($css = @file_get_contents(__DIR__.'/../dist/horizon.css')) === false) {
             throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
         }
 
@@ -118,7 +118,7 @@ class Horizon
      */
     public static function js(): Htmlable
     {
-        if (($js = @file_get_contents(__DIR__.'/../dist/app.js')) === false) {
+        if (($js = @file_get_contents(__DIR__.'/../dist/horizon.js')) === false) {
             throw new RuntimeException('Unable to load the Horizon dashboard JavaScript.');
         }
 
@@ -126,8 +126,9 @@ class Horizon
 
         return new HtmlString(<<<HTML
             <script type="module">
-                window.Horizon = {$horizon};
                 {$js}
+                window.Horizon = createHorizonApp({$horizon})
+                Horizon.liftOff()
             </script>
             HTML);
     }
@@ -139,9 +140,9 @@ class Horizon
     {
         return [
             'appName' => static::title(),
+            'basePath' => normalize_url(config('horizon.path')),
+            'proxyPath' => transform(normalize_url(config('horizon.proxy_path')), fn ($url) => $url === '/' ? null : $url),
             'isDownForMaintenance' => app()->isDownForMaintenance(),
-            'path' => config('horizon.path'),
-            'proxyPath' => config('horizon.proxy_path', ''),
         ];
     }
 

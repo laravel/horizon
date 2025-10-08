@@ -1,37 +1,8 @@
+<script setup>
+import { Head } from '@inertiajs/vue3';
+</script>
 <script type="text/ecmascript-6">
     export default {
-        /**
-         * The component's data.
-         */
-        data() {
-            return {
-                ready: false,
-                loadingNewEntries: false,
-                hasNewEntries: false,
-                page: 1,
-                previousFirstId: null,
-                batches: [],
-            };
-        },
-
-        /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Batches";
-        },
-
-
-        /**
-         * Watch these properties for changes.
-         */
-        watch: {
-            '$route'() {
-                this.page = 1;
-
-                this.loadBatches();
-            },
-        },
 
 
         methods: {
@@ -114,27 +85,18 @@
 
 <template>
     <div>
-        <poll @poll="refreshBatchesPeriodically" />
+        <Head title="Horizon - Batches" />
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Batches</h2>
             </div>
 
-            <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin me-2 fill-text-color">
-                    <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
-                </svg>
-
-                <span>Loading...</span>
-            </div>
-
-
-            <div v-if="ready && batches.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
+            <div v-if="batches.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
                 <span>There aren't any batches.</span>
             </div>
 
-            <table v-if="ready && batches.length > 0" class="table table-hover mb-0">
+            <table v-if="batches.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
                     <th>Batch</th>
@@ -148,7 +110,7 @@
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                     <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                        <small><a v-if="!loadingNewEntries" href="#" @click.prevent="loadNewEntries">Load New Entries</a></small>
 
                         <small v-if="loadingNewEntries">Loading...</small>
                     </td>
@@ -161,16 +123,16 @@
                         </router-link>
                     </td>
                     <td>
-                        <small class="badge badge-danger badge-sm" v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs" class="badge badge-danger badge-sm">
                             Failures
                         </small>
-                        <small class="badge badge-success badge-sm" v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs" class="badge badge-success badge-sm">
                             Finished
                         </small>
-                        <small class="badge badge-secondary badge-sm" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs" class="badge badge-secondary badge-sm">
                             Pending
                         </small>
-                        <small class="badge badge-warning badge-sm" v-if="batch.cancelledAt">
+                        <small v-if="batch.cancelledAt" class="badge badge-warning badge-sm">
                             Cancelled
                         </small>
                     </td>
@@ -184,9 +146,9 @@
                 </tbody>
             </table>
 
-            <div v-if="ready && batches.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">Next</button>
+            <div v-if="batches.length" class="p-3 d-flex justify-content-between border-top">
+                <button class="btn btn-secondary btn-sm" :disabled="page==1" @click="previous">Previous</button>
+                <button class="btn btn-secondary btn-sm" :disabled="batches.length < 50" @click="next">Next</button>
             </div>
         </div>
 

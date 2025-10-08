@@ -20,14 +20,6 @@
 
 
         /**
-         * Prepare the component.
-         */
-        mounted() {
-            document.title = "Horizon - Failed Jobs";
-        },
-
-
-        /**
          * Watch these properties for changes.
          */
         watch: {
@@ -46,6 +38,14 @@
                     this.refreshJobsPeriodically();
                 }, 500);
             }
+        },
+
+
+        /**
+         * Prepare the component.
+         */
+        mounted() {
+            document.title = "Horizon - Failed Jobs";
         },
 
 
@@ -205,7 +205,7 @@
                         </svg>
                     </div>
 
-                    <input type="text" class="form-control w-100" v-model="tagSearchPhrase" placeholder="Search Tags">
+                    <input v-model="tagSearchPhrase" type="text" class="form-control w-100" placeholder="Search Tags">
                 </div>
             </div>
 
@@ -235,7 +235,7 @@
                 <tbody>
                 <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
                     <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                        <small><a v-if="!loadingNewEntries" href="#" @click.prevent="loadNewEntries">Load New Entries</a></small>
 
                         <small v-if="loadingNewEntries">Loading...</small>
                     </td>
@@ -245,9 +245,10 @@
                     <td>
                         <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">{{ jobBaseName(job.name) }}</router-link>
 
-                        <small class="ms-1 badge bg-secondary badge-sm"
-                               :title="retriedJobTooltip(job)"
-                               v-if="wasRetried(job)">
+                        <small
+v-if="wasRetried(job)"
+                               class="ms-1 badge bg-secondary badge-sm"
+                               :title="retriedJobTooltip(job)">
                             Retried
                         </small>
 
@@ -277,7 +278,7 @@
                     </td>
 
                     <td class="text-end table-fit">
-                        <a href="#" title="Retry Job" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
+                        <a v-if="!hasCompleted(job)" href="#" title="Retry Job" @click.prevent="retry(job.id)">
                             <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.25rem; height: 1.25rem;" :class="{spin: isRetrying(job.id)}">
                                 <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                             </svg>
@@ -288,8 +289,8 @@
             </table>
 
             <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+                <button class="btn btn-secondary btn-sm" :disabled="page==1" @click="previous">Previous</button>
+                <button class="btn btn-secondary btn-sm" :disabled="page>=totalPages" @click="next">Next</button>
             </div>
         </div>
 
