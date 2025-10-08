@@ -12,7 +12,7 @@ export default function url(base, path, parameters) {
     let queryString = searchParams.toString();
 
     if (base == '/' && path.startsWith('/')) {
-      base = '';
+        base = '';
     }
 
     return base + path + (queryString.length > 0 ? `?${queryString}` : '');

@@ -2,7 +2,7 @@
 
 namespace Laravel\Horizon;
 
-function normalize_url(?string $url): string 
+function normalize_url(?string $url): string
 {
     if (is_null($url)) {
         return '/';

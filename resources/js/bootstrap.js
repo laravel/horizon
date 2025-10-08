@@ -23,7 +23,7 @@ export default class Horizon {
      * @returns {any}
      */
     config(key) {
-        return this.appConfig[key]
+        return this.appConfig[key];
     }
 
     /**
@@ -50,9 +50,9 @@ export default class Horizon {
                 this.app.use(plugin);
 
                 this.app.mixin({
-                  methods: {
-                    $url: (path, parameters) => this.url(path, parameters),
-                  },
+                    methods: {
+                        $url: (path, parameters) => this.url(path, parameters),
+                    },
                 });
 
                 this.app.mount(el);
@@ -73,4 +73,4 @@ export default class Horizon {
     url(path, parameters) {
         return url(this.config('base'), path, parameters);
     }
-};
+}
