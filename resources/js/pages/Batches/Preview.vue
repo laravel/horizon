@@ -122,7 +122,7 @@ function retryFailedJob(id) {
 
                 <tbody>
 
-                <tr v-for="failedJob in failedJobs">
+                <tr v-for="(failedJob, index) in failedJobs" :key="index">
                     <td>
                         <router-link :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
                             {{ jobBaseName(failedJob.name) }}

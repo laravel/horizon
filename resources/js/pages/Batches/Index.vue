@@ -3,8 +3,6 @@ import { Head } from '@inertiajs/vue3';
 </script>
 <script type="text/ecmascript-6">
     export default {
-
-
         methods: {
             /**
              * Load the batches.
@@ -14,7 +12,7 @@ import { Head } from '@inertiajs/vue3';
                     this.ready = false;
                 }
 
-                this.$http.get(Horizon.basePath + '/api/batches?before_id=' + beforeId)
+                this.$http.get(Horizon.url(`/api/batches?before_id=${beforeId}`))
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.batches.length) {
                             this.ready = true;

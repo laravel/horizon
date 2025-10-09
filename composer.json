@@ -69,9 +69,16 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "post-autoload-dump": "@prepare",
+        "post-autoload-dump": [
+            "@prepare",
+            "@setup"
+        ],
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "setup": [
+            "npm ci",
+            "npm run build"
+        ],
         "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
             "Composer\\Config::disableProcessTimeout",

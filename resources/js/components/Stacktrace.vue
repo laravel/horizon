@@ -15,15 +15,17 @@ const lines = computed(() => {
     <div class="table-responsive">
         <table class="table mb-0">
             <tbody>
-                <tr v-for="line in lines">
+                <tr v-for="(line, index) in lines" :key="index">
                     <td class="card-bg-secondary">
                         <code>{{ line }}</code>
                     </td>
                 </tr>
 
-                <tr v-if="! showAll">
+                <tr v-if="!showAll">
                     <td class="card-bg-secondary">
-                        <a href="*" class="text-decoration-none" @click.prevent="showAll = true">Show All</a>
+                        <button class="text-decoration-none" @click.prevent="showAll = true">
+                            Show All
+                        </button>
                     </td>
                 </tr>
             </tbody>

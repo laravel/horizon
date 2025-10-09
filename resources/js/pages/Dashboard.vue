@@ -26,7 +26,7 @@ const failedJobsPeriod = computed(() => {
 });
 
 function loadStats() {
-    return this.$http.get(Horizon.basePath + '/api/stats')
+    return this.$http.get(Horizon.url('/api/stats'))
         .then(response => {
             stats.value = response.data;
 
@@ -38,7 +38,7 @@ function loadStats() {
 };
 
 function loadWorkers() {
-    return this.$http.get(Horizon.basePath + '/api/masters')
+    return this.$http.get(Horizon.url('/api/masters'))
         .then(response => {
             workers.value = response.data;
         });
@@ -46,7 +46,7 @@ function loadWorkers() {
 
 
 function loadWorkload() {
-    return this.$http.get(Horizon.basePath + '/api/workload')
+    return this.$http.get(Horizon.url('/api/workload'))
         .then(response => {
             workload.value = response.data;
         });
@@ -92,8 +92,6 @@ function determinePeriod(minutes) {
 <template>
     <div>
         <Head title="Horizon - Dashboard" />
-
-        <poll :interval="5" @poll="refreshStatsPeriodically" />
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
@@ -270,29 +268,27 @@ function determinePeriod(minutes) {
                 </thead>
 
                 <tbody>
-                <tr v-for="supervisor in worker.supervisors">
-                    <td>
-                        <svg v-if="supervisor.status == 'paused'" class="fill-warning me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z" />
-                        </svg>
-                        <svg v-if="supervisor.status == 'inactive'" class="fill-danger me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z" />
-                        </svg>
-                        {{ superVisorDisplayName(supervisor.name, worker.name) }}
-                    </td>
-                    <td class="text-muted">{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
-                    <td class="text-end text-muted">{{ countProcesses(supervisor.processes) }}</td>
-                    <td v-if="supervisor.options.balance" class="text-end text-muted">
-                        {{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }}
-                    </td>
-                    <td v-else class="text-end text-muted">
-                        Disabled
-                    </td>
-                </tr>
+                    <tr v-for="(supervisor, index) in worker.supervisors" :key="index">
+                        <td>
+                            <svg v-if="supervisor.status == 'paused'" class="fill-warning me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
+                                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z" />
+                            </svg>
+                            <svg v-if="supervisor.status == 'inactive'" class="fill-danger me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
+                                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z" />
+                            </svg>
+                            {{ superVisorDisplayName(supervisor.name, worker.name) }}
+                        </td>
+                        <td class="text-muted">{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
+                        <td class="text-end text-muted">{{ countProcesses(supervisor.processes) }}</td>
+                        <td v-if="supervisor.options.balance" class="text-end text-muted">
+                            {{ supervisor.options.balance.charAt(0).toUpperCase() + supervisor.options.balance.slice(1) }}
+                        </td>
+                        <td v-else class="text-end text-muted">
+                            Disabled
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-
-
     </div>
 </template>
