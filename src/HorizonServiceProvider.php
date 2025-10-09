@@ -25,6 +25,7 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->offerPublishing();
         $this->registerCommands();
+        $this->normalizeConfig();
     }
 
     /**
@@ -126,6 +127,13 @@ class HorizonServiceProvider extends ServiceProvider
             Console\StatusCommand::class,
             Console\SupervisorsCommand::class,
         ]);
+    }
+
+    protected function normalizeConfig(): void
+    {
+        if (! $this->app['config']->get('horizon.name')) {
+            $this->app['config']->set('horizon.name', $this->app['config']->get('app.name'));
+        }
     }
 
     /**

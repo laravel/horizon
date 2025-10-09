@@ -78,7 +78,7 @@ class LongWaitDetected extends Notification implements LongWaitDetectedNotificat
     {
         return (new MailMessage)
             ->error()
-            ->subject(config('app.name').': Long Queue Wait Detected')
+            ->subject(config('horizon.name').': Long Queue Wait Detected')
             ->greeting('Oh no! Something needs your attention.')
             ->line(sprintf(
                 'The "%s" queue on the "%s" connection has a wait time of %s seconds.',
@@ -101,7 +101,7 @@ class LongWaitDetected extends Notification implements LongWaitDetectedNotificat
 
         $content = sprintf(
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-            config('app.name'),
+            config('horizon.name'),
             $this->longWaitQueue,
             $this->longWaitConnection,
             $this->seconds
@@ -142,7 +142,7 @@ class LongWaitDetected extends Notification implements LongWaitDetectedNotificat
     {
         return (new NexmoMessage)->content(sprintf( // @phpstan-ignore-line
             '[%s] The "%s" queue on the "%s" connection has a wait time of %s seconds.',
-            config('app.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
+            config('horizon.name'), $this->longWaitQueue, $this->longWaitConnection, $this->seconds
         ));
     }
 

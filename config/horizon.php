@@ -6,6 +6,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Name
+    |--------------------------------------------------------------------------
+    |
+    | This name appears in notifications and in the UI of Horizon. This is nice
+    | when running mutliple instances of Horizon within a single application
+    | as it allows you to identify which instance you are current viewing.
+    |
+    */
+
+    'name' => env('HORIZON_NAME'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Domain
     |--------------------------------------------------------------------------
     |
