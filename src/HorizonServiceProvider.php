@@ -29,6 +29,18 @@ class HorizonServiceProvider extends ServiceProvider
     }
 
     /**
+     * Normalize the Horizon configuration.
+     *
+     * @return void
+     */
+    protected function normalizeConfig()
+    {
+        if (! $this->app['config']->get('horizon.name')) {
+            $this->app['config']->set('horizon.name', $this->app['config']->get('app.name'));
+        }
+    }
+
+    /**
      * Register the Horizon job events.
      *
      * @return void
@@ -127,18 +139,6 @@ class HorizonServiceProvider extends ServiceProvider
             Console\StatusCommand::class,
             Console\SupervisorsCommand::class,
         ]);
-    }
-
-    /**
-     * Normalize Horizon configuration.
-     *
-     * @return void
-     */
-    protected function normalizeConfig()
-    {
-        if (! $this->app['config']->get('horizon.name')) {
-            $this->app['config']->set('horizon.name', $this->app['config']->get('app.name'));
-        }
     }
 
     /**
