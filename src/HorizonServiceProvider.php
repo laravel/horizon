@@ -20,12 +20,12 @@ class HorizonServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->normalizeConfig();
         $this->registerEvents();
         $this->registerRoutes();
         $this->registerResources();
         $this->offerPublishing();
         $this->registerCommands();
-        $this->normalizeConfig();
     }
 
     /**
