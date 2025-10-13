@@ -235,6 +235,6 @@ class Horizon
     {
         $path = trim(config('horizon.path'), '/');
 
-        return request()->is($path) || request()->is($path . '/*');
+        return request()->is($path) || request()->is($path.'/*');
     }
 }
