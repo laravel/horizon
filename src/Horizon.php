@@ -225,4 +225,16 @@ class Horizon
 
         return new static;
     }
+
+    /**
+     * Determine if the current path is for Horizon.
+     *
+     * @return bool
+     */
+    public static function isHorizonPath(): bool
+    {
+        $path = trim(config('horizon.path'), '/');
+
+        return request()->is($path) || request()->is($path . '/*');
+    }
 }
