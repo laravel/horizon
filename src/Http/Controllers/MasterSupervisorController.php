@@ -21,25 +21,37 @@ class MasterSupervisorController extends Controller
 
         $supervisors = collect($supervisors->all())->sortBy('name')->groupBy('master');
 
-        return $masters->each(function ($master, $name) use ($supervisors) {
-            $master->supervisors = ($supervisors->get($name) ?? collect())
-                ->merge(
-                    collect(ProvisioningPlan::get($name)->plan[$master->environment ?? config('horizon.env') ?? config('app.env')] ?? [])
-                        ->map(function ($value, $key) use ($name) {
-                            return (object) [
-                                'name' => $name.':'.$key,
-                                'master' => $name,
-                                'status' => 'inactive',
-                                'processes' => [],
-                                'options' => [
-                                    'queue' => array_key_exists('queue', $value) && is_array($value['queue']) ? implode(',', $value['queue']) : ($value['queue'] ?? ''),
-                                    'balance' => $value['balance'] ?? null,
-                                ],
-                            ];
-                        })
-                )
+        $env = config('horizon.env') ?? config('app.env');
+
+        return $masters->each(function ($master, $name) use ($supervisors, $env) {
+            $expectedNames = collect($master->supervisors);
+
+            $runningSups = $supervisors->get($name) ?? collect();
+
+            $plan = ProvisioningPlan::get($name)->plan[$master->environment ?? $env] ?? [];
+
+            $plannedSups = collect($plan)
+                ->filter(function ($value, $key) use ($name, $expectedNames) {
+                    return $expectedNames->contains($name.':'.$key);
+                })
+                ->map(function ($value, $key) use ($name) {
+                    return (object) [
+                        'name' => $name.':'.$key,
+                        'master' => $name,
+                        'status' => 'inactive',
+                        'processes' => [],
+                        'options' => [
+                            'queue' => array_key_exists('queue', $value) && is_array($value['queue']) ? implode(',', $value['queue']) : ($value['queue'] ?? ''),
+                            'balance' => $value['balance'] ?? null,
+                        ],
+                    ];
+                });
+
+            $master->supervisors = $runningSups
+                ->merge($plannedSups)
                 ->unique('name')
-                ->values();
+                ->values()
+                ->sortBy('name');
         });
     }
 }
