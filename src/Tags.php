@@ -85,6 +85,7 @@ class Tags
             ->map(fn ($job) => method_exists($job, 'tags') ? $job->tags(static::$event) : [])
             ->collapse()
             ->unique()
+            ->map(fn ($tag) => enum_value($tag))
             ->all();
     }
 

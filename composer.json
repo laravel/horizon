@@ -36,6 +36,9 @@
         "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0|^3.0)."
     },
     "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {
             "Laravel\\Horizon\\": "src/"
         }
