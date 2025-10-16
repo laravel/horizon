@@ -31,9 +31,7 @@ class MasterSupervisorController extends Controller
             $plan = ProvisioningPlan::get($name)->plan[$master->environment ?? $env] ?? [];
 
             $plannedSups = collect($plan)
-                ->filter(function ($value, $key) use ($name, $expectedNames) {
-                    return $expectedNames->contains($name.':'.$key);
-                })
+                ->filter(fn ($value, $key) => $expectedNames->contains($name.':'.$key))
                 ->map(function ($value, $key) use ($name) {
                     return (object) [
                         'name' => $name.':'.$key,
