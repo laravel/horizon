@@ -85,6 +85,13 @@ class Tags
             ->map(fn ($job) => method_exists($job, 'tags') ? $job->tags(static::$event) : [])
             ->collapse()
             ->unique()
+            ->map(function ($tag) {
+                return match (true) {
+                    $tag instanceof \BackedEnum => $tag->value,
+                    $tag instanceof \UnitEnum => $tag->name,
+                    default => $value ?? value($tag),
+                };
+            })
             ->all();
     }
 
