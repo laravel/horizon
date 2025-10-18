@@ -165,7 +165,7 @@
              */
             previous() {
                 this.loadJobs(
-                    (this.page - 2) * this.perPage
+                    (this.page - 2) * this.perPage - 1
                 );
 
                 this.page -= 1;
@@ -179,7 +179,7 @@
              */
             next() {
                 this.loadJobs(
-                    this.page * this.perPage
+                    this.page * this.perPage - 1
                 );
 
                 this.page += 1;
