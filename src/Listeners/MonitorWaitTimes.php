@@ -53,6 +53,7 @@ class MonitorWaitTimes
 
         $long = collect($results)->filter(function ($wait, $queue) {
             $waitConfig = config("horizon.waits.{$queue}");
+
             return (is_null($waitConfig) || $waitConfig > 0) && ($wait > ($waitConfig ?? 60));
         });
 
