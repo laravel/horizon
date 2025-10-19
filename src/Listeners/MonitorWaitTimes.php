@@ -52,8 +52,8 @@ class MonitorWaitTimes
         $results = app(WaitTimeCalculator::class)->calculate();
 
         $long = collect($results)->filter(function ($wait, $queue) {
-            return config("horizon.waits.{$queue}") !== 0
-                    && $wait > (config("horizon.waits.{$queue}") ?? 60);
+            $waitConfig = config("horizon.waits.{$queue}");
+            return (is_null($waitConfig) || $waitConfig > 0) && ($wait > ($waitConfig ?? 60));
         });
 
         // Once we have determined which queues have long wait times we will raise the
