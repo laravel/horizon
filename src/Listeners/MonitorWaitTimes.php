@@ -37,7 +37,6 @@ class MonitorWaitTimes
     /**
      * Handle the event.
      *
-     * @param  \Laravel\Horizon\Events\SupervisorLooped  $event
      * @return void
      */
     public function handle()
