@@ -26,7 +26,8 @@ class ForgetFailedCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return int|null
+     * @param  \Laravel\Horizon\Contracts\JobRepository $repository
+     * @return int|null|void
      */
     public function handle(JobRepository $repository)
     {
