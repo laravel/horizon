@@ -30,7 +30,7 @@ class PauseSupervisorCommand extends Command
      * Execute the console command.
      *
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
-     * @return void
+     * @return int|void
      */
     public function handle(SupervisorRepository $supervisors)
     {

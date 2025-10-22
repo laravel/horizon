@@ -1,6 +1,31 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.34.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.37.0...5.x)
+
+## [v5.37.0](https://github.com/laravel/horizon/compare/v5.36.0...v5.37.0) - 2025-10-21
+
+* [5.x] Remove unnecessary `SupervisorLooped` event param by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1632
+* [5.x] Update docblock to reflect int|void return type by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1631
+* Fix the pagination of failed jobs list by [@LucaRed](https://github.com/LucaRed) in https://github.com/laravel/horizon/pull/1630
+* Bump vite from 5.4.20 to 5.4.21 by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1637
+
+## [v5.36.0](https://github.com/laravel/horizon/compare/v5.35.2...v5.36.0) - 2025-10-10
+
+* Allow naming of horizon instances by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/horizon/pull/1621
+
+## [v5.35.2](https://github.com/laravel/horizon/compare/v5.35.1...v5.35.2) - 2025-10-08
+
+* [5.x] Revert `#1615` by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1620
+
+## [v5.35.1](https://github.com/laravel/horizon/compare/v5.35.0...v5.35.1) - 2025-10-07
+
+* [5.x] Fixes `#1616` by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1617
+
+## [v5.35.0](https://github.com/laravel/horizon/compare/v5.34.0...v5.35.0) - 2025-10-04
+
+* Add --json option to horizon:work to match queue:work functionality by [@noatudor](https://github.com/noatudor) in https://github.com/laravel/horizon/pull/1612
+* [5.x] Update docblock to reflect int|void return type by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1613
+* [5.x] Prevent using the reserved `horizon` Redis connection name by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1615
 
 ## [v5.34.0](https://github.com/laravel/horizon/compare/v5.33.5...v5.34.0) - 2025-09-12
 

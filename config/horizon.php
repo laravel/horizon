@@ -6,6 +6,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Name
+    |--------------------------------------------------------------------------
+    |
+    | This name appears in notifications and in the Horizon UI. Unique names
+    | can be useful while running multiple instances of Horizon within an
+    | application, allowing you to identify the Horizon you're viewing.
+    |
+    */
+
+    'name' => env('HORIZON_NAME'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Domain
     |--------------------------------------------------------------------------
     |
