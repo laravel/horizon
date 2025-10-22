@@ -122,7 +122,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Monitoring</h2>
 
-                <button @click="openNewTagModal" class="btn btn-primary btn-sm">Monitor Tag</button>
+                <button @click="openNewTagModal" class="btn btn-primary btn-sm">Monitor New Tag</button>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
