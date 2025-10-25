@@ -25,6 +25,11 @@
                 </div>
 
                 <div class="row mb-2">
+                    <div class="col-md-2 text-muted">Connection</div>
+                    <div class="col">{{job.connection}}</div>
+                </div>
+
+                <div class="row mb-2">
                     <div class="col-md-2 text-muted">Queue</div>
                     <div class="col">{{job.queue}}</div>
                 </div>
