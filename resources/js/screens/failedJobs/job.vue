@@ -194,9 +194,13 @@
         <div class="card overflow-hidden mt-4" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
+
+                <a data-bs-toggle="collapse" href="#collapseData" role="button">
+                    Collapse
+                </a>
             </div>
 
-            <div class="card-body code-bg text-white">
+            <div class="card-body code-bg text-white collapse show" id="collapseData">
                 <vue-json-pretty :data="prettyPrintJob(job.payload.data)"></vue-json-pretty>
             </div>
         </div>
