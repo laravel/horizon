@@ -35,6 +35,8 @@ class ClearCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobRepository
+     * @param  \Illuminate\Queue\QueueManager  $manager
      * @return int|null
      */
     public function handle(JobRepository $jobRepository, QueueManager $manager)
