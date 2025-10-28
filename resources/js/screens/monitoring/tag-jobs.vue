@@ -144,7 +144,8 @@
 
 
         <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-            <span>There aren't any jobs for this tag.</span>
+            <span v-if="type == 'failed'">There aren't any failed jobs for this tag.</span>
+            <span v-else>There aren't any jobs for this tag.</span>
         </div>
 
         <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
