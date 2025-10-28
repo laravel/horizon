@@ -46,6 +46,12 @@
                 this.page = 1;
 
                 this.loadJobs(this.$route.params.tag);
+            },
+
+            '$root.autoLoadsNewEntries'(autoLoadsNewEntries) {
+                if (autoLoadsNewEntries && this.hasNewEntries) {
+                    this.hasNewEntries = false;
+                }
             }
         },
 
@@ -159,7 +165,7 @@
             </thead>
 
             <tbody>
-            <tr v-if="hasNewEntries" key="newEntries" class="dontanimate">
+            <tr v-if="hasNewEntries && !this.$root.autoLoadsNewEntries" key="newEntries" class="dontanimate">
                 <td colspan="100" class="text-center card-bg-secondary py-2">
                     <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
 
