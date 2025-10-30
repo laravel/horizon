@@ -5,7 +5,7 @@
                 {{ jobBaseName(job.name) }}
             </router-link>
 
-            <small class="badge bg-secondary badge-sm" :title="`Delayed for ${delayed}`"
+            <small class="ms-1 badge bg-secondary badge-sm" :title="`Delayed for ${delayed}`"
                    v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
                 Delayed
             </small>
