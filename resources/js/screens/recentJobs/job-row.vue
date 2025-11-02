@@ -26,6 +26,10 @@
             {{ readableTimestamp(job.payload.pushedAt) }}
         </td>
 
+        <td class="table-fit text-muted" v-if="$route.params.type=='pending' && (job.status == 'reserved' || job.status == 'pending')">
+            {{ delayed ? delayed.charAt(0).toUpperCase() + delayed.slice(1) : '-' }}
+        </td>
+
         <td v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="table-fit text-muted">
             {{ readableTimestamp(job.completed_at) }}
         </td>
