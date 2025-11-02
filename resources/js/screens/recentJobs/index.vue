@@ -179,7 +179,7 @@
                     <tr>
                         <th>Job</th>
                         <th v-if="$route.params.type=='pending'">Queued</th>
-                        <th v-if="$route.params.type=='pending'" class="text-end">Delayed</th>
+                        <th v-if="$route.params.type=='pending'">Delayed</th>
                         <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
                         <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
                         <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'" class="text-end">Runtime</th>
