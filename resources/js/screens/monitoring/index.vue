@@ -155,7 +155,7 @@
                             {{ tag.tag }}
                         </router-link>
                     </td>
-                    <td class="text-end text-muted">{{ tag.count }}</td>
+                    <td class="text-end text-muted">{{ tag.count ? tag.count.toLocaleString() : 0 }}</td>
                     <td class="text-end">
                         <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
