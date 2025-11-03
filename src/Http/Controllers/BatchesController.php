@@ -40,7 +40,7 @@ class BatchesController extends Controller
     {
         try {
             $batches = $this->batches->get(50, $request->query('before_id') ?: null);
-        } catch (QueryException $e) {
+        } catch (QueryException) {
             $batches = [];
         }
 
