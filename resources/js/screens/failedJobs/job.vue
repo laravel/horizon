@@ -209,7 +209,7 @@
             <table class="table table-hover mb-0">
                 <thead>
                 <tr>
-                    <th>Job</th>
+                    <th>Status</th>
                     <th>ID</th>
                     <th class="text-end">Retry Time</th>
                 </tr>
