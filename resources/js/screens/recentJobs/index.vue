@@ -177,7 +177,7 @@
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>Job</th>
+                        <th>Status</th>
                         <th v-if="$route.params.type=='pending'" class="text-end">Queued</th>
                         <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Queued</th>
                         <th v-if="$route.params.type=='completed' || $route.params.type=='silenced'">Completed</th>
