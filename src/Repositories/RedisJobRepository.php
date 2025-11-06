@@ -94,7 +94,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return string
      */
-    public function nextJobId()
+    public function nextJobId(): string
     {
         return (string) $this->connection()->incr('job_id');
     }
@@ -104,7 +104,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function totalRecent()
+    public function totalRecent(): int
     {
         return $this->connection()->zcard('recent_jobs');
     }
@@ -114,7 +114,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function totalFailed()
+    public function totalFailed(): int
     {
         return $this->connection()->zcard('failed_jobs');
     }
@@ -125,7 +125,7 @@ class RedisJobRepository implements JobRepository
      * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    public function getRecent($afterIndex = null)
+    public function getRecent($afterIndex = null): Collection
     {
         return $this->getJobsByType('recent_jobs', $afterIndex);
     }
@@ -136,7 +136,7 @@ class RedisJobRepository implements JobRepository
      * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    public function getFailed($afterIndex = null)
+    public function getFailed($afterIndex = null): Collection
     {
         return $this->getJobsByType('failed_jobs', $afterIndex);
     }
@@ -147,7 +147,7 @@ class RedisJobRepository implements JobRepository
      * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    public function getPending($afterIndex = null)
+    public function getPending($afterIndex = null): Collection
     {
         return $this->getJobsByType('pending_jobs', $afterIndex);
     }
@@ -158,7 +158,7 @@ class RedisJobRepository implements JobRepository
      * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    public function getCompleted($afterIndex = null)
+    public function getCompleted($afterIndex = null): Collection
     {
         return $this->getJobsByType('completed_jobs', $afterIndex);
     }
@@ -169,7 +169,7 @@ class RedisJobRepository implements JobRepository
      * @param  string|null  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    public function getSilenced($afterIndex = null)
+    public function getSilenced($afterIndex = null): Collection
     {
         return $this->getJobsByType('silenced_jobs', $afterIndex);
     }
@@ -179,7 +179,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function countRecent()
+    public function countRecent(): int
     {
         return $this->countJobsByType('recent_jobs');
     }
@@ -189,7 +189,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function countFailed()
+    public function countFailed(): int
     {
         return $this->countJobsByType('failed_jobs');
     }
@@ -199,7 +199,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function countPending()
+    public function countPending(): int
     {
         return $this->countJobsByType('pending_jobs');
     }
@@ -209,7 +209,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function countCompleted()
+    public function countCompleted(): int
     {
         return $this->countJobsByType('completed_jobs');
     }
@@ -219,7 +219,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function countSilenced()
+    public function countSilenced(): int
     {
         return $this->countJobsByType('silenced_jobs');
     }
@@ -229,7 +229,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return int
      */
-    public function countRecentlyFailed()
+    public function countRecentlyFailed(): int
     {
         return $this->countJobsByType('recent_failed_jobs');
     }
@@ -241,7 +241,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $afterIndex
      * @return \Illuminate\Support\Collection
      */
-    protected function getJobsByType($type, $afterIndex)
+    protected function getJobsByType($type, $afterIndex): Collection
     {
         $afterIndex = $afterIndex === null ? -1 : $afterIndex;
 
@@ -256,7 +256,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $type
      * @return int
      */
-    protected function countJobsByType($type)
+    protected function countJobsByType($type): int
     {
         $minutes = $this->minutesForType($type);
 
@@ -271,7 +271,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $type
      * @return int
      */
-    protected function minutesForType($type)
+    protected function minutesForType($type): int
     {
         return match ($type) {
             'failed_jobs' => $this->failedJobExpires,
@@ -290,7 +290,7 @@ class RedisJobRepository implements JobRepository
      * @param  mixed  $indexFrom
      * @return \Illuminate\Support\Collection
      */
-    public function getJobs(array $ids, $indexFrom = 0)
+    public function getJobs(array $ids, $indexFrom = 0): Collection
     {
         $jobs = $this->connection()->pipeline(function ($pipe) use ($ids) {
             foreach ($ids as $id) {
@@ -312,7 +312,7 @@ class RedisJobRepository implements JobRepository
      * @param  int  $indexFrom
      * @return \Illuminate\Support\Collection
      */
-    protected function indexJobs($jobs, $indexFrom)
+    protected function indexJobs($jobs, $indexFrom): Collection
     {
         return $jobs->map(function ($job) use (&$indexFrom) {
             $job = (object) array_combine($this->keys, $job);
@@ -333,7 +333,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    public function pushed($connection, $queue, JobPayload $payload)
+    public function pushed($connection, $queue, JobPayload $payload): void
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'recent_jobs', $payload);
@@ -366,7 +366,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    public function reserved($connection, $queue, JobPayload $payload)
+    public function reserved($connection, $queue, JobPayload $payload): void
     {
         $time = str_replace(',', '.', microtime(true));
 
@@ -388,7 +388,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    public function released($connection, $queue, JobPayload $payload)
+    public function released($connection, $queue, JobPayload $payload): void
     {
         $this->connection()->hmset(
             $payload->id(), [
@@ -407,7 +407,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    public function remember($connection, $queue, JobPayload $payload)
+    public function remember($connection, $queue, JobPayload $payload): void
     {
         $this->connection()->pipeline(function ($pipe) use ($connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'monitored_jobs', $payload);
@@ -438,7 +438,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Illuminate\Support\Collection  $payloads
      * @return void
      */
-    public function migrated($connection, $queue, Collection $payloads)
+    public function migrated($connection, $queue, Collection $payloads): void
     {
         $this->connection()->pipeline(function ($pipe) use ($payloads) {
             foreach ($payloads as $payload) {
@@ -461,7 +461,7 @@ class RedisJobRepository implements JobRepository
      * @param  bool  $silenced
      * @return void
      */
-    public function completed(JobPayload $payload, $failed = false, $silenced = false)
+    public function completed(JobPayload $payload, $failed = false, $silenced = false): void
     {
         if ($payload->isRetry()) {
             $this->updateRetryInformationOnParent($payload, $failed);
@@ -489,7 +489,7 @@ class RedisJobRepository implements JobRepository
      * @param  bool  $failed
      * @return void
      */
-    protected function updateRetryInformationOnParent(JobPayload $payload, $failed)
+    protected function updateRetryInformationOnParent(JobPayload $payload, $failed): void
     {
         if ($retries = $this->connection()->hget($payload->retryOf(), 'retried_by')) {
             $retries = $this->updateRetryStatus(
@@ -510,7 +510,7 @@ class RedisJobRepository implements JobRepository
      * @param  bool  $failed
      * @return array
      */
-    protected function updateRetryStatus(JobPayload $payload, $retries, $failed)
+    protected function updateRetryStatus(JobPayload $payload, $retries, $failed): array
     {
         return collect($retries)
             ->map(function ($retry) use ($payload, $failed) {
@@ -527,7 +527,7 @@ class RedisJobRepository implements JobRepository
      * @param  array  $ids
      * @return void
      */
-    public function deleteMonitored(array $ids)
+    public function deleteMonitored(array $ids): void
     {
         $this->connection()->pipeline(function ($pipe) use ($ids) {
             foreach ($ids as $id) {
@@ -541,7 +541,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return void
      */
-    public function trimRecentJobs()
+    public function trimRecentJobs(): void
     {
         $this->connection()->pipeline(function ($pipe) {
             $pipe->zremrangebyscore(
@@ -581,7 +581,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return void
      */
-    public function trimFailedJobs()
+    public function trimFailedJobs(): void
     {
         $this->connection()->zremrangebyscore(
             'failed_jobs', CarbonImmutable::now()->subMinutes($this->failedJobExpires)->getTimestamp() * -1, '+inf'
@@ -593,7 +593,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return void
      */
-    public function trimMonitoredJobs()
+    public function trimMonitoredJobs(): void
     {
         $this->connection()->zremrangebyscore(
             'monitored_jobs', CarbonImmutable::now()->subMinutes($this->monitoredJobExpires)->getTimestamp() * -1, '+inf'
@@ -630,7 +630,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    public function failed($exception, $connection, $queue, JobPayload $payload)
+    public function failed($exception, $connection, $queue, JobPayload $payload): void
     {
         $this->connection()->pipeline(function ($pipe) use ($exception, $connection, $queue, $payload) {
             $this->storeJobReference($pipe, 'failed_jobs', $payload);
@@ -669,7 +669,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    protected function storeJobReference($pipe, $key, JobPayload $payload)
+    protected function storeJobReference($pipe, $key, JobPayload $payload): void
     {
         $pipe->zadd($key, str_replace(',', '.', microtime(true) * -1), $payload->id());
     }
@@ -682,7 +682,7 @@ class RedisJobRepository implements JobRepository
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @return void
      */
-    protected function removeJobReference($pipe, $key, JobPayload $payload)
+    protected function removeJobReference($pipe, $key, JobPayload $payload): void
     {
         $pipe->zrem($key, $payload->id());
     }
@@ -694,7 +694,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $retryId
      * @return void
      */
-    public function storeRetryReference($id, $retryId)
+    public function storeRetryReference($id, $retryId): void
     {
         $retries = json_decode($this->connection()->hget($id, 'retried_by') ?: '[]');
 
@@ -713,7 +713,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $id
      * @return int
      */
-    public function deleteFailed($id)
+    public function deleteFailed($id): int
     {
         return $this->connection()->zrem('failed_jobs', $id) != 1
             ? 0
@@ -726,7 +726,7 @@ class RedisJobRepository implements JobRepository
      * @param  string  $queue
      * @return int
      */
-    public function purge($queue)
+    public function purge($queue): int
     {
         return $this->connection()->eval(
             LuaScripts::purge(),
@@ -743,7 +743,7 @@ class RedisJobRepository implements JobRepository
      *
      * @return \Illuminate\Redis\Connections\Connection
      */
-    protected function connection()
+    protected function connection(): \Illuminate\Redis\Connections\Connection
     {
         return $this->redis->connection('horizon');
     }
