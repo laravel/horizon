@@ -238,7 +238,12 @@
                         <a v-if="retry.status == 'failed'" :href="Horizon.basePath + '/failed/'+retry.id">
                             {{ retry.id }}
                         </a>
-                        <span v-else>{{ retry.id }}</span>
+                        <a v-if="retry.status == 'completed'" :href="Horizon.basePath + '/jobs/completed/'+retry.id">
+                            {{ retry.id }}
+                        </a>
+                        <a v-if="retry.status == 'reserved' || retry.status == 'pending'" :href="Horizon.basePath + '/jobs/pending/'+retry.id">
+                            {{ retry.id }}
+                        </a>
                     </td>
 
                     <td class="text-end table-fit text-muted">
