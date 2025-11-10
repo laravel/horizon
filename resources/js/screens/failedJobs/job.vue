@@ -15,7 +15,8 @@
             return {
                 ready: false,
                 retrying: false,
-                job: {}
+                job: {},
+                copiedMarkdown: false
             };
         },
 
@@ -88,6 +89,90 @@
                 } catch (err) {
                     return data;
                 }
+            },
+
+            generateMarkdown() {
+                if (!this.job) {
+                    return '';
+                }
+
+                const prettyJob = this.prettyPrintJob(this.job.payload.data);
+                const prettyContext = this.prettyPrintJob(this.job.context);
+                const exceptionMessage = this.job.exception.split('\n')[0];
+                const stackTrace = this.job.exception
+                    .split('\n')
+                    .filter(line => line.trim().startsWith('#'))
+                    .map(line => line.replace(/^#(\d+)/, '$1 -'))
+                    .join('\n');
+
+                const sections = [
+                    `## ${this.job.name}`,
+                    '',
+                    `**ID:** ${this.job.id}`,
+                    '',
+                    `**Connection:** ${this.job.connection}`,
+                    '',
+                    `**Queue:** ${this.job.queue}`,
+                    '',
+                    `**Attempts:** ${this.job.payload.attempts}`,
+                    '',
+                    `**Retries:** ${this.job.retried_by.length}`,
+                    ''
+                ];
+
+                if (this.job.payload.retry_of) {
+                    sections.push(`**Retry of ID:** ${this.job.payload.retry_of}`, '');
+                }
+
+                if (this.job.payload.tags && this.job.payload.tags.length) {
+                    sections.push(`**Tags:** ${this.job.payload.tags.join(', ')}`, '');
+                }
+
+                if (prettyJob.batchId) {
+                    sections.push(`**Batch:** ${prettyJob.batchId}`, '');
+                }
+
+                sections.push(
+                    `**Pushed:** ${this.readableTimestamp(this.job.payload.pushedAt)}`,
+                    '',
+                    `**Failed:** ${this.readableTimestamp(this.job.failed_at)}`,
+                    '',
+                    '## Exception',
+                    '',
+                    '```',
+                    exceptionMessage,
+                    '',
+                    'Stack trace:',
+                    '',
+                    stackTrace,
+                    '```',
+                    '',
+                    '## Exception Context',
+                    '',
+                    '```json',
+                    JSON.stringify(prettyContext, null, 2),
+                    '```',
+                    '',
+                    '## Data',
+                    '',
+                    '```json',
+                    JSON.stringify(prettyJob, null, 2),
+                    '```'
+                );
+
+                return sections.join('\n');
+            },
+
+            async copyMarkdown() {
+                const text = this.generateMarkdown();
+
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.copiedMarkdown = true;
+                    setTimeout(() => this.copiedMarkdown = false, 3000);
+                } catch (err) {
+                    console.error('Failed to copy the markdown:', err);
+                }
             }
         }
     }
@@ -96,6 +181,21 @@
 <template>
     <div>
         <poll @poll="reloadRetries" :immediate="false" />
+
+        <div class="d-flex justify-content-end mb-4" v-if="ready">
+            <button class="btn btn-outline-secondary d-flex align-items-center" style="color: var(--bs-body-color);" @click="copyMarkdown">
+                <svg v-if="!copiedMarkdown" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1 text-success">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+
+                <span>{{ copiedMarkdown ? 'Copied to clipboard' : 'Copy as Markdown' }}</span>
+            </button>
+        </div>
 
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
