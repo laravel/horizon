@@ -1,7 +1,11 @@
 <template>
     <tr>
         <td>
-            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $parent.type }}">
+            <router-link v-if="job.failed_at" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
+                {{ jobBaseName(job.name) }}
+            </router-link>
+
+            <router-link v-else :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $parent.type }}">
                 {{ jobBaseName(job.name) }}
             </router-link>
 
