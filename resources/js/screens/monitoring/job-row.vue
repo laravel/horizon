@@ -10,6 +10,11 @@
                 Delayed
             </small>
 
+            <small class="ms-1 badge bg-secondary badge-sm"
+                   v-if="job.payload.silenced">
+                Silenced
+            </small>
+
             <br>
 
             <small class="text-muted">

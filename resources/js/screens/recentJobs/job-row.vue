@@ -11,6 +11,11 @@
                 Delayed
             </small>
 
+            <small class="ms-1 badge bg-secondary badge-sm"
+                v-if="job.payload.silenced && $route.params.type=='pending'">
+                Silenced
+            </small>
+
             <br>
 
             <small class="text-muted">
