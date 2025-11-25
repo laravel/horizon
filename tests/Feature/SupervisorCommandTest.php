@@ -37,6 +37,6 @@ class SupervisorCommandTest extends IntegrationTest
     {
         $pid = getmypid();
 
-        return (int) trim(`ps -p $pid -o nice=`);
+        return (int) trim(shell_exec("ps -p {$pid} -o nice="));
     }
 }
