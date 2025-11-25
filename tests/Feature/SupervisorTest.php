@@ -22,6 +22,7 @@ use Laravel\Horizon\SystemProcessCounter;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WorkerCommandString;
 use Mockery;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 
 class SupervisorTest extends IntegrationTest
 {
@@ -50,6 +51,7 @@ class SupervisorTest extends IntegrationTest
     }
 
     /** @requires extension redis */
+    #[RequiresPhpExtension('redis')]
     public function test_supervisor_can_start_worker_process_with_given_options()
     {
         Queue::push(new Jobs\BasicJob);
@@ -262,6 +264,7 @@ class SupervisorTest extends IntegrationTest
     }
 
     /** @requires extension redis */
+    #[RequiresPhpExtension('redis')]
     public function test_processes_can_be_paused_and_continued()
     {
         $options = $this->supervisorOptions();

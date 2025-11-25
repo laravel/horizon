@@ -125,9 +125,6 @@ class RedisPayloadTest extends IntegrationTest
         $this->assertEquals([FakeModel::class.':42'], $JobPayload->decoded['tags']);
     }
 
-    /**
-     * @requires PHP 7.4
-     */
     public function test_tags_are_correctly_determined_for_listeners_with_property_types()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));
