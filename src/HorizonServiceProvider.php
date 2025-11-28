@@ -132,6 +132,10 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\TimeoutCommand::class,
                 Console\WorkCommand::class,
             ]);
+
+            if (method_exists($this, 'reloads')) {
+                $this->reloads('horizon:terminate', 'queue');
+            }
         }
 
         $this->commands([
