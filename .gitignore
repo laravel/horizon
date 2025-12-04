@@ -1,3 +1,6 @@
+/.fleet
+/.idea
+/.vscode
 /vendor
 /laravel
 /node_modules
