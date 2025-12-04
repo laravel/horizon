@@ -164,9 +164,14 @@
                     <div class="col-md-2 text-muted">Pushed</div>
                     <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
                 </div>
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-md-2 text-muted">Failed</div>
                     <div class="col">{{readableTimestamp(job.failed_at)}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 text-muted">Runtime</div>
+                    <div class="col" v-if="job.failed_at">{{ String((job.failed_at - job.reserved_at).toFixed(2))+'s' }}</div>
+                    <div class="col" v-else>-</div>
                 </div>
             </div>
         </div>

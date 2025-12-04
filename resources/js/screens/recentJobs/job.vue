@@ -53,9 +53,15 @@
                     <div class="col">{{delayed}}</div>
                 </div>
 
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-md-2 text-muted">Completed</div>
                     <div class="col" v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</div>
+                    <div class="col" v-else>-</div>
+                </div>
+
+                <div class="row" v-if="$route.params.type=='completed' || $route.params.type=='silenced'">
+                    <div class="col-md-2 text-muted">Runtime</div>
+                    <div class="col" v-if="job.completed_at">{{ (job.completed_at - job.reserved_at).toFixed(2)+'s' }}</div>
                     <div class="col" v-else>-</div>
                 </div>
             </div>
