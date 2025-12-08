@@ -13,7 +13,9 @@
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
-                jobs: []
+                jobs: [],
+                queues: [],
+                selectedQueue: ''
             };
         },
 
@@ -32,6 +34,10 @@
         mounted() {
             this.updatePageTitle();
 
+            if (this.$route.params.type === 'pending') {
+                this.loadQueues();
+            }
+
             this.loadJobs();
         },
 
@@ -44,6 +50,11 @@
                 this.updatePageTitle();
 
                 this.page = 1;
+                this.selectedQueue = '';
+
+                if (this.$route.params.type === 'pending') {
+                    this.loadQueues();
+                }
 
                 this.loadJobs();
             },
@@ -65,7 +76,13 @@
                     this.ready = false;
                 }
 
-                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage)
+                let url = Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?starting_at=' + starting + '&limit=' + this.perPage;
+
+                if (this.$route.params.type === 'pending' && this.selectedQueue) {
+                    url += '&queue=' + encodeURIComponent(this.selectedQueue);
+                }
+
+                this.$http.get(url)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.jobs.length && response.data.jobs[0]?.id !== this.jobs[0]?.id) {
                             this.hasNewEntries = true;
@@ -77,6 +94,24 @@
 
                         this.ready = true;
                     });
+            },
+
+            /**
+             * Load the available queues for filtering.
+             */
+            loadQueues() {
+                this.$http.get(Horizon.basePath + '/api/workload')
+                    .then(response => {
+                        this.queues = response.data.map(q => q.name);
+                    });
+            },
+
+            /**
+             * Handle queue filter change.
+             */
+            filterByQueue() {
+                this.page = 1;
+                this.loadJobs();
             },
 
 
@@ -154,6 +189,11 @@
                 <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
+
+                <select v-if="$route.params.type == 'pending'" class="form-select" v-model="selectedQueue" @change="filterByQueue" style="width: auto;">
+                    <option value="">All Queues</option>
+                    <option v-for="queue in queues" :key="queue" :value="queue">{{ queue }}</option>
+                </select>
             </div>
 
             <div v-if="!ready"

@@ -35,18 +35,70 @@ class PendingJobsController extends Controller
      */
     public function index(Request $request)
     {
+        $queue = $request->query('queue');
+
+        if ($queue) {
+            return $this->paginateByQueue($request, $queue);
+        }
+
         $jobs = $this->jobs
             ->getPending($request->query('starting_at', -1))
-            ->map(function ($job) {
-                $job->payload = json_decode($job->payload);
-
-                return $job;
-            })
+            ->map(fn ($job) => $this->decode($job))
             ->values();
 
         return [
             'jobs' => $jobs,
             'total' => $this->jobs->countPending(),
+        ];
+    }
+
+    /**
+     * Paginate pending jobs filtered by queue.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $queue
+     * @return array
+     */
+    protected function paginateByQueue(Request $request, $queue)
+    {
+        $startingAt = (int) $request->query('starting_at', -1);
+        $limit = 50;
+
+        $filteredJobs = collect();
+        $total = 0;
+        $index = -1;
+        $skipped = 0;
+
+        while (true) {
+            $batch = $this->jobs->getPending($index);
+
+            if ($batch->isEmpty()) {
+                break;
+            }
+
+            $matchingJobs = $batch->filter(fn ($job) => $job->queue === $queue);
+
+            $total += $matchingJobs->count();
+
+            foreach ($matchingJobs as $job) {
+                if ($skipped <= $startingAt) {
+                    $skipped++;
+                    continue;
+                }
+
+                if ($filteredJobs->count() < $limit) {
+                    $job->index = $skipped;
+                    $skipped++;
+                    $filteredJobs->push($job);
+                }
+            }
+
+            $index = $batch->last()->index ?? $index + 50;
+        }
+
+        return [
+            'jobs' => $filteredJobs->map(fn ($job) => $this->decode($job))->values(),
+            'total' => $total,
         ];
     }
 
