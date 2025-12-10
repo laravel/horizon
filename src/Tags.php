@@ -118,7 +118,9 @@ class Tags
         foreach ($targets as $target) {
             $models[] = collect((new ReflectionClass($target))->getProperties())
                 ->map(function ($property) use ($target) {
-                    $property->setAccessible(true);
+                    if (PHP_VERSION_ID < 80500) {
+                        $property->setAccessible(true);
+                    }
 
                     $value = static::getValue($property, $target);
 
