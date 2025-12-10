@@ -35,6 +35,12 @@
                 </div>
 
                 <div class="row mb-2">
+                    <div class="col-md-2 text-muted">Attempts</div>
+                    <div class="col" v-if="job.payload.attempts">{{job.payload.attempts}}</div>
+                    <div class="col" v-else>-</div>
+                </div>
+
+                <div class="row mb-2">
                     <div class="col-md-2 text-muted">Pushed</div>
                     <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
                 </div>
@@ -83,7 +89,6 @@
                     Collapse
                 </a>
             </div>
-
             <div class="card-body code-bg text-white collapse show" id="collapseTags">
                 <vue-json-pretty :data="job.payload.tags"></vue-json-pretty>
             </div>
