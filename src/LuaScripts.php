@@ -48,7 +48,6 @@ LUA;
     public static function purge()
     {
         return <<<'LUA'
-            
             local count = 0
             local cursor = ARGV[3]
 
@@ -61,8 +60,7 @@ LUA;
                 local hashkey = ARGV[1] .. jobid
                 local job = redis.call('hmget', hashkey, 'status', 'queue')
 
-                -- Delete the pending/reserved jobs, that match the queue
-                -- name, from the sorted sets as well as the job hash
+                -- Delete the pending / reserved jobs in the given queue
                 if((job[1] == 'reserved' or job[1] == 'pending') and job[2] == ARGV[2]) then
                     redis.call('zrem', KEYS[1], jobid)
                     redis.call('zrem', KEYS[2], jobid)
