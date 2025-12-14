@@ -50,30 +50,28 @@ LUA;
         return <<<'LUA'
             
             local count = 0
-            local cursor = 0
-            
-            repeat
-                -- Iterate over the recent jobs sorted set
-                local scanner = redis.call('zscan', KEYS[1], cursor)
-                cursor = scanner[1]
+            local cursor = ARGV[3]
 
-                for i = 1, #scanner[2], 2 do
-                    local jobid = scanner[2][i]
-                    local hashkey = ARGV[1] .. jobid
-                    local job = redis.call('hmget', hashkey, 'status', 'queue')
+            -- Iterate over the recent jobs sorted set
+            local scanner = redis.call('zscan', KEYS[1], cursor)
+            cursor = scanner[1]
 
-                    -- Delete the pending/reserved jobs, that match the queue
-                    -- name, from the sorted sets as well as the job hash
-                    if((job[1] == 'reserved' or job[1] == 'pending') and job[2] == ARGV[2]) then
-                        redis.call('zrem', KEYS[1], jobid)
-                        redis.call('zrem', KEYS[2], jobid)
-                        redis.call('del', hashkey)
-                        count = count + 1
-                    end           
+            for i = 1, #scanner[2], 2 do
+                local jobid = scanner[2][i]
+                local hashkey = ARGV[1] .. jobid
+                local job = redis.call('hmget', hashkey, 'status', 'queue')
+
+                -- Delete the pending/reserved jobs, that match the queue
+                -- name, from the sorted sets as well as the job hash
+                if((job[1] == 'reserved' or job[1] == 'pending') and job[2] == ARGV[2]) then
+                    redis.call('zrem', KEYS[1], jobid)
+                    redis.call('zrem', KEYS[2], jobid)
+                    redis.call('del', hashkey)
+                    count = count + 1
                 end
-            until cursor == '0'
+            end
 
-            return count
+            return {count, cursor}
 LUA;
     }
 }
