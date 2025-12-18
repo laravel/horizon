@@ -6,6 +6,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\RedisQueue as BaseQueue;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Events\JobDeleted;
+use Laravel\Horizon\Events\JobPending;
 use Laravel\Horizon\Events\JobPushed;
 use Laravel\Horizon\Events\JobReleased;
 use Laravel\Horizon\Events\JobReserved;
@@ -68,6 +69,8 @@ class RedisQueue extends BaseQueue
     {
         $payload = (new JobPayload($payload))->prepare($this->lastPushed);
 
+        $this->event($this->getQueue($queue), new JobPending($payload->value));
+
         parent::pushRaw($payload->value, $queue, $options);
 
         $this->event($this->getQueue($queue), new JobPushed($payload->value));
@@ -114,12 +117,16 @@ class RedisQueue extends BaseQueue
                 $queue,
                 $delay,
                 function ($payload, $queue, $delay) {
+                    $this->event($this->getQueue($queue), new JobPending($payload));
+
                     return tap(parent::laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
                         $this->event($this->getQueue($queue), new JobPushed($payload));
                     });
                 }
             );
         }
+
+        $this->event($this->getQueue($queue), new JobPending($payload));
 
         return tap(parent::laterRaw($delay, $payload, $queue), function () use ($payload, $queue) {
             $this->event($this->getQueue($queue), new JobPushed($payload));

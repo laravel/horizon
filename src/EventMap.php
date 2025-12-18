@@ -10,8 +10,11 @@ trait EventMap
      * @var array
      */
     protected $events = [
-        Events\JobPushed::class => [
+        Events\JobPending::class => [
             Listeners\StoreJob::class,
+        ],
+
+        Events\JobPushed::class => [
             Listeners\StoreMonitoredTags::class,
         ],
 

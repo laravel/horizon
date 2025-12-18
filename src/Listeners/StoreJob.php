@@ -3,7 +3,7 @@
 namespace Laravel\Horizon\Listeners;
 
 use Laravel\Horizon\Contracts\JobRepository;
-use Laravel\Horizon\Events\JobPushed;
+use Laravel\Horizon\Events\JobPending;
 
 class StoreJob
 {
@@ -28,10 +28,10 @@ class StoreJob
     /**
      * Handle the event.
      *
-     * @param  \Laravel\Horizon\Events\JobPushed  $event
+     * @param  \Laravel\Horizon\Events\JobPending  $event
      * @return void
      */
-    public function handle(JobPushed $event)
+    public function handle(JobPending $event)
     {
         $this->jobs->pushed(
             $event->connectionName, $event->queue, $event->payload
