@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Repositories;
 
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
+use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
@@ -40,12 +41,20 @@ class RedisWorkloadRepository implements WorkloadRepository
     private $supervisors;
 
     /**
+     * The queue manager instance.
+     *
+     * @var \Illuminate\Queue\QueueManager
+     */
+    private $manager;
+
+    /**
      * Create a new repository instance.
      *
      * @param  \Illuminate\Contracts\Queue\Factory  $queue
      * @param  \Laravel\Horizon\WaitTimeCalculator  $waitTime
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
+     * @param  \Illuminate\Queue\QueueManager  $manager
      * @return void
      */
     public function __construct(
@@ -53,11 +62,13 @@ class RedisWorkloadRepository implements WorkloadRepository
         WaitTimeCalculator $waitTime,
         MasterSupervisorRepository $masters,
         SupervisorRepository $supervisors,
+        QueueManager $manager,
     ) {
         $this->queue = $queue;
         $this->masters = $masters;
         $this->waitTime = $waitTime;
         $this->supervisors = $supervisors;
+        $this->manager = $manager;
     }
 
     /**
@@ -86,6 +97,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                         'name' => $queueName,
                         'length' => $length,
                         'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, $queueName, $totalProcesses),
+                        'paused' => $this->isPaused($connection, $queueName),
                     ];
                 }) : null;
 
@@ -95,6 +107,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
                     'split_queues' => $splitQueues,
+                    'paused' => $this->isPaused($connection, $queueName),
                 ];
             })
             ->values()
@@ -117,5 +130,18 @@ class RedisWorkloadRepository implements WorkloadRepository
 
                 return $final;
             }, []);
+    }
+
+    /**
+     * Determine if a given queue is paused.
+     *
+     * @param  string  $connection
+     * @param  string  $queue
+     * @return bool
+     */
+    private function isPaused(string $connection, string $queue): bool
+    {
+        return method_exists($this->manager, 'isPaused')
+            && $this->manager->isPaused($connection, $queue);
     }
 }

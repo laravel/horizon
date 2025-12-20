@@ -263,6 +263,7 @@
                     <th class="text-end" style="width: 120px;">Jobs</th>
                     <th class="text-end" style="width: 120px;">Processes</th>
                     <th class="text-end" style="width: 180px;">Wait</th>
+                    <th class="text-end" style="width: 120px;">Status</th>
                 </tr>
                 </thead>
 
@@ -275,6 +276,7 @@
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ humanTime(queue.wait) }}</td>
+                            <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.paused ? 'Paused' : 'Running' }}</td>
                         </tr>
 
                         <tr v-for="split_queue in queue.split_queues">
@@ -288,6 +290,7 @@
                             <td class="text-end text-muted">{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted">-</td>
                             <td class="text-end text-muted">{{ humanTime(split_queue.wait) }}</td>
+                            <td class="text-end text-muted">{{ queue.paused ? 'Paused' : 'Running' }}</td>
                         </tr>
                     </template>
                 </tbody>
