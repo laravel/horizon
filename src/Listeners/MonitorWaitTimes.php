@@ -5,10 +5,13 @@ namespace Laravel\Horizon\Listeners;
 use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
+use Laravel\Horizon\ParsesQueue;
 use Laravel\Horizon\WaitTimeCalculator;
 
 class MonitorWaitTimes
 {
+    use ParsesQueue;
+
     /**
      * The metrics repository implementation.
      *
@@ -59,7 +62,7 @@ class MonitorWaitTimes
         // events for each of the queues. We'll need to separate the connection and
         // queue names into their own strings before we will fire off the events.
         $long->each(function ($wait, $queue) {
-            [$connection, $queue] = explode(':', $queue, 2);
+            [$connection, $queue] = $this->parseQueue($queue);
 
             event(new LongWaitDetected($connection, $queue, $wait));
         });

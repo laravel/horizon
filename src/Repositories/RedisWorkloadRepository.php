@@ -7,10 +7,13 @@ use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\WorkloadRepository;
+use Laravel\Horizon\ParsesQueue;
 use Laravel\Horizon\WaitTimeCalculator;
 
 class RedisWorkloadRepository implements WorkloadRepository
 {
+    use ParsesQueue;
+
     /**
      * The queue factory implementation.
      *
@@ -71,7 +74,7 @@ class RedisWorkloadRepository implements WorkloadRepository
 
         return collect($this->waitTime->calculate())
             ->map(function ($waitTime, $queue) use ($processes) {
-                [$connection, $queueName] = explode(':', $queue, 2);
+                [$connection, $queueName] = $this->parseQueue($queue);
 
                 $totalProcesses = $processes[$queue] ?? 0;
 

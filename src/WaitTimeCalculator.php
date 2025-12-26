@@ -9,6 +9,8 @@ use Laravel\Horizon\Contracts\SupervisorRepository;
 
 class WaitTimeCalculator
 {
+    use ParsesQueue;
+
     /**
      * The queue factory implementation.
      *
@@ -74,7 +76,7 @@ class WaitTimeCalculator
         return $queues->mapWithKeys(function ($queue) use ($supervisors) {
             $totalProcesses = $this->totalProcessesFor($supervisors, $queue);
 
-            [$connection, $queueName] = explode(':', $queue, 2);
+            [$connection, $queueName] = $this->parseQueue($queue);
 
             return [$queue => $this->calculateTimeToClear($connection, $queueName, $totalProcesses)];
         })
