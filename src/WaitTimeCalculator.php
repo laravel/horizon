@@ -120,7 +120,7 @@ class WaitTimeCalculator
      * @param  string  $connection
      * @param  string  $queue
      * @param  int  $totalProcesses
-     * @return int
+     * @return float
      */
     public function calculateTimeToClear($connection, $queue, $totalProcesses)
     {
