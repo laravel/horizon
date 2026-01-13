@@ -38,5 +38,4 @@ class ListenCommandTest extends IntegrationTest
 
         $this->artisan('horizon:listen');
     }
-
 }
