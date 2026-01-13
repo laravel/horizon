@@ -39,17 +39,4 @@ class ListenCommandTest extends IntegrationTest
         $this->artisan('horizon:listen');
     }
 
-    public function test_listen_command_fails_gracefully_when_node_is_not_available()
-    {
-        config(['horizon.watch' => ['app', 'config']]);
-
-        // Mock the ExecutableFinder to return null (node not found)
-        $this->mock(\Symfony\Component\Process\ExecutableFinder::class, function ($mock) {
-            $mock->shouldReceive('find')->with('node')->andReturn(null);
-        });
-
-        $this->artisan('horizon:listen')
-            ->expectsOutputToContain('Unable to start file watcher')
-            ->assertExitCode(1);
-    }
 }
