@@ -122,6 +122,7 @@ class HorizonServiceProvider extends ServiceProvider
                 Console\HorizonCommand::class,
                 Console\InstallCommand::class,
                 Console\ListCommand::class,
+                Console\ListenCommand::class,
                 Console\PauseCommand::class,
                 Console\PauseSupervisorCommand::class,
                 Console\PublishCommand::class,
