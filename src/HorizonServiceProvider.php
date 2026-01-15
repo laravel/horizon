@@ -20,6 +20,11 @@ class HorizonServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Route::middlewareGroup('horizon', [
+            'sentinel:horizon',
+            ...config('horizon.middleware', ['web']),
+        ]);
+
         $this->normalizeConfig();
         $this->registerEvents();
         $this->registerRoutes();
@@ -71,7 +76,7 @@ class HorizonServiceProvider extends ServiceProvider
             'domain' => config('horizon.domain', null),
             'prefix' => config('horizon.path'),
             'namespace' => 'Laravel\Horizon\Http\Controllers',
-            'middleware' => config('horizon.middleware', 'web'),
+            'middleware' => 'horizon',
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         });
