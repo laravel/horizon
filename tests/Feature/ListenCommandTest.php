@@ -12,7 +12,7 @@ class ListenCommandTest extends IntegrationTest
         config(['horizon.watch' => []]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('List of directories/files to watch not found.');
+        $this->expectExceptionMessage('List of directories / files to watch not found.');
 
         $this->artisan('horizon:listen');
     }
@@ -22,7 +22,7 @@ class ListenCommandTest extends IntegrationTest
         config(['horizon.watch' => null]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('List of directories/files to watch not found.');
+        $this->expectExceptionMessage('List of directories / files to watch not found.');
 
         $this->artisan('horizon:listen');
     }
@@ -34,7 +34,7 @@ class ListenCommandTest extends IntegrationTest
         config(['horizon' => $config]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('List of directories/files to watch not found.');
+        $this->expectExceptionMessage('List of directories / files to watch not found.');
 
         $this->artisan('horizon:listen');
     }

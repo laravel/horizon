@@ -25,7 +25,7 @@ class ListenCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Listen for file changes and restart Horizon';
+    protected $description = 'Run Horizon and automatically restart workers on file changes';
 
     /**
      * The Horizon process instance.
@@ -81,7 +81,7 @@ class ListenCommand extends Command
     {
         if (empty($paths = config('horizon.watch'))) {
             throw new InvalidArgumentException(
-                'List of directories/files to watch not found. Please update your "config/horizon.php" configuration file.',
+                'List of directories / files to watch not found. Please update your "config/horizon.php" configuration file.',
             );
         }
 
@@ -162,7 +162,7 @@ class ListenCommand extends Command
      */
     protected function restartHorizon()
     {
-        $this->components->info('Change detected! Restarting Horizon...');
+        $this->components->info('File changed. Restarting Horizon...');
 
         $this->horizonProcess->stop();
         $this->horizonProcess->wait();
