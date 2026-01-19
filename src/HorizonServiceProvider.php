@@ -8,6 +8,7 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Connectors\RedisConnector;
+use Laravel\Sentinel\Http\Middleware\SentinelMiddleware;
 
 class HorizonServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,7 @@ class HorizonServiceProvider extends ServiceProvider
     public function boot()
     {
         Route::middlewareGroup('horizon', [
-            'sentinel:horizon',
+            SentinelMiddleware::class.':horizon',
             ...config('horizon.middleware', ['web']),
         ]);
 

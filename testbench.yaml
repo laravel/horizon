@@ -1,5 +1,6 @@
 providers:
   - Laravel\Horizon\HorizonServiceProvider
+  - Laravel\Sentinel\SentinelServiceProvider
   - Workbench\App\Providers\HorizonServiceProvider
 
 env:
