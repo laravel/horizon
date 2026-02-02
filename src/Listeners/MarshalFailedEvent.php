@@ -20,7 +20,6 @@ class MarshalFailedEvent
      * Create a new listener instance.
      *
      * @param  \Illuminate\Contracts\Events\Dispatcher  $events
-     * @return void
      */
     public function __construct(Dispatcher $events)
     {

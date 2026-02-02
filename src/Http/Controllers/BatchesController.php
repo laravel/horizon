@@ -21,7 +21,6 @@ class BatchesController extends Controller
      * Create a new controller instance.
      *
      * @param  \Illuminate\Bus\BatchRepository  $batches
-     * @return void
      */
     public function __construct(BatchRepository $batches)
     {

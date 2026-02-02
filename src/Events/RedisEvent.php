@@ -31,7 +31,6 @@ class RedisEvent
      * Create a new event instance.
      *
      * @param  string  $payload
-     * @return void
      */
     public function __construct($payload)
     {

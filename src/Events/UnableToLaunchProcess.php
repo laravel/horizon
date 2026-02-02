@@ -17,7 +17,6 @@ class UnableToLaunchProcess
      * Create a new event instance.
      *
      * @param  \Laravel\Horizon\WorkerProcess  $process
-     * @return void
      */
     public function __construct(WorkerProcess $process)
     {

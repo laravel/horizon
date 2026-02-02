@@ -18,7 +18,6 @@ class MarkJobsAsMigrated
      * Create a new listener instance.
      *
      * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
-     * @return void
      */
     public function __construct(JobRepository $jobs)
     {

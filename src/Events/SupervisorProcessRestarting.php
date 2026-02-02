@@ -17,7 +17,6 @@ class SupervisorProcessRestarting
      * Create a new event instance.
      *
      * @param  \Laravel\Horizon\SupervisorProcess  $process
-     * @return void
      */
     public function __construct(SupervisorProcess $process)
     {

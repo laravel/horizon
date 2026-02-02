@@ -13,7 +13,6 @@ class RetryFailedJob
      * Create a new job instance.
      *
      * @param  string  $id  The job ID.
-     * @return void
      */
     public function __construct(
         public $id,

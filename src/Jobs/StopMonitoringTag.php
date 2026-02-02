@@ -11,7 +11,6 @@ class StopMonitoringTag
      * Create a new job instance.
      *
      * @param  string  $tag  The tag to stop monitoring.
-     * @return void
      */
     public function __construct(
         public $tag,

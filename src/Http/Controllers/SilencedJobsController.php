@@ -18,7 +18,6 @@ class SilencedJobsController extends Controller
      * Create a new controller instance.
      *
      * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
-     * @return void
      */
     public function __construct(JobRepository $jobs)
     {

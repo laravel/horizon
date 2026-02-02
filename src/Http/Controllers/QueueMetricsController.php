@@ -17,7 +17,6 @@ class QueueMetricsController extends Controller
      * Create a new controller instance.
      *
      * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
-     * @return void
      */
     public function __construct(MetricsRepository $metrics)
     {

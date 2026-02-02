@@ -27,7 +27,6 @@ class MonitorWaitTimes
      * Create a new listener instance.
      *
      * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
-     * @return void
      */
     public function __construct(MetricsRepository $metrics)
     {

@@ -10,7 +10,6 @@ class MonitorTag
      * Create a new job instance.
      *
      * @param  string  $tag  The tag to monitor.
-     * @return void
      */
     public function __construct(
         public $tag,

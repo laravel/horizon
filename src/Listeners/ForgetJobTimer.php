@@ -17,7 +17,6 @@ class ForgetJobTimer
      * Create a new listener instance.
      *
      * @param  \Laravel\Horizon\Stopwatch  $watch
-     * @return void
      */
     public function __construct(Stopwatch $watch)
     {

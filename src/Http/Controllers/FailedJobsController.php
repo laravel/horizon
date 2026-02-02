@@ -27,7 +27,6 @@ class FailedJobsController extends Controller
      *
      * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
      * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
-     * @return void
      */
     public function __construct(JobRepository $jobs, TagRepository $tags)
     {

@@ -16,7 +16,6 @@ class JobDeleted extends RedisEvent
      *
      * @param  \Illuminate\Queue\Jobs\Job  $job
      * @param  string  $payload
-     * @return void
      */
     public function __construct($job, $payload)
     {

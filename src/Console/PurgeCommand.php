@@ -50,7 +50,6 @@ class PurgeCommand extends Command
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
      * @param  \Laravel\Horizon\Contracts\ProcessRepository  $processes
      * @param  \Laravel\Horizon\ProcessInspector  $inspector
-     * @return void
      */
     public function __construct(
         SupervisorRepository $supervisors,

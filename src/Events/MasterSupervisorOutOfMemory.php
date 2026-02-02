@@ -17,7 +17,6 @@ class MasterSupervisorOutOfMemory
      * Create a new event instance.
      *
      * @param  \Laravel\Horizon\MasterSupervisor  $master
-     * @return void
      */
     public function __construct(MasterSupervisor $master)
     {

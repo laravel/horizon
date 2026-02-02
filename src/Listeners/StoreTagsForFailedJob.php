@@ -18,7 +18,6 @@ class StoreTagsForFailedJob
      * Create a new listener instance.
      *
      * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
-     * @return void
      */
     public function __construct(TagRepository $tags)
     {

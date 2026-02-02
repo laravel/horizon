@@ -34,7 +34,6 @@ class LongWaitDetected
      * @param  string  $connection
      * @param  string  $queue
      * @param  int  $seconds
-     * @return void
      */
     public function __construct($connection, $queue, $seconds)
     {

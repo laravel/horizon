@@ -24,7 +24,6 @@ class JobFailed extends RedisEvent
      * @param  \Exception  $exception
      * @param  \Illuminate\Queue\Jobs\Job  $job
      * @param  string  $payload
-     * @return void
      */
     public function __construct($exception, $job, $payload)
     {

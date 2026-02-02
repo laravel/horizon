@@ -31,7 +31,6 @@ class JobsMigrated
      * Create a new event instance.
      *
      * @param  array  $payloads
-     * @return void
      */
     public function __construct($payloads)
     {
