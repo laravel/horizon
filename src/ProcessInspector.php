@@ -19,7 +19,6 @@ class ProcessInspector
      * Create a new process inspector instance.
      *
      * @param  \Laravel\Horizon\Exec  $exec
-     * @return void
      */
     public function __construct(Exec $exec)
     {

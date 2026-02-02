@@ -30,7 +30,6 @@ class JobPayload implements ArrayAccess
      * Create a new raw job payload instance.
      *
      * @param  string  $value
-     * @return void
      */
     public function __construct($value)
     {

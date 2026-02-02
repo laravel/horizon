@@ -38,7 +38,6 @@ class ProvisioningPlan
      * @param  string  $master
      * @param  array  $plan
      * @param  array  $defaults
-     * @return void
      */
     public function __construct($master, array $plan, array $defaults = [])
     {

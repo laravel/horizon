@@ -18,7 +18,6 @@ class RedisHorizonCommandQueue implements HorizonCommandQueue
      * Create a new command queue instance.
      *
      * @param  \Illuminate\Contracts\Redis\Factory  $redis
-     * @return void
      */
     public function __construct(RedisFactory $redis)
     {

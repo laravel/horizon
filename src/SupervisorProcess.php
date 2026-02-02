@@ -48,7 +48,6 @@ class SupervisorProcess extends WorkerProcess
      * @param  \Laravel\Horizon\SupervisorOptions  $options
      * @param  \Symfony\Component\Process\Process  $process
      * @param  \Closure|null  $output
-     * @return void
      */
     public function __construct(SupervisorOptions $options, $process, ?Closure $output = null)
     {

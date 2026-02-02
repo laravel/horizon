@@ -17,7 +17,6 @@ class Lock
      * Create a Horizon lock manager.
      *
      * @param  \Illuminate\Contracts\Redis\Factory  $redis
-     * @return void
      */
     public function __construct(RedisFactory $redis)
     {

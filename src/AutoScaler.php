@@ -27,7 +27,6 @@ class AutoScaler
      *
      * @param  \Illuminate\Contracts\Queue\Factory  $queue
      * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
-     * @return void
      */
     public function __construct(QueueFactory $queue, MetricsRepository $metrics)
     {

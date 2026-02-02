@@ -65,7 +65,6 @@ class Supervisor implements Pausable, Restartable, Terminable
      * Create a new supervisor instance.
      *
      * @param  \Laravel\Horizon\SupervisorOptions  $options
-     * @return void
      */
     public function __construct(SupervisorOptions $options)
     {

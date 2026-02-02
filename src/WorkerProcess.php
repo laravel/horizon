@@ -35,7 +35,6 @@ class WorkerProcess
      * Create a new worker process instance.
      *
      * @param  \Symfony\Component\Process\Process  $process
-     * @return void
      */
     public function __construct($process)
     {

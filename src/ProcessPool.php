@@ -49,7 +49,6 @@ class ProcessPool implements Countable
      *
      * @param  \Laravel\Horizon\SupervisorOptions  $options
      * @param  \Closure|null  $output
-     * @return void
      */
     public function __construct(SupervisorOptions $options, ?Closure $output = null)
     {
