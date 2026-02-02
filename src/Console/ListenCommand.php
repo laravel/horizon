@@ -178,7 +178,7 @@ class ListenCommand extends Command
     protected function watcherFailed()
     {
         $this->components->error(
-            'Unable to start file watcher. Please ensure Node.js and the chokidar npm package are installed.',
+            'Unable to start file watcher. Please ensure Node.js and the paulmillr/chokidar npm package are installed.',
         );
 
         $this->output->writeln($this->watcherProcess->getErrorOutput());
