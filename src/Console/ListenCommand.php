@@ -89,7 +89,7 @@ class ListenCommand extends Command
 
         if (! $nodeExecutable) {
             throw new InvalidArgumentException(
-                'Node.js could not be found. Please ensure Node.js is installed and available in your system PATH.',
+                'Node could not be found. Please ensure Node is installed and available in your system PATH.',
             );
         }
 
