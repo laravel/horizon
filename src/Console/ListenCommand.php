@@ -85,8 +85,16 @@ class ListenCommand extends Command
             );
         }
 
+        $nodeExecutable = (new ExecutableFinder)->find('node');
+
+        if (! $nodeExecutable) {
+            throw new InvalidArgumentException(
+                'Node.js could not be found. Please ensure Node.js is installed and available in your system PATH.',
+            );
+        }
+
         $process = new Process([
-            (new ExecutableFinder)->find('node'),
+            $nodeExecutable,
             'file-watcher.cjs',
             json_encode(collect($paths)->map(fn ($path) => base_path($path))->values()->all()),
             $this->option('poll') ? '1' : '',
