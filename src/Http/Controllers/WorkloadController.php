@@ -17,6 +17,16 @@ class WorkloadController extends Controller
         return collect($workload->get())
             ->sortBy('name')
             ->values()
+            ->map(function ($queue) {
+                // Access queue data as an array
+                $connection = $queue['connection'] ?? 'redis';
+                $queueName = $queue['queue_name'] ?? $queue['name'];
+
+                // Add pause status
+                $queue['is_paused'] = \Illuminate\Support\Facades\Queue::isPaused($connection, $queueName);
+
+                return $queue;
+            })
             ->toArray();
     }
 }

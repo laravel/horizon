@@ -28,6 +28,11 @@ Route::prefix('api')->group(function () {
     Route::get('/metrics/queues', 'QueueMetricsController@index')->name('horizon.queues-metrics.index');
     Route::get('/metrics/queues/{id}', 'QueueMetricsController@show')->name('horizon.queues-metrics.show');
 
+    // Queue Control Routes...
+    Route::post('/queues/pause', 'QueueController@pause')->name('horizon.queues.pause');
+    Route::post('/queues/resume', 'QueueController@resume')->name('horizon.queues.resume');
+    Route::get('/queues/status/{connection}/{queue}', 'QueueController@status')->name('horizon.queues.status');
+
     // Batches Routes...
     Route::get('/batches', 'BatchesController@index')->name('horizon.jobs-batches.index');
     Route::get('/batches/{id}', 'BatchesController@show')->name('horizon.jobs-batches.show');

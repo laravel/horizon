@@ -14,6 +14,8 @@
                 workers: [],
                 workload: [],
                 ready: false,
+                pausingQueues: {},
+                queueErrors: {},
             };
         },
 
@@ -135,6 +137,68 @@
                 return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?\s/i, '').replace(/^(.)|\s(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
+            },
+
+
+            /**
+             * Pause a queue.
+             */
+            pauseQueue(queue) {
+                const connection = queue.connection || queue.name.split(':')[0];
+                const queueName = queue.queue_name || queue.name.split(':')[1] || queue.name;
+                const key = `${connection}:${queueName}`;
+
+                this.pausingQueues[key] = true;
+                this.queueErrors[key] = null;
+
+                this.$http.post(Horizon.basePath + '/api/queues/pause', {
+                    connection: connection,
+                    queue: queueName
+                })
+                .then(() => {
+                    queue.is_paused = true;
+                    this.pausingQueues[key] = false;
+                })
+                .catch(error => {
+                    this.queueErrors[key] = 'Failed to pause queue';
+                    this.pausingQueues[key] = false;
+                });
+            },
+
+
+            /**
+             * Resume a paused queue.
+             */
+            resumeQueue(queue) {
+                const connection = queue.connection || queue.name.split(':')[0];
+                const queueName = queue.queue_name || queue.name.split(':')[1] || queue.name;
+                const key = `${connection}:${queueName}`;
+
+                this.pausingQueues[key] = true;
+                this.queueErrors[key] = null;
+
+                this.$http.post(Horizon.basePath + '/api/queues/resume', {
+                    connection: connection,
+                    queue: queueName
+                })
+                .then(() => {
+                    queue.is_paused = false;
+                    this.pausingQueues[key] = false;
+                })
+                .catch(error => {
+                    this.queueErrors[key] = 'Failed to resume queue';
+                    this.pausingQueues[key] = false;
+                });
+            },
+
+
+            /**
+             * Get the queue key for tracking loading states.
+             */
+            getQueueKey(queue) {
+                const connection = queue.connection || queue.name.split(':')[0];
+                const queueName = queue.queue_name || queue.name.split(':')[1] || queue.name;
+                return `${connection}:${queueName}`;
             }
         }
     }
@@ -263,6 +327,8 @@
                     <th class="text-end" style="width: 120px;">Jobs</th>
                     <th class="text-end" style="width: 120px;">Processes</th>
                     <th class="text-end" style="width: 180px;">Wait</th>
+                    <th class="text-end" style="width: 100px;">Status</th>
+                    <th class="text-end" style="width: 120px;">Actions</th>
                 </tr>
                 </thead>
 
@@ -275,6 +341,39 @@
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ humanTime(queue.wait) }}</td>
+                            <td class="text-end">
+                                <span v-if="queue.is_paused" class="badge bg-warning text-dark">Paused</span>
+                                <span v-else class="badge bg-success">Active</span>
+                            </td>
+                            <td class="text-end">
+                                <button
+                                    v-if="!queue.is_paused"
+                                    @click="pauseQueue(queue)"
+                                    :disabled="pausingQueues[getQueueKey(queue)]"
+                                    class="btn btn-sm btn-primary"
+                                    title="Pause queue"
+                                >
+                                    <svg v-if="!pausingQueues[getQueueKey(queue)]" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+                                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                                    </svg>
+                                    <span v-else>...</span>
+                                </button>
+                                <button
+                                    v-else
+                                    @click="resumeQueue(queue)"
+                                    :disabled="pausingQueues[getQueueKey(queue)]"
+                                    class="btn btn-sm btn-success"
+                                    title="Resume queue"
+                                >
+                                    <svg v-if="!pausingQueues[getQueueKey(queue)]" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" style="width: 1rem; height: 1rem;">
+                                        <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                    <span v-else>...</span>
+                                </button>
+                                <small v-if="queueErrors[getQueueKey(queue)]" class="text-danger d-block mt-1">
+                                    {{ queueErrors[getQueueKey(queue)] }}
+                                </small>
+                            </td>
                         </tr>
 
                         <tr v-for="split_queue in queue.split_queues">

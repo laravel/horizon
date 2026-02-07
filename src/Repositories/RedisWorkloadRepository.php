@@ -91,6 +91,8 @@ class RedisWorkloadRepository implements WorkloadRepository
 
                 return [
                     'name' => $queueName,
+                    'connection' => $connection,
+                    'queue_name' => $queueName,
                     'length' => $length->sum(),
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
