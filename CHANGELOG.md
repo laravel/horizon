@@ -1,6 +1,17 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.42.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.44.0...5.x)
+
+## [v5.44.0](https://github.com/laravel/horizon/compare/v5.43.0...v5.44.0) - 2026-02-10
+
+* [5.x] Add Node.js executable validation before starting file watcher by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1699
+* [5.x] Supports Laravel 13 by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/horizon/pull/1700
+* [5.x] Fix incorrect `@return` tag in Supervisor property docblock by [@eranishojha](https://github.com/eranishojha) in https://github.com/laravel/horizon/pull/1701
+* [5.x] Guard `RedisStore::scan()` results against boolean failures by [@amirhshokri](https://github.com/amirhshokri) in https://github.com/laravel/horizon/pull/1703
+
+## [v5.43.0](https://github.com/laravel/horizon/compare/v5.42.0...v5.43.0) - 2026-01-15
+
+* Add `horizon:listen` command by [@mathiasgrimm](https://github.com/mathiasgrimm) in https://github.com/laravel/horizon/pull/1689
 
 ## [v5.42.0](https://github.com/laravel/horizon/compare/v5.41.0...v5.42.0) - 2026-01-06
 

@@ -396,9 +396,15 @@ class RedisMetricsRepository implements MetricsRepository
             $cursor = null;
 
             do {
-                [$cursor, $keys] = $this->connection()->scan(
+                $scanResult = $this->connection()->scan(
                     $cursor ?? 0, ['match' => config('horizon.prefix').$pattern]
                 );
+
+                if (! is_array($scanResult)) {
+                    break;
+                }
+
+                [$cursor, $keys] = $scanResult;
 
                 foreach ($keys ?? [] as $key) {
                     $this->forget(Str::after($key, config('horizon.prefix')));

@@ -22,7 +22,7 @@ class Supervisor implements Pausable, Restartable, Terminable
     /**
      * The name of this supervisor instance.
      *
-     * @return string
+     * @var string
      */
     public $name;
 
