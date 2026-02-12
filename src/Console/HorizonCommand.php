@@ -36,7 +36,7 @@ class HorizonCommand extends Command
         $client = config('database.redis.client');
 
         if ($client === 'phpredis' && ! extension_loaded('redis')) {
-            return $this->components->error('PHP Redis extension is not installed.');
+            return $this->components->error('The PHP Redis extension is not installed.');
         }
 
         if ($client === 'predis' && ! class_exists(\Predis\Client::class)) {
