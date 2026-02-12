@@ -33,6 +33,16 @@ class HorizonCommand extends Command
      */
     public function handle(MasterSupervisorRepository $masters)
     {
+        $client = config('database.redis.client');
+
+        if ($client === 'phpredis' && ! extension_loaded('redis')) {
+            return $this->components->error('PHP Redis extension is not installed.');
+        }
+
+        if ($client === 'predis' && ! class_exists(\Predis\Client::class)) {
+            return $this->components->error('Predis client is not installed. Run: composer require predis/predis');
+        }
+
         if ($masters->find(MasterSupervisor::name())) {
             return $this->components->warn('A master supervisor is already running on this machine.');
         }
