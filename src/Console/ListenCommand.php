@@ -136,7 +136,7 @@ class ListenCommand extends Command
 
         $this->horizonProcess->start();
 
-        usleep(100000);
+        usleep(100_000);
 
         return ! $this->horizonProcess->isTerminated();
     }
@@ -159,7 +159,7 @@ class ListenCommand extends Command
                 break;
             }
 
-            usleep(500000);
+            usleep(500_000);
         }
     }
 
