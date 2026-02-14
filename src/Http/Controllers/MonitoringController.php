@@ -50,6 +50,7 @@ class MonitoringController extends Controller
             ->map(fn ($tag) => [
                 'tag' => $tag,
                 'count' => $this->tags->count($tag) + $this->tags->count('failed:'.$tag),
+                'failed_jobs' => $this->tags->count('failed:'.$tag),
             ])
             ->sortBy('tag')
             ->values();

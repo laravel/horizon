@@ -81,7 +81,7 @@
                             this.addTagModal.hide();
                         }
 
-                        this.tags.push({tag: this.newTag, count: 0});
+                        this.tags.push({tag: this.newTag, count: 0, failed_jobs: 0});
                         this.newTag = '';
                     })
             },
@@ -144,6 +144,7 @@
                 <tr>
                     <th>Tag</th>
                     <th class="text-end">Jobs</th>
+                    <th class="text-end">Failed Jobs</th>
                     <th class="text-end"></th>
                 </tr>
                 </thead>
@@ -155,8 +156,9 @@
                             {{ tag.tag }}
                         </router-link>
                     </td>
-                    <td class="text-end text-muted">{{ tag.count }}</td>
-                    <td class="text-end">
+                    <td class="text-end text-muted" style="width: 180px;">{{ tag.count }}</td>
+                    <td class="text-end text-muted" style="width: 180px;">{{ tag.failed_jobs }}</td>
+                    <td class="text-end" style="width: 180px;">
                         <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
