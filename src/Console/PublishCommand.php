@@ -5,6 +5,9 @@ namespace Laravel\Horizon\Console;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 
+/**
+ * @deprecated This command no longer publishes Horizon assets.
+ */
 #[AsCommand(name: 'horizon:publish')]
 class PublishCommand extends Command
 {
