@@ -49,7 +49,7 @@ class MonitoringController extends Controller
         return collect($this->tags->monitoring())
             ->map(function ($tag) {
                 $succeededCount = $this->tags->count($tag);
-                $failedCount = $this->tags->count('failed:' . $tag);
+                $failedCount = $this->tags->count('failed:'.$tag);
 
                 return [
                     'tag' => $tag,
