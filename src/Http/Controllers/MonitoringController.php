@@ -47,10 +47,17 @@ class MonitoringController extends Controller
     public function index()
     {
         return collect($this->tags->monitoring())
-            ->map(fn ($tag) => [
-                'tag' => $tag,
-                'count' => $this->tags->count($tag) + $this->tags->count('failed:'.$tag),
-            ])
+            ->map(function ($tag) {
+                $succeededCount = $this->tags->count($tag);
+                $failedCount = $this->tags->count('failed:' . $tag);
+
+                return [
+                    'tag' => $tag,
+                    'count' => $succeededCount + $failedCount,
+                    'succeeded_count' => $succeededCount,
+                    'failed_count' => $failedCount,
+                ];
+            })
             ->sortBy('tag')
             ->values();
     }
@@ -66,7 +73,8 @@ class MonitoringController extends Controller
         $tag = $request->query('tag');
 
         $jobIds = $this->tags->paginate(
-            $tag, $startingAt = $request->query('starting_at', 0),
+            $tag,
+            $startingAt = $request->query('starting_at', 0),
             $request->query('limit', 25)
         );
 

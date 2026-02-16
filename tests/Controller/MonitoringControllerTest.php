@@ -23,11 +23,11 @@ class MonitoringControllerTest extends ControllerTest
         $this->app->instance(TagRepository::class, $tags);
 
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring');
+            ->get('/horizon/api/monitoring');
 
         $response->assertJson([
-            ['tag' => 'first', 'count' => 2],
-            ['tag' => 'second', 'count' => 4],
+            ['tag' => 'first', 'count' => 2, 'succeeded_count' => 1, 'failed_count' => 1],
+            ['tag' => 'second', 'count' => 4, 'succeeded_count' => 2, 'failed_count' => 2],
         ]);
     }
 
@@ -47,7 +47,7 @@ class MonitoringControllerTest extends ControllerTest
 
         // Paginate first set...
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring/tag?tag=tag');
+            ->get('/horizon/api/monitoring/tag?tag=tag');
 
         $results = $response->original['jobs'];
 
@@ -57,7 +57,7 @@ class MonitoringControllerTest extends ControllerTest
 
         // Paginate second set...
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring/tag?starting_at=25&tag=tag');
+            ->get('/horizon/api/monitoring/tag?starting_at=25&tag=tag');
 
         $results = $response->original['jobs'];
 
@@ -77,7 +77,7 @@ class MonitoringControllerTest extends ControllerTest
         }
 
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring/tag?starting_at=1000');
+            ->get('/horizon/api/monitoring/tag?starting_at=1000');
 
         $this->assertCount(0, $response->original['jobs']);
     }
@@ -87,7 +87,7 @@ class MonitoringControllerTest extends ControllerTest
         $tags = resolve(TagRepository::class);
 
         $this->actingAs(new Fakes\User)
-             ->post('/horizon/api/monitoring', ['tag' => 'taylor']);
+            ->post('/horizon/api/monitoring', ['tag' => 'taylor']);
 
         $this->assertEquals(['taylor'], $tags->monitoring());
     }
@@ -107,11 +107,11 @@ class MonitoringControllerTest extends ControllerTest
         }
 
         $this->actingAs(new Fakes\User)
-             ->delete('/horizon/api/monitoring/tag');
+            ->delete('/horizon/api/monitoring/tag');
 
         // Ensure monitored jobs were deleted...
         $response = $this->actingAs(new Fakes\User)
-                    ->get('/horizon/api/monitoring/tag');
+            ->get('/horizon/api/monitoring/tag');
 
         $results = $response->original['jobs'];
 
