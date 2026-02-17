@@ -65,6 +65,16 @@ class Horizon
     ];
 
     /**
+     * Get the current Horizon instance name.
+     *
+     * @return string|null
+     */
+    public static function name(): ?string
+    {
+        return config('horizon.name');
+    }
+
+    /**
      * Determine if the given request can access the Horizon dashboard.
      *
      * @param  \Illuminate\Http\Request  $request
