@@ -9,7 +9,7 @@ const chokidarVersion4 = require(chokidarPackagePath).version.startsWith('4.');
 
 const extractWildcardExtension = (path) => {
     // Match patterns like *.php, **/*.blade.php
-    const match = path.match(/\/\*\.((\\w|\\.)+)$/);
+    const match = path.match(/\/\*\.((\w|\.)+)$/);
 
     return match ? match[1] : null;
 };
