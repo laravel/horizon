@@ -8,9 +8,11 @@
                 ready: false,
                 loadingNewEntries: false,
                 hasNewEntries: false,
-                page: 1,
-                previousFirstId: null,
+                page: parseInt(this.$route.query.page) || 1,
+                previousFirstId: this.$route.query.previous_first_id || null,
                 batches: [],
+                searchQuery: this.$route.query.query || '',
+                searchTimeout: null,
             };
         },
 
@@ -19,6 +21,8 @@
          */
         mounted() {
             document.title = "Horizon - Batches";
+
+            this.loadBatches(this.$route.query.before_id || '');
         },
 
 
@@ -26,10 +30,17 @@
          * Watch these properties for changes.
          */
         watch: {
-            '$route'() {
-                this.page = 1;
+            searchQuery(newVal, oldVal) {
+                if (!oldVal) return;
 
-                this.loadBatches();
+                clearTimeout(this.searchTimeout);
+
+                this.searchTimeout = setTimeout(() => {
+                    this.page = 1;
+                    this.previousFirstId = null;
+                    this.loadBatches();
+                    this.updateQueryParams();
+                }, 500);
             },
 
             '$root.autoLoadsNewEntries'(autoLoadsNewEntries) {
@@ -49,7 +60,9 @@
                     this.ready = false;
                 }
 
-                this.$http.get(Horizon.basePath + '/api/batches?before_id=' + beforeId)
+                var searchQuery = this.searchQuery ? 'query=' + encodeURIComponent(this.searchQuery) + '&' : '';
+
+                this.$http.get(Horizon.basePath + '/api/batches?' + searchQuery + 'before_id=' + beforeId)
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.batches.length) {
                             this.ready = true;
@@ -70,9 +83,14 @@
             loadNewEntries() {
                 this.batches = [];
 
-                this.loadBatches(0, false);
+                this.page = 1;
+                this.previousFirstId = null;
+
+                this.loadBatches('', false);
 
                 this.hasNewEntries = false;
+
+                this.updateQueryParams();
             },
 
 
@@ -82,6 +100,8 @@
             refreshBatchesPeriodically() {
                 if (this.page != 1) return;
 
+                if (this.searchQuery) return;
+
                 this.loadBatches('', true);
             },
 
@@ -90,13 +110,15 @@
              * Load the batches for the previous page.
              */
             previous() {
-                this.loadBatches(
-                    this.page == 2 ? '' : this.previousFirstId
-                );
+                var beforeId = this.page == 2 ? '' : this.previousFirstId;
+
+                this.loadBatches(beforeId);
 
                 this.page -= 1;
 
                 this.hasNewEntries = false;
+
+                this.updateQueryParams(beforeId);
             },
 
 
@@ -106,14 +128,39 @@
             next() {
                 this.previousFirstId = this.batches[0]?.id + '0';
 
-                this.loadBatches(
-                    this.batches.slice(-1)[0]?.id
-                );
+                var beforeId = this.batches.slice(-1)[0]?.id;
+
+                this.loadBatches(beforeId);
 
                 this.page += 1;
 
                 this.hasNewEntries = false;
-            }
+
+                this.updateQueryParams(beforeId);
+            },
+
+
+            /**
+             * Clear the search query and reset the table state.
+             */
+            clearSearch() {
+                this.searchQuery = '';
+            },
+
+
+            /**
+             * Sync pagination and search state to URL query params.
+             */
+            updateQueryParams(beforeId) {
+                var query = {};
+
+                if (this.page > 1) query.page = this.page;
+                if (beforeId) query.before_id = beforeId;
+                if (this.previousFirstId && this.page > 1) query.previous_first_id = this.previousFirstId;
+                if (this.searchQuery) query.query = this.searchQuery;
+
+                this.$router.replace({ query }).catch(() => {});
+            },
         }
     }
 </script>
@@ -125,6 +172,22 @@
         <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Batches</h2>
+
+                <div class="form-control-with-icon">
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+
+                    <input type="text" class="form-control w-100" :style="searchQuery ? 'padding-right: 2rem' : ''" v-model="searchQuery" placeholder="Search Batches">
+
+                    <a v-if="searchQuery" href="#" @click.prevent="clearSearch" class="clear-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </div>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">

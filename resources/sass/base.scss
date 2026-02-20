@@ -110,6 +110,24 @@ svg.icon {
                 font-size: 0.875rem;
                 border-radius: 9999px;
             }
+
+            .clear-search {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 0;
+                right: 0.5rem;
+                bottom: 0;
+
+                .icon {
+                    fill: $text-muted;
+                }
+
+                &:hover .icon {
+                    fill: $body-color;
+                }
+            }
         }
     }
 
