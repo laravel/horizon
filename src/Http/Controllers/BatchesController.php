@@ -82,16 +82,13 @@ class BatchesController extends Controller
     private function searchBatches(Request $request)
     {
         $query = str_replace(['%', '_'], ['\%', '\_'], $request->query('query'));
-        $table = config('queue.batching.table', 'job_batches');
-        $connection = config('queue.batching.database');
 
-        return DB::connection($connection)
-            ->table($table)
+        return DB::connection(config('queue.batching.database'))
+            ->table(config('queue.batching.table', 'job_batches'))
             ->where(function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
                     ->orWhere('id', 'like', "%{$query}%");
             })
-            ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(50)
             ->when($request->query('before_id'), fn ($q, $beforeId) => $q->where('id', '<', $beforeId))

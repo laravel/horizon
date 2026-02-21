@@ -38,6 +38,7 @@
                 this.searchTimeout = setTimeout(() => {
                     this.page = 1;
                     this.previousFirstId = null;
+
                     this.loadBatches();
                     this.updateQueryParams();
                 }, 500);
@@ -154,10 +155,10 @@
             updateQueryParams(beforeId) {
                 var query = {};
 
+                if (this.searchQuery) query.query = this.searchQuery;
                 if (this.page > 1) query.page = this.page;
                 if (beforeId) query.before_id = beforeId;
                 if (this.previousFirstId && this.page > 1) query.previous_first_id = this.previousFirstId;
-                if (this.searchQuery) query.query = this.searchQuery;
 
                 this.$router.replace({ query }).catch(() => {});
             },
