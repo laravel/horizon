@@ -114,13 +114,13 @@ class ListenCommand extends Command
      */
     protected function startHorizon()
     {
-        $command = 'php artisan horizon';
+        $command = ['php', 'artisan', 'horizon'];
 
         if ($environment = $this->option('environment')) {
-            $command .= ' --environment='.$environment;
+            $command[] = '--environment='.$environment;
         }
 
-        $this->horizonProcess = Process::fromShellCommandline($command)
+        $this->horizonProcess = (new Process($command))
             ->setTimeout(null);
 
         $this->trap([SIGINT, SIGTERM, SIGQUIT], function ($signal) {
