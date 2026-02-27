@@ -9,6 +9,8 @@ import Alert from './components/Alert.vue';
 import SchemeToggler from './components/SchemeToggler.vue';
 import Poll from './components/Poll.vue';
 
+const LOCALSTORAGE_AUTOLOAD_KEY = 'horizonAutoLoadsNewEntries';
+
 let token = document.head.querySelector("meta[name='csrf-token']");
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -27,7 +29,7 @@ const app = createApp({
                 confirmationProceed: null,
                 confirmationCancel: null,
             },
-            autoLoadsNewEntries: localStorage.autoLoadsNewEntries === '1',
+            autoLoadsNewEntries: localStorage[LOCALSTORAGE_AUTOLOAD_KEY] === '1',
         };
     },
 });

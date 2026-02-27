@@ -1,5 +1,7 @@
 import moment from 'moment-timezone';
 
+const LOCALSTORAGE_AUTOLOAD_KEY = 'horizonAutoLoadsNewEntries';
+
 export default {
     computed: {
         Horizon() {
@@ -37,13 +39,8 @@ export default {
          * Autoload new entries in listing screens.
          */
         autoLoadNewEntries() {
-            if (!this.autoLoadsNewEntries) {
-                this.autoLoadsNewEntries = true;
-                localStorage.autoLoadsNewEntries = 1;
-            } else {
-                this.autoLoadsNewEntries = false;
-                localStorage.autoLoadsNewEntries = 0;
-            }
+            this.autoLoadsNewEntries = !this.autoLoadsNewEntries;
+            localStorage[LOCALSTORAGE_AUTOLOAD_KEY] = Number(this.autoLoadsNewEntries);
         },
 
         /**

@@ -1,4 +1,6 @@
 <script type="text/ecmascript-6">
+    const LOCALSTORAGE_COLOR_SCHEME_KEY = 'horizonColorScheme';
+
     export default {
         data () {
             return {
@@ -8,12 +10,12 @@
 
         watch: {
             scheme (value) {
-                localStorage.setItem('scheme', value);
+                localStorage.setItem(LOCALSTORAGE_COLOR_SCHEME_KEY, value);
             }
         },
 
         mounted () {
-            this.scheme = localStorage.getItem('scheme') ?? 'system';
+            this.scheme = localStorage.getItem(LOCALSTORAGE_COLOR_SCHEME_KEY) ?? 'system';
 
             window
                 .matchMedia('(prefers-color-scheme: dark)')
