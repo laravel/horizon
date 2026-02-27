@@ -36,9 +36,9 @@ class TerminateCommand extends Command
      *
      * @param  \Illuminate\Contracts\Cache\Factory  $cache
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
-     * @return void
+     * @return int|null
      */
-    public function handle(CacheFactory $cache, MasterSupervisorRepository $masters): ?int
+    public function handle(CacheFactory $cache, MasterSupervisorRepository $masters)
     {
         if (config('horizon.fast_termination')) {
             $cache->forever(
@@ -56,6 +56,7 @@ class TerminateCommand extends Command
             ->whenNotEmpty(fn () => $this->components->info('Sending TERM signal to processes.'))
             ->whenEmpty(function () use (&$exitCode) {
                 $this->components->info('No processes to terminate.');
+
                 $exitCode = Command::FAILURE;
             })
             ->each(function ($processId) use (&$exitCode) {
@@ -78,6 +79,6 @@ class TerminateCommand extends Command
 
         $this->laravel['cache']->forever('illuminate:queue:restart', $this->currentTime());
 
-        return $exitCode;
+        return $exitCode ?? Command::SUCCESS;
     }
 }
