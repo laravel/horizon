@@ -5,6 +5,7 @@
 /.phpunit.cache
 /phpunit.xml
 /.vscode
+/node_modules
 /vendor
 composer.phar
 composer.lock
