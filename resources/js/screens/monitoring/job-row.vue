@@ -64,6 +64,8 @@
                 if (this.unserialized && this.unserialized.delay) {
                     return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
                         .fromNow(true);
+                } else if (this.job.delay > 0) {
+                    return moment.duration(this.job.delay, 'seconds').humanize();
                 }
 
                 return null;

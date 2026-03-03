@@ -145,9 +145,10 @@ interface JobRepository
      * @param  string  $connection
      * @param  string  $queue
      * @param  \Laravel\Horizon\JobPayload  $payload
+     * @param  int  $delay
      * @return void
      */
-    public function released($connection, $queue, JobPayload $payload);
+    public function released($connection, $queue, JobPayload $payload, $delay = 0);
 
     /**
      * Mark the job as completed and monitored.

@@ -106,4 +106,35 @@ class RedisJobRepositoryTest extends IntegrationTest
         $this->assertSame(0, $result);
         $this->assertSame('1', $repository->getRecent()[0]->id);
     }
+
+    public function test_it_stores_delay_when_job_is_released()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+        $repository->reserved('redis', 'default', $payload);
+        $repository->released('redis', 'default', $payload, 60);
+
+        $job = $repository->getJobs([1])[0];
+
+        $this->assertSame('pending', $job->status);
+        $this->assertSame('60', $job->delay);
+    }
+
+    public function test_it_clears_delay_when_job_is_migrated()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+        $repository->reserved('redis', 'default', $payload);
+        $repository->released('redis', 'default', $payload, 60);
+        $repository->migrated('redis', 'default', collect([$payload]));
+
+        $job = $repository->getJobs([1])[0];
+
+        $this->assertSame('pending', $job->status);
+        $this->assertSame('0', $job->delay);
+    }
 }

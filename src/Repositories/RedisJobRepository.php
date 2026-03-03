@@ -27,7 +27,7 @@ class RedisJobRepository implements JobRepository
     public $keys = [
         'id', 'connection', 'queue', 'name', 'status', 'payload',
         'exception', 'context', 'failed_at', 'completed_at', 'retried_by',
-        'reserved_at',
+        'reserved_at', 'delay',
     ];
 
     /**
@@ -386,15 +386,17 @@ class RedisJobRepository implements JobRepository
      * @param  string  $connection
      * @param  string  $queue
      * @param  \Laravel\Horizon\JobPayload  $payload
+     * @param  int  $delay
      * @return void
      */
-    public function released($connection, $queue, JobPayload $payload)
+    public function released($connection, $queue, JobPayload $payload, $delay = 0)
     {
         $this->connection()->hmset(
             $payload->id(), [
                 'status' => 'pending',
                 'payload' => $payload->value,
                 'updated_at' => str_replace(',', '.', microtime(true)),
+                'delay' => $delay,
             ]
         );
     }
@@ -447,6 +449,7 @@ class RedisJobRepository implements JobRepository
                         'status' => 'pending',
                         'payload' => $payload->value,
                         'updated_at' => str_replace(',', '.', microtime(true)),
+                        'delay' => 0,
                     ]
                 );
             }

@@ -193,7 +193,7 @@ class RedisQueue extends BaseQueue
     {
         parent::deleteAndRelease($queue, $job, $delay);
 
-        $this->event($this->getQueue($queue), new JobReleased($job->getReservedJob()));
+        $this->event($this->getQueue($queue), new JobReleased($job->getReservedJob(), $delay));
     }
 
     /**

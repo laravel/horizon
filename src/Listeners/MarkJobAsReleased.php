@@ -33,6 +33,6 @@ class MarkJobAsReleased
      */
     public function handle(JobReleased $event)
     {
-        $this->jobs->released($event->connectionName, $event->queue, $event->payload);
+        $this->jobs->released($event->connectionName, $event->queue, $event->payload, $event->delay);
     }
 }
