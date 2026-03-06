@@ -3,16 +3,19 @@
 ## Where to Find It
 
 Search with `search-docs`:
-- `"horizon metrics snapshot"` — snapshot command and scheduling
-- `"horizon trim snapshots"` — retention configuration
+- `"horizon metrics snapshot"` for the snapshot command and scheduling
+- `"horizon trim snapshots"` for retention configuration
 
 ## What to Watch For
 
-**The metrics dashboard is blank until `horizon:snapshot` has run at least once.**
-Running `php artisan horizon` does not populate metrics automatically. The metrics graph is built from snapshots — you must schedule `php artisan horizon:snapshot` to run every 5 minutes via Laravel's scheduler. If the dashboard is blank, this is almost always the reason.
+### Metrics dashboard stays blank until `horizon:snapshot` is scheduled
 
-**Register the snapshot in the scheduler, not just once manually.**
-A single manual run populates the dashboard momentarily but won't keep it updated. Search `"horizon metrics snapshot"` for the exact scheduler registration syntax — it differs slightly between Laravel 10 and 11+.
+Running `php artisan horizon` does not populate metrics automatically. The metrics graph is built from snapshots, so `php artisan horizon:snapshot` must be scheduled to run every 5 minutes via Laravel's scheduler.
 
-**`metrics.trim_snapshots` controls how many data points are retained — not a time duration.**
-The `trim_snapshots.job` and `trim_snapshots.queue` values in `config/horizon.php` are counts of snapshots to keep, not minutes or hours. With the default of 24 snapshots at 5-minute intervals, that's 2 hours of history. Increase the value to retain more history; the tradeoff is Redis memory usage.
+### Register the snapshot in the scheduler rather than running it manually
+
+A single manual run populates the dashboard momentarily but will not keep it updated. Search `"horizon metrics snapshot"` for the exact scheduler registration syntax, which differs between Laravel 10 and 11+.
+
+### `metrics.trim_snapshots` is a snapshot count, not a time duration
+
+The `trim_snapshots.job` and `trim_snapshots.queue` values in `config/horizon.php` are counts of snapshots to keep, not minutes or hours. With the default of 24 snapshots at 5-minute intervals, that provides 2 hours of history. Increase the value to retain more history at the cost of Redis memory usage.

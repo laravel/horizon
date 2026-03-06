@@ -3,16 +3,19 @@
 ## Where to Find It
 
 Search with `search-docs`:
-- `"horizon tags"` — tagging API and auto-tagging behaviour
-- `"horizon silenced jobs"` — silenced/silenced_tags config options
+- `"horizon tags"` for the tagging API and auto-tagging behaviour
+- `"horizon silenced jobs"` for the `silenced` and `silenced_tags` config options
 
 ## What to Watch For
 
-**Eloquent models are auto-tagged — you often don't need to add tags manually.**
-If a job's constructor accepts Eloquent model instances, Horizon automatically tags the job with `ModelClass:id` (e.g., `App\Models\User:42`). You can filter by this tag in the dashboard without any code changes to the job. Only add a `tags()` method when you need custom tags beyond what auto-tagging provides.
+### Eloquent model jobs are tagged automatically without any extra code
 
-**`silenced` hides jobs from the completed list — it does not stop them from running.**
-Adding a job class to the `silenced` array in `config/horizon.php` removes it from the dashboard's completed jobs view. The job still runs normally. This is purely a dashboard noise-reduction tool, not a way to disable jobs.
+If a job's constructor accepts Eloquent model instances, Horizon automatically tags the job with `ModelClass:id` such as `App\Models\User:42`. These tags are filterable in the dashboard without any changes to the job class. Only add a `tags()` method when custom tags beyond auto-tagging are needed.
 
-**`silenced_tags` works the same way but matches by tag.**
-Any job carrying a matching tag string is hidden from completed jobs. Useful when you want to silence a category of jobs (e.g., all jobs tagged `notifications`) rather than specific classes.
+### `silenced` hides jobs from the dashboard completed list but does not stop them from running
+
+Adding a job class to the `silenced` array in `config/horizon.php` removes it from the completed jobs view. The job still runs normally. This is a dashboard noise-reduction tool, not a way to disable jobs.
+
+### `silenced_tags` hides all jobs carrying a matching tag from the completed list
+
+Any job carrying a matching tag string is hidden from the completed jobs view. This is useful for silencing a category of jobs such as all jobs tagged `notifications`, rather than silencing specific classes.
