@@ -3,20 +3,19 @@
 ## Where to Find It
 
 Search with `search-docs`:
-- `"horizon notifications"` for listener registration and the event list
+- `"horizon notifications"` for Horizon's built-in notification routing helpers
 - `"horizon long wait detected"` for LongWaitDetected event details
-- `"horizon failed job notification"` for a JobFailed listener example
 
 ## What to Watch For
 
-### `waits` in `config/horizon.php` controls the LongWaitDetected threshold, not the notification itself
+### `waits` in `config/horizon.php` controls the LongWaitDetected threshold
 
-The `waits` array (e.g., `'redis:default' => 60`) defines how many seconds a job can wait in a queue before Horizon fires a `LongWaitDetected` event. This value is set in the config file, not in the notification listener. If alerts are firing too often or too late, adjust `waits` rather than the listener code.
+The `waits` array (e.g., `'redis:default' => 60`) defines how many seconds a job can wait in a queue before Horizon fires a `LongWaitDetected` event. This value is set in the config file, not in Horizon's notification routing. If alerts are firing too often or too late, adjust `waits` rather than the routing configuration.
 
-### `LongWaitDetected` fires an event that requires a registered listener to send notifications
+### Use Horizon's built-in notification routing in `HorizonServiceProvider`
 
-Horizon fires the event but does not send any notification by itself. Register a listener for `LongWaitDetected` (and optionally `JobFailed`) inside the `boot()` method of `App\Providers\HorizonServiceProvider`. The listener receives the event and is responsible for dispatching the appropriate notification such as Mail or Slack. Fetch the docs for the exact listener signature and example.
+Configure notifications in the `boot()` method of `App\Providers\HorizonServiceProvider` using `Horizon::routeMailNotificationsTo()`, `Horizon::routeSlackNotificationsTo()`, or `Horizon::routeSmsNotificationsTo()`. Horizon already wires `LongWaitDetected` to its notification sender, so the documented setup is notification routing rather than manual listener registration.
 
-### Failed job notifications use a separate event from LongWaitDetected
+### Failed job alerts are separate from Horizon's documented notification routing
 
-`LongWaitDetected` covers queue depth and wait time. Failed job notifications use the `JobFailed` event, which is also registered in HorizonServiceProvider. These are two separate listeners with different event classes.
+Horizon's 12.x documentation covers built-in long-wait notifications. Do not assume the docs provide a `JobFailed` listener example in `HorizonServiceProvider`. If a user needs failed job alerts, treat that as custom queue event handling and consult the queue documentation instead of Horizon's notification-routing API.

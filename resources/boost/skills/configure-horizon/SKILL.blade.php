@@ -1,6 +1,6 @@
 ---
 name: configuring-horizon
-description: "Configures Laravel Horizon for Redis queue management. Triggered when a user mentions Horizon installation, queue supervisor setup, worker configuration, dashboard authorization, auto-scaling, job monitoring, metrics, tags, or notifications. Also applies when troubleshooting blank metrics, LongWaitDetected alerts, or misconfigured worker processes, even when Horizon is not named explicitly. Applies to any request about queue workers backed by Redis with a monitoring dashboard, or monitoring Laravel jobs."
+description: "Configures Laravel Horizon for Redis queue management. Activate when the user explicitly mentions Horizon by name. Covers Horizon installation, supervisor configuration, worker processes, dashboard authorization, auto-scaling, balancing strategies, job monitoring, metrics, tags, and notifications. Also applies when troubleshooting Horizon-specific issues such as blank metrics, LongWaitDetected alerts, or misconfigured Horizon workers. Do NOT activate for generic queue, Redis, or job monitoring questions that do not mention Horizon."
 license: MIT
 metadata:
   author: laravel
@@ -12,14 +12,16 @@ metadata:
 
 ## When to Apply
 
-Activate this skill when:
+Activate this skill when the user explicitly mentions **Horizon** by name. Examples:
 
 - Installing or configuring Horizon
-- Setting up queue supervisors or worker processes
+- Setting up Horizon supervisors or worker processes
 - Restricting access to the Horizon dashboard
-- Configuring auto-scaling or balancing strategies
-- Setting up job monitoring, tags, metrics, or notifications
-- Troubleshooting blank metrics or LongWaitDetected alerts
+- Configuring Horizon auto-scaling or balancing strategies
+- Setting up Horizon job monitoring, tags, metrics, or notifications
+- Troubleshooting Horizon blank metrics or LongWaitDetected alerts
+
+Do NOT activate for generic queue workers, Redis configuration, or job monitoring questions that do not mention Horizon.
 
 ## Documentation
 
@@ -28,7 +30,7 @@ Use `search-docs` for detailed Horizon patterns and documentation covering confi
 For deeper guidance on specific topics, read the relevant reference file before implementing:
 
 - `references/supervisors.md` covers supervisor blocks, balancing strategies, multi-queue setups, and auto-scaling
-- `references/notifications.md` covers LongWaitDetected alerts, failed job notifications, and the `waits` config
+- `references/notifications.md` covers LongWaitDetected alerts, notification routing, and the `waits` config
 - `references/tags.md` covers job tagging, dashboard filtering, and silencing noisy jobs
 - `references/metrics.md` covers the blank metrics dashboard, snapshot scheduling, and retention config
 
@@ -91,6 +93,6 @@ protected function gate(): void
 - Redis Cluster is not supported. Horizon requires a standalone Redis connection.
 - Always check `config/horizon.php` before making changes to understand the current supervisor and environment configuration.
 - The `environments` array overrides only the keys you specify. It merges into `defaults` and does not replace it.
-- The timeout chain must be ordered: `retry_after` less than job `timeout` less than supervisor `timeout`. The wrong order causes jobs to be force-killed and re-queued indefinitely.
+- The timeout chain must be ordered: job `timeout` less than supervisor `timeout` less than `retry_after`. The wrong order can cause jobs to be retried before Horizon finishes timing them out.
 - The metrics dashboard stays blank until `horizon:snapshot` is scheduled. Running `php artisan horizon` alone does not populate metrics.
 - Always use `search-docs` for the latest Horizon documentation rather than relying on this skill alone.
