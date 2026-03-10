@@ -10,7 +10,7 @@ Search with `search-docs`:
 
 ### Metrics dashboard stays blank until `horizon:snapshot` is scheduled
 
-Running `php artisan horizon` does not populate metrics automatically. The metrics graph is built from snapshots, so `php artisan horizon:snapshot` must be scheduled to run every 5 minutes via Laravel's scheduler.
+Running `horizon` does not populate metrics automatically. The metrics graph is built from snapshots, so `horizon:snapshot` must be scheduled to run every 5 minutes via Laravel's scheduler.
 
 ### Register the snapshot in the scheduler rather than running it manually
 

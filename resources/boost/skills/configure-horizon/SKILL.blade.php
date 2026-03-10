@@ -60,7 +60,7 @@ Define supervisors in `config/horizon.php`. The `environments` array merges into
 
 'environments' => [
     'production' => [
-        'supervisor-1' => ['maxProcesses' => 10, 'balanceCooldown' => 3],
+        'supervisor-1' => ['maxProcesses' => 20, 'balanceCooldown' => 3],
     ],
     'local' => [
         'supervisor-1' => ['maxProcesses' => 2],
@@ -94,5 +94,5 @@ protected function gate(): void
 - Always check `config/horizon.php` before making changes to understand the current supervisor and environment configuration.
 - The `environments` array overrides only the keys you specify. It merges into `defaults` and does not replace it.
 - The timeout chain must be ordered: job `timeout` less than supervisor `timeout` less than `retry_after`. The wrong order can cause jobs to be retried before Horizon finishes timing them out.
-- The metrics dashboard stays blank until `horizon:snapshot` is scheduled. Running `php artisan horizon` alone does not populate metrics.
+- The metrics dashboard stays blank until `horizon:snapshot` is scheduled. Running `{{ $assist->artisanCommand('horizon') }}` alone does not populate metrics.
 - Always use `search-docs` for the latest Horizon documentation rather than relying on this skill alone.
