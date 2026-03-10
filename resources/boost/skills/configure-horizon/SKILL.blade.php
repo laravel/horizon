@@ -1,6 +1,6 @@
 ---
 name: configuring-horizon
-description: "Configures Laravel Horizon for Redis queue management. Activate when the user explicitly mentions Horizon by name. Covers Horizon installation, supervisor configuration, worker processes, dashboard authorization, auto-scaling, balancing strategies, job monitoring, metrics, tags, and notifications. Also applies when troubleshooting Horizon-specific issues such as blank metrics, LongWaitDetected alerts, or misconfigured Horizon workers. Do NOT activate for generic queue, Redis, or job monitoring questions that do not mention Horizon."
+description: "Use this skill whenever the user mentions Horizon by name in a Laravel context. Covers the full Horizon lifecycle: installing Horizon (horizon:install, Sail setup), configuring config/horizon.php (supervisor blocks, queue assignments, balancing strategies, minProcesses/maxProcesses), fixing the dashboard (authorization via Gate::define viewHorizon, blank metrics, horizon:snapshot scheduling), and troubleshooting production issues (worker crashes, timeout chain ordering, LongWaitDetected notifications, waits config). Also covers job tagging and silencing. Do not use for generic Laravel queues without Horizon, SQS or database drivers, standalone Redis setup, Linux supervisord, Telescope, or job batching."
 license: MIT
 metadata:
   author: laravel
