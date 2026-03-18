@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Listeners;
 use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
+use Laravel\Horizon\Events\SupervisorLooped;
 use Laravel\Horizon\WaitTimeCalculator;
 
 class MonitorWaitTimes
@@ -37,18 +38,19 @@ class MonitorWaitTimes
     /**
      * Handle the event.
      *
+     * @param  \Laravel\Horizon\Events\SupervisorLooped  $event
      * @return void
      */
-    public function handle()
+    public function handle(SupervisorLooped $event)
     {
         if (! $this->dueToMonitor()) {
             return;
         }
 
         // Here we will calculate the wait time in seconds for each of the queues that
-        // the application is working. Then, we will filter the results to find the
-        // queues with the longest wait times and raise events for each of these.
-        $results = app(WaitTimeCalculator::class)->calculate();
+        // the supervisor is working. We scope the calculation to only the current
+        // supervisor's queues to avoid creating connections to unrelated drivers.
+        $results = app(WaitTimeCalculator::class)->calculateForSupervisor($event->supervisor);
 
         $long = collect($results)->filter(function ($wait, $queue) {
             return config("horizon.waits.{$queue}") !== 0

@@ -5,6 +5,8 @@ namespace Laravel\Horizon\Tests\Feature;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\Supervisor;
+use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
@@ -146,6 +148,68 @@ class WaitTimeCalculatorTest extends IntegrationTest
         $this->assertEquals(
             ['redis:test-queue' => 10],
             $calculator->calculate()
+        );
+    }
+
+    public function test_calculate_for_supervisor_only_checks_supervisor_queues()
+    {
+        $calculator = $this->with_scenario([
+            'redis-supervisor' => (object) [
+                'processes' => [
+                    'redis:test-queue' => 2,
+                ],
+            ],
+            'rabbitmq-supervisor' => (object) [
+                'processes' => [
+                    'rabbitmq:other-queue' => 1,
+                ],
+            ],
+        ], [
+            'test-queue' => [
+                'size' => 10,
+                'runtime' => 1000,
+            ],
+            // Note: rabbitmq:other-queue is not set up on the mock queue factory,
+            // so if calculateForSupervisor tries to access it, the test would fail.
+        ]);
+
+        $supervisor = Mockery::mock(Supervisor::class);
+        $supervisor->options = new SupervisorOptions('redis-supervisor', 'redis', 'test-queue');
+
+        $this->assertEquals(
+            ['redis:test-queue' => 5],
+            $calculator->calculateForSupervisor($supervisor)
+        );
+    }
+
+    public function test_calculate_for_supervisor_with_multiple_queues()
+    {
+        $calculator = $this->with_scenario([
+            'redis-supervisor' => (object) [
+                'processes' => [
+                    'redis:queue-a' => 2,
+                    'redis:queue-b' => 1,
+                ],
+            ],
+        ], [
+            'queue-a' => [
+                'size' => 10,
+                'runtime' => 1000,
+            ],
+            'queue-b' => [
+                'size' => 5,
+                'runtime' => 2000,
+            ],
+        ]);
+
+        $supervisor = Mockery::mock(Supervisor::class);
+        $supervisor->options = new SupervisorOptions('redis-supervisor', 'redis', 'queue-a,queue-b');
+
+        $results = $calculator->calculateForSupervisor($supervisor);
+
+        $this->assertEquals(
+            ['redis:queue-b' => 10, 'redis:queue-a' => 5],
+            $results
         );
     }
 

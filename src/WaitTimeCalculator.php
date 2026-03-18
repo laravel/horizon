@@ -67,10 +67,43 @@ class WaitTimeCalculator
      */
     public function calculate($queue = null)
     {
-        $queues = $this->queueNames(
-            $supervisors = collect($this->supervisors->all()), $queue
-        );
+        $supervisors = collect($this->supervisors->all());
 
+        $queues = $this->queueNames($supervisors, $queue);
+
+        return $this->calculateTimeToClearPerQueue($queues, $supervisors);
+    }
+
+    /**
+     * Calculate the time to clear per queue in seconds, scoped to a specific supervisor.
+     *
+     * This prevents supervisor processes from creating connections to queue drivers
+     * they don't belong to (e.g. a Redis supervisor connecting to RabbitMQ).
+     *
+     * @param  \Laravel\Horizon\Supervisor  $supervisor
+     * @return array
+     */
+    public function calculateForSupervisor($supervisor)
+    {
+        $supervisors = collect($this->supervisors->all());
+
+        $connection = $supervisor->options->connection;
+
+        $queues = collect(explode(',', $supervisor->options->queue))
+            ->map(fn ($queue) => $connection.':'.$queue);
+
+        return $this->calculateTimeToClearPerQueue($queues, $supervisors);
+    }
+
+    /**
+     * Calculate the time to clear for the given queues using the given supervisors for process counts.
+     *
+     * @param  \Illuminate\Support\Collection  $queues
+     * @param  \Illuminate\Support\Collection  $supervisors
+     * @return array
+     */
+    protected function calculateTimeToClearPerQueue($queues, $supervisors)
+    {
         return $queues->mapWithKeys(function ($queue) use ($supervisors) {
             $totalProcesses = $this->totalProcessesFor($supervisors, $queue);
 
