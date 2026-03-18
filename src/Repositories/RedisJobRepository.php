@@ -350,6 +350,7 @@ class RedisJobRepository implements JobRepository
                 'payload' => $payload->value,
                 'created_at' => $time,
                 'updated_at' => $time,
+                'delay' => $payload->decoded['delay'] ?? 0,
             ]);
 
             $pipe->expireat(

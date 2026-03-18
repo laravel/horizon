@@ -130,6 +130,10 @@
                     return this.formatDate(this.job.payload.pushedAt).add(unserialized.delay, 'seconds')
                         .local()
                         .format('YYYY-MM-DD HH:mm:ss');
+                } else if (this.job.delay > 0) {
+                    return this.formatDate(this.job.payload.pushedAt).add(this.job.delay, 'seconds')
+                        .local()
+                        .format('YYYY-MM-DD HH:mm:ss');
                 }
 
                 return null;
