@@ -121,7 +121,10 @@ class AutoScaler
                     ? ($timeToClear['size'] / $totalJobs)
                     : ($timeToClear['time'] / $timeToClearAll);
 
-                return [$queue => $numberOfProcesses *= $supervisor->options->maxProcesses];
+                return [$queue => max(
+                    $numberOfProcesses *= $supervisor->options->maxProcesses,
+                    $supervisor->options->minProcesses,
+                )];
             } elseif ($timeToClearAll == 0 &&
                       $supervisor->options->autoScaling()) {
                 return [
