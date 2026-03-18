@@ -10,19 +10,6 @@ metadata:
 @endphp
 # Horizon Configuration
 
-## When to Apply
-
-Activate this skill when the user explicitly mentions **Horizon** by name. Examples:
-
-- Installing or configuring Horizon
-- Setting up Horizon supervisors or worker processes
-- Restricting access to the Horizon dashboard
-- Configuring Horizon auto-scaling or balancing strategies
-- Setting up Horizon job monitoring, tags, metrics, or notifications
-- Troubleshooting Horizon blank metrics or LongWaitDetected alerts
-
-Do NOT activate for generic queue workers, Redis configuration, or job monitoring questions that do not mention Horizon.
-
 ## Documentation
 
 Use `search-docs` for detailed Horizon patterns and documentation covering configuration, supervisors, balancing, dashboard authorization, tags, notifications, metrics, and deployment.
