@@ -444,6 +444,10 @@ class RedisJobRepository implements JobRepository
     {
         $this->connection()->pipeline(function ($pipe) use ($payloads) {
             foreach ($payloads as $payload) {
+                if ($payload->id() === null) {
+                    continue;
+                }
+
                 $pipe->hmset(
                     $payload->id(), [
                         'status' => 'pending',
