@@ -4,6 +4,7 @@ namespace Laravel\Horizon;
 
 use Carbon\CarbonImmutable;
 use Closure;
+use Illuminate\Support\Facades\Log;
 use Laravel\Horizon\Events\UnableToLaunchProcess;
 use Laravel\Horizon\Events\WorkerProcessRestarting;
 use Symfony\Component\Process\Exception\ExceptionInterface;
@@ -101,6 +102,14 @@ class WorkerProcess
     protected function restart()
     {
         if ($this->process->isStarted()) {
+            $exitCode = $this->process->getExitCode();
+
+            Log::info('Horizon worker process is being restarted.', [
+                'exit_code' => $exitCode,
+                'exit_code_text' => $this->process->getExitCodeText(),
+                'reason' => $exitCode === 12 ? 'memory limit exceeded' : ($exitCode === 0 ? 'normal exit' : 'unexpected exit'),
+            ]);
+
             event(new WorkerProcessRestarting($this));
         }
 
@@ -163,6 +172,14 @@ class WorkerProcess
                 : null;
 
             if (! $this->process->isRunning()) {
+                $exitCode = $this->process->getExitCode();
+
+                Log::warning('Horizon worker process failed to restart and will cool down for 60 seconds.', [
+                    'exit_code' => $exitCode,
+                    'exit_code_text' => $this->process->getExitCodeText(),
+                    'reason' => $exitCode === 12 ? 'memory limit exceeded' : 'unknown',
+                ]);
+
                 event(new UnableToLaunchProcess($this));
             }
         } else {
