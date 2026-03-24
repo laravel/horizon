@@ -30,6 +30,7 @@ class ClearCommandUniqueLocksTest extends UnitTest
         $command = new ClearCommand;
 
         $method = new ReflectionMethod($command, 'releaseUniqueJobLock');
+        $method->setAccessible(true);
         $method->invoke($command, $cache, $payload);
     }
 
@@ -51,6 +52,7 @@ class ClearCommandUniqueLocksTest extends UnitTest
         $command = new ClearCommand;
 
         $method = new ReflectionMethod($command, 'releaseUniqueJobLock');
+        $method->setAccessible(true);
         $method->invoke($command, $cache, $payload);
     }
 
@@ -62,6 +64,7 @@ class ClearCommandUniqueLocksTest extends UnitTest
         $command = new ClearCommand;
 
         $method = new ReflectionMethod($command, 'releaseUniqueJobLock');
+        $method->setAccessible(true);
 
         // Invalid JSON should not throw.
         $method->invoke($command, $cache, 'not-json');
