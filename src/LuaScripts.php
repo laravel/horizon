@@ -45,6 +45,62 @@ LUA;
      *
      * @return string
      */
+    /**
+     * Atomically update the status of a retry entry in the retried_by hash field.
+     *
+     * KEYS[1] - The job hash key
+     * ARGV[1] - The retry job ID to update
+     * ARGV[2] - The new status ('failed' or 'completed')
+     *
+     * @return string
+     */
+    public static function updateRetryStatus()
+    {
+        return <<<'LUA'
+            local retries = redis.call('hget', KEYS[1], 'retried_by')
+            if not retries then return end
+            local decoded = cjson.decode(retries)
+            for i, retry in ipairs(decoded) do
+                if retry['id'] == ARGV[1] then
+                    retry['status'] = ARGV[2]
+                end
+            end
+            redis.call('hset', KEYS[1], 'retried_by', cjson.encode(decoded))
+LUA;
+    }
+
+    /**
+     * Atomically append a retry reference to the retried_by hash field.
+     *
+     * KEYS[1] - The job hash key
+     * ARGV[1] - The retry job ID
+     * ARGV[2] - The current timestamp
+     *
+     * @return string
+     */
+    public static function storeRetryReference()
+    {
+        return <<<'LUA'
+            local retries = redis.call('hget', KEYS[1], 'retried_by')
+            local decoded = {}
+            if retries then
+                decoded = cjson.decode(retries)
+            end
+            table.insert(decoded, {id = ARGV[1], status = 'pending', retried_at = tonumber(ARGV[2])})
+            redis.call('hset', KEYS[1], 'retried_by', cjson.encode(decoded))
+LUA;
+    }
+
+    /**
+     * Get the Lua script for purging recent and pending jobs off of the queue.
+     *
+     * KEYS[1] - The name of the recent jobs sorted set
+     * KEYS[2] - The name of the pending jobs sorted set
+     * ARGV[1] - The prefix of the Horizon keys
+     * ARGV[2] - The name of the queue to purge
+     *
+     * @return string
+     */
     public static function purge()
     {
         return <<<'LUA'

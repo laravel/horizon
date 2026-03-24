@@ -494,15 +494,13 @@ class RedisJobRepository implements JobRepository
      */
     protected function updateRetryInformationOnParent(JobPayload $payload, $failed)
     {
-        if ($retries = $this->connection()->hget($payload->retryOf(), 'retried_by')) {
-            $retries = $this->updateRetryStatus(
-                $payload, json_decode($retries, true), $failed
-            );
-
-            $this->connection()->hset(
-                $payload->retryOf(), 'retried_by', json_encode($retries)
-            );
-        }
+        $this->connection()->eval(
+            LuaScripts::updateRetryStatus(),
+            1,
+            $payload->retryOf(),
+            $payload->id(),
+            $failed ? 'failed' : 'completed'
+        );
     }
 
     /**
@@ -699,15 +697,13 @@ class RedisJobRepository implements JobRepository
      */
     public function storeRetryReference($id, $retryId)
     {
-        $retries = json_decode($this->connection()->hget($id, 'retried_by') ?: '[]');
-
-        $retries[] = [
-            'id' => $retryId,
-            'status' => 'pending',
-            'retried_at' => CarbonImmutable::now()->getTimestamp(),
-        ];
-
-        $this->connection()->hmset($id, ['retried_by' => json_encode($retries)]);
+        $this->connection()->eval(
+            LuaScripts::storeRetryReference(),
+            1,
+            $id,
+            $retryId,
+            CarbonImmutable::now()->getTimestamp()
+        );
     }
 
     /**
