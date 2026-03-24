@@ -10,6 +10,22 @@ use Laravel\Horizon\Tests\UnitTest;
 use Mockery;
 use ReflectionMethod;
 
+/**
+ * Helper to invoke protected methods across PHP versions.
+ *
+ * PHP 8.0 requires setAccessible(true), PHP 8.5 deprecates it.
+ */
+function invokeProtected(object $object, string $method, array $args = []): mixed
+{
+    $ref = new ReflectionMethod($object, $method);
+
+    if (PHP_VERSION_ID < 80100) {
+        $ref->setAccessible(true);
+    }
+
+    return $ref->invoke($object, ...$args);
+}
+
 class ClearCommandUniqueLocksTest extends UnitTest
 {
     public function test_unique_job_lock_is_released_for_unique_jobs()
@@ -29,9 +45,7 @@ class ClearCommandUniqueLocksTest extends UnitTest
 
         $command = new ClearCommand;
 
-        $method = new ReflectionMethod($command, 'releaseUniqueJobLock');
-        $method->setAccessible(true);
-        $method->invoke($command, $cache, $payload);
+        invokeProtected($command, 'releaseUniqueJobLock', [$cache, $payload]);
     }
 
     public function test_non_unique_job_does_not_release_lock()
@@ -51,9 +65,7 @@ class ClearCommandUniqueLocksTest extends UnitTest
 
         $command = new ClearCommand;
 
-        $method = new ReflectionMethod($command, 'releaseUniqueJobLock');
-        $method->setAccessible(true);
-        $method->invoke($command, $cache, $payload);
+        invokeProtected($command, 'releaseUniqueJobLock', [$cache, $payload]);
     }
 
     public function test_invalid_payload_does_not_throw()
@@ -63,14 +75,11 @@ class ClearCommandUniqueLocksTest extends UnitTest
 
         $command = new ClearCommand;
 
-        $method = new ReflectionMethod($command, 'releaseUniqueJobLock');
-        $method->setAccessible(true);
-
         // Invalid JSON should not throw.
-        $method->invoke($command, $cache, 'not-json');
+        invokeProtected($command, 'releaseUniqueJobLock', [$cache, 'not-json']);
 
         // Missing command key should not throw.
-        $method->invoke($command, $cache, json_encode(['data' => []]));
+        invokeProtected($command, 'releaseUniqueJobLock', [$cache, json_encode(['data' => []])]);
 
         // This assertion is implicit - no exception means success.
         $this->assertTrue(true);
