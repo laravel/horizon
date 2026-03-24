@@ -63,13 +63,7 @@ class Lock
      */
     public function get($key, $seconds = 60)
     {
-        $result = $this->connection()->setnx($key, 1);
-
-        if ($result === 1) {
-            $this->connection()->expire($key, $seconds);
-        }
-
-        return $result === 1;
+        return $this->connection()->set($key, 1, 'EX', $seconds, 'NX') == true;
     }
 
     /**
