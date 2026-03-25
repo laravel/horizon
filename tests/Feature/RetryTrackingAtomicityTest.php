@@ -38,6 +38,18 @@ class RetryTrackingAtomicityTest extends IntegrationTest
     }
 
     /**
+     * Normalize an array of retry entries for comparison (sort keys within each entry).
+     */
+    private function normalizeRetries(array $retries): array
+    {
+        return array_map(function ($entry) {
+            ksort($entry);
+
+            return $entry;
+        }, $retries);
+    }
+
+    /**
      * Run the Lua updateRetryStatus and return the decoded result.
      */
     private function luaUpdateRetryStatus(string $key, array $retries, string $jobId, bool $failed): ?array
@@ -177,7 +189,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
         $phpResult = $this->phpUpdateRetryStatus($retries, 'job-bbb', false);
         $luaResult = $this->luaUpdateRetryStatus('test:parity:completed', $retries, 'job-bbb', false);
 
-        $this->assertSame($phpResult, $luaResult);
+        $this->assertSame($this->normalizeRetries($phpResult), $this->normalizeRetries($luaResult));
     }
 
     public function test_parity_update_status_marks_failed()
@@ -190,7 +202,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
         $phpResult = $this->phpUpdateRetryStatus($retries, 'job-aaa', true);
         $luaResult = $this->luaUpdateRetryStatus('test:parity:failed', $retries, 'job-aaa', true);
 
-        $this->assertSame($phpResult, $luaResult);
+        $this->assertSame($this->normalizeRetries($phpResult), $this->normalizeRetries($luaResult));
     }
 
     public function test_parity_update_status_no_matching_id()
@@ -202,7 +214,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
         $phpResult = $this->phpUpdateRetryStatus($retries, 'job-nonexistent', false);
         $luaResult = $this->luaUpdateRetryStatus('test:parity:nomatch', $retries, 'job-nonexistent', false);
 
-        $this->assertSame($phpResult, $luaResult);
+        $this->assertSame($this->normalizeRetries($phpResult), $this->normalizeRetries($luaResult));
     }
 
     public function test_parity_store_reference_appends_to_existing()
@@ -215,7 +227,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
         $phpResult = $this->phpStoreRetryReference($retries, 'job-bbb', $timestamp);
         $luaResult = $this->luaStoreRetryReference('test:parity:append', $retries, 'job-bbb', $timestamp);
 
-        $this->assertSame($phpResult, $luaResult);
+        $this->assertSame($this->normalizeRetries($phpResult), $this->normalizeRetries($luaResult));
     }
 
     public function test_parity_store_reference_creates_from_empty()
@@ -225,7 +237,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
         $phpResult = $this->phpStoreRetryReference([], 'job-first', $timestamp);
         $luaResult = $this->luaStoreRetryReference('test:parity:empty', [], 'job-first', $timestamp);
 
-        $this->assertSame($phpResult, $luaResult);
+        $this->assertSame($this->normalizeRetries($phpResult), $this->normalizeRetries($luaResult));
     }
 
     public function test_parity_store_multiple_sequential_references()
@@ -250,7 +262,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
 
         $luaRetries = json_decode($conn->hget($key, 'retried_by'), true);
 
-        $this->assertSame($phpRetries, $luaRetries);
+        $this->assertSame($this->normalizeRetries($phpRetries), $this->normalizeRetries($luaRetries));
     }
 
     public function test_parity_update_after_store_round_trip()
@@ -271,6 +283,6 @@ class RetryTrackingAtomicityTest extends IntegrationTest
 
         $luaRetries = json_decode($conn->hget($key, 'retried_by'), true);
 
-        $this->assertSame($phpRetries, $luaRetries);
+        $this->assertSame($this->normalizeRetries($phpRetries), $this->normalizeRetries($luaRetries));
     }
 }
