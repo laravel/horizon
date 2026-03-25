@@ -2,12 +2,74 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\LuaScripts;
 use Laravel\Horizon\Tests\IntegrationTest;
 
 class RetryTrackingAtomicityTest extends IntegrationTest
 {
+    /**
+     * Original PHP implementation of updateRetryStatus (pre-Lua).
+     */
+    private function phpUpdateRetryStatus(array $retries, string $jobId, bool $failed): array
+    {
+        return collect($retries)
+            ->map(function ($retry) use ($jobId, $failed) {
+                return $retry['id'] === $jobId
+                    ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
+                    : $retry;
+            })
+            ->all();
+    }
+
+    /**
+     * Original PHP implementation of storeRetryReference (pre-Lua).
+     */
+    private function phpStoreRetryReference(array $retries, string $retryId, int $timestamp): array
+    {
+        $retries[] = [
+            'id' => $retryId,
+            'status' => 'pending',
+            'retried_at' => $timestamp,
+        ];
+
+        return $retries;
+    }
+
+    /**
+     * Run the Lua updateRetryStatus and return the decoded result.
+     */
+    private function luaUpdateRetryStatus(string $key, array $retries, string $jobId, bool $failed): ?array
+    {
+        $conn = Redis::connection('horizon');
+        $conn->hset($key, 'retried_by', json_encode($retries));
+
+        $conn->eval(LuaScripts::updateRetryStatus(), 1, $key, $jobId, $failed ? 'failed' : 'completed');
+
+        $raw = $conn->hget($key, 'retried_by');
+
+        return $raw ? json_decode($raw, true) : null;
+    }
+
+    /**
+     * Run the Lua storeRetryReference and return the decoded result.
+     */
+    private function luaStoreRetryReference(string $key, array $retries, string $retryId, int $timestamp): array
+    {
+        $conn = Redis::connection('horizon');
+
+        if (! empty($retries)) {
+            $conn->hset($key, 'retried_by', json_encode($retries));
+        } else {
+            $conn->del($key);
+        }
+
+        $conn->eval(LuaScripts::storeRetryReference(), 1, $key, $retryId, $timestamp);
+
+        return json_decode($conn->hget($key, 'retried_by'), true);
+    }
     public function test_update_retry_status_updates_correct_entry()
     {
         $conn = Redis::connection('horizon');
@@ -98,5 +160,117 @@ class RetryTrackingAtomicityTest extends IntegrationTest
         $this->assertEquals('completed', $result[0]['status']);
         $this->assertEquals('job-1', $result[0]['id']);
         $this->assertEquals(1711234567, $result[0]['retried_at']);
+    }
+
+    // ---------------------------------------------------------------
+    //  Parity tests: PHP (original) vs Lua (new) produce same results
+    // ---------------------------------------------------------------
+
+    public function test_parity_update_status_marks_completed()
+    {
+        $retries = [
+            ['id' => 'job-aaa', 'status' => 'pending', 'retried_at' => 1000],
+            ['id' => 'job-bbb', 'status' => 'pending', 'retried_at' => 1001],
+            ['id' => 'job-ccc', 'status' => 'pending', 'retried_at' => 1002],
+        ];
+
+        $phpResult = $this->phpUpdateRetryStatus($retries, 'job-bbb', false);
+        $luaResult = $this->luaUpdateRetryStatus('test:parity:completed', $retries, 'job-bbb', false);
+
+        $this->assertSame($phpResult, $luaResult);
+    }
+
+    public function test_parity_update_status_marks_failed()
+    {
+        $retries = [
+            ['id' => 'job-aaa', 'status' => 'pending', 'retried_at' => 1000],
+            ['id' => 'job-bbb', 'status' => 'pending', 'retried_at' => 1001],
+        ];
+
+        $phpResult = $this->phpUpdateRetryStatus($retries, 'job-aaa', true);
+        $luaResult = $this->luaUpdateRetryStatus('test:parity:failed', $retries, 'job-aaa', true);
+
+        $this->assertSame($phpResult, $luaResult);
+    }
+
+    public function test_parity_update_status_no_matching_id()
+    {
+        $retries = [
+            ['id' => 'job-aaa', 'status' => 'pending', 'retried_at' => 1000],
+        ];
+
+        $phpResult = $this->phpUpdateRetryStatus($retries, 'job-nonexistent', false);
+        $luaResult = $this->luaUpdateRetryStatus('test:parity:nomatch', $retries, 'job-nonexistent', false);
+
+        $this->assertSame($phpResult, $luaResult);
+    }
+
+    public function test_parity_store_reference_appends_to_existing()
+    {
+        $retries = [
+            ['id' => 'job-aaa', 'status' => 'completed', 'retried_at' => 1000],
+        ];
+        $timestamp = 2000;
+
+        $phpResult = $this->phpStoreRetryReference($retries, 'job-bbb', $timestamp);
+        $luaResult = $this->luaStoreRetryReference('test:parity:append', $retries, 'job-bbb', $timestamp);
+
+        $this->assertSame($phpResult, $luaResult);
+    }
+
+    public function test_parity_store_reference_creates_from_empty()
+    {
+        $timestamp = 3000;
+
+        $phpResult = $this->phpStoreRetryReference([], 'job-first', $timestamp);
+        $luaResult = $this->luaStoreRetryReference('test:parity:empty', [], 'job-first', $timestamp);
+
+        $this->assertSame($phpResult, $luaResult);
+    }
+
+    public function test_parity_store_multiple_sequential_references()
+    {
+        $conn = Redis::connection('horizon');
+        $key = 'test:parity:multi';
+        $conn->del($key);
+
+        $phpRetries = [];
+        $ids = ['job-1', 'job-2', 'job-3'];
+        $timestamps = [1000, 2000, 3000];
+
+        // Build up via PHP
+        foreach ($ids as $i => $id) {
+            $phpRetries = $this->phpStoreRetryReference($phpRetries, $id, $timestamps[$i]);
+        }
+
+        // Build up via Lua
+        foreach ($ids as $i => $id) {
+            $conn->eval(LuaScripts::storeRetryReference(), 1, $key, $id, $timestamps[$i]);
+        }
+
+        $luaRetries = json_decode($conn->hget($key, 'retried_by'), true);
+
+        $this->assertSame($phpRetries, $luaRetries);
+    }
+
+    public function test_parity_update_after_store_round_trip()
+    {
+        $conn = Redis::connection('horizon');
+        $key = 'test:parity:roundtrip';
+        $conn->del($key);
+
+        $timestamp = 1711234567;
+
+        // PHP round-trip: store then update
+        $phpRetries = $this->phpStoreRetryReference([], 'job-abc', $timestamp);
+        $phpRetries = $this->phpUpdateRetryStatus($phpRetries, 'job-abc', false);
+
+        // Lua round-trip: store then update
+        $conn->eval(LuaScripts::storeRetryReference(), 1, $key, 'job-abc', $timestamp);
+        $conn->eval(LuaScripts::updateRetryStatus(), 1, $key, 'job-abc', 'completed');
+
+        $luaRetries = json_decode($conn->hget($key, 'retried_by'), true);
+
+        $this->assertSame($phpRetries, $luaRetries);
     }
 }
