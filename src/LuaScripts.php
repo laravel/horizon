@@ -36,16 +36,6 @@ LUA;
     }
 
     /**
-     * Get the Lua script for purging recent and pending jobs off of the queue.
-     *
-     * KEYS[1] - The name of the recent jobs sorted set
-     * KEYS[2] - The name of the pending jobs sorted set
-     * ARGV[1] - The prefix of the Horizon keys
-     * ARGV[2] - The name of the queue to purge
-     *
-     * @return string
-     */
-    /**
      * Atomically update the status of a retry entry in the retried_by hash field.
      *
      * KEYS[1] - The job hash key
@@ -63,6 +53,7 @@ LUA;
             for i, retry in ipairs(decoded) do
                 if retry['id'] == ARGV[1] then
                     retry['status'] = ARGV[2]
+                    break
                 end
             end
             redis.call('hset', KEYS[1], 'retried_by', cjson.encode(decoded))

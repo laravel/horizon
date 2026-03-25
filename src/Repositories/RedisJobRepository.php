@@ -4,7 +4,6 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
@@ -501,25 +500,6 @@ class RedisJobRepository implements JobRepository
             $payload->id(),
             $failed ? 'failed' : 'completed'
         );
-    }
-
-    /**
-     * Update the retry status of a job in a retry array.
-     *
-     * @param  \Laravel\Horizon\JobPayload  $payload
-     * @param  array  $retries
-     * @param  bool  $failed
-     * @return array
-     */
-    protected function updateRetryStatus(JobPayload $payload, $retries, $failed)
-    {
-        return collect($retries)
-            ->map(function ($retry) use ($payload, $failed) {
-                return $retry['id'] === $payload->id()
-                    ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
-                    : $retry;
-            })
-            ->all();
     }
 
     /**
