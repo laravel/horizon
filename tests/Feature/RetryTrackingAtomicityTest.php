@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\LuaScripts;
@@ -70,6 +69,7 @@ class RetryTrackingAtomicityTest extends IntegrationTest
 
         return json_decode($conn->hget($key, 'retried_by'), true);
     }
+
     public function test_update_retry_status_updates_correct_entry()
     {
         $conn = Redis::connection('horizon');
