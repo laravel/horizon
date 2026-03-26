@@ -221,4 +221,32 @@ class MetricsTest extends IntegrationTest
 
         CarbonImmutable::setTestNow();
     }
+
+    public function test_clear_removes_all_metrics()
+    {
+        $stopwatch = Mockery::mock(Stopwatch::class);
+        $stopwatch->shouldReceive('start');
+        $stopwatch->shouldReceive('check')->andReturn(1);
+        $this->app->instance(Stopwatch::class, $stopwatch);
+
+        Queue::push(new Jobs\BasicJob);
+        $this->work();
+
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
+        resolve(MetricsRepository::class)->snapshot();
+
+        $this->assertNotEmpty(resolve(MetricsRepository::class)->measuredJobs());
+        $this->assertNotEmpty(resolve(MetricsRepository::class)->measuredQueues());
+        $this->assertNotEmpty(resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class));
+        $this->assertNotEmpty(resolve(MetricsRepository::class)->snapshotsForQueue('default'));
+
+        resolve(MetricsRepository::class)->clear();
+
+        $this->assertEmpty(resolve(MetricsRepository::class)->measuredJobs());
+        $this->assertEmpty(resolve(MetricsRepository::class)->measuredQueues());
+        $this->assertEmpty(resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class));
+        $this->assertEmpty(resolve(MetricsRepository::class)->snapshotsForQueue('default'));
+
+        CarbonImmutable::setTestNow();
+    }
 }

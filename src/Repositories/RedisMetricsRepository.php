@@ -4,11 +4,13 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
 use Laravel\Horizon\LuaScripts;
 use Laravel\Horizon\WaitTimeCalculator;
+use Redis;
 
 class RedisMetricsRepository implements MetricsRepository
 {
@@ -392,12 +394,21 @@ class RedisMetricsRepository implements MetricsRepository
         $this->forget('measured_queues');
         $this->forget('metrics:snapshot');
 
+        $connection = $this->connection();
+
+        $scanPrefixEnabled = $connection instanceof PhpRedisConnection
+            && defined('Redis::OPT_SCAN')
+            && defined('Redis::SCAN_PREFIX')
+            && ((int) $connection->client()->getOption(Redis::OPT_SCAN) & Redis::SCAN_PREFIX);
+
+        $prefix = $scanPrefixEnabled ? '' : config('horizon.prefix');
+
         foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
             $cursor = null;
 
             do {
                 $scanResult = $this->connection()->scan(
-                    $cursor ?? 0, ['match' => config('horizon.prefix').$pattern]
+                    $cursor ?? 0, ['match' => $prefix.$pattern]
                 );
 
                 if (! is_array($scanResult)) {
