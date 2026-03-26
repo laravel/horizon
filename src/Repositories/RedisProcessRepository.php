@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Repositories;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\ProcessRepository;
+use Laravel\Horizon\LuaScripts;
 
 class RedisProcessRepository implements ProcessRepository
 {
@@ -50,19 +51,13 @@ class RedisProcessRepository implements ProcessRepository
     {
         $time = CarbonImmutable::now()->getTimestamp();
 
-        $shouldRemove = array_diff($this->connection()->hkeys(
-            $key = "{$master}:orphans"
-        ), $processIds);
-
-        if (! empty($shouldRemove)) {
-            $this->connection()->hdel($key, ...$shouldRemove);
-        }
-
-        $this->connection()->pipeline(function ($pipe) use ($key, $time, $processIds) {
-            foreach ($processIds as $processId) {
-                $pipe->hsetnx($key, $processId, $time);
-            }
-        });
+        $this->connection()->eval(
+            LuaScripts::orphaned(),
+            1,
+            "{$master}:orphans",
+            $time,
+            ...$processIds
+        );
     }
 
     /**

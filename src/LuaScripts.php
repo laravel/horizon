@@ -36,6 +36,40 @@ LUA;
     }
 
     /**
+     * Atomically update the orphaned process hash.
+     *
+     * KEYS[1] - The name of the orphans hash key
+     * ARGV[1] - The current timestamp
+     * ARGV[2...] - The process IDs to record as orphaned
+     *
+     * @return string
+     */
+    public static function orphaned()
+    {
+        return <<<'LUA'
+            local key = KEYS[1]
+            local time = ARGV[1]
+
+            local existing = redis.call('hkeys', key)
+
+            local active = {}
+            for i = 2, #ARGV do
+                active[ARGV[i]] = true
+            end
+
+            for _, field in ipairs(existing) do
+                if not active[field] then
+                    redis.call('hdel', key, field)
+                end
+            end
+
+            for i = 2, #ARGV do
+                redis.call('hsetnx', key, ARGV[i], time)
+            end
+LUA;
+    }
+
+    /**
      * Get the Lua script for purging recent and pending jobs off of the queue.
      *
      * KEYS[1] - The name of the recent jobs sorted set
