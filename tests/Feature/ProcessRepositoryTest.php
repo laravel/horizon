@@ -2,17 +2,25 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\ProcessRepository;
 use Laravel\Horizon\Tests\IntegrationTest;
 
 class ProcessRepositoryTest extends IntegrationTest
 {
+    protected function tearDown(): void
+    {
+        CarbonImmutable::setTestNow();
+
+        parent::tearDown();
+    }
+
     public function test_expired_orphans_can_be_found()
     {
         $repo = resolve(ProcessRepository::class);
 
         $repo->orphaned('foo', [1, 2, 3, 4, 5, 6]);
-        sleep(2);
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(2));
         $repo->orphaned('foo', [1, 2, 3]);
 
         $orphans = $repo->orphanedFor('foo', 1);
@@ -71,7 +79,7 @@ class ProcessRepositoryTest extends IntegrationTest
         $firstOrphans = $repo->allOrphans('master');
         $originalTimestamp = $firstOrphans['pid:1'];
 
-        sleep(2);
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(2));
 
         // Second call with the same processes should NOT update existing timestamps (hsetnx)
         $repo->orphaned('master', ['pid:1', 'pid:2']);
@@ -101,7 +109,7 @@ class ProcessRepositoryTest extends IntegrationTest
         // Initial set of processes
         $repo->orphaned('master', ['pid:1', 'pid:2', 'pid:3']);
 
-        sleep(1);
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addSeconds(1));
 
         // New call: pid:2 still orphaned, pid:1 and pid:3 recovered, pid:4 newly orphaned
         $repo->orphaned('master', ['pid:2', 'pid:4']);
