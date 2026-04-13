@@ -108,7 +108,13 @@ class RedisQueue extends BaseQueue
     #[\Override]
     public function later($delay, $job, $data = '', $queue = null)
     {
-        $payload = (new JobPayload($this->createPayload($job, $queue, $data)))->prepare($job)->value;
+        $preparedPayload = (new JobPayload($this->createPayload($job, $queue, $data)))->prepare($job);
+
+        $delayInSeconds = $this->secondsUntil($delay);
+
+        $preparedPayload->set(['delay' => $delayInSeconds]);
+
+        $payload = $preparedPayload->value;
 
         if (method_exists($this, 'enqueueUsing')) {
             return $this->enqueueUsing(

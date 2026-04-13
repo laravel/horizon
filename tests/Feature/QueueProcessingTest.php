@@ -93,4 +93,32 @@ class QueueProcessingTest extends IntegrationTest
 
         $this->assertSame('pending', $status);
     }
+
+    public function test_delayed_job_payload_contains_delay_field()
+    {
+        $id = Queue::later(30, new Jobs\BasicJob);
+
+        $payload = json_decode(Redis::connection('horizon')->hget($id, 'payload'), true);
+
+        $this->assertArrayHasKey('delay', $payload);
+        $this->assertSame(30, $payload['delay']);
+    }
+
+    public function test_delayed_job_record_stores_delay_value()
+    {
+        $id = Queue::later(60, new Jobs\BasicJob);
+
+        $delay = Redis::connection('horizon')->hget($id, 'delay');
+
+        $this->assertSame('60', $delay);
+    }
+
+    public function test_non_delayed_job_has_zero_delay()
+    {
+        $id = Queue::push(new Jobs\BasicJob);
+
+        $delay = Redis::connection('horizon')->hget($id, 'delay');
+
+        $this->assertSame('0', $delay);
+    }
 }
