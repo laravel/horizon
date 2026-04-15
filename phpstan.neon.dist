@@ -9,3 +9,6 @@ parameters:
   ignoreErrors:
     - "#Unsafe usage of new static\\(\\).#"
     - "#\\(void\\) is used.#"
+    -
+      message: "#Call to an undefined method Laravel\\\\Horizon\\\\RedisQueue::getQueueRedisKey\\(\\)#"
+      reportUnmatched: false

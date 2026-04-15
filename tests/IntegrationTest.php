@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Tests;
 
 use Illuminate\Queue\WorkerOptions;
+use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
@@ -21,11 +22,11 @@ abstract class IntegrationTest extends TestCase
     protected function setUp(): void
     {
         $this->afterApplicationCreated(function () {
-            Redis::flushall();
+            Redis::flushdb();
         });
 
         $this->beforeApplicationDestroyed(function () {
-            Redis::flushall();
+            Redis::flushdb();
             WorkerCommandString::reset();
             SupervisorCommandString::reset();
             Horizon::$authUsing = null;
@@ -134,5 +135,36 @@ abstract class IntegrationTest extends TestCase
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('queue.default', 'redis');
+
+        if ($hosts = getenv('REDIS_CLUSTER_HOSTS_AND_PORTS')) {
+            $client = getenv('REDIS_CLIENT') ?: 'phpredis';
+
+            $nodes = array_map(
+                static fn ($hostAndPort) => [
+                    'host' => explode(':', $hostAndPort)[0],
+                    'port' => explode(':', $hostAndPort)[1],
+                ],
+                explode(',', $hosts),
+            );
+
+            $app['config']->set('database.redis.clusters.default', $nodes);
+
+            Horizon::use(config('horizon.use', 'default'));
+
+            $manager = new RedisManager($app, $client, [
+                'options' => [
+                    'cluster' => 'redis',
+                    'prefix' => '',
+                ],
+                'clusters' => [
+                    'default' => $nodes,
+                    'horizon' => $app['config']->get('database.redis.clusters.horizon'),
+                ],
+            ]);
+
+            $app->instance('redis', $manager);
+
+            Redis::clearResolvedInstances();
+        }
     }
 }

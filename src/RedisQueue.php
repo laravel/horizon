@@ -29,7 +29,11 @@ class RedisQueue extends BaseQueue
      */
     public function readyNow($queue = null)
     {
-        return $this->getConnection()->llen($this->getQueue($queue));
+        $key = method_exists(parent::class, 'getQueueRedisKey')
+            ? $this->getQueueRedisKey($queue)
+            : $this->getQueue($queue);
+
+        return $this->getConnection()->llen($key);
     }
 
     /**

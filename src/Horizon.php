@@ -4,6 +4,7 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Illuminate\Redis\Connections\Connection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Js;
 use RuntimeException;
@@ -100,15 +101,13 @@ class Horizon
      */
     public static function use($connection)
     {
-        if (! is_null($config = config("database.redis.clusters.{$connection}.0"))) {
-            config(["database.redis.{$connection}" => $config]);
-        } elseif (is_null($config) && is_null($config = config("database.redis.{$connection}"))) {
+        if (! is_null($config = config("database.redis.clusters.{$connection}"))) {
+            static::configureClusterConnection($config);
+        } elseif (! is_null($config = config("database.redis.{$connection}"))) {
+            static::configureStandaloneConnection($config);
+        } else {
             throw new Exception("Redis connection [{$connection}] has not been configured.");
         }
-
-        $config['options']['prefix'] = config('horizon.prefix') ?: 'horizon:';
-
-        config(['database.redis.horizon' => $config]);
     }
 
     /**
@@ -224,5 +223,69 @@ class Horizon
         static::$smsNumber = $number;
 
         return new static;
+    }
+
+    /**
+     * Configure the Horizon Redis connection for a cluster.
+     *
+     * @param  array  $config
+     * @return void
+     */
+    protected static function configureClusterConnection(array $config)
+    {
+        if (! static::supportsCluster()) {
+            return static::configureStandaloneConnection($config[0]);
+        }
+
+        $prefix = static::ensureHashTaggedPrefix(
+            config('horizon.prefix') ?: 'horizon:'
+        );
+
+        config(['horizon.prefix' => $prefix]);
+
+        $config['options']['prefix'] = $prefix;
+
+        config(['database.redis.clusters.horizon' => $config]);
+    }
+
+    /**
+     * Configure the Horizon Redis connection for a standalone server.
+     *
+     * @param  array  $config
+     * @return void
+     */
+    protected static function configureStandaloneConnection(array $config)
+    {
+        $prefix = config('horizon.prefix') ?: 'horizon:';
+
+        $config['options']['prefix'] = $prefix;
+
+        config(['horizon.prefix' => $prefix]);
+        config(['database.redis.horizon' => $config]);
+    }
+
+    /**
+     * Determine if the framework supports Redis Cluster.
+     *
+     * @return bool
+     */
+    protected static function supportsCluster()
+    {
+        return method_exists(Connection::class, 'hasHashTag');
+    }
+
+    /**
+     * Ensure the given prefix contains a Redis Cluster hash tag.
+     *
+     * @param  string  $prefix
+     * @return string
+     */
+    protected static function ensureHashTaggedPrefix(string $prefix): string
+    {
+        if (Connection::hasHashTag($prefix)) {
+            return $prefix;
+        }
+
+        return '{'.$prefix.'}';
     }
 }

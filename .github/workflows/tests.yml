@@ -69,3 +69,59 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/phpunit --fail-on-risky --fail-on-warning --stop-on-error --stop-on-failure ${{ matrix.laravel >= 10 && '--fail-on-deprecation' || '' }}
+
+  cluster-tests:
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.3, 8.4, 8.5]
+        client: ['phpredis', 'predis']
+
+    name: Redis Cluster - PHP ${{ matrix.php }} (${{ matrix.client }})
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, redis, zip
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts:^13"
+
+      - name: Create Redis Cluster
+        run: |
+          sudo apt update
+          sudo apt-get install -y --fix-missing redis-server
+          sudo service redis-server stop
+          redis-server --daemonize yes --port 7000 --appendonly yes --cluster-enabled yes --cluster-config-file nodes-7000.conf
+          redis-server --daemonize yes --port 7001 --appendonly yes --cluster-enabled yes --cluster-config-file nodes-7001.conf
+          redis-server --daemonize yes --port 7002 --appendonly yes --cluster-enabled yes --cluster-config-file nodes-7002.conf
+          redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 --cluster-replicas 0 --cluster-yes
+
+      - name: Check Redis Cluster is ready
+        uses: nick-fields/retry@v4
+        with:
+          timeout_seconds: 5
+          max_attempts: 5
+          retry_wait_seconds: 5
+          retry_on: error
+          command: |
+            redis-cli -c -h 127.0.0.1 -p 7000 cluster info | grep "cluster_state:ok"
+            redis-cli -c -h 127.0.0.1 -p 7001 cluster info | grep "cluster_state:ok"
+            redis-cli -c -h 127.0.0.1 -p 7002 cluster info | grep "cluster_state:ok"
+
+      - name: Execute tests
+        run: vendor/bin/phpunit --fail-on-risky --fail-on-warning --stop-on-error --stop-on-failure --fail-on-deprecation
+        env:
+          REDIS_CLIENT: ${{ matrix.client }}
+          REDIS_CLUSTER_HOSTS_AND_PORTS: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002
+          QUEUE_CONNECTION: redis
