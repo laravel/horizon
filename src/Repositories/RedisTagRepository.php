@@ -7,6 +7,7 @@ use Laravel\Horizon\Contracts\TagRepository;
 
 class RedisTagRepository implements TagRepository
 {
+    use RedisConnection;
     /**
      * The Redis connection instance.
      *
@@ -77,7 +78,7 @@ class RedisTagRepository implements TagRepository
      */
     public function add($id, array $tags)
     {
-        $this->connection()->pipeline(function ($pipe) use ($id, $tags) {
+        $this->pipeline(function ($pipe) use ($id, $tags) {
             foreach ($tags as $tag) {
                 $pipe->zadd($tag, str_replace(',', '.', microtime(true)), $id);
             }
@@ -94,7 +95,7 @@ class RedisTagRepository implements TagRepository
      */
     public function addTemporary($minutes, $id, array $tags)
     {
-        $this->connection()->pipeline(function ($pipe) use ($minutes, $id, $tags) {
+        $this->pipeline(function ($pipe) use ($minutes, $id, $tags) {
             foreach ($tags as $tag) {
                 $pipe->zadd($tag, str_replace(',', '.', microtime(true)), $id);
 
@@ -154,7 +155,7 @@ class RedisTagRepository implements TagRepository
      */
     public function forgetJobs($tags, $ids)
     {
-        $this->connection()->pipeline(function ($pipe) use ($tags, $ids) {
+        $this->pipeline(function ($pipe) use ($tags, $ids) {
             foreach ((array) $tags as $tag) {
                 foreach ((array) $ids as $id) {
                     $pipe->zrem($tag, $id);

@@ -10,6 +10,10 @@ class RedisPrefixTest extends IntegrationTest
 {
     public function test_prefix_can_be_configured()
     {
+        if (getenv('REDIS_CLUSTER_HOSTS_AND_PORTS')) {
+            $this->markTestSkipped('Test is for standalone Redis connections.');
+        }
+
         config(['horizon.prefix' => 'custom:']);
 
         Horizon::use('default');
@@ -59,6 +63,10 @@ class RedisPrefixTest extends IntegrationTest
 
     public function test_standalone_connection_prefix_is_unchanged()
     {
+        if (getenv('REDIS_CLUSTER_HOSTS_AND_PORTS')) {
+            $this->markTestSkipped('Test is for standalone Redis connections.');
+        }
+
         config(['horizon.prefix' => 'myapp_horizon:']);
 
         Horizon::use('default');
@@ -113,6 +121,9 @@ class RedisPrefixTest extends IntegrationTest
 
     public function test_cluster_connection_falls_back_to_standalone_when_unsupported()
     {
+        // Clear any cluster horizon config set by IntegrationTest::getEnvironmentSetUp
+        config(['database.redis.clusters.horizon' => null]);
+
         config(['database.redis.clusters.my-cluster' => [
             ['host' => '127.0.0.1', 'port' => 6379],
         ]]);
@@ -143,6 +154,10 @@ class RedisPrefixTest extends IntegrationTest
 
     public function test_standalone_connection_does_not_register_under_clusters()
     {
+        if (getenv('REDIS_CLUSTER_HOSTS_AND_PORTS')) {
+            $this->markTestSkipped('Test is for standalone Redis connections.');
+        }
+
         config(['horizon.prefix' => 'horizon:']);
 
         Horizon::use('default');

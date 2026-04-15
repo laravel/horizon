@@ -7,13 +7,15 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
+use Laravel\Horizon\Tests\RedisClusterHelper;
 
 use function Orchestra\Testbench\container;
 
 // Configure the application...
 $app = container()->createApplication();
-$app->register(Laravel\Horizon\HorizonServiceProvider::class);
 $app->make('config')->set('queue.default', 'redis');
+
+RedisClusterHelper::configure($app);
 
 $worker = new Worker(
     $app->make(QueueManager::class),

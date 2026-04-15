@@ -10,6 +10,7 @@ use Laravel\Horizon\Supervisor;
 
 class RedisSupervisorRepository implements SupervisorRepository
 {
+    use RedisConnection;
     /**
      * The Redis connection instance.
      *
@@ -69,7 +70,7 @@ class RedisSupervisorRepository implements SupervisorRepository
      */
     public function get(array $names)
     {
-        $records = $this->connection()->pipeline(function ($pipe) use ($names) {
+        $records = $this->pipeline(function ($pipe) use ($names) {
             foreach ($names as $name) {
                 $pipe->hmget('supervisor:'.$name, ['name', 'master', 'pid', 'status', 'processes', 'options']);
             }
@@ -116,7 +117,7 @@ class RedisSupervisorRepository implements SupervisorRepository
             ->mapWithKeys(fn ($pool) => [$supervisor->options->connection.':'.$pool->queue() => count($pool->processes())])
             ->toJson();
 
-        $this->connection()->pipeline(function ($pipe) use ($supervisor, $processes) {
+        $this->pipeline(function ($pipe) use ($supervisor, $processes) {
             $pipe->hmset(
                 'supervisor:'.$supervisor->name, [
                     'name' => $supervisor->name,
