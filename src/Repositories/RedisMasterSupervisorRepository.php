@@ -11,7 +11,8 @@ use Laravel\Horizon\MasterSupervisor;
 
 class RedisMasterSupervisorRepository implements MasterSupervisorRepository
 {
-    use RedisConnection;
+    use ClusterAwarePipeline;
+
     /**
      * The Redis connection instance.
      *

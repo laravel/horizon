@@ -3,11 +3,13 @@
 namespace Laravel\Horizon;
 
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
-use Illuminate\Redis\Connections\PhpRedisClusterConnection;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
+use Laravel\Horizon\Repositories\ClusterAwarePipeline;
 
 class RedisHorizonCommandQueue implements HorizonCommandQueue
 {
+    use ClusterAwarePipeline;
+
     /**
      * The Redis connection instance.
      *
@@ -56,17 +58,11 @@ class RedisHorizonCommandQueue implements HorizonCommandQueue
             return [];
         }
 
-        $connection = $this->connection();
-
-        $callback = function ($pipe) use ($name, $length) {
+        $results = $this->pipeline(function ($pipe) use ($name, $length) {
             $pipe->lrange('commands:'.$name, 0, $length - 1);
 
             $pipe->ltrim('commands:'.$name, $length, -1);
-        };
-
-        $results = $connection instanceof PhpRedisClusterConnection
-            ? $connection->transaction($callback)
-            : $connection->pipeline($callback);
+        });
 
         return collect($results[0])
             ->map(fn ($result) => (object) json_decode($result, true))

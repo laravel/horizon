@@ -33,8 +33,9 @@ class RedisClusterHelper
 
         // During bootstrap, HorizonServiceProvider::configure() calls Horizon::use()
         // before cluster config exists, so it creates a standalone "database.redis.horizon"
-        // connection. RedisManager::resolve() checks that standalone key first, bypassing
-        // the cluster config. Replace the entire database.redis to remove the stale key.
+        // connection. RedisManager::resolve() checks standalone keys before cluster keys,
+        // so "default" and "horizon" would resolve to standalone instead of cluster.
+        // Replace the entire config to remove all standalone connections.
         $app->make('config')->set('database.redis', [
             'client' => $client,
             'options' => [

@@ -7,7 +7,8 @@ use Laravel\Horizon\Contracts\TagRepository;
 
 class RedisTagRepository implements TagRepository
 {
-    use RedisConnection;
+    use ClusterAwarePipeline;
+
     /**
      * The Redis connection instance.
      *

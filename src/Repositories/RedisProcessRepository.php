@@ -8,7 +8,8 @@ use Laravel\Horizon\Contracts\ProcessRepository;
 
 class RedisProcessRepository implements ProcessRepository
 {
-    use RedisConnection;
+    use ClusterAwarePipeline;
+
     /**
      * The Redis connection instance.
      *
