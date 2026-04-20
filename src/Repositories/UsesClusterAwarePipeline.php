@@ -4,11 +4,10 @@ namespace Laravel\Horizon\Repositories;
 
 use Illuminate\Redis\Connections\PhpRedisClusterConnection;
 
-trait ClusterAwarePipeline
+trait UsesClusterAwarePipeline
 {
     /**
-     * Execute commands in a pipeline, falling back to a transaction
-     * for PhpRedis cluster connections which do not support pipelines.
+     * Execute commands in a pipeline, falling back to a transaction.
      *
      * @param  callable  $callback
      * @return array

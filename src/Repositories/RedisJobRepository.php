@@ -12,7 +12,7 @@ use Laravel\Horizon\LuaScripts;
 
 class RedisJobRepository implements JobRepository
 {
-    use ClusterAwarePipeline;
+    use UsesClusterAwarePipeline;
 
     /**
      * The Redis connection instance.

@@ -111,6 +111,66 @@ class Horizon
     }
 
     /**
+     * Configure the Horizon Redis connection for a cluster.
+     *
+     * @param  array  $config
+     * @return void
+     */
+    protected static function configureClusterConnection(array $config)
+    {
+        if (! static::supportsClustering()) {
+            return static::configureStandaloneConnection($config[0]);
+        }
+
+        $prefix = static::ensureHashTaggedPrefix(
+            config('horizon.prefix') ?: 'horizon:'
+        );
+
+        config(['horizon.prefix' => $prefix]);
+
+        $config['options']['prefix'] = $prefix;
+
+        config(['database.redis.clusters.horizon' => $config]);
+    }
+
+    /**
+     * Configure the Horizon Redis connection for a standalone server.
+     *
+     * @param  array  $config
+     * @return void
+     */
+    protected static function configureStandaloneConnection(array $config)
+    {
+        $prefix = config('horizon.prefix') ?: 'horizon:';
+
+        $config['options']['prefix'] = $prefix;
+
+        config(['horizon.prefix' => $prefix]);
+        config(['database.redis.horizon' => $config]);
+    }
+
+    /**
+     * Ensure the given prefix contains a Redis Cluster hash tag.
+     *
+     * @param  string  $prefix
+     * @return string
+     */
+    protected static function ensureHashTaggedPrefix(string $prefix): string
+    {
+        return Connection::hasHashTag($prefix) ? $prefix : '{'.$prefix.'}';
+    }
+
+    /**
+     * Determine if the framework supports Redis Cluster.
+     *
+     * @return bool
+     */
+    protected static function supportsClustering()
+    {
+        return method_exists(Connection::class, 'hasHashTag');
+    }
+
+    /**
      * Get the CSS for the Horizon dashboard.
      *
      * @return Illuminate\Contracts\Support\Htmlable
@@ -223,69 +283,5 @@ class Horizon
         static::$smsNumber = $number;
 
         return new static;
-    }
-
-    /**
-     * Configure the Horizon Redis connection for a cluster.
-     *
-     * @param  array  $config
-     * @return void
-     */
-    protected static function configureClusterConnection(array $config)
-    {
-        if (! static::supportsCluster()) {
-            return static::configureStandaloneConnection($config[0]);
-        }
-
-        $prefix = static::ensureHashTaggedPrefix(
-            config('horizon.prefix') ?: 'horizon:'
-        );
-
-        config(['horizon.prefix' => $prefix]);
-
-        $config['options']['prefix'] = $prefix;
-
-        config(['database.redis.clusters.horizon' => $config]);
-    }
-
-    /**
-     * Configure the Horizon Redis connection for a standalone server.
-     *
-     * @param  array  $config
-     * @return void
-     */
-    protected static function configureStandaloneConnection(array $config)
-    {
-        $prefix = config('horizon.prefix') ?: 'horizon:';
-
-        $config['options']['prefix'] = $prefix;
-
-        config(['horizon.prefix' => $prefix]);
-        config(['database.redis.horizon' => $config]);
-    }
-
-    /**
-     * Determine if the framework supports Redis Cluster.
-     *
-     * @return bool
-     */
-    protected static function supportsCluster()
-    {
-        return method_exists(Connection::class, 'hasHashTag');
-    }
-
-    /**
-     * Ensure the given prefix contains a Redis Cluster hash tag.
-     *
-     * @param  string  $prefix
-     * @return string
-     */
-    protected static function ensureHashTaggedPrefix(string $prefix): string
-    {
-        if (Connection::hasHashTag($prefix)) {
-            return $prefix;
-        }
-
-        return '{'.$prefix.'}';
     }
 }

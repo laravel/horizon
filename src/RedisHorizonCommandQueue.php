@@ -4,11 +4,11 @@ namespace Laravel\Horizon;
 
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
-use Laravel\Horizon\Repositories\ClusterAwarePipeline;
+use Laravel\Horizon\Repositories\UsesClusterAwarePipeline;
 
 class RedisHorizonCommandQueue implements HorizonCommandQueue
 {
-    use ClusterAwarePipeline;
+    use UsesClusterAwarePipeline;
 
     /**
      * The Redis connection instance.

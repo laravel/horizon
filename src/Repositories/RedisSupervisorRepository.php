@@ -10,7 +10,7 @@ use Laravel\Horizon\Supervisor;
 
 class RedisSupervisorRepository implements SupervisorRepository
 {
-    use ClusterAwarePipeline;
+    use UsesClusterAwarePipeline;
 
     /**
      * The Redis connection instance.
