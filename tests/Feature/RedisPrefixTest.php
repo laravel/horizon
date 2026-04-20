@@ -205,7 +205,7 @@ class RedisPrefixTest extends IntegrationTest
 
 class HorizonWithoutClusterSupport extends Horizon
 {
-    protected static function supportsCluster(): bool
+    protected static function supportsClustering(): bool
     {
         return false;
     }
