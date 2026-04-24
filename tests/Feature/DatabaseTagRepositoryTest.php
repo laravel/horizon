@@ -159,4 +159,45 @@ class DatabaseTagRepositoryTest extends DatabaseIntegrationTest
         $this->assertSame(0, $repo->count('first'));
         $this->assertSame(1, $repo->count('second'));
     }
+
+    public function test_add_with_multiple_tags_issues_a_single_upsert()
+    {
+        $repo = $this->repo();
+        $id = $this->uuid();
+
+        \Illuminate\Support\Facades\DB::enableQueryLog();
+
+        $repo->add($id, ['a', 'b', 'c', 'd', 'e']);
+
+        $tagWrites = collect(\Illuminate\Support\Facades\DB::getQueryLog())
+            ->filter(fn ($q) => str_contains($q['query'], 'horizon_tags'));
+
+        \Illuminate\Support\Facades\DB::disableQueryLog();
+
+        $this->assertCount(
+            1,
+            $tagWrites,
+            'add() with N tags must issue exactly one upsert statement.'
+        );
+        $this->assertSame(5, $repo->count('a') + $repo->count('b') + $repo->count('c') + $repo->count('d') + $repo->count('e'));
+    }
+
+    public function test_readd_bumps_score_and_overrides_expires_at_per_call()
+    {
+        $repo = $this->repo();
+        $id = $this->uuid();
+
+        $repo->addTemporary(10, $id, ['t']);
+        $firstScore = (int) HorizonTag::where('job_id', $id)->value('score');
+        $firstExpires = HorizonTag::where('job_id', $id)->value('expires_at');
+
+        usleep(1_000);
+
+        $repo->add($id, ['t']);
+        $after = HorizonTag::where('job_id', $id)->first();
+
+        $this->assertGreaterThan($firstScore, (int) $after->score);
+        $this->assertNull($after->expires_at, 'Non-temporary add() overrides expires_at with null, mirroring previous behaviour.');
+        $this->assertNotNull($firstExpires, 'Sanity: temporary add had set an expires_at before the non-temporary add cleared it.');
+    }
 }

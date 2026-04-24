@@ -3,12 +3,12 @@
 namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Enums\MetricKind;
 use Laravel\Horizon\Models\HorizonMetric;
+use Laravel\Horizon\Models\HorizonMetricIncrement;
 use Laravel\Horizon\Models\HorizonMetricSnapshot;
 use Laravel\Horizon\Models\HorizonState;
 use Laravel\Horizon\WaitTimeCalculator;
@@ -45,9 +45,12 @@ class DatabaseMetricsRepository implements MetricsRepository
      */
     protected function measured(MetricKind $kind)
     {
-        return HorizonMetric::where('kind', $kind)
-            ->orderBy('key')
-            ->pluck('key')
+        $persisted = HorizonMetric::where('kind', $kind)->pluck('key');
+        $pending = HorizonMetricIncrement::where('kind', $kind)->distinct()->pluck('key');
+
+        return $persisted->merge($pending)
+            ->unique()
+            ->sort()
             ->map(fn ($key) => preg_match('/'.$kind->value.':(.*)$/', $key, $m) ? $m[1] : $key)
             ->values()
             ->all();
@@ -70,7 +73,10 @@ class DatabaseMetricsRepository implements MetricsRepository
      */
     public function throughput()
     {
-        return (int) HorizonMetric::where('kind', MetricKind::Queue)->sum('throughput');
+        $persisted = (int) HorizonMetric::where('kind', MetricKind::Queue)->sum('throughput');
+        $pending = (int) HorizonMetricIncrement::where('kind', MetricKind::Queue)->count();
+
+        return $persisted + $pending;
     }
 
     /**
@@ -104,8 +110,11 @@ class DatabaseMetricsRepository implements MetricsRepository
     protected function throughputFor($key)
     {
         $metric = HorizonMetric::where('key', $key)->first();
+        $persistedThroughput = $metric ? (int) $metric->throughput : 0;
 
-        return $metric ? (int) $metric->throughput : 0;
+        $pendingCount = (int) HorizonMetricIncrement::where('key', $key)->count();
+
+        return $persistedThroughput + $pendingCount;
     }
 
     /**
@@ -139,8 +148,23 @@ class DatabaseMetricsRepository implements MetricsRepository
     protected function runtimeFor($key)
     {
         $metric = HorizonMetric::where('key', $key)->first();
+        $persistedThroughput = $metric ? (int) $metric->throughput : 0;
+        $persistedRuntime = $metric ? (float) $metric->runtime : 0.0;
 
-        return $metric ? (float) $metric->runtime : 0.0;
+        $pending = HorizonMetricIncrement::where('key', $key)
+            ->selectRaw('COUNT(*) as c, COALESCE(SUM(runtime), 0) as s')
+            ->first();
+
+        $pendingCount = $pending ? (int) $pending->c : 0;
+        $pendingSum = $pending ? (float) $pending->s : 0.0;
+
+        $totalCount = $persistedThroughput + $pendingCount;
+
+        if ($totalCount === 0) {
+            return 0.0;
+        }
+
+        return (($persistedThroughput * $persistedRuntime) + $pendingSum) / $totalCount;
     }
 
     /**
@@ -218,7 +242,7 @@ class DatabaseMetricsRepository implements MetricsRepository
     }
 
     /**
-     * Increment the metrics for the given key atomically.
+     * Record a single sample into the append-only increments table.
      *
      * @param  string  $key
      * @param  \Laravel\Horizon\Enums\MetricKind  $kind
@@ -227,40 +251,11 @@ class DatabaseMetricsRepository implements MetricsRepository
      */
     protected function incrementMetric($key, MetricKind $kind, $runtime)
     {
-        $sample = $runtime === null ? 0.0 : (float) $runtime;
-
-        if ($this->applyIncrement($key, $sample) > 0) {
-            return;
-        }
-
-        try {
-            HorizonMetric::create([
-                'key' => $key,
-                'kind' => $kind,
-                'throughput' => 1,
-                'runtime' => $sample,
-            ]);
-        } catch (QueryException) {
-            $this->applyIncrement($key, $sample);
-        }
-    }
-
-    /**
-     * Atomically update the throughput and rolling-average runtime for a key.
-     *
-     * @param  string  $key
-     * @param  float  $sample
-     * @return int Number of rows affected.
-     */
-    protected function applyIncrement($key, $sample)
-    {
-        return HorizonMetric::where('key', $key)->update([
-            'throughput' => DB::raw('throughput + 1'),
-            'runtime' => DB::raw(sprintf(
-                '((throughput * runtime) + %F) / (throughput + 1)',
-                (float) $sample
-            )),
-            'updated_at' => CarbonImmutable::now(),
+        HorizonMetricIncrement::create([
+            'key' => $key,
+            'kind' => $kind,
+            'runtime' => $runtime === null ? 0.0 : (float) $runtime,
+            'recorded_at' => CarbonImmutable::now(),
         ]);
     }
 
@@ -351,7 +346,7 @@ class DatabaseMetricsRepository implements MetricsRepository
     protected function storeSnapshotForJob($job)
     {
         $key = 'job:'.$job;
-        $data = $this->baseSnapshotData($key);
+        $data = $this->baseSnapshotData($key, MetricKind::Job);
 
         HorizonMetricSnapshot::create([
             'key' => $key,
@@ -373,7 +368,7 @@ class DatabaseMetricsRepository implements MetricsRepository
     protected function storeSnapshotForQueue($queue)
     {
         $key = 'queue:'.$queue;
-        $data = $this->baseSnapshotData($key);
+        $data = $this->baseSnapshotData($key, MetricKind::Queue);
 
         HorizonMetricSnapshot::create([
             'key' => $key,
@@ -388,13 +383,16 @@ class DatabaseMetricsRepository implements MetricsRepository
     }
 
     /**
-     * Read current metric values for the given key and reset them.
+     * Read and reset the current metric counters for the given key.
      *
      * @param  string  $key
+     * @param  \Laravel\Horizon\Enums\MetricKind  $kind
      * @return array{throughput:int,runtime:float}
      */
-    protected function baseSnapshotData($key)
+    protected function baseSnapshotData($key, MetricKind $kind)
     {
+        $this->foldIncrements($key, $kind);
+
         $metric = HorizonMetric::where('key', $key)->first();
 
         if ($metric === null) {
@@ -409,6 +407,60 @@ class DatabaseMetricsRepository implements MetricsRepository
         $this->resetMetric($key, $sampled['throughput'], $sampled['runtime']);
 
         return $sampled;
+    }
+
+    /**
+     * Aggregate pending increments for the given key into the metric row.
+     *
+     * @param  string  $key
+     * @param  \Laravel\Horizon\Enums\MetricKind  $kind
+     * @return void
+     */
+    protected function foldIncrements($key, MetricKind $kind)
+    {
+        $maxId = HorizonMetricIncrement::where('key', $key)->max('id');
+
+        if ($maxId === null) {
+            return;
+        }
+
+        $pending = HorizonMetricIncrement::where('key', $key)
+            ->where('id', '<=', $maxId)
+            ->selectRaw('COUNT(*) as c, COALESCE(SUM(runtime), 0) as s')
+            ->first();
+
+        $pendingCount = (int) $pending->c;
+        $pendingSum = (float) $pending->s;
+
+        if ($pendingCount === 0) {
+            HorizonMetricIncrement::where('key', $key)
+                ->where('id', '<=', $maxId)
+                ->delete();
+
+            return;
+        }
+
+        $existing = HorizonMetric::where('key', $key)->first();
+        $existingThroughput = $existing ? (int) $existing->throughput : 0;
+        $existingRuntime = $existing ? (float) $existing->runtime : 0.0;
+
+        $newThroughput = $existingThroughput + $pendingCount;
+        $newRuntime = (($existingThroughput * $existingRuntime) + $pendingSum) / max($newThroughput, 1);
+
+        $now = CarbonImmutable::now();
+
+        HorizonMetric::upsert([[
+            'key' => $key,
+            'kind' => $kind->value,
+            'throughput' => $newThroughput,
+            'runtime' => $newRuntime,
+            'updated_at' => $now,
+            'created_at' => $existing ? $existing->created_at : $now,
+        ]], ['key'], ['kind', 'throughput', 'runtime', 'updated_at']);
+
+        HorizonMetricIncrement::where('key', $key)
+            ->where('id', '<=', $maxId)
+            ->delete();
     }
 
     /**
@@ -478,11 +530,14 @@ class DatabaseMetricsRepository implements MetricsRepository
     protected function storeSnapshotTimestamp()
     {
         $timestamp = CarbonImmutable::now()->getTimestamp();
+        $now = CarbonImmutable::now();
 
-        HorizonState::updateOrCreate(
-            ['key' => self::LAST_SNAPSHOT_KEY],
-            ['value' => (string) $timestamp]
-        );
+        HorizonState::upsert([[
+            'key' => self::LAST_SNAPSHOT_KEY,
+            'value' => (string) $timestamp,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['key'], ['value', 'updated_at']);
 
         return $timestamp;
     }
@@ -506,6 +561,7 @@ class DatabaseMetricsRepository implements MetricsRepository
     public function forget($key)
     {
         HorizonMetric::where('key', $key)->delete();
+        HorizonMetricIncrement::where('key', $key)->delete();
     }
 
     /**
@@ -517,6 +573,7 @@ class DatabaseMetricsRepository implements MetricsRepository
     {
         HorizonMetric::truncate();
         HorizonMetricSnapshot::truncate();
+        HorizonMetricIncrement::truncate();
         HorizonState::where('key', self::LAST_SNAPSHOT_KEY)->delete();
     }
 }

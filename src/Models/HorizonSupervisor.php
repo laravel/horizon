@@ -2,12 +2,18 @@
 
 namespace Laravel\Horizon\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Laravel\Horizon\Enums\SupervisorStatus;
 
 class HorizonSupervisor extends Model
 {
+    use Prunable;
+
     public $incrementing = false;
+
+    public int $prunableChunkSize = 1000;
 
     protected $primaryKey = 'name';
 
@@ -22,4 +28,9 @@ class HorizonSupervisor extends Model
         'processes' => 'array',
         'options' => 'array',
     ];
+
+    public function prunable()
+    {
+        return static::query()->where('expires_at', '<', CarbonImmutable::now());
+    }
 }

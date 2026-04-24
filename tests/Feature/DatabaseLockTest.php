@@ -100,4 +100,26 @@ class DatabaseLockTest extends DatabaseIntegrationTest
         $this->assertTrue($ran);
         $this->assertFalse($lock->exists('with-key'));
     }
+
+    public function test_get_does_not_wrap_in_a_transaction()
+    {
+        $lock = $this->lock();
+
+        $levels = [];
+
+        \Illuminate\Support\Facades\DB::listen(function ($query) use (&$levels) {
+            $sql = strtolower(trim($query->sql));
+
+            if (str_contains($sql, 'horizon_locks')) {
+                $levels[] = \Illuminate\Support\Facades\DB::transactionLevel();
+            }
+        });
+
+        $lock->get('no-txn-key');
+
+        $this->assertNotEmpty($levels);
+        foreach ($levels as $level) {
+            $this->assertSame(0, $level, 'Lock acquisition must run outside a transaction.');
+        }
+    }
 }

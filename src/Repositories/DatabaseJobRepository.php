@@ -278,7 +278,7 @@ class DatabaseJobRepository implements JobRepository
     /**
      * Encode a (score, id) pair into an opaque cursor string.
      *
-     * @param  float  $score
+     * @param  int  $score
      * @param  int  $id
      * @return string
      */
@@ -291,13 +291,13 @@ class DatabaseJobRepository implements JobRepository
      * Decode an opaque cursor string into a (score, id) pair.
      *
      * @param  string  $cursor
-     * @return array{0:float,1:int}
+     * @return array{0:int,1:int}
      */
     protected function decodeCursor(string $cursor): array
     {
         $parts = explode(':', $cursor, 2);
 
-        return [(float) $parts[0], (int) ($parts[1] ?? 0)];
+        return [(int) $parts[0], (int) ($parts[1] ?? 0)];
     }
 
     /**
@@ -309,11 +309,35 @@ class DatabaseJobRepository implements JobRepository
      */
     protected function countJobsByType(JobReferenceType $type, $minutes)
     {
-        $cutoff = CarbonImmutable::now()->subMinutes($minutes)->getTimestamp();
+        $cutoff = $this->cutoffScore($minutes);
 
         return HorizonJobReference::where('type', $type)
             ->where('score', '>=', $cutoff)
             ->count();
+    }
+
+    /**
+     * Get the score cutoff for the given retention window in minutes.
+     *
+     * @param  int  $minutes
+     * @return int
+     */
+    protected function cutoffScore($minutes)
+    {
+        return CarbonImmutable::now()->subMinutes($minutes)->getTimestamp() * 1_000_000;
+    }
+
+    /**
+     * Convert a microtime float into a microsecond score.
+     *
+     * @param  float  $time
+     * @return int
+     */
+    protected function microtimeToScore($time)
+    {
+        [$seconds, $micro] = $this->splitMicrotime($time);
+
+        return $seconds * 1_000_000 + $micro;
     }
 
     /**
@@ -394,18 +418,19 @@ class DatabaseJobRepository implements JobRepository
     public function pushed($connection, $queue, JobPayload $payload)
     {
         $time = microtime(true);
+        $now = CarbonImmutable::now();
 
-        HorizonJob::updateOrCreate(
-            ['id' => $payload->id()],
-            [
-                'connection' => $connection,
-                'queue' => $queue,
-                'name' => Arr::get($payload->decoded, 'displayName'),
-                'status' => JobStatus::Pending,
-                'payload' => $payload->value,
-                'expires_at' => CarbonImmutable::now()->addMinutes($this->pendingJobExpires),
-            ]
-        );
+        HorizonJob::upsert([[
+            'id' => $payload->id(),
+            'connection' => $connection,
+            'queue' => $queue,
+            'name' => Arr::get($payload->decoded, 'displayName'),
+            'status' => JobStatus::Pending->value,
+            'payload' => $payload->value,
+            'expires_at' => $now->addMinutes($this->pendingJobExpires),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['id'], ['connection', 'queue', 'name', 'status', 'payload', 'expires_at', 'updated_at']);
 
         $this->storeJobReference(JobReferenceType::Recent, $queue, $payload, $time);
         $this->storeJobReference(JobReferenceType::Pending, $queue, $payload, $time);
@@ -463,19 +488,20 @@ class DatabaseJobRepository implements JobRepository
     public function remember($connection, $queue, JobPayload $payload)
     {
         $time = microtime(true);
+        $now = CarbonImmutable::now();
 
-        HorizonJob::updateOrCreate(
-            ['id' => $payload->id()],
-            [
-                'connection' => $connection,
-                'queue' => $queue,
-                'name' => Arr::get($payload->decoded, 'displayName'),
-                'status' => JobStatus::Completed,
-                'payload' => $payload->value,
-                'completed_at' => $this->microtimeToCarbon($time),
-                'expires_at' => CarbonImmutable::now()->addMinutes($this->monitoredJobExpires),
-            ]
-        );
+        HorizonJob::upsert([[
+            'id' => $payload->id(),
+            'connection' => $connection,
+            'queue' => $queue,
+            'name' => Arr::get($payload->decoded, 'displayName'),
+            'status' => JobStatus::Completed->value,
+            'payload' => $payload->value,
+            'completed_at' => $this->microtimeToCarbon($time),
+            'expires_at' => $now->addMinutes($this->monitoredJobExpires),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['id'], ['connection', 'queue', 'name', 'status', 'payload', 'completed_at', 'expires_at', 'updated_at']);
 
         $this->storeJobReference(JobReferenceType::Monitored, $queue, $payload, $time);
     }
@@ -620,11 +646,13 @@ class DatabaseJobRepository implements JobRepository
      */
     protected function trimReferences(JobReferenceType $type, $minutes)
     {
-        $cutoff = CarbonImmutable::now()->subMinutes($minutes)->getTimestamp();
+        $cutoff = $this->cutoffScore($minutes);
 
         HorizonJobReference::where('type', $type)
             ->where('score', '<', $cutoff)
-            ->delete();
+            ->chunkById(1000, function ($chunk) {
+                HorizonJobReference::whereIn('id', $chunk->modelKeys())->delete();
+            });
     }
 
     /**
@@ -656,23 +684,24 @@ class DatabaseJobRepository implements JobRepository
     public function failed($exception, $connection, $queue, JobPayload $payload)
     {
         $time = microtime(true);
+        $now = CarbonImmutable::now();
 
-        HorizonJob::updateOrCreate(
-            ['id' => $payload->id()],
-            [
-                'connection' => $connection,
-                'queue' => $queue,
-                'name' => Arr::get($payload->decoded, 'displayName'),
-                'status' => JobStatus::Failed,
-                'payload' => $payload->value,
-                'exception' => (string) $exception,
-                'context' => method_exists($exception, 'context')
-                    ? json_encode($exception->context())
-                    : null,
-                'failed_at' => $this->microtimeToCarbon($time),
-                'expires_at' => CarbonImmutable::now()->addMinutes($this->failedJobExpires),
-            ]
-        );
+        HorizonJob::upsert([[
+            'id' => $payload->id(),
+            'connection' => $connection,
+            'queue' => $queue,
+            'name' => Arr::get($payload->decoded, 'displayName'),
+            'status' => JobStatus::Failed->value,
+            'payload' => $payload->value,
+            'exception' => (string) $exception,
+            'context' => method_exists($exception, 'context')
+                ? json_encode($exception->context())
+                : null,
+            'failed_at' => $this->microtimeToCarbon($time),
+            'expires_at' => $now->addMinutes($this->failedJobExpires),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['id'], ['connection', 'queue', 'name', 'status', 'payload', 'exception', 'context', 'failed_at', 'expires_at', 'updated_at']);
 
         $this->storeJobReference(JobReferenceType::Failed, $queue, $payload, $time);
         $this->storeJobReference(JobReferenceType::RecentFailed, $queue, $payload, $time);
@@ -743,8 +772,10 @@ class DatabaseJobRepository implements JobRepository
             return 0;
         }
 
-        HorizonJob::whereIn('id', $ids)->delete();
-        HorizonJobReference::whereIn('job_id', $ids)->delete();
+        foreach (array_chunk($ids, 1000) as $chunk) {
+            HorizonJob::whereIn('id', $chunk)->delete();
+            HorizonJobReference::whereIn('job_id', $chunk)->delete();
+        }
 
         return count($ids);
     }
@@ -760,10 +791,16 @@ class DatabaseJobRepository implements JobRepository
      */
     protected function storeJobReference(JobReferenceType $type, $queue, JobPayload $payload, $time)
     {
-        HorizonJobReference::updateOrCreate(
-            ['type' => $type, 'job_id' => $payload->id()],
-            ['queue' => $queue, 'score' => $time]
-        );
+        $now = CarbonImmutable::now();
+
+        HorizonJobReference::upsert([[
+            'type' => $type->value,
+            'job_id' => $payload->id(),
+            'queue' => $queue,
+            'score' => $this->microtimeToScore($time),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['type', 'job_id'], ['queue', 'score', 'updated_at']);
     }
 
     /**

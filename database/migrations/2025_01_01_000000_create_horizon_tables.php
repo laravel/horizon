@@ -37,11 +37,11 @@ return new class extends Migration
             $table->string('type', 32);
             $table->uuid('job_id');
             $table->string('queue')->nullable();
-            $table->double('score');
+            $table->bigInteger('score');
             $table->timestamps();
 
             $table->unique(['type', 'job_id']);
-            $table->index(['type', 'score']);
+            $table->index(['type', 'score', 'id']);
             $table->index(['type', 'queue']);
         });
 
@@ -49,7 +49,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('tag');
             $table->uuid('job_id');
-            $table->double('score');
+            $table->bigInteger('score');
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
@@ -86,6 +86,16 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['key', 'recorded_at']);
+        });
+
+        Schema::create('horizon_metric_increments', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('key');
+            $table->string('kind', 8);
+            $table->double('runtime')->nullable();
+            $table->timestamp('recorded_at', 6);
+
+            $table->index(['key', 'id']);
         });
 
         Schema::create('horizon_states', function (Blueprint $table) {
@@ -159,6 +169,7 @@ return new class extends Migration
         Schema::dropIfExists('horizon_supervisors');
         Schema::dropIfExists('horizon_master_supervisors');
         Schema::dropIfExists('horizon_states');
+        Schema::dropIfExists('horizon_metric_increments');
         Schema::dropIfExists('horizon_metric_snapshots');
         Schema::dropIfExists('horizon_metrics');
         Schema::dropIfExists('horizon_monitored_tags');

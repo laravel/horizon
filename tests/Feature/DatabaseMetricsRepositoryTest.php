@@ -5,7 +5,9 @@ namespace Laravel\Horizon\Tests\Feature;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Horizon\Contracts\MetricsRepository;
+use Laravel\Horizon\Enums\MetricKind;
 use Laravel\Horizon\Models\HorizonMetric;
+use Laravel\Horizon\Models\HorizonMetricIncrement;
 use Laravel\Horizon\Models\HorizonMetricSnapshot;
 use Laravel\Horizon\Repositories\DatabaseMetricsRepository;
 use Laravel\Horizon\Tests\DatabaseIntegrationTest;
@@ -181,11 +183,16 @@ class DatabaseMetricsRepositoryTest extends DatabaseIntegrationTest
 
         $repo->incrementQueue('racing', 2.0);
 
+        $fold = new ReflectionMethod($repo, 'foldIncrements');
+        $fold->setAccessible(true);
+        $fold->invoke($repo, 'queue:racing', \Laravel\Horizon\Enums\MetricKind::Queue);
+
         $metric = HorizonMetric::where('key', 'queue:racing')->first();
         $sampledThroughput = (int) $metric->throughput;
         $sampledRuntime = (float) $metric->runtime;
 
         $repo->incrementQueue('racing', 6.0);
+        $fold->invoke($repo, 'queue:racing', \Laravel\Horizon\Enums\MetricKind::Queue);
 
         $reset = new ReflectionMethod($repo, 'resetMetric');
         $reset->setAccessible(true);
@@ -203,11 +210,16 @@ class DatabaseMetricsRepositoryTest extends DatabaseIntegrationTest
 
         $repo->incrementQueue('fractional', 1.25);
 
+        $fold = new ReflectionMethod($repo, 'foldIncrements');
+        $fold->setAccessible(true);
+        $fold->invoke($repo, 'queue:fractional', \Laravel\Horizon\Enums\MetricKind::Queue);
+
         $metric = HorizonMetric::where('key', 'queue:fractional')->first();
         $sampledThroughput = (int) $metric->throughput;
         $sampledRuntime = (float) $metric->runtime;
 
         $repo->incrementQueue('fractional', 3.75);
+        $fold->invoke($repo, 'queue:fractional', \Laravel\Horizon\Enums\MetricKind::Queue);
 
         $reset = new ReflectionMethod($repo, 'resetMetric');
         $reset->setAccessible(true);
@@ -371,6 +383,43 @@ class DatabaseMetricsRepositoryTest extends DatabaseIntegrationTest
 
         $this->assertTrue($repo->acquireWaitTimeMonitorLock());
         $this->assertFalse($repo->acquireWaitTimeMonitorLock());
+    }
+
+    public function test_increment_writes_to_append_only_increments_and_leaves_metrics_empty()
+    {
+        $this->repo()->incrementJob('Foo', 15.0);
+
+        $row = HorizonMetricIncrement::where('key', 'job:Foo')->first();
+
+        $this->assertNotNull($row);
+        $this->assertSame(MetricKind::Job, $row->kind);
+        $this->assertEqualsWithDelta(15.0, $row->runtime, 0.0001);
+        $this->assertSame(0, HorizonMetric::count(), 'incrementMetric must not touch horizon_metrics.');
+    }
+
+    public function test_fold_preserves_late_writes_via_id_guard()
+    {
+        $repo = $this->repo();
+
+        $repo->incrementQueue('default', 2.0);
+        $repo->incrementQueue('default', 4.0);
+
+        $maxIdBefore = (int) HorizonMetricIncrement::where('key', 'queue:default')->max('id');
+
+        $repo->incrementQueue('default', 99.0);
+
+        HorizonMetricIncrement::where('key', 'queue:default')
+            ->where('id', '<=', $maxIdBefore)
+            ->delete();
+
+        $this->assertSame(
+            1,
+            HorizonMetricIncrement::where('key', 'queue:default')->count(),
+            'Only the late-arriving row (id > maxIdBefore) must survive the id-guarded delete.'
+        );
+
+        $survivor = HorizonMetricIncrement::where('key', 'queue:default')->first();
+        $this->assertEqualsWithDelta(99.0, $survivor->runtime, 0.0001);
     }
 
     protected function mockWaitTimeCalculator(float $wait): void

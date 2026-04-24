@@ -2,12 +2,18 @@
 
 namespace Laravel\Horizon\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Laravel\Horizon\Enums\JobStatus;
 
 class HorizonJob extends Model
 {
+    use Prunable;
+
     public $incrementing = false;
+
+    public int $prunableChunkSize = 1000;
 
     protected $keyType = 'string';
 
@@ -24,4 +30,9 @@ class HorizonJob extends Model
         'delay' => 'integer',
         'retried_by' => 'array',
     ];
+
+    public function prunable()
+    {
+        return static::query()->where('expires_at', '<', CarbonImmutable::now());
+    }
 }

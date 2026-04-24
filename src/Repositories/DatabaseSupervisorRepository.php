@@ -102,17 +102,19 @@ class DatabaseSupervisorRepository implements SupervisorRepository
             ->mapWithKeys(fn ($pool) => [$supervisor->options->connection.':'.$pool->queue() => count($pool->processes())])
             ->all();
 
-        HorizonSupervisor::updateOrCreate(
-            ['name' => $supervisor->name],
-            [
-                'master' => implode(':', explode(':', $supervisor->name, -1)),
-                'pid' => $supervisor->pid(),
-                'status' => $supervisor->working ? SupervisorStatus::Running : SupervisorStatus::Paused,
-                'processes' => $processes,
-                'options' => $supervisor->options->toArray(),
-                'expires_at' => CarbonImmutable::now()->addSeconds(self::TTL_SECONDS),
-            ]
-        );
+        $now = CarbonImmutable::now();
+
+        HorizonSupervisor::upsert([[
+            'name' => $supervisor->name,
+            'master' => implode(':', explode(':', $supervisor->name, -1)),
+            'pid' => $supervisor->pid(),
+            'status' => $supervisor->working ? SupervisorStatus::Running->value : SupervisorStatus::Paused->value,
+            'processes' => json_encode($processes),
+            'options' => json_encode($supervisor->options->toArray()),
+            'expires_at' => $now->addSeconds(self::TTL_SECONDS),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['name'], ['master', 'pid', 'status', 'processes', 'options', 'expires_at', 'updated_at']);
     }
 
     /**

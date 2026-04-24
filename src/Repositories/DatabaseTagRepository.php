@@ -61,12 +61,7 @@ class DatabaseTagRepository implements TagRepository
      */
     public function add($id, array $tags)
     {
-        foreach ($tags as $tag) {
-            HorizonTag::updateOrCreate(
-                ['tag' => $tag, 'job_id' => $id],
-                ['score' => microtime(true), 'expires_at' => null]
-            );
-        }
+        $this->batchUpsert($id, $tags, null);
     }
 
     /**
@@ -79,14 +74,46 @@ class DatabaseTagRepository implements TagRepository
      */
     public function addTemporary($minutes, $id, array $tags)
     {
-        $expiresAt = CarbonImmutable::now()->addMinutes($minutes);
+        $this->batchUpsert($id, $tags, CarbonImmutable::now()->addMinutes($minutes));
+    }
 
-        foreach ($tags as $tag) {
-            HorizonTag::updateOrCreate(
-                ['tag' => $tag, 'job_id' => $id],
-                ['score' => microtime(true), 'expires_at' => $expiresAt]
-            );
+    /**
+     * Upsert the given tag/job pairs in a single statement.
+     *
+     * @param  string  $id
+     * @param  array  $tags
+     * @param  \Carbon\CarbonImmutable|null  $expiresAt
+     * @return void
+     */
+    protected function batchUpsert($id, array $tags, ?CarbonImmutable $expiresAt): void
+    {
+        if (empty($tags)) {
+            return;
         }
+
+        $score = $this->currentScore();
+        $now = CarbonImmutable::now();
+
+        $rows = array_map(fn ($tag) => [
+            'tag' => $tag,
+            'job_id' => $id,
+            'score' => $score,
+            'expires_at' => $expiresAt,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ], array_values(array_unique($tags)));
+
+        HorizonTag::upsert($rows, ['tag', 'job_id'], ['score', 'expires_at', 'updated_at']);
+    }
+
+    /**
+     * Get the current microtime expressed as a microsecond score.
+     *
+     * @return int
+     */
+    protected function currentScore()
+    {
+        return (int) round(microtime(true) * 1_000_000);
     }
 
     /**

@@ -481,4 +481,107 @@ class DatabaseJobRepositoryTest extends DatabaseIntegrationTest
 
         $this->assertSame(0, $repository->totalRecent());
     }
+
+    public function test_trim_recent_jobs_deletes_all_expired_references_in_chunks()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $rows = [];
+        $now = \Carbon\CarbonImmutable::now();
+
+        for ($i = 0; $i < 1_100; $i++) {
+            $rows[] = [
+                'type' => \Laravel\Horizon\Enums\JobReferenceType::Recent->value,
+                'job_id' => $this->uuid(),
+                'queue' => 'default',
+                'score' => 0,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        \Laravel\Horizon\Models\HorizonJobReference::insert($rows);
+
+        \Illuminate\Support\Facades\DB::enableQueryLog();
+
+        $repository->trimRecentJobs();
+
+        $deleteStatements = collect(\Illuminate\Support\Facades\DB::getQueryLog())
+            ->filter(fn ($q) => str_starts_with(strtolower($q['query']), 'delete')
+                && str_contains($q['query'], 'horizon_job_references'));
+
+        \Illuminate\Support\Facades\DB::disableQueryLog();
+
+        $this->assertSame(0, \Laravel\Horizon\Models\HorizonJobReference::count());
+        $this->assertGreaterThanOrEqual(
+            2,
+            $deleteStatements->count(),
+            'Expected chunked deletes to keep the lock window small.'
+        );
+    }
+
+    public function test_purge_uses_chunked_deletes_on_references()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $jobRows = [];
+        $refRows = [];
+        $now = \Carbon\CarbonImmutable::now();
+
+        for ($i = 0; $i < 1_100; $i++) {
+            $id = $this->uuid();
+            $jobRows[] = [
+                'id' => $id,
+                'queue' => 'bulk',
+                'status' => JobStatus::Pending->value,
+                'payload' => '{}',
+                'expires_at' => $now->addMinutes(10),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+            $refRows[] = [
+                'type' => \Laravel\Horizon\Enums\JobReferenceType::Pending->value,
+                'job_id' => $id,
+                'queue' => 'bulk',
+                'score' => 0,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        \Laravel\Horizon\Models\HorizonJob::insert($jobRows);
+        \Laravel\Horizon\Models\HorizonJobReference::insert($refRows);
+
+        \Illuminate\Support\Facades\DB::enableQueryLog();
+
+        $purged = $repository->purge('bulk');
+
+        $refDeletes = collect(\Illuminate\Support\Facades\DB::getQueryLog())
+            ->filter(fn ($q) => str_starts_with(strtolower($q['query']), 'delete')
+                && str_contains($q['query'], 'horizon_job_references'));
+
+        \Illuminate\Support\Facades\DB::disableQueryLog();
+
+        $this->assertSame(1_100, $purged);
+        $this->assertSame(0, \Laravel\Horizon\Models\HorizonJobReference::where('queue', 'bulk')->count());
+        $this->assertGreaterThanOrEqual(
+            2,
+            $refDeletes->count(),
+            'Expected reference deletions to be chunked across multiple statements.'
+        );
+    }
+
+    public function test_pushed_is_last_write_wins_on_duplicate_ids()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $id = $this->uuid();
+
+        $repository->pushed('database', 'default', $this->payload($id, 'First'));
+        $repository->pushed('database', 'emails', $this->payload($id, 'Second'));
+
+        $job = \Laravel\Horizon\Models\HorizonJob::find($id);
+
+        $this->assertSame('Second', $job->name);
+        $this->assertSame('emails', $job->queue);
+    }
 }

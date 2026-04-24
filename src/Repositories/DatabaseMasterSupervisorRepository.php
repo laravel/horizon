@@ -87,16 +87,18 @@ class DatabaseMasterSupervisorRepository implements MasterSupervisorRepository
      */
     public function update(MasterSupervisor $master)
     {
-        HorizonMasterSupervisor::updateOrCreate(
-            ['name' => $master->name],
-            [
-                'environment' => $master->environment,
-                'pid' => $master->pid(),
-                'status' => $master->working ? SupervisorStatus::Running : SupervisorStatus::Paused,
-                'supervisors' => $master->supervisors->map->name->all(),
-                'expires_at' => CarbonImmutable::now()->addSeconds(self::TTL_SECONDS),
-            ]
-        );
+        $now = CarbonImmutable::now();
+
+        HorizonMasterSupervisor::upsert([[
+            'name' => $master->name,
+            'environment' => $master->environment,
+            'pid' => $master->pid(),
+            'status' => $master->working ? SupervisorStatus::Running->value : SupervisorStatus::Paused->value,
+            'supervisors' => json_encode($master->supervisors->map->name->all()),
+            'expires_at' => $now->addSeconds(self::TTL_SECONDS),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]], ['name'], ['environment', 'pid', 'status', 'supervisors', 'expires_at', 'updated_at']);
     }
 
     /**
