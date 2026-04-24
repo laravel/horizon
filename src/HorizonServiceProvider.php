@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Horizon\Connectors\DatabaseConnector;
 use Laravel\Horizon\Connectors\RedisConnector;
 use Laravel\Sentinel\Http\Middleware\SentinelMiddleware;
 
@@ -108,6 +109,10 @@ class HorizonServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/horizon.php' => config_path('horizon.php'),
             ], 'horizon-config');
+
+            $this->publishes([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'horizon-migrations');
         }
     }
 
@@ -198,6 +203,26 @@ class HorizonServiceProvider extends ServiceProvider
                 ? $this->app->singleton($value)
                 : $this->app->singleton($key, $value);
         }
+
+        foreach ($this->driverAwareInterfaces() as $interface) {
+            $this->app->singleton($interface, function ($app) use ($interface) {
+                $bindings = $this->serviceBindingsFor(
+                    config('horizon.driver', 'redis')
+                );
+
+                return $app->make($bindings[$interface]);
+            });
+        }
+    }
+
+    /**
+     * Get the list of driver-specific interfaces that resolve lazily.
+     *
+     * @return array
+     */
+    protected function driverAwareInterfaces()
+    {
+        return array_keys($this->driverServiceBindings['redis']);
     }
 
     /**
@@ -211,6 +236,12 @@ class HorizonServiceProvider extends ServiceProvider
             $manager->addConnector('redis', function () {
                 return new RedisConnector($this->app['redis']);
             });
+
+            if (config('horizon.driver') === 'database') {
+                $manager->addConnector('database', function () {
+                    return new DatabaseConnector($this->app['db']);
+                });
+            }
         });
     }
 }

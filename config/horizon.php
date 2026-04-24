@@ -6,6 +6,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Driver
+    |--------------------------------------------------------------------------
+    |
+    | This option controls which queue driver Horizon will monitor and provide
+    | its full dashboard experience for. The default redis driver preserves
+    | Horizon's original behavior. You may switch to database to gain the
+    | same features for applications using the database queue driver.
+    |
+    | Supported: "redis", "database"
+    |
+    */
+
+    'driver' => env('HORIZON_DRIVER', 'redis'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Name
     |--------------------------------------------------------------------------
     |

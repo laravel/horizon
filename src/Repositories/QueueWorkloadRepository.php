@@ -9,7 +9,7 @@ use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\WorkloadRepository;
 use Laravel\Horizon\WaitTimeCalculator;
 
-class RedisWorkloadRepository implements WorkloadRepository
+class QueueWorkloadRepository implements WorkloadRepository
 {
     /**
      * The queue factory implementation.
@@ -118,4 +118,8 @@ class RedisWorkloadRepository implements WorkloadRepository
                 return $final;
             }, []);
     }
+}
+
+if (! class_exists(__NAMESPACE__.'\RedisWorkloadRepository', false)) {
+    class_alias(QueueWorkloadRepository::class, __NAMESPACE__.'\RedisWorkloadRepository');
 }
