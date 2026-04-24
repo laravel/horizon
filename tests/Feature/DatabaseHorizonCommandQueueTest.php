@@ -116,5 +116,4 @@ class DatabaseHorizonCommandQueueTest extends DatabaseIntegrationTest
 
         $this->assertSame([], $queue->pending('master'));
     }
-
 }

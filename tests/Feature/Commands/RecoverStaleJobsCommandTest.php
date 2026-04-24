@@ -108,5 +108,4 @@ class RecoverStaleJobsCommandTest extends DatabaseIntegrationTest
         $this->assertSame(JobStatus::Failed, HorizonJob::find($fastId)->status);
         $this->assertSame(JobStatus::Reserved, HorizonJob::find($slowId)->status);
     }
-
 }

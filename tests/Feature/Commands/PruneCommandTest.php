@@ -61,5 +61,4 @@ class PruneCommandTest extends DatabaseIntegrationTest
 
         $this->assertSame(0, HorizonJob::count());
     }
-
 }

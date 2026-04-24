@@ -145,7 +145,7 @@ class InstallCommandTest extends IntegrationTest
     {
         File::put(
             config_path('horizon.php'),
-            "<?php return [\"driver\" => env(\"HORIZON_DRIVER\", \"redis\"),];"
+            '<?php return ["driver" => env("HORIZON_DRIVER", "redis"),];'
         );
 
         $this->expectException(\RuntimeException::class);

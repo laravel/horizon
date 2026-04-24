@@ -2,7 +2,6 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;

@@ -14,13 +14,13 @@ use Laravel\Horizon\Exceptions\UnsupportedDriverException;
 use Laravel\Horizon\HorizonServiceProvider;
 use Laravel\Horizon\RedisHorizonCommandQueue;
 use Laravel\Horizon\RedisQueue;
+use Laravel\Horizon\Repositories\QueueWorkloadRepository;
 use Laravel\Horizon\Repositories\RedisJobRepository;
 use Laravel\Horizon\Repositories\RedisMasterSupervisorRepository;
 use Laravel\Horizon\Repositories\RedisMetricsRepository;
 use Laravel\Horizon\Repositories\RedisProcessRepository;
 use Laravel\Horizon\Repositories\RedisSupervisorRepository;
 use Laravel\Horizon\Repositories\RedisTagRepository;
-use Laravel\Horizon\Repositories\QueueWorkloadRepository;
 use Laravel\Horizon\Repositories\RedisWorkloadRepository;
 use Laravel\Horizon\Tests\IntegrationTest;
 
