@@ -38,6 +38,9 @@ class InstallCommand extends Command
             'Configuration' => fn () => $this->callSilent('vendor:publish', ['--tag' => 'horizon-config']) == 0,
         ])->each(fn ($task, $description) => $this->components->task($description, $task));
 
+        $this->comment('Publishing Horizon Migrations...');
+        $this->callSilent('vendor:publish', ['--tag' => 'horizon-migrations']);
+
         $this->registerHorizonServiceProvider();
 
         $this->components->info('Horizon scaffolding installed successfully.');

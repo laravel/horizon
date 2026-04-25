@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Horizon\Connectors\DatabaseConnector;
 use Laravel\Horizon\Connectors\RedisConnector;
 use Laravel\Sentinel\Http\Middleware\SentinelMiddleware;
 
@@ -108,6 +109,10 @@ class HorizonServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/horizon.php' => config_path('horizon.php'),
             ], 'horizon-config');
+
+            $this->publishes([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'horizon-migrations');
         }
     }
 
@@ -183,7 +188,9 @@ class HorizonServiceProvider extends ServiceProvider
             __DIR__.'/../config/horizon.php', 'horizon'
         );
 
-        Horizon::use(config('horizon.use', 'default'));
+        if (config('horizon.driver') !== 'database') {
+            Horizon::use(config('horizon.use', 'default'));
+        }
     }
 
     /**
@@ -198,6 +205,34 @@ class HorizonServiceProvider extends ServiceProvider
                 ? $this->app->singleton($value)
                 : $this->app->singleton($key, $value);
         }
+
+        foreach ($this->driverAgnosticBindings() as $abstract) {
+            $this->app->singleton($abstract, function ($app) use ($abstract) {
+                return $app->make($this->driverServiceBindings()[$abstract]);
+            });
+        }
+    }
+
+    /**
+     * Get the abstract identifiers that switch implementation based on driver.
+     *
+     * @return array
+     */
+    protected function driverAgnosticBindings()
+    {
+        return array_keys($this->redisServiceBindings);
+    }
+
+    /**
+     * Get the service bindings for the configured Horizon driver.
+     *
+     * @return array
+     */
+    protected function driverServiceBindings()
+    {
+        return config('horizon.driver') === 'database'
+            ? $this->databaseServiceBindings
+            : $this->redisServiceBindings;
     }
 
     /**
@@ -210,6 +245,10 @@ class HorizonServiceProvider extends ServiceProvider
         $this->callAfterResolving(QueueManager::class, function ($manager) {
             $manager->addConnector('redis', function () {
                 return new RedisConnector($this->app['redis']);
+            });
+
+            $manager->addConnector('database', function () {
+                return new DatabaseConnector($this->app['db']);
             });
         });
     }

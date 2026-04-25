@@ -45,6 +45,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon Storage Driver
+    |--------------------------------------------------------------------------
+    |
+    | This determines which storage driver will be used by Horizon to store
+    | the meta information required for it to function. Supported drivers
+    | are "redis" and "database". Choose the option that suits you best.
+    |
+    */
+
+    'driver' => env('HORIZON_DRIVER', 'redis'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Redis Connection
     |--------------------------------------------------------------------------
     |
@@ -55,6 +68,21 @@ return [
     */
 
     'use' => 'default',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Horizon Database Connection
+    |--------------------------------------------------------------------------
+    |
+    | When using the "database" driver, this is the name of the database
+    | connection that Horizon will use to store its meta information.
+    | If "null" is given, the application's default will be used.
+    |
+    */
+
+    'database' => [
+        'connection' => env('HORIZON_DB_CONNECTION'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
