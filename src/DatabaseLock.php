@@ -4,7 +4,6 @@ namespace Laravel\Horizon;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\ConnectionResolverInterface;
-use Illuminate\Database\QueryException;
 
 class DatabaseLock extends Lock
 {
@@ -50,16 +49,10 @@ class DatabaseLock extends Lock
     {
         $this->prune();
 
-        try {
-            $this->table()->insert([
-                'key' => $key,
-                'expires_at' => CarbonImmutable::now()->addSeconds($seconds)->getTimestamp(),
-            ]);
-
-            return true;
-        } catch (QueryException $e) {
-            return false;
-        }
+        return $this->table()->insertOrIgnore([
+            'key' => $key,
+            'expires_at' => CarbonImmutable::now()->addSeconds($seconds)->getTimestamp(),
+        ]) === 1;
     }
 
     /**
