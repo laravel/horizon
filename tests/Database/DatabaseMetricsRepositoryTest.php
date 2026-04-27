@@ -84,4 +84,23 @@ class DatabaseMetricsRepositoryTest extends DatabaseTestCase
 
         $this->assertSame(0, $metrics->throughputForJob('App\\Jobs\\Foo'));
     }
+
+    public function test_measured_jobs_and_queues_union_live_and_snapshot_data()
+    {
+        $waitTime = Mockery::mock(WaitTimeCalculator::class);
+        $waitTime->shouldReceive('calculateFor')->andReturn(0);
+        $this->app->instance(WaitTimeCalculator::class, $waitTime);
+
+        $metrics = resolve(MetricsRepository::class);
+
+        $metrics->incrementJob('App\\Jobs\\Old', 100);
+        $metrics->incrementQueue('archived', 100);
+        $metrics->snapshot();
+
+        $metrics->incrementJob('App\\Jobs\\New', 50);
+        $metrics->incrementQueue('default', 50);
+
+        $this->assertSame(['App\\Jobs\\New', 'App\\Jobs\\Old'], $metrics->measuredJobs());
+        $this->assertSame(['archived', 'default'], $metrics->measuredQueues());
+    }
 }

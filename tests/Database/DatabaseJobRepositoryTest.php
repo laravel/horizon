@@ -2,7 +2,9 @@
 
 namespace Laravel\Horizon\Tests\Database;
 
+use Carbon\CarbonImmutable;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 
@@ -135,5 +137,68 @@ class DatabaseJobRepositoryTest extends DatabaseTestCase
         $retries = json_decode($job->retried_by, true);
         $this->assertSame('retry-id', $retries[0]['id']);
         $this->assertSame('pending', $retries[0]['status']);
+    }
+
+    public function test_silenced_jobs_are_marked_with_silenced_status_and_counted()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('database', 'default', $payload);
+        $repository->completed($payload, false, true);
+
+        $this->assertSame(1, $repository->countSilenced());
+        $this->assertSame('silenced', DB::table('horizon_jobs')->where('id', 1)->value('status'));
+    }
+
+    public function test_recent_jobs_can_be_trimmed()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $repository->pushed('database', 'default', new JobPayload(json_encode(['id' => 1, 'displayName' => 'old'])));
+        $repository->pushed('database', 'default', new JobPayload(json_encode(['id' => 2, 'displayName' => 'fresh'])));
+
+        DB::table('horizon_jobs')->where('id', 1)->update([
+            'created_at' => CarbonImmutable::now()->subHours(2)->getTimestamp(),
+        ]);
+
+        $repository->trimRecentJobs();
+
+        $this->assertNull(DB::table('horizon_jobs')->where('id', 1)->first());
+        $this->assertNotNull(DB::table('horizon_jobs')->where('id', 2)->first());
+    }
+
+    public function test_failed_jobs_can_be_trimmed()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $repository->failed(new Exception('Old'), 'database', 'default', new JobPayload(json_encode(['id' => 1, 'displayName' => 'old'])));
+        $repository->failed(new Exception('Fresh'), 'database', 'default', new JobPayload(json_encode(['id' => 2, 'displayName' => 'fresh'])));
+
+        DB::table('horizon_jobs')->where('id', 1)->update([
+            'failed_at' => CarbonImmutable::now()->subWeeks(2)->getTimestamp(),
+        ]);
+
+        $repository->trimFailedJobs();
+
+        $this->assertNull(DB::table('horizon_jobs')->where('id', 1)->first());
+        $this->assertNotNull(DB::table('horizon_jobs')->where('id', 2)->first());
+    }
+
+    public function test_monitored_jobs_can_be_trimmed()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $repository->remember('database', 'default', new JobPayload(json_encode(['id' => 1, 'displayName' => 'old'])));
+        $repository->remember('database', 'default', new JobPayload(json_encode(['id' => 2, 'displayName' => 'fresh'])));
+
+        DB::table('horizon_jobs')->where('id', 1)->update([
+            'completed_at' => CarbonImmutable::now()->subWeeks(2)->getTimestamp(),
+        ]);
+
+        $repository->trimMonitoredJobs();
+
+        $this->assertNull(DB::table('horizon_jobs')->where('id', 1)->first());
+        $this->assertNotNull(DB::table('horizon_jobs')->where('id', 2)->first());
     }
 }
