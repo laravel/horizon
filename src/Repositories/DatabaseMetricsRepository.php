@@ -35,11 +35,7 @@ class DatabaseMetricsRepository implements MetricsRepository
      */
     public function measuredJobs()
     {
-        $keys = $this->metricsTable()->where('type', 'job')->pluck('key')->all();
-
-        return collect($keys)->map(function ($key) {
-            return preg_match('/job:(.*)$/', $key, $matches) ? $matches[1] : $key;
-        })->sort()->values()->all();
+        return $this->measuredKeysFor('job', '/job:(.*)$/');
     }
 
     /**
@@ -49,10 +45,24 @@ class DatabaseMetricsRepository implements MetricsRepository
      */
     public function measuredQueues()
     {
-        $keys = $this->metricsTable()->where('type', 'queue')->pluck('key')->all();
+        return $this->measuredKeysFor('queue', '/queue:(.*)$/');
+    }
 
-        return collect($keys)->map(function ($key) {
-            return preg_match('/queue:(.*)$/', $key, $matches) ? $matches[1] : $key;
+    /**
+     * Get the distinct measured keys of the given type from the metrics and snapshots tables.
+     *
+     * @param  string  $type
+     * @param  string  $pattern
+     * @return array
+     */
+    protected function measuredKeysFor($type, $pattern)
+    {
+        $keys = $this->metricsTable()->where('type', $type)->pluck('key')
+            ->merge($this->snapshotsTable()->where('type', $type)->distinct()->pluck('key'))
+            ->unique();
+
+        return $keys->map(function ($key) use ($pattern) {
+            return preg_match($pattern, $key, $matches) ? $matches[1] : $key;
         })->sort()->values()->all();
     }
 
