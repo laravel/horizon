@@ -106,7 +106,7 @@ class DatabaseJobRepository implements JobRepository
      */
     public function totalRecent()
     {
-        return $this->table()->count();
+        return $this->countRecent();
     }
 
     /**
