@@ -112,12 +112,16 @@ class DatabaseTagRepository implements TagRepository
 
         $time = str_replace(',', '.', microtime(true));
 
-        foreach ($tags as $tag) {
-            $this->table()->updateOrInsert(
-                ['tag' => $tag, 'job_id' => (string) $id],
-                ['created_at' => $time, 'expires_at' => $expiresAt]
-            );
-        }
+        $rows = array_map(function ($tag) use ($id, $time, $expiresAt) {
+            return [
+                'tag' => $tag,
+                'job_id' => (string) $id,
+                'created_at' => $time,
+                'expires_at' => $expiresAt,
+            ];
+        }, array_values($tags));
+
+        $this->table()->upsert($rows, ['tag', 'job_id'], ['created_at', 'expires_at']);
     }
 
     /**
