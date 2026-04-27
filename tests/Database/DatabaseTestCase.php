@@ -79,19 +79,6 @@ abstract class DatabaseTestCase extends TestCase
                     'schema' => 'public',
                 ];
 
-            case 'sqlsrv':
-                return [
-                    'driver' => 'sqlsrv',
-                    'host' => getenv('DB_HOST') ?: '127.0.0.1',
-                    'port' => getenv('DB_PORT') ?: '1433',
-                    'database' => getenv('DB_DATABASE') ?: 'master',
-                    'username' => getenv('DB_USERNAME') ?: 'SA',
-                    'password' => getenv('DB_PASSWORD') ?: 'Forge123',
-                    'charset' => 'utf8',
-                    'prefix' => '',
-                    'trust_server_certificate' => true,
-                ];
-
             default:
                 return [
                     'driver' => 'sqlite',
