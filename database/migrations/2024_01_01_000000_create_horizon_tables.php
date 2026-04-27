@@ -18,7 +18,7 @@ class CreateHorizonTables extends Migration
 
     /**
      * Run the migrations.
-     *
+     * 
      * @return void
      */
     public function up()
@@ -62,7 +62,7 @@ class CreateHorizonTables extends Migration
             $table->longText('processes');
             $table->longText('options');
             $table->unsignedInteger('expires_at');
-            $table->timestamp('updated_at')->index();
+            $table->unsignedInteger('updated_at')->index();
         });
 
         Schema::create('horizon_master_supervisors', function (Blueprint $table) {
@@ -71,7 +71,7 @@ class CreateHorizonTables extends Migration
             $table->string('status');
             $table->longText('supervisors');
             $table->unsignedInteger('expires_at');
-            $table->timestamp('updated_at')->index();
+            $table->unsignedInteger('updated_at')->index();
         });
 
         Schema::create('horizon_processes', function (Blueprint $table) {

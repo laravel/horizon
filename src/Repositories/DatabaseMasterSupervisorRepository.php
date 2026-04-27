@@ -104,7 +104,7 @@ class DatabaseMasterSupervisorRepository implements MasterSupervisorRepository
             'status' => $master->working ? 'running' : 'paused',
             'supervisors' => json_encode($supervisors),
             'expires_at' => CarbonImmutable::now()->addSeconds(15)->getTimestamp(),
-            'updated_at' => CarbonImmutable::now(),
+            'updated_at' => CarbonImmutable::now()->getTimestamp(),
         ]);
     }
 

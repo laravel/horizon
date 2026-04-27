@@ -121,7 +121,7 @@ class DatabaseSupervisorRepository implements SupervisorRepository
             'processes' => $processes,
             'options' => $supervisor->options->toJson(),
             'expires_at' => CarbonImmutable::now()->addSeconds(30)->getTimestamp(),
-            'updated_at' => CarbonImmutable::now(),
+            'updated_at' => CarbonImmutable::now()->getTimestamp(),
         ]);
     }
 
