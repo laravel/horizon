@@ -94,6 +94,7 @@ class DatabaseProcessRepository implements ProcessRepository
         return $this->table()
             ->where('master', $master)
             ->where('recorded_at', '<', $expiresAt)
+            ->orderBy('id')
             ->pluck('process_id')
             ->all();
     }
