@@ -50,6 +50,7 @@ class DatabaseProcessRepository implements ProcessRepository
     public function orphaned($master, array $processIds)
     {
         $time = CarbonImmutable::now()->getTimestamp();
+
         $processIds = array_map('strval', $processIds);
 
         $existing = $this->table()
@@ -68,12 +69,14 @@ class DatabaseProcessRepository implements ProcessRepository
 
         $shouldInsert = array_diff($processIds, $existing);
 
-        foreach ($shouldInsert as $processId) {
-            $this->table()->insert([
-                'master' => $master,
-                'process_id' => $processId,
-                'recorded_at' => $time,
-            ]);
+        if (! empty($shouldInsert)) {
+            $this->table()->insertOrIgnore(array_map(function ($processId) use ($master, $time) {
+                return [
+                    'master' => $master,
+                    'process_id' => $processId,
+                    'recorded_at' => $time,
+                ];
+            }, array_values($shouldInsert)));
         }
     }
 
