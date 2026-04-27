@@ -218,6 +218,19 @@ class DatabaseTagRepository implements TagRepository
     }
 
     /**
+     * Trim expired tag entries from storage.
+     *
+     * @return void
+     */
+    public function trimExpired()
+    {
+        $this->table()
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<', CarbonImmutable::now()->getTimestamp())
+            ->delete();
+    }
+
+    /**
      * Get a query builder for the horizon tags table.
      *
      * @return \Illuminate\Database\Query\Builder

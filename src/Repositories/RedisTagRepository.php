@@ -177,6 +177,18 @@ class RedisTagRepository implements TagRepository
     }
 
     /**
+     * Trim expired tag entries from storage.
+     *
+     * Redis handles expiration natively via key TTLs, so this is a no-op.
+     *
+     * @return void
+     */
+    public function trimExpired()
+    {
+        //
+    }
+
+    /**
      * Get the Redis connection instance.
      *
      * @return \Illuminate\Redis\Connections\Connection

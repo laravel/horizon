@@ -87,4 +87,11 @@ interface TagRepository
      * @return void
      */
     public function forget($tag);
+
+    /**
+     * Trim expired tag entries from storage.
+     *
+     * @return void
+     */
+    public function trimExpired();
 }

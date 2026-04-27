@@ -51,6 +51,7 @@ trait EventMap
         ],
 
         Events\MasterSupervisorLooped::class => [
+            Listeners\TrimTags::class,
             Listeners\TrimRecentJobs::class,
             Listeners\TrimFailedJobs::class,
             Listeners\TrimMonitoredJobs::class,

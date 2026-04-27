@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Database;
 
+use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\TagRepository;
 
 class DatabaseTagRepositoryTest extends DatabaseTestCase
@@ -76,5 +77,21 @@ class DatabaseTagRepositoryTest extends DatabaseTestCase
         $repo->forget('email');
 
         $this->assertSame(0, $repo->count('email'));
+    }
+
+    public function test_expired_tags_can_be_trimmed()
+    {
+        $repo = resolve(TagRepository::class);
+
+        $repo->addTemporary(1, '1', ['email']);
+        $repo->add('2', ['email']);
+
+        CarbonImmutable::setTestNow(CarbonImmutable::now()->addMinutes(2));
+
+        $repo->trimExpired();
+
+        $this->assertSame(['2'], $repo->jobs('email'));
+
+        CarbonImmutable::setTestNow();
     }
 }
