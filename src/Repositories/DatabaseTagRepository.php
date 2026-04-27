@@ -119,7 +119,7 @@ class DatabaseTagRepository implements TagRepository
                 'created_at' => $time,
                 'expires_at' => $expiresAt,
             ];
-        }, array_values($tags));
+        }, array_values(array_unique($tags)));
 
         $this->table()->upsert($rows, ['tag', 'job_id'], ['created_at', 'expires_at']);
     }
