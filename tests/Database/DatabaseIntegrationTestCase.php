@@ -5,9 +5,12 @@ namespace Laravel\Horizon\Tests\Database;
 use Illuminate\Queue\WorkerOptions;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
+use Orchestra\Testbench\Concerns\InteractsWithPublishedFiles;
 
 abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
 {
+    use InteractsWithPublishedFiles;
+
     /**
      * Setup the test case.
      *
@@ -17,7 +20,11 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
     {
         parent::setUp();
 
-        $this->loadLaravelMigrations(['--database' => 'testing']);
+        $this->artisan('queue:table');
+        $this->artisan('queue:failed-table');
+        $this->artisan('queue:batches-table');
+
+        $this->loadMigrationsFrom($this->app->databasePath('migrations'));
     }
 
     /**
