@@ -60,7 +60,7 @@ class DatabaseSupervisorRepository implements SupervisorRepository
      */
     public function find($name)
     {
-        return Arr::get($this->get([$name]), 0);
+        return Arr::first($this->get([$name]));
     }
 
     /**
