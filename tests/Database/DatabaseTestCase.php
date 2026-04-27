@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Database;
 
+use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase;
 
 abstract class DatabaseTestCase extends TestCase
@@ -14,6 +15,8 @@ abstract class DatabaseTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Schema::connection('testing')->dropAllTables();
 
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
     }
