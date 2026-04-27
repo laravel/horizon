@@ -206,21 +206,11 @@ class HorizonServiceProvider extends ServiceProvider
                 : $this->app->singleton($key, $value);
         }
 
-        foreach ($this->driverAgnosticBindings() as $abstract) {
+        foreach (array_keys($this->redisServiceBindings) as $abstract) {
             $this->app->singleton($abstract, function ($app) use ($abstract) {
                 return $app->make($this->driverServiceBindings()[$abstract]);
             });
         }
-    }
-
-    /**
-     * Get the abstract identifiers that switch implementation based on driver.
-     *
-     * @return array
-     */
-    protected function driverAgnosticBindings()
-    {
-        return array_keys($this->redisServiceBindings);
     }
 
     /**
