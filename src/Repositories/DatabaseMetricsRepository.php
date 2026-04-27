@@ -449,6 +449,18 @@ class DatabaseMetricsRepository implements MetricsRepository
     }
 
     /**
+     * Delete all stored metrics information.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->metricsTable()->delete();
+        $this->snapshotsTable()->delete();
+        $this->metaTable()->delete();
+    }
+
+    /**
      * Get a query builder for the horizon metrics table.
      *
      * @return \Illuminate\Database\Query\Builder

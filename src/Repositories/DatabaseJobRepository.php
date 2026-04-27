@@ -27,7 +27,7 @@ class DatabaseJobRepository implements JobRepository
     public $keys = [
         'id', 'connection', 'queue', 'name', 'status', 'payload',
         'exception', 'context', 'failed_at', 'completed_at', 'retried_by',
-        'reserved_at', 'monitored',
+        'reserved_at', 'delay', 'monitored',
     ];
 
     /**
@@ -52,7 +52,7 @@ class DatabaseJobRepository implements JobRepository
     public $pendingJobExpires;
 
     /**
-     * The number of minutes until completed jobs should be purged.
+     * The number of minutes until completed and silenced jobs should be purged.
      *
      * @var int
      */
@@ -184,6 +184,23 @@ class DatabaseJobRepository implements JobRepository
     }
 
     /**
+     * Get a chunk of silenced jobs.
+     *
+     * @param  string|null  $afterIndex
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSilenced($afterIndex = null)
+    {
+        return $this->getJobsByQuery(
+            $this->table()
+                ->where('status', 'silenced')
+                ->where('completed_at', '>=', $this->cutoffTime($this->completedJobExpires)),
+            $afterIndex,
+            'completed_at'
+        );
+    }
+
+    /**
      * Get the count of recent jobs.
      *
      * @return int
@@ -230,6 +247,19 @@ class DatabaseJobRepository implements JobRepository
     {
         return $this->table()
             ->where('status', 'completed')
+            ->where('completed_at', '>=', $this->cutoffTime($this->completedJobExpires))
+            ->count();
+    }
+
+    /**
+     * Get the count of silenced jobs.
+     *
+     * @return int
+     */
+    public function countSilenced()
+    {
+        return $this->table()
+            ->where('status', 'silenced')
             ->where('completed_at', '>=', $this->cutoffTime($this->completedJobExpires))
             ->count();
     }
@@ -394,14 +424,16 @@ class DatabaseJobRepository implements JobRepository
      * @param  string  $connection
      * @param  string  $queue
      * @param  \Laravel\Horizon\JobPayload  $payload
+     * @param  int  $delay
      * @return void
      */
-    public function released($connection, $queue, JobPayload $payload)
+    public function released($connection, $queue, JobPayload $payload, $delay = 0)
     {
         $this->table()->where('id', $payload->id())->update([
             'status' => 'pending',
             'payload' => $payload->value,
             'updated_at' => $this->microtime(),
+            'delay' => $delay,
         ]);
     }
 
@@ -460,9 +492,10 @@ class DatabaseJobRepository implements JobRepository
      *
      * @param  \Laravel\Horizon\JobPayload  $payload
      * @param  bool  $failed
+     * @param  bool  $silenced
      * @return void
      */
-    public function completed(JobPayload $payload, $failed = false)
+    public function completed(JobPayload $payload, $failed = false, $silenced = false)
     {
         if ($payload->isRetry()) {
             $this->updateRetryInformationOnParent($payload, $failed);
@@ -473,7 +506,7 @@ class DatabaseJobRepository implements JobRepository
         }
 
         $this->table()->where('id', $payload->id())->update([
-            'status' => 'completed',
+            'status' => $silenced ? 'silenced' : 'completed',
             'completed_at' => $this->microtime(),
         ]);
     }

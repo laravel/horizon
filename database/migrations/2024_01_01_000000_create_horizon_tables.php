@@ -38,6 +38,7 @@ class CreateHorizonTables extends Migration
             $table->double('failed_at', 16, 6)->nullable()->index();
             $table->double('created_at', 16, 6)->index();
             $table->double('updated_at', 16, 6);
+            $table->unsignedInteger('delay')->default(0);
             $table->boolean('monitored')->default(false);
         });
 
