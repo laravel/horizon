@@ -10,21 +10,14 @@ use Laravel\Horizon\Contracts\JobRepository;
 class RetryFailedJob
 {
     /**
-     * The job ID.
-     *
-     * @var string
-     */
-    public $id;
-
-    /**
      * Create a new job instance.
      *
-     * @param  string  $id
+     * @param  string  $id  The job ID.
      * @return void
      */
-    public function __construct($id)
-    {
-        $this->id = $id;
+    public function __construct(
+        public $id,
+    ) {
     }
 
     /**
@@ -80,7 +73,7 @@ class RetryFailedJob
         $pushedAt = $payload['pushedAt'] ?? microtime(true);
 
         return $retryUntil
-                        ? CarbonImmutable::now()->addSeconds(ceil($retryUntil - $pushedAt))->getTimestamp()
-                        : null;
+            ? CarbonImmutable::now()->addSeconds(ceil($retryUntil - $pushedAt))->getTimestamp()
+            : null;
     }
 }
