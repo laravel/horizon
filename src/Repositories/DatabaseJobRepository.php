@@ -27,7 +27,7 @@ class DatabaseJobRepository implements JobRepository
     public $keys = [
         'id', 'connection', 'queue', 'name', 'status', 'payload',
         'exception', 'context', 'failed_at', 'completed_at', 'retried_by',
-        'reserved_at',
+        'reserved_at', 'monitored',
     ];
 
     /**
@@ -127,7 +127,10 @@ class DatabaseJobRepository implements JobRepository
      */
     public function getRecent($afterIndex = null)
     {
-        return $this->getJobsByQuery($this->table(), $afterIndex);
+        return $this->getJobsByQuery(
+            $this->table()->where('created_at', '>=', $this->cutoffTime($this->recentJobExpires)),
+            $afterIndex
+        );
     }
 
     /**
@@ -139,7 +142,11 @@ class DatabaseJobRepository implements JobRepository
     public function getFailed($afterIndex = null)
     {
         return $this->getJobsByQuery(
-            $this->table()->where('status', 'failed'), $afterIndex
+            $this->table()
+                ->where('status', 'failed')
+                ->where('failed_at', '>=', $this->cutoffTime($this->failedJobExpires)),
+            $afterIndex,
+            'failed_at'
         );
     }
 
@@ -152,7 +159,10 @@ class DatabaseJobRepository implements JobRepository
     public function getPending($afterIndex = null)
     {
         return $this->getJobsByQuery(
-            $this->table()->whereIn('status', ['pending', 'reserved']), $afterIndex
+            $this->table()
+                ->whereIn('status', ['pending', 'reserved'])
+                ->where('created_at', '>=', $this->cutoffTime($this->pendingJobExpires)),
+            $afterIndex
         );
     }
 
@@ -165,7 +175,11 @@ class DatabaseJobRepository implements JobRepository
     public function getCompleted($afterIndex = null)
     {
         return $this->getJobsByQuery(
-            $this->table()->where('status', 'completed'), $afterIndex
+            $this->table()
+                ->where('status', 'completed')
+                ->where('completed_at', '>=', $this->cutoffTime($this->completedJobExpires)),
+            $afterIndex,
+            'completed_at'
         );
     }
 
@@ -249,13 +263,14 @@ class DatabaseJobRepository implements JobRepository
      *
      * @param  \Illuminate\Database\Query\Builder  $query
      * @param  string|null  $afterIndex
+     * @param  string  $orderBy
      * @return \Illuminate\Support\Collection
      */
-    protected function getJobsByQuery($query, $afterIndex)
+    protected function getJobsByQuery($query, $afterIndex, $orderBy = 'created_at')
     {
         $afterIndex = $afterIndex === null ? -1 : (int) $afterIndex;
 
-        $records = $query->orderBy('created_at', 'desc')
+        $records = $query->orderBy($orderBy, 'desc')
             ->orderBy('id', 'desc')
             ->offset($afterIndex + 1)
             ->limit(50)
@@ -338,7 +353,8 @@ class DatabaseJobRepository implements JobRepository
     {
         $time = $this->microtime();
 
-        $this->table()->updateOrInsert(['id' => $payload->id()], [
+        $this->table()->upsert([
+            'id' => $payload->id(),
             'connection' => $connection,
             'queue' => $queue,
             'name' => $payload->decoded['displayName'],
@@ -346,6 +362,9 @@ class DatabaseJobRepository implements JobRepository
             'payload' => $payload->value,
             'created_at' => $time,
             'updated_at' => $time,
+            'monitored' => false,
+        ], ['id'], [
+            'connection', 'queue', 'name', 'status', 'payload', 'updated_at',
         ]);
     }
 
@@ -398,14 +417,20 @@ class DatabaseJobRepository implements JobRepository
     {
         $time = $this->microtime();
 
-        $this->table()->updateOrInsert(['id' => $payload->id()], [
+        $this->table()->upsert([
+            'id' => $payload->id(),
             'connection' => $connection,
             'queue' => $queue,
             'name' => $payload->decoded['displayName'],
             'status' => 'completed',
             'payload' => $payload->value,
             'completed_at' => $time,
+            'created_at' => $time,
             'updated_at' => $time,
+            'monitored' => true,
+        ], ['id'], [
+            'connection', 'queue', 'name', 'status', 'payload',
+            'completed_at', 'updated_at', 'monitored',
         ]);
     }
 
@@ -500,7 +525,7 @@ class DatabaseJobRepository implements JobRepository
     {
         $this->table()
             ->whereIn('id', array_map('strval', $ids))
-            ->where('status', 'completed')
+            ->where('monitored', true)
             ->delete();
     }
 
@@ -513,6 +538,7 @@ class DatabaseJobRepository implements JobRepository
     {
         $this->table()
             ->where('status', '!=', 'failed')
+            ->where('monitored', false)
             ->where('created_at', '<', $this->cutoffTime($this->recentJobExpires))
             ->delete();
     }
@@ -538,7 +564,7 @@ class DatabaseJobRepository implements JobRepository
     public function trimMonitoredJobs()
     {
         $this->table()
-            ->where('status', 'completed')
+            ->where('monitored', true)
             ->where('completed_at', '<', $this->cutoffTime($this->monitoredJobExpires))
             ->delete();
     }
@@ -574,7 +600,8 @@ class DatabaseJobRepository implements JobRepository
     {
         $time = $this->microtime();
 
-        $this->table()->updateOrInsert(['id' => $payload->id()], [
+        $this->table()->upsert([
+            'id' => $payload->id(),
             'connection' => $connection,
             'queue' => $queue,
             'name' => $payload->decoded['displayName'],
@@ -587,6 +614,9 @@ class DatabaseJobRepository implements JobRepository
             'failed_at' => $time,
             'created_at' => $time,
             'updated_at' => $time,
+        ], ['id'], [
+            'connection', 'queue', 'name', 'status', 'payload',
+            'exception', 'context', 'failed_at', 'updated_at',
         ]);
     }
 

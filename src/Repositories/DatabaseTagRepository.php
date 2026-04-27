@@ -128,7 +128,7 @@ class DatabaseTagRepository implements TagRepository
      */
     public function count($tag)
     {
-        return $this->table()->where('tag', $tag)->count();
+        return $this->activeTagQuery($tag)->count();
     }
 
     /**
@@ -139,8 +139,7 @@ class DatabaseTagRepository implements TagRepository
      */
     public function jobs($tag)
     {
-        return $this->table()
-            ->where('tag', $tag)
+        return $this->activeTagQuery($tag)
             ->orderBy('created_at')
             ->orderBy('id')
             ->pluck('job_id')
@@ -158,8 +157,7 @@ class DatabaseTagRepository implements TagRepository
      */
     public function paginate($tag, $startingAt = 0, $limit = 25)
     {
-        $ids = $this->table()
-            ->where('tag', $tag)
+        $ids = $this->activeTagQuery($tag)
             ->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
             ->offset($startingAt)
@@ -170,6 +168,23 @@ class DatabaseTagRepository implements TagRepository
         return collect($ids)->mapWithKeys(function ($id, $index) use ($startingAt) {
             return [$index + $startingAt => $id];
         })->all();
+    }
+
+    /**
+     * Get a query builder filtered to non-expired rows for the given tag.
+     *
+     * @param  string  $tag
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function activeTagQuery($tag)
+    {
+        $now = CarbonImmutable::now()->getTimestamp();
+
+        return $this->table()
+            ->where('tag', $tag)
+            ->where(function ($query) use ($now) {
+                $query->whereNull('expires_at')->orWhere('expires_at', '>=', $now);
+            });
     }
 
     /**

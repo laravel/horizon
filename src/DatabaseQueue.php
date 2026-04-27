@@ -25,11 +25,32 @@ class DatabaseQueue extends BaseQueue
      */
     public function readyNow($queue = null)
     {
+        $expiration = $this->currentTime() - $this->retryAfter;
+
         return $this->database->table($this->table)
                     ->where('queue', $this->getQueue($queue))
-                    ->whereNull('reserved_at')
-                    ->where('available_at', '<=', $this->currentTime())
+                    ->where(function ($query) use ($expiration) {
+                        $query->where(function ($query) {
+                            $query->whereNull('reserved_at')
+                                ->where('available_at', '<=', $this->currentTime());
+                        })->orWhere('reserved_at', '<=', $expiration);
+                    })
                     ->count();
+    }
+
+    /**
+     * Push an array of jobs onto the queue.
+     *
+     * @param  array  $jobs
+     * @param  mixed  $data
+     * @param  string|null  $queue
+     * @return void
+     */
+    public function bulk($jobs, $data = '', $queue = null)
+    {
+        foreach ((array) $jobs as $job) {
+            $this->push($job, $data, $queue);
+        }
     }
 
     /**
