@@ -39,6 +39,16 @@ class DatabaseTagRepositoryTest extends DatabaseTestCase
         $this->assertSame(1, $repo->count('newsletter'));
     }
 
+    public function test_duplicate_tags_are_deduplicated_when_adding()
+    {
+        $repo = resolve(TagRepository::class);
+
+        $repo->add('1', ['email', 'email', 'newsletter', 'newsletter']);
+
+        $this->assertSame(1, $repo->count('email'));
+        $this->assertSame(1, $repo->count('newsletter'));
+    }
+
     public function test_tags_can_be_monitored_and_unmonitored()
     {
         $repo = resolve(TagRepository::class);
