@@ -4,6 +4,7 @@ namespace Laravel\Horizon;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\DatabaseQueue as BaseQueue;
+use Laravel\Horizon\Events\JobPending;
 use Laravel\Horizon\Events\JobPushed;
 use Laravel\Horizon\Events\JobReserved;
 use Laravel\Horizon\Jobs\DatabaseJob;
@@ -88,6 +89,8 @@ class DatabaseQueue extends BaseQueue
     {
         $payload = (new JobPayload($payload))->prepare($this->lastPushed);
 
+        $this->event($this->getQueue($queue), new JobPending($payload->value));
+
         return tap(parent::pushRaw($payload->value, $queue, $options), function () use ($payload, $queue) {
             $this->event($this->getQueue($queue), new JobPushed($payload->value));
         });
@@ -112,6 +115,8 @@ class DatabaseQueue extends BaseQueue
             $queue,
             $delay,
             function ($payload, $queue, $delay) {
+                $this->event($this->getQueue($queue), new JobPending($payload));
+
                 return tap($this->pushToDatabase($queue, $payload, $delay), function () use ($payload, $queue) {
                     $this->event($this->getQueue($queue), new JobPushed($payload));
                 });

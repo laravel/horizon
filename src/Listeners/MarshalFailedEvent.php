@@ -6,6 +6,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Queue\Events\JobFailed as LaravelJobFailed;
 use Illuminate\Queue\Jobs\RedisJob;
 use Laravel\Horizon\Events\JobFailed;
+use Laravel\Horizon\Jobs\DatabaseJob;
 
 class MarshalFailedEvent
 {
@@ -35,12 +36,18 @@ class MarshalFailedEvent
      */
     public function handle(LaravelJobFailed $event)
     {
-        if (! $event->job instanceof RedisJob) {
+        $payload = match (true) {
+            $event->job instanceof RedisJob => $event->job->getReservedJob(),
+            $event->job instanceof DatabaseJob => $event->job->getRawBody(),
+            default => null,
+        };
+
+        if (is_null($payload)) {
             return;
         }
 
         $this->events->dispatch((new JobFailed(
-            $event->exception, $event->job, $event->job->getReservedJob()
+            $event->exception, $event->job, $payload
         ))->connection($event->connectionName)->queue($event->job->getQueue()));
     }
 }
