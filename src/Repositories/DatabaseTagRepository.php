@@ -150,7 +150,6 @@ class DatabaseTagRepository implements TagRepository
             ->all();
     }
 
-
     /**
      * Paginate the job IDs for a given tag.
      *

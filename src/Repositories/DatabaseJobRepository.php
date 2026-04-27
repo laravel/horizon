@@ -602,7 +602,6 @@ class DatabaseJobRepository implements JobRepository
             ->delete();
     }
 
-
     /**
      * Find a failed job by ID.
      *

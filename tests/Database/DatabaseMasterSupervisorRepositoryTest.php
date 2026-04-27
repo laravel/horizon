@@ -5,8 +5,8 @@ namespace Laravel\Horizon\Tests\Database;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\MasterSupervisor;
-use Laravel\Horizon\Tests\Database\Fakes\SupervisorWithFakePool as Supervisor;
 use Laravel\Horizon\SupervisorOptions;
+use Laravel\Horizon\Tests\Database\Fakes\SupervisorWithFakePool as Supervisor;
 
 class DatabaseMasterSupervisorRepositoryTest extends DatabaseTestCase
 {

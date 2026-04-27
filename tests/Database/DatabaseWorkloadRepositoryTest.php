@@ -5,8 +5,8 @@ namespace Laravel\Horizon\Tests\Database;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\WorkloadRepository;
-use Laravel\Horizon\Tests\Database\Fakes\SupervisorWithFakePool as Supervisor;
 use Laravel\Horizon\SupervisorOptions;
+use Laravel\Horizon\Tests\Database\Fakes\SupervisorWithFakePool as Supervisor;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
 
