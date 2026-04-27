@@ -48,9 +48,12 @@ class DatabaseWorkloadRepository implements WorkloadRepository
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
      * @return void
      */
-    public function __construct(QueueFactory $queue, WaitTimeCalculator $waitTime,
-                                MasterSupervisorRepository $masters, SupervisorRepository $supervisors)
-    {
+    public function __construct(
+        QueueFactory $queue,
+        WaitTimeCalculator $waitTime,
+        MasterSupervisorRepository $masters,
+        SupervisorRepository $supervisors,
+    ) {
         $this->queue = $queue;
         $this->masters = $masters;
         $this->waitTime = $waitTime;
@@ -60,7 +63,7 @@ class DatabaseWorkloadRepository implements WorkloadRepository
     /**
      * Get the current workload of each queue.
      *
-     * @return array
+     * @return array<int, array{"name": string, "length": int, "wait": int, "processes": int, "split_queues": null|array<int, array{"name": string, "wait": int, "length": int}>}>
      */
     public function get()
     {
@@ -93,7 +96,9 @@ class DatabaseWorkloadRepository implements WorkloadRepository
                     'processes' => $totalProcesses,
                     'split_queues' => $splitQueues,
                 ];
-            })->values()->toArray();
+            })
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -121,12 +126,14 @@ class DatabaseWorkloadRepository implements WorkloadRepository
      */
     private function processes()
     {
-        return collect($this->supervisors->all())->pluck('processes')->reduce(function ($final, $queues) {
-            foreach ($queues as $queue => $processes) {
-                $final[$queue] = isset($final[$queue]) ? $final[$queue] + $processes : $processes;
-            }
+        return collect($this->supervisors->all())
+            ->pluck('processes')
+            ->reduce(function ($final, $queues) {
+                foreach ($queues as $queue => $processes) {
+                    $final[$queue] = isset($final[$queue]) ? $final[$queue] + $processes : $processes;
+                }
 
-            return $final;
-        }, []);
+                return $final;
+            }, []);
     }
 }
