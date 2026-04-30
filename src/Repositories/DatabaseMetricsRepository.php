@@ -242,8 +242,8 @@ class DatabaseMetricsRepository implements MetricsRepository
             ]],
             ['key'],
             [
-                'throughput' => DB::raw('throughput + 1'),
                 'runtime' => DB::raw("(runtime * throughput + {$safeRuntime}) / (throughput + 1)"),
+                'throughput' => DB::raw('throughput + 1'),
             ]
         );
     }
