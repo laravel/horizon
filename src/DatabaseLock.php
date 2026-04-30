@@ -33,9 +33,10 @@ class DatabaseLock extends Lock
      */
     public function exists($key)
     {
-        $this->prune();
-
-        return $this->table()->where('key', $key)->exists();
+        return $this->table()
+            ->where('key', $key)
+            ->where('expires_at', '>', CarbonImmutable::now()->getTimestamp())
+            ->exists();
     }
 
     /**
