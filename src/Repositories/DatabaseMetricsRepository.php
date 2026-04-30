@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\ConnectionResolverInterface;
+use Illuminate\Support\Facades\DB;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
 use Laravel\Horizon\WaitTimeCalculator;
@@ -230,26 +231,21 @@ class DatabaseMetricsRepository implements MetricsRepository
      */
     protected function incrementMetric($key, $type, $runtime)
     {
-        $this->connection()->transaction(function () use ($key, $type, $runtime) {
-            $current = $this->metricsTable()->where('key', $key)->lockForUpdate()->first();
+        $safeRuntime = number_format($runtime, 6, '.', '');
 
-            if ($current) {
-                $newThroughput = $current->throughput + 1;
-                $newRuntime = (($current->runtime * $current->throughput) + $runtime) / $newThroughput;
-
-                $this->metricsTable()->where('key', $key)->update([
-                    'throughput' => $newThroughput,
-                    'runtime' => $newRuntime,
-                ]);
-            } else {
-                $this->metricsTable()->insert([
-                    'key' => $key,
-                    'type' => $type,
-                    'throughput' => 1,
-                    'runtime' => $runtime,
-                ]);
-            }
-        });
+        $this->metricsTable()->upsert(
+            [[
+                'key' => $key,
+                'type' => $type,
+                'throughput' => 1,
+                'runtime' => $runtime,
+            ]],
+            ['key'],
+            [
+                'throughput' => DB::raw('throughput + 1'),
+                'runtime' => DB::raw("(runtime * throughput + {$safeRuntime}) / (throughput + 1)"),
+            ]
+        );
     }
 
     /**
