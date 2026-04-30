@@ -476,15 +476,17 @@ class DatabaseJobRepository implements JobRepository
      */
     public function migrated($connection, $queue, Collection $payloads)
     {
-        $time = $this->microtime();
-
-        foreach ($payloads as $payload) {
-            $this->table()->where('id', $payload->id())->update([
-                'status' => 'pending',
-                'payload' => $payload->value,
-                'updated_at' => $time,
-            ]);
+        if ($payloads->isEmpty()) {
+            return;
         }
+
+        $ids = $payloads->map(fn ($payload) => $payload->id())->all();
+
+        $this->table()->whereIn('id', $ids)->update([
+            'status' => 'pending',
+            'delay' => 0,
+            'updated_at' => $this->microtime(),
+        ]);
     }
 
     /**
