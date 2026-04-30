@@ -201,4 +201,20 @@ class DatabaseJobRepositoryTest extends DatabaseTestCase
         $this->assertNull(DB::table('horizon_jobs')->where('id', 1)->first());
         $this->assertNotNull(DB::table('horizon_jobs')->where('id', 2)->first());
     }
+
+    public function test_it_clears_delay_when_job_is_migrated()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('database', 'default', $payload);
+        $repository->reserved('database', 'default', $payload);
+        $repository->released('database', 'default', $payload, 60);
+        $repository->migrated('database', 'default', collect([$payload]));
+
+        $job = $repository->getJobs([1])[0];
+
+        $this->assertSame('pending', $job->status);
+        $this->assertSame(0, (int) $job->delay);
+    }
 }
