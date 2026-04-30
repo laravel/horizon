@@ -571,11 +571,14 @@ class DatabaseJobRepository implements JobRepository
      */
     public function trimRecentJobs()
     {
-        $this->table()
+        $query = $this->table()
             ->where('status', '!=', 'failed')
             ->where('monitored', false)
-            ->where('created_at', '<', $this->cutoffTime($this->recentJobExpires))
-            ->delete();
+            ->where('created_at', '<', $this->cutoffTime($this->recentJobExpires));
+
+        do {
+            $deleted = $query->limit(1000)->delete();
+        } while ($deleted !== 0);
     }
 
     /**
@@ -585,10 +588,13 @@ class DatabaseJobRepository implements JobRepository
      */
     public function trimFailedJobs()
     {
-        $this->table()
+        $query = $this->table()
             ->where('status', 'failed')
-            ->where('failed_at', '<', $this->cutoffTime($this->failedJobExpires))
-            ->delete();
+            ->where('failed_at', '<', $this->cutoffTime($this->failedJobExpires));
+
+        do {
+            $deleted = $query->limit(1000)->delete();
+        } while ($deleted !== 0);
     }
 
     /**
@@ -598,10 +604,13 @@ class DatabaseJobRepository implements JobRepository
      */
     public function trimMonitoredJobs()
     {
-        $this->table()
+        $query = $this->table()
             ->where('monitored', true)
-            ->where('completed_at', '<', $this->cutoffTime($this->monitoredJobExpires))
-            ->delete();
+            ->where('completed_at', '<', $this->cutoffTime($this->monitoredJobExpires));
+
+        do {
+            $deleted = $query->limit(1000)->delete();
+        } while ($deleted !== 0);
     }
 
     /**
