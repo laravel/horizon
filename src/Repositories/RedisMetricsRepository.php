@@ -4,7 +4,6 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
-use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
 use Laravel\Horizon\LuaScripts;
@@ -387,29 +386,22 @@ class RedisMetricsRepository implements MetricsRepository
      */
     public function clear()
     {
+        $jobs = $this->measuredJobs();
+        $queues = $this->measuredQueues();
+
         $this->forget('last_snapshot_at');
         $this->forget('measured_jobs');
         $this->forget('measured_queues');
         $this->forget('metrics:snapshot');
 
-        foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
-            $cursor = null;
+        foreach ($jobs as $job) {
+            $this->forget('job:'.$job);
+            $this->forget('snapshot:job:'.$job);
+        }
 
-            do {
-                $scanResult = $this->connection()->scan(
-                    $cursor ?? 0, ['match' => config('horizon.prefix').$pattern]
-                );
-
-                if (! is_array($scanResult)) {
-                    break;
-                }
-
-                [$cursor, $keys] = $scanResult;
-
-                foreach ($keys ?? [] as $key) {
-                    $this->forget(Str::after($key, config('horizon.prefix')));
-                }
-            } while ($cursor > 0);
+        foreach ($queues as $queue) {
+            $this->forget('queue:'.$queue);
+            $this->forget('snapshot:queue:'.$queue);
         }
     }
 
