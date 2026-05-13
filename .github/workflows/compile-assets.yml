@@ -7,7 +7,7 @@ permissions:
 
 jobs:
   compile:
-    uses: laravel/.github/.github/workflows/compile-assets.yml@main
+    uses: laravel/.github/.github/workflows/compile-assets.yml@9c15e86fffce728fb6c50ebeae24fd63e98f4d1d # main
     with:
       cmd: build
       build_path: "dist/"
