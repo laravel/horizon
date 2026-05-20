@@ -324,6 +324,10 @@ class RedisMetricsRepository implements MetricsRepository
             $trans->del($key);
         });
 
+        if (! is_array($responses[0])) {
+            return ['throughput' => null, 'runtime' => null];
+        }
+
         $snapshot = array_values($responses[0]);
 
         return [
