@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Tests\Feature;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Horizon\Contracts\MetricsRepository;
+use Laravel\Horizon\Repositories\RedisMetricsRepository;
 use Laravel\Horizon\Stopwatch;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Mockery;
@@ -190,6 +191,24 @@ class MetricsTest extends IntegrationTest
         $this->assertSame(
             0.0, resolve(MetricsRepository::class)->jobsProcessedPerMinute()
         );
+    }
+
+    public function test_snapshot_does_not_fail_when_hmget_returns_null()
+    {
+        $connection = Mockery::mock();
+        $connection->shouldReceive('smembers')->with('measured_jobs')->andReturn(['job:Foo']);
+        $connection->shouldReceive('smembers')->with('measured_queues')->andReturn([]);
+        $connection->shouldReceive('transaction')->andReturn([null, 0]);
+        $connection->shouldReceive('zadd');
+        $connection->shouldReceive('zremrangebyrank');
+        $connection->shouldReceive('set');
+
+        $repository = Mockery::mock(RedisMetricsRepository::class.'[connection]', [app('redis')]);
+        $repository->shouldReceive('connection')->andReturn($connection);
+
+        $repository->snapshot();
+
+        $this->assertTrue(true);
     }
 
     public function test_only_past_24_snapshots_are_retained()
