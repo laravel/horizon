@@ -15,6 +15,7 @@
             return {
                 ready: false,
                 retrying: false,
+                copied: false,
                 job: {}
             };
         },
@@ -88,6 +89,110 @@
                 } catch (err) {
                     return data;
                 }
+            },
+
+
+            /**
+             * Safely stringify a value to pretty JSON, falling back to String() on error.
+             */
+            safeStringify(value) {
+                try {
+                    return JSON.stringify(value, null, 2);
+                } catch (err) {
+                    return String(value);
+                }
+            },
+
+
+            /**
+             * Build a markdown representation of the failed job.
+             */
+            buildMarkdown() {
+                const job = this.job;
+                const payload = job.payload || {};
+                const tags = (payload.tags && payload.tags.length) ? payload.tags.join(', ') : '';
+                const data = this.prettyPrintJob(payload.data);
+                const context = this.prettyPrintJob(job.context);
+
+                const lines = [];
+                lines.push(`# Failed Job: ${job.name}`);
+                lines.push('');
+                lines.push('## Details');
+                lines.push(`- **ID:** ${job.id}`);
+                lines.push(`- **Connection:** ${job.connection}`);
+                lines.push(`- **Queue:** ${job.queue}`);
+                lines.push(`- **Attempts:** ${payload.attempts}`);
+                lines.push(`- **Retries:** ${(job.retried_by || []).length}`);
+
+                if (payload.retry_of) {
+                    lines.push(`- **Retry of:** ${payload.retry_of}`);
+                }
+
+                if (tags) {
+                    lines.push(`- **Tags:** ${tags}`);
+                }
+
+                if (data && data.batchId) {
+                    lines.push(`- **Batch:** ${data.batchId}`);
+                }
+
+                lines.push(`- **Pushed:** ${this.readableTimestamp(payload.pushedAt)}`);
+                lines.push(`- **Failed:** ${this.readableTimestamp(job.failed_at)}`);
+                lines.push('');
+                lines.push('## Exception');
+                lines.push('```');
+                lines.push(job.exception);
+                lines.push('```');
+                lines.push('');
+                lines.push('## Exception Context');
+                lines.push('```json');
+                lines.push(this.safeStringify(context));
+                lines.push('```');
+                lines.push('');
+                lines.push('## Data');
+                lines.push('```json');
+                lines.push(this.safeStringify(data));
+                lines.push('```');
+
+                return lines.join('\n');
+            },
+
+
+            /**
+             * Copy a string to the clipboard, with a fallback for non-secure contexts.
+             */
+            writeToClipboard(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    return navigator.clipboard.writeText(text);
+                }
+
+                return new Promise((resolve, reject) => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+
+                    try {
+                        document.execCommand('copy') ? resolve() : reject();
+                    } catch (err) {
+                        reject(err);
+                    } finally {
+                        document.body.removeChild(textarea);
+                    }
+                });
+            },
+
+
+            /**
+             * Copy a markdown representation of the failed job to the clipboard.
+             */
+            copyAsMarkdown() {
+                this.writeToClipboard(this.buildMarkdown()).then(() => {
+                    this.copied = true;
+                    setTimeout(() => { this.copied = false; }, 2000);
+                });
             }
         }
     }
@@ -102,13 +207,26 @@
                 <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
                 <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
 
-                <button class="btn btn-primary" v-on:click.prevent="retry(job.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor" :class="{spin: retrying}">
-                        <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
-                    </svg>
+                <div class="d-flex align-items-center" v-if="ready">
+                    <button class="btn btn-secondary me-2" v-on:click.prevent="copyAsMarkdown" :title="copied ? 'Copied!' : 'Copy job details as Markdown'">
+                        <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor">
+                            <path d="M7 3a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2V5a2 2 0 00-2-2H7zM3 7a2 2 0 012-2v10a4 4 0 004 4h6a2 2 0 01-2 2H9a6 6 0 01-6-6V7z" />
+                        </svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-8 8a1 1 0 01-1.42 0l-4-4a1 1 0 011.42-1.42L8 12.59l7.29-7.3a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
 
-                    Retry
-                </button>
+                        {{ copied ? 'Copied!' : 'Copy as Markdown' }}
+                    </button>
+
+                    <button class="btn btn-primary" v-on:click.prevent="retry(job.id)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor" :class="{spin: retrying}">
+                            <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
+                        </svg>
+
+                        Retry
+                    </button>
+                </div>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
