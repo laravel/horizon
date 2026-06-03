@@ -402,7 +402,7 @@ class RedisMetricsRepository implements MetricsRepository
 
             do {
                 $scanResult = $this->connection()->scan(
-                    $cursor ?? 0, ['match' => $this->scanMatchPattern($pattern)]
+                    $cursor ?? 0, ['match' => $this->snapshotPatternToMatch($pattern)]
                 );
 
                 if (! is_array($scanResult)) {
@@ -424,7 +424,7 @@ class RedisMetricsRepository implements MetricsRepository
      * @param  string  $pattern
      * @return string
      */
-    protected function scanMatchPattern($pattern)
+    protected function snapshotPatternToMatch($pattern)
     {
         return $this->usesPhpRedisScanPrefix()
             ? $pattern
