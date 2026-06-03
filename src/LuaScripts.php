@@ -5,6 +5,26 @@ namespace Laravel\Horizon;
 class LuaScripts
 {
     /**
+     * Get the Lua script for atomically draining pending commands.
+     *
+     * KEYS[1] - The name of the command queue
+     *
+     * @return string
+     */
+    public static function pendingCommands()
+    {
+        return <<<'LUA'
+            local commands = redis.call('lrange', KEYS[1], 0, -1)
+
+            if #commands > 0 then
+                redis.call('del', KEYS[1])
+            end
+
+            return commands
+LUA;
+    }
+
+    /**
      * Update the metrics for a job.
      *
      * KEYS[1] - The name of the key being updated

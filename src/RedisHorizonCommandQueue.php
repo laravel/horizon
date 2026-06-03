@@ -4,12 +4,9 @@ namespace Laravel\Horizon;
 
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Laravel\Horizon\Contracts\HorizonCommandQueue;
-use Laravel\Horizon\Repositories\UsesClusterAwarePipeline;
 
 class RedisHorizonCommandQueue implements HorizonCommandQueue
 {
-    use UsesClusterAwarePipeline;
-
     /**
      * The Redis connection instance.
      *
@@ -52,19 +49,9 @@ class RedisHorizonCommandQueue implements HorizonCommandQueue
      */
     public function pending($name)
     {
-        $length = $this->connection()->llen('commands:'.$name);
-
-        if ($length < 1) {
-            return [];
-        }
-
-        $results = $this->pipeline(function ($pipe) use ($name, $length) {
-            $pipe->lrange('commands:'.$name, 0, $length - 1);
-
-            $pipe->ltrim('commands:'.$name, $length, -1);
-        });
-
-        return collect($results[0])
+        return collect($this->connection()->eval(
+            LuaScripts::pendingCommands(), 1, 'commands:'.$name
+        ))
             ->map(fn ($result) => (object) json_decode($result, true))
             ->all();
     }
