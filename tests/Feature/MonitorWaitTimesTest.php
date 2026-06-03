@@ -6,7 +6,10 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Event;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
+use Laravel\Horizon\Events\SupervisorLooped;
 use Laravel\Horizon\Listeners\MonitorWaitTimes;
+use Laravel\Horizon\Supervisor;
+use Laravel\Horizon\SupervisorOptions;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
@@ -18,15 +21,15 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::fake();
 
         $calc = Mockery::mock(WaitTimeCalculator::class);
-        $calc->shouldReceive('calculate')->andReturn([
+        $calc->shouldReceive('calculateForConnection')->with('redis')->andReturn([
             'redis:test-queue' => 10,
             'redis:test-queue-2' => 80,
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
-        $listener = new MonitorWaitTimes(app(MetricsRepository::class));
+        $listener = new MonitorWaitTimes($this->metricsRepositoryAcquiringLock());
 
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertDispatched(LongWaitDetected::class, function ($event) {
             return $event->connection == 'redis' && $event->queue == 'test-queue-2';
@@ -40,14 +43,14 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::fake();
 
         $calc = Mockery::mock(WaitTimeCalculator::class);
-        $calc->expects('calculate')->andReturn([
+        $calc->expects('calculateForConnection')->with('redis')->andReturn([
             'redis:ignore-queue' => 10,
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
-        $listener = new MonitorWaitTimes(app(MetricsRepository::class));
+        $listener = new MonitorWaitTimes($this->metricsRepositoryAcquiringLock());
 
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertNotDispatched(LongWaitDetected::class);
     }
@@ -59,16 +62,16 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::fake();
 
         $calc = Mockery::mock(WaitTimeCalculator::class);
-        $calc->expects('calculate')->never();
+        $calc->expects('calculateForConnection')->never();
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
         $metrics = Mockery::mock(MetricsRepository::class);
-        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->andReturnFalse();
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->with('redis')->andReturnFalse();
         $this->app->instance(MetricsRepository::class, $metrics);
 
         $listener = new MonitorWaitTimes($metrics);
 
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertNotDispatched(LongWaitDetected::class);
     }
@@ -80,7 +83,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::fake();
 
         $calc = Mockery::mock(WaitTimeCalculator::class);
-        $calc->expects('calculate')->never();
+        $calc->expects('calculateForConnection')->never();
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
         $metrics = Mockery::mock(MetricsRepository::class);
@@ -90,7 +93,7 @@ class MonitorWaitTimesTest extends IntegrationTest
         $listener = new MonitorWaitTimes($metrics);
         $listener->lastMonitored = CarbonImmutable::now(); // Too soon
 
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertNotDispatched(LongWaitDetected::class);
     }
@@ -102,25 +105,25 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::fake();
 
         $calc = Mockery::mock(WaitTimeCalculator::class);
-        $calc->expects('calculate')->once()->andReturn([
+        $calc->expects('calculateForConnection')->once()->with('redis')->andReturn([
             'redis:default' => 70,
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
         $metrics = Mockery::mock(MetricsRepository::class);
-        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->andReturnTrue();
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->with('redis')->andReturnTrue();
         $this->app->instance(MetricsRepository::class, $metrics);
 
         $listener = new MonitorWaitTimes($metrics);
         $listener->lastMonitored = CarbonImmutable::now(); // Too soon
 
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertNotDispatched(LongWaitDetected::class);
 
         CarbonImmutable::setTestNow(now()->addMinutes(2)); // Simulate time passing
 
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertDispatched(LongWaitDetected::class);
     }
@@ -132,20 +135,36 @@ class MonitorWaitTimesTest extends IntegrationTest
         Event::fake();
 
         $calc = Mockery::mock(WaitTimeCalculator::class);
-        $calc->expects('calculate')->once()->andReturn([
+        $calc->expects('calculateForConnection')->once()->with('redis')->andReturn([
             'redis:default' => 70,
         ]);
         $this->app->instance(WaitTimeCalculator::class, $calc);
 
         $metrics = Mockery::mock(MetricsRepository::class);
-        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->andReturnTrue();
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->with('redis')->andReturnTrue();
         $this->app->instance(MetricsRepository::class, $metrics);
 
         $listener = new MonitorWaitTimes($metrics);
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
         // Call it again to ensure it doesn't execute twice
-        $listener->handle();
+        $listener->handle($this->supervisorLooped());
 
         Event::assertDispatchedTimes(LongWaitDetected::class, 1);
+    }
+
+    protected function metricsRepositoryAcquiringLock()
+    {
+        $metrics = Mockery::mock(MetricsRepository::class);
+        $metrics->shouldReceive('acquireWaitTimeMonitorLock')->once()->with('redis')->andReturnTrue();
+
+        return $metrics;
+    }
+
+    protected function supervisorLooped()
+    {
+        $supervisor = Mockery::mock(Supervisor::class);
+        $supervisor->options = new SupervisorOptions('supervisor', 'redis');
+
+        return new SupervisorLooped($supervisor);
     }
 }

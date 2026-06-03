@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Listeners;
 use Carbon\CarbonImmutable;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Events\LongWaitDetected;
+use Laravel\Horizon\Events\SupervisorLooped;
 use Laravel\Horizon\WaitTimeCalculator;
 
 class MonitorWaitTimes
@@ -37,18 +38,21 @@ class MonitorWaitTimes
     /**
      * Handle the event.
      *
+     * @param  \Laravel\Horizon\Events\SupervisorLooped  $event
      * @return void
      */
-    public function handle()
+    public function handle(SupervisorLooped $event)
     {
-        if (! $this->dueToMonitor()) {
+        $connection = $event->supervisor->options->connection;
+
+        if (! $this->dueToMonitor($connection)) {
             return;
         }
 
         // Here we will calculate the wait time in seconds for each of the queues that
         // the application is working. Then, we will filter the results to find the
         // queues with the longest wait times and raise events for each of these.
-        $results = app(WaitTimeCalculator::class)->calculate();
+        $results = app(WaitTimeCalculator::class)->calculateForConnection($connection);
 
         $long = collect($results)->filter(function ($wait, $queue) {
             return config("horizon.waits.{$queue}") !== 0
@@ -68,18 +72,19 @@ class MonitorWaitTimes
     /**
      * Determine if monitoring is due.
      *
+     * @param  string  $connection
      * @return bool
      */
-    protected function dueToMonitor()
+    protected function dueToMonitor($connection)
     {
         // We will keep track of the amount of time between attempting to acquire the
-        // lock to monitor the wait times. We only want a single supervisor to run
-        // the checks on a given interval so that we don't fire too many events.
+        // lock to monitor the wait times. We only want a single supervisor for each
+        // connection to run the checks on a given interval.
         if (! $this->timeToMonitor()) {
             return false;
         }
 
-        $lock = $this->metrics->acquireWaitTimeMonitorLock();
+        $lock = $this->metrics->acquireWaitTimeMonitorLock($connection);
 
         if (! $lock) {
             return false;

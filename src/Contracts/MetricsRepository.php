@@ -122,9 +122,10 @@ interface MetricsRepository
     /**
      * Attempt to acquire a lock to monitor the queue wait times.
      *
+     * @param  string|null  $connection
      * @return bool
      */
-    public function acquireWaitTimeMonitorLock();
+    public function acquireWaitTimeMonitorLock($connection = null);
 
     /**
      * Clear the metrics for a key.

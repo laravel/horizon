@@ -367,11 +367,12 @@ class RedisMetricsRepository implements MetricsRepository
     /**
      * Attempt to acquire a lock to monitor the queue wait times.
      *
+     * @param  string|null  $connection
      * @return bool
      */
-    public function acquireWaitTimeMonitorLock()
+    public function acquireWaitTimeMonitorLock($connection = null)
     {
-        return app(Lock::class)->get('monitor:time-to-clear');
+        return app(Lock::class)->get('monitor:time-to-clear'.($connection ? ':'.$connection : ''));
     }
 
     /**

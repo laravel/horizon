@@ -60,6 +60,26 @@ class WaitTimeCalculator
     }
 
     /**
+     * Calculate the time to clear per queue for a given connection in seconds.
+     *
+     * @param  string  $connection
+     * @param  string|null  $queue
+     * @return array
+     */
+    public function calculateForConnection($connection, $queue = null)
+    {
+        $supervisors = collect($this->supervisors->all());
+
+        return $this->calculateQueues(
+            $this->queueNames(
+                $supervisors->filter(fn ($supervisor) => $this->connectionFor($supervisor) === $connection),
+                $queue
+            ),
+            $supervisors
+        );
+    }
+
+    /**
      * Calculate the time to clear per queue in seconds.
      *
      * @param  string|null  $queue
@@ -67,10 +87,23 @@ class WaitTimeCalculator
      */
     public function calculate($queue = null)
     {
-        $queues = $this->queueNames(
-            $supervisors = collect($this->supervisors->all()), $queue
-        );
+        $supervisors = collect($this->supervisors->all());
 
+        return $this->calculateQueues(
+            $this->queueNames($supervisors, $queue),
+            $supervisors
+        );
+    }
+
+    /**
+     * Calculate the time to clear for the given queues.
+     *
+     * @param  \Illuminate\Support\Collection  $queues
+     * @param  \Illuminate\Support\Collection  $supervisors
+     * @return array
+     */
+    protected function calculateQueues($queues, $supervisors)
+    {
         return $queues->mapWithKeys(function ($queue) use ($supervisors) {
             $totalProcesses = $this->totalProcessesFor($supervisors, $queue);
 
@@ -92,7 +125,7 @@ class WaitTimeCalculator
      */
     protected function queueNames($supervisors, $queue = null)
     {
-        $queues = $supervisors->map(fn ($supervisor) => array_keys($supervisor->processes))
+        $queues = $supervisors->map(fn ($supervisor) => array_keys($this->processesFor($supervisor)))
             ->collapse()
             ->unique()
             ->values();
@@ -110,8 +143,44 @@ class WaitTimeCalculator
     protected function totalProcessesFor($allSupervisors, $queue)
     {
         return $allSupervisors->sum(function ($supervisor) use ($queue) {
-            return $supervisor->processes[$queue] ?? 0;
+            $processes = $this->processesFor($supervisor);
+
+            return $processes[$queue] ?? 0;
         });
+    }
+
+    /**
+     * Get the queue connection for the given supervisor record.
+     *
+     * @param  object  $supervisor
+     * @return string|null
+     */
+    protected function connectionFor($supervisor)
+    {
+        $options = $supervisor->options ?? null;
+
+        return is_array($options) ? ($options['connection'] ?? null) : ($options->connection ?? null);
+    }
+
+    /**
+     * Get the queue process counts for the given supervisor.
+     *
+     * @param  object  $supervisor
+     * @return array
+     */
+    protected function processesFor($supervisor)
+    {
+        if (isset($supervisor->processes)) {
+            return (array) $supervisor->processes;
+        }
+
+        if (isset($supervisor->processPools, $supervisor->options)) {
+            return collect($supervisor->processPools)
+                ->mapWithKeys(fn ($pool) => [$supervisor->options->connection.':'.$pool->queue() => count($pool->processes())])
+                ->all();
+        }
+
+        return [];
     }
 
     /**

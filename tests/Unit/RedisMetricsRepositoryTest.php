@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Tests\Unit;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Laravel\Horizon\Lock;
 use Laravel\Horizon\Repositories\RedisMetricsRepository;
 use Laravel\Horizon\Tests\UnitTest;
 use Mockery;
@@ -85,6 +86,17 @@ class RedisMetricsRepositoryTest extends UnitTest
         );
 
         $this->assertFalse($repository->detectsPhpRedisScanPrefix());
+    }
+
+    public function test_wait_time_monitor_lock_is_scoped_by_connection()
+    {
+        $lock = Mockery::mock(Lock::class);
+        $lock->shouldReceive('get')->once()->with('monitor:time-to-clear:redis')->andReturnTrue();
+        Container::getInstance()->instance(Lock::class, $lock);
+
+        $repository = new RedisMetricsRepository(Mockery::mock(RedisFactory::class));
+
+        $this->assertTrue($repository->acquireWaitTimeMonitorLock('redis'));
     }
 
     protected function connectionForClearingMetrics(array $patterns)
