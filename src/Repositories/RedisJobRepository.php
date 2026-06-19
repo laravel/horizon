@@ -4,7 +4,6 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
@@ -496,34 +495,13 @@ class RedisJobRepository implements JobRepository
      */
     protected function updateRetryInformationOnParent(JobPayload $payload, $failed)
     {
-        if ($retries = $this->connection()->hget($payload->retryOf(), 'retried_by')) {
-            $retries = $this->updateRetryStatus(
-                $payload, json_decode($retries, true), $failed
-            );
-
-            $this->connection()->hset(
-                $payload->retryOf(), 'retried_by', json_encode($retries)
-            );
-        }
-    }
-
-    /**
-     * Update the retry status of a job in a retry array.
-     *
-     * @param  \Laravel\Horizon\JobPayload  $payload
-     * @param  array  $retries
-     * @param  bool  $failed
-     * @return array
-     */
-    protected function updateRetryStatus(JobPayload $payload, $retries, $failed)
-    {
-        return collect($retries)
-            ->map(function ($retry) use ($payload, $failed) {
-                return $retry['id'] === $payload->id()
-                    ? Arr::set($retry, 'status', $failed ? 'failed' : 'completed')
-                    : $retry;
-            })
-            ->all();
+        $this->connection()->eval(
+            LuaScripts::updateRetryStatus(),
+            1,
+            $payload->retryOf(),
+            $payload->id(),
+            $failed ? 'failed' : 'completed'
+        );
     }
 
     /**
@@ -701,15 +679,13 @@ class RedisJobRepository implements JobRepository
      */
     public function storeRetryReference($id, $retryId)
     {
-        $retries = json_decode($this->connection()->hget($id, 'retried_by') ?: '[]');
-
-        $retries[] = [
-            'id' => $retryId,
-            'status' => 'pending',
-            'retried_at' => CarbonImmutable::now()->getTimestamp(),
-        ];
-
-        $this->connection()->hmset($id, ['retried_by' => json_encode($retries)]);
+        $this->connection()->eval(
+            LuaScripts::storeRetryReference(),
+            1,
+            $id,
+            $retryId,
+            CarbonImmutable::now()->getTimestamp()
+        );
     }
 
     /**
