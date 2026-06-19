@@ -65,7 +65,11 @@ trait EventMap
         ],
 
         Events\WorkerProcessRestarting::class => [
-            //
+            Listeners\LogWorkerProcessRestart::class,
+        ],
+
+        Events\UnableToLaunchProcess::class => [
+            Listeners\LogUnableToLaunchProcess::class,
         ],
 
         Events\SupervisorProcessRestarting::class => [
