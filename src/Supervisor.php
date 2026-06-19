@@ -209,11 +209,6 @@ class Supervisor implements Pausable, Restartable, Terminable
     {
         $this->working = false;
 
-        // We will mark this supervisor as terminating so that any user interface can
-        // correctly show the supervisor's status. Then, we will scale the process
-        // pools down to zero workers to gracefully terminate them all out here.
-        app(SupervisorRepository::class)->forget($this->name);
-
         $this->processPools->each(function ($pool) {
             $pool->processes()->each(function ($process) {
                 $process->terminate();
@@ -225,6 +220,11 @@ class Supervisor implements Pausable, Restartable, Terminable
                 sleep(1);
             }
         }
+
+        // Remove the supervisor from the repository after all workers have
+        // stopped, so that horizon:purge does not flag them as orphans
+        // and force-kill them during graceful shutdown.
+        app(SupervisorRepository::class)->forget($this->name);
 
         $this->exit($status);
     }
