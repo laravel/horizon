@@ -111,19 +111,6 @@ class Horizon
     }
 
     /**
-     * Helper method to register the Horizon Artisan commands in the local environment.
-     * Should be called from the `boot` method of an application service provider.
-     *
-     * @return void
-     */
-    public static function registerDevCommands()
-    {
-        if (class_exists(\Illuminate\Foundation\DevCommands::class)) {
-            \Illuminate\Foundation\DevCommands::artisan('horizon', 'horizon');
-        }
-    }
-
-    /**
      * Configure the Horizon Redis connection for a cluster.
      *
      * @param  array  $config
@@ -296,5 +283,17 @@ class Horizon
         static::$smsNumber = $number;
 
         return new static;
+    }
+
+    /**
+     * Register the Horizon dev commands.
+     *
+     * @return void
+     */
+    public static function registerDevCommands()
+    {
+        if (class_exists(\Illuminate\Foundation\DevCommands::class)) {
+            \Illuminate\Foundation\DevCommands::artisan('horizon', 'horizon');
+        }
     }
 }
