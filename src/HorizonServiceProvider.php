@@ -170,6 +170,8 @@ class HorizonServiceProvider extends ServiceProvider
         $this->configure();
         $this->registerServices();
         $this->registerQueueConnectors();
+
+        Horizon::registerDevCommands();
     }
 
     /**
