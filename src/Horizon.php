@@ -66,6 +66,13 @@ class Horizon
     ];
 
     /**
+     * The nonce to use for style and script tags
+     *
+     * @var string
+     */
+    public static $nonceAttribute = '';
+
+    /**
      * Determine if the given request can access the Horizon dashboard.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -189,10 +196,12 @@ class Horizon
             throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
         }
 
+        $nonce_attribute = static::$nonceAttribute;
+
         return new HtmlString(<<<HTML
-            <style data-scheme="light">{$light}</style>
-            <style data-scheme="dark">{$dark}</style>
-            <style>{$app}</style>
+            <style data-scheme="light"{$nonce_attribute}>{$light}</style>
+            <style data-scheme="dark"{$nonce_attribute}>{$dark}</style>
+            <style{$nonce_attribute}>{$app}</style>
             HTML);
     }
 
@@ -209,8 +218,10 @@ class Horizon
 
         $horizon = Js::from(static::scriptVariables());
 
+        $nonce_attribute = static::$nonceAttribute;
+
         return new HtmlString(<<<HTML
-            <script type="module">
+            <script type="module"{$nonce_attribute}>
                 window.Horizon = {$horizon};
                 {$js}
             </script>
@@ -295,5 +306,18 @@ class Horizon
         if (class_exists(\Illuminate\Foundation\DevCommands::class)) {
             \Illuminate\Foundation\DevCommands::artisan('horizon', 'horizon');
         }
+    }
+
+    /**
+     * Set nonce to use for style and script tags for strict CSP compatibility.
+     *
+     * @param  string  $nonce
+     * @return static
+     */
+    public static function cspNonce($nonce)
+    {
+        static::$nonceAttribute = " nonce=\"{$nonce}\"";
+
+        return new static;
     }
 }
