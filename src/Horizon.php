@@ -66,7 +66,7 @@ class Horizon
     ];
 
     /**
-     * The nonce to use for style and script tags
+     * The nonce to use for style and script tags.
      *
      * @var string
      */
