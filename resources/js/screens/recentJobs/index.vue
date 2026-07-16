@@ -13,7 +13,9 @@
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
-                jobs: []
+                jobs: [],
+                jobId: '',
+                findingJob: false,
             };
         },
 
@@ -44,6 +46,7 @@
                 this.updatePageTitle();
 
                 this.page = 1;
+                this.jobId = '';
 
                 this.loadJobs();
             },
@@ -57,6 +60,63 @@
 
 
         methods: {
+            /**
+             * Find a retained job by its ID.
+             */
+            findJob() {
+                var jobId = this.jobId.trim();
+
+                if (!jobId || this.findingJob) {
+                    return;
+                }
+
+                this.findingJob = true;
+
+                this.$http.get(Horizon.basePath + '/api/jobs/' + encodeURIComponent(jobId))
+                    .then(response => {
+                        if (!response.data.id) {
+                            this.showJobSearchError('The job could not be found. It may have expired according to your trim configuration.');
+
+                            return;
+                        }
+
+                        if (response.data.status === 'failed') {
+                            this.$router.push({
+                                name: 'failed-jobs-preview',
+                                params: { jobId: response.data.id },
+                            });
+
+                            return;
+                        }
+
+                        this.$router.push({
+                            name: 'job-preview',
+                            params: {
+                                jobId: response.data.id,
+                                type: ['pending', 'reserved'].includes(response.data.status)
+                                    ? 'pending'
+                                    : (this.$route.params.type === 'silenced' ? 'silenced' : 'completed'),
+                            },
+                        });
+                    })
+                    .catch(() => {
+                        this.showJobSearchError('The job could not be loaded. Please try again.');
+                    })
+                    .finally(() => {
+                        this.findingJob = false;
+                    });
+            },
+
+
+            /**
+             * Show an error from the job search.
+             */
+            showJobSearchError(message) {
+                this.$root.alert.message = message;
+                this.$root.alert.type = 'error';
+            },
+
+
             /**
              * Load the jobs of the given tag.
              */
@@ -154,6 +214,16 @@
                 <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
+
+                <form class="form-control-with-icon" @submit.prevent="findJob">
+                    <button type="submit" class="icon-wrapper border-0 bg-transparent p-0" title="Find Job" :disabled="findingJob">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <input type="search" class="form-control w-100" v-model="jobId" placeholder="Find Job by ID" aria-label="Find Job by ID" :disabled="findingJob">
+                </form>
             </div>
 
             <div v-if="!ready"
