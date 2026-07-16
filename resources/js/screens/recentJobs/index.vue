@@ -95,7 +95,7 @@
                                 jobId: response.data.id,
                                 type: ['pending', 'reserved'].includes(response.data.status)
                                     ? 'pending'
-                                    : (this.$route.params.type === 'silenced' ? 'silenced' : 'completed'),
+                                    : (response.data.payload?.silenced ? 'silenced' : 'completed'),
                             },
                         });
                     })
@@ -215,9 +215,9 @@
                 <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
 
-                <form class="form-control-with-icon" @submit.prevent="findJob">
-                    <button type="submit" class="icon-wrapper border-0 bg-transparent p-0" title="Find Job" :disabled="findingJob">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                <form class="form-control-with-icon" role="search" @submit.prevent="findJob">
+                    <button type="submit" class="icon-wrapper border-0 bg-transparent p-0" title="Find Job" aria-label="Find Job" :disabled="findingJob">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" aria-hidden="true" focusable="false">
                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
                         </svg>
                     </button>
