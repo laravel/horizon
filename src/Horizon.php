@@ -66,7 +66,7 @@ class Horizon
     ];
 
     /**
-     * The nonce to use for style and script tags.
+     * The CSP nonce to use for style and script tags.
      *
      * @var string
      */
@@ -196,12 +196,12 @@ class Horizon
             throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
         }
 
-        $nonce_attribute = static::$nonceAttribute;
+        $nonceAttribute = static::$nonceAttribute;
 
         return new HtmlString(<<<HTML
-            <style data-scheme="light"{$nonce_attribute}>{$light}</style>
-            <style data-scheme="dark"{$nonce_attribute}>{$dark}</style>
-            <style{$nonce_attribute}>{$app}</style>
+            <style data-scheme="light"{$nonceAttribute}>{$light}</style>
+            <style data-scheme="dark"{$nonceAttribute}>{$dark}</style>
+            <style{$nonceAttribute}>{$app}</style>
             HTML);
     }
 
@@ -218,10 +218,10 @@ class Horizon
 
         $horizon = Js::from(static::scriptVariables());
 
-        $nonce_attribute = static::$nonceAttribute;
+        $nonceAttribute = static::$nonceAttribute;
 
         return new HtmlString(<<<HTML
-            <script type="module"{$nonce_attribute}>
+            <script type="module"{$nonceAttribute}>
                 window.Horizon = {$horizon};
                 {$js}
             </script>
@@ -297,19 +297,7 @@ class Horizon
     }
 
     /**
-     * Register the Horizon dev commands.
-     *
-     * @return void
-     */
-    public static function registerDevCommands()
-    {
-        if (class_exists(\Illuminate\Foundation\DevCommands::class)) {
-            \Illuminate\Foundation\DevCommands::artisan('horizon', 'horizon');
-        }
-    }
-
-    /**
-     * Set nonce to use for style and script tags for strict CSP compatibility.
+     * Set the CSP nonce to use for style and script tags.
      *
      * @param  string  $nonce
      * @return static
@@ -319,5 +307,17 @@ class Horizon
         static::$nonceAttribute = " nonce=\"{$nonce}\"";
 
         return new static;
+    }
+
+    /**
+     * Register the Horizon dev commands.
+     *
+     * @return void
+     */
+    public static function registerDevCommands()
+    {
+        if (class_exists(\Illuminate\Foundation\DevCommands::class)) {
+            \Illuminate\Foundation\DevCommands::artisan('horizon', 'horizon');
+        }
     }
 }
