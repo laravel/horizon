@@ -14,10 +14,10 @@ class CspNonceTest extends ControllerTest
                     ->get('/horizon');
 
         $response->assertOk()
-            ->assertSeeHtml('<style data-scheme="light">')
-            ->assertSeeHtml('<style data-scheme="dark">')
-            ->assertSeeHtml('<style>')
-            ->assertSeeHtml('<script type="module">');
+            ->assertSee('<style data-scheme="light">', false)
+            ->assertSee('<style data-scheme="dark">', false)
+            ->assertSee('<style>', false)
+            ->assertSee('<script type="module">', false);
     }
 
     public function test_csp_nonce_is_rendered_in_style_and_script_tags_if_set()
@@ -30,9 +30,9 @@ class CspNonceTest extends ControllerTest
                     ->get('/horizon');
 
         $response->assertOk()
-            ->assertSeeHtml("<style data-scheme=\"light\" nonce=\"{$nonce}\">")
-            ->assertSeeHtml("<style data-scheme=\"dark\" nonce=\"{$nonce}\">")
-            ->assertSeeHtml("<style nonce=\"{$nonce}\">")
-            ->assertSeeHtml("<script type=\"module\" nonce=\"{$nonce}\">");
+            ->assertSee("<style data-scheme=\"light\" nonce=\"{$nonce}\">", false)
+            ->assertSee("<style data-scheme=\"dark\" nonce=\"{$nonce}\">", false)
+            ->assertSee("<style nonce=\"{$nonce}\">", false)
+            ->assertSee("<script type=\"module\" nonce=\"{$nonce}\">", false);
     }
 }
