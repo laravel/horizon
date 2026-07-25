@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Repositories;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Lock;
@@ -397,12 +398,20 @@ class RedisMetricsRepository implements MetricsRepository
         $this->forget('measured_queues');
         $this->forget('metrics:snapshot');
 
+        $connection = $this->connection();
+
+        // phpredis 6.1+ requires the SCAN cursor to start as null, while predis and older phpredis expect "0"...
+        $defaultCursorValue = match (true) {
+            $connection instanceof PhpRedisConnection && version_compare(phpversion('redis'), '6.1.0', '>=') => null,
+            default => '0',
+        };
+
         foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
-            $cursor = null;
+            $cursor = $defaultCursorValue;
 
             do {
-                $scanResult = $this->connection()->scan(
-                    $cursor ?? 0, ['match' => $this->snapshotPatternToMatch($pattern)]
+                $scanResult = $connection->scan(
+                    $cursor, ['match' => $this->snapshotPatternToMatch($pattern)]
                 );
 
                 if (! is_array($scanResult)) {
@@ -414,7 +423,7 @@ class RedisMetricsRepository implements MetricsRepository
                 foreach ($keys ?? [] as $key) {
                     $this->forget(Str::after($key, config('horizon.prefix')));
                 }
-            } while ($cursor > 0);
+            } while (((string) $cursor) !== $defaultCursorValue);
         }
     }
 

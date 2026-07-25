@@ -265,4 +265,33 @@ class MetricsTest extends IntegrationTest
 
         CarbonImmutable::setTestNow();
     }
+
+    public function test_metrics_can_be_cleared()
+    {
+        if (getenv('REDIS_CLUSTER_HOSTS_AND_PORTS')) {
+            $this->markTestSkipped('Test is for standalone Redis connections.');
+        }
+
+        Queue::push(new Jobs\BasicJob);
+        $this->work();
+
+        resolve(MetricsRepository::class)->snapshot();
+
+        // Work another job so live "job:*" and "queue:*" hashes exist alongside the snapshots...
+        Queue::push(new Jobs\BasicJob);
+        $this->work();
+
+        $this->assertNotEmpty(resolve(MetricsRepository::class)->measuredJobs());
+        $this->assertNotEmpty(resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class));
+        $this->assertSame(1, resolve(MetricsRepository::class)->throughputForJob(Jobs\BasicJob::class));
+
+        resolve(MetricsRepository::class)->clear();
+
+        $this->assertEmpty(resolve(MetricsRepository::class)->measuredJobs());
+        $this->assertEmpty(resolve(MetricsRepository::class)->measuredQueues());
+        $this->assertEmpty(resolve(MetricsRepository::class)->snapshotsForJob(Jobs\BasicJob::class));
+        $this->assertEmpty(resolve(MetricsRepository::class)->snapshotsForQueue('default'));
+        $this->assertSame(0, resolve(MetricsRepository::class)->throughputForJob(Jobs\BasicJob::class));
+        $this->assertSame(0, resolve(MetricsRepository::class)->throughputForQueue('default'));
+    }
 }
