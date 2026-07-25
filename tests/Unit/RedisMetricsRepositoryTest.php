@@ -96,7 +96,9 @@ class RedisMetricsRepositoryTest extends UnitTest
         }
 
         foreach ($patterns as $pattern) {
-            $connection->shouldReceive('scan')->once()->with(0, ['match' => $pattern])->andReturn([0, []]);
+            $connection->shouldReceive('scan')->once()->with(
+                Mockery::on(fn ($cursor) => $cursor === null), ['match' => $pattern]
+            )->andReturn([0, []]);
         }
 
         return $connection;

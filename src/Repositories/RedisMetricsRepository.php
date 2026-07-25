@@ -402,7 +402,7 @@ class RedisMetricsRepository implements MetricsRepository
 
             do {
                 $scanResult = $this->connection()->scan(
-                    $cursor ?? 0, ['match' => $this->snapshotPatternToMatch($pattern)]
+                    $cursor, ['match' => $this->snapshotPatternToMatch($pattern)]
                 );
 
                 if (! is_array($scanResult)) {
