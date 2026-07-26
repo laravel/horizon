@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Tests\Unit;
 use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Redis\Connections\PhpRedisConnection;
 use Laravel\Horizon\Repositories\RedisMetricsRepository;
 use Laravel\Horizon\Tests\UnitTest;
 use Mockery;
@@ -55,6 +56,32 @@ class RedisMetricsRepositoryTest extends UnitTest
             ]),
             true
         );
+
+        $repository->clear();
+
+        $this->assertTrue(true);
+    }
+
+    public function test_clear_starts_scan_with_null_for_phpredis_6_1_and_newer()
+    {
+        if (! extension_loaded('redis') || version_compare((string) phpversion('redis'), '6.1.0', '<')) {
+            $this->markTestSkipped('phpredis 6.1 or newer is required.');
+        }
+
+        $connection = Mockery::mock(PhpRedisConnection::class);
+
+        foreach (['last_snapshot_at', 'measured_jobs', 'measured_queues', 'metrics:snapshot'] as $key) {
+            $connection->shouldReceive('del')->once()->with($key);
+        }
+
+        foreach (['queue:*', 'job:*', 'snapshot:*'] as $pattern) {
+            $connection->shouldReceive('scan')
+                ->once()
+                ->with(null, ['match' => 'horizon:'.$pattern])
+                ->andReturn(false);
+        }
+
+        $repository = $this->redisMetricsRepositoryWithConnection($connection);
 
         $repository->clear();
 
