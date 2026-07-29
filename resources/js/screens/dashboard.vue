@@ -1,19 +1,32 @@
 <script type="text/ecmascript-6">
     import moment from 'moment';
+    import { Modal } from 'bootstrap';
 
     export default {
-        components: {},
-
-
         /**
          * The component's data.
          */
         data() {
             return {
-                stats: {},
                 workers: [],
+                workersReady: false,
                 workload: [],
-                ready: false,
+                workloadReady: false,
+                /**
+                 * Bumped when a pause/resume mutation starts so in-flight
+                 * /api/workload polls cannot overwrite fresher local state.
+                 */
+                workloadGeneration: 0,
+                queueActions: [],
+                batches: {
+                    available: false,
+                    previews: [],
+                },
+                pauseModal: null,
+                pauseModalQueue: null,
+                pauseIndefinitely: true,
+                pauseDurationMinutes: 60,
+                pauseDurationError: null,
             };
         },
 
@@ -26,12 +39,104 @@
         },
 
 
+        /**
+         * Tear down the Bootstrap pause modal so SPA navigations cannot leave
+         * a backdrop or body.modal-open lock behind.
+         */
+        beforeUnmount() {
+            if (this.pauseModal) {
+                this.pauseModal.hide();
+                this.pauseModal.dispose();
+                this.pauseModal = null;
+            }
+
+            this.pauseModalQueue = null;
+            this.pauseDurationError = null;
+        },
+
+
+        /**
+         * Clear stale duration errors as the user corrects input.
+         */
+        watch: {
+            pauseDurationMinutes() {
+                if (this.pauseDurationError && this.pauseDurationIsValid()) {
+                    this.pauseDurationError = null;
+                }
+            },
+
+            pauseIndefinitely(pauseIndefinitely) {
+                if (pauseIndefinitely) {
+                    this.pauseDurationError = null;
+                }
+            },
+        },
+
+
         computed: {
+            stats() {
+                return this.$root.stats;
+            },
+
+
+            maxWaitTime() {
+                return Object.values(this.stats.wait || {})[0] ?? null;
+            },
+
+
+            maxWaitQueue() {
+                const queue = Object.keys(this.stats.wait || {})[0];
+
+                return queue ? (queue.split(':')[1] || queue) : null;
+            },
+
+            /**
+             * Whether database batching is available for the dashboard card.
+             * Scalar count comes from /api/stats navigation; null means hide.
+             */
+            batchesAvailable() {
+                return Number.isInteger(this.stats.navigation?.batches);
+            },
+
+            queuePausingSupported() {
+                return this.workload.some(queue => queue.queue_pausing_supported
+                    || queue.split_queues?.some(splitQueue => splitQueue.queue_pausing_supported));
+            },
+
+            /**
+             * Aggregate the live queue structures already returned by the
+             * workload endpoint.
+             */
+            pendingState() {
+                if (!this.workloadReady) {
+                    return {
+                        total: null,
+                        reserved: null,
+                        ready: null,
+                        delayed: null,
+                    };
+                }
+
+                const counts = {
+                    reserved: this.workloadCount('reserved'),
+                    ready: this.workloadCount('length'),
+                    delayed: this.workloadCount('delayed'),
+                };
+
+                return {
+                    ...counts,
+                    total: Object.values(counts).every(Number.isInteger)
+                        ? counts.reserved + counts.ready + counts.delayed
+                        : null,
+                };
+            },
+
+
             /**
              * Determine the recent job period label.
              */
             recentJobsPeriod() {
-                return !this.ready
+                return !this.$root.statsReady || !this.stats.periods?.recentJobs
                     ? 'Jobs Past Hour'
                     : `Jobs Past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
             },
@@ -41,30 +146,14 @@
              * Determine the recently failed job period label.
              */
             failedJobsPeriod() {
-                return !this.ready
-                    ? 'Failed Jobs Past 7 Days'
-                    : `Failed Jobs Past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
+                return !this.$root.statsReady || !this.stats.periods?.failedJobs
+                    ? 'Past 7 Days'
+                    : `Past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
             },
         },
 
 
         methods: {
-            /**
-             * Load the general stats.
-             */
-            loadStats() {
-                return this.$http.get(Horizon.basePath + '/api/stats')
-                    .then(response => {
-                        this.stats = response.data;
-
-                        if (Object.values(response.data.wait)[0]) {
-                            this.stats.max_wait_time = Object.values(response.data.wait)[0];
-                            this.stats.max_wait_queue = Object.keys(response.data.wait)[0].split(':')[1];
-                        }
-                    });
-            },
-
-
             /**
              * Load the workers stats.
              */
@@ -72,17 +161,194 @@
                 return this.$http.get(Horizon.basePath + '/api/masters')
                     .then(response => {
                         this.workers = response.data;
+                        this.workersReady = true;
                     });
             },
 
 
             /**
              * Load the workload stats.
+             *
+             * Ignores responses that started before a pause/resume mutation or
+             * that settle while a queue action is still in progress.
              */
             loadWorkload() {
+                const generation = this.workloadGeneration;
+
                 return this.$http.get(Horizon.basePath + '/api/workload')
                     .then(response => {
+                        if (generation !== this.workloadGeneration || this.queueActions.length > 0) {
+                            return;
+                        }
+
                         this.workload = response.data;
+                        this.workloadReady = true;
+                    });
+            },
+
+
+            /**
+             * Load the dashboard-only batch overview.
+             */
+            loadBatches() {
+                return this.$http.get(Horizon.basePath + '/api/batches/overview')
+                    .then(response => {
+                        this.batches = response.data;
+                    });
+            },
+
+            queueActionKey(queue) {
+                return `${queue.connection}:${queue.name}`;
+            },
+
+            queueActionInProgress(queue) {
+                return this.queueActions.includes(this.queueActionKey(queue));
+            },
+
+            updateQueuePauseState(state) {
+                this.workload = this.workload.map(queue => {
+                    if (queue.connection === state.connection && queue.name === state.queue) {
+                        return { ...queue, paused: state.paused };
+                    }
+
+                    if (!queue.split_queues) {
+                        return queue;
+                    }
+
+                    return {
+                        ...queue,
+                        split_queues: queue.split_queues.map(splitQueue => {
+                            return splitQueue.connection === state.connection && splitQueue.name === state.queue
+                                ? { ...splitQueue, paused: state.paused }
+                                : splitQueue;
+                        }),
+                    };
+                });
+            },
+
+            toggleQueue(queue) {
+                if (!queue.queue_pausing_supported || this.queueActionInProgress(queue)) {
+                    return;
+                }
+
+                if (queue.paused) {
+                    this.sendQueuePauseRequest(queue);
+
+                    return;
+                }
+
+                if (queue.timed_queue_pausing_supported) {
+                    this.openPauseModal(queue);
+
+                    return;
+                }
+
+                this.$root.alert.type = 'confirmation';
+                this.$root.alert.message = 'Are you sure you want to pause this queue?';
+                this.$root.alert.confirmationProceed = () => {
+                    this.sendQueuePauseRequest(queue);
+                };
+            },
+
+            openPauseModal(queue) {
+                this.pauseModalQueue = queue;
+                this.pauseIndefinitely = true;
+                this.pauseDurationMinutes = 60;
+                this.pauseDurationError = null;
+
+                this.pauseModal = Modal.getOrCreateInstance(
+                    document.getElementById('pauseQueueModal'),
+                    { backdrop: 'static' },
+                );
+                this.pauseModal.show();
+            },
+
+            cancelPauseModal() {
+                if (this.pauseModal) {
+                    this.pauseModal.hide();
+                }
+
+                this.pauseModalQueue = null;
+                this.pauseDurationError = null;
+            },
+
+            /**
+             * Whether the timed pause duration is an integer in the allowed range.
+             */
+            pauseDurationIsValid() {
+                const duration = Number(this.pauseDurationMinutes);
+
+                return Number.isInteger(duration) && duration >= 1 && duration <= 525600;
+            },
+
+            confirmPauseModal() {
+                const queue = this.pauseModalQueue;
+
+                if (!queue) {
+                    return;
+                }
+
+                if (!this.pauseIndefinitely) {
+                    if (!this.pauseDurationIsValid()) {
+                        this.pauseDurationError = 'Enter a pause duration between 1 and 525600 minutes.';
+
+                        return;
+                    }
+                }
+
+                const durationMinutes = this.pauseIndefinitely
+                    ? null
+                    : Number(this.pauseDurationMinutes);
+
+                if (this.pauseModal) {
+                    this.pauseModal.hide();
+                }
+
+                this.pauseDurationError = null;
+                this.pauseModalQueue = null;
+                this.sendQueuePauseRequest(queue, durationMinutes);
+            },
+
+            sendQueuePauseRequest(queue, durationMinutes = null) {
+                if (this.queueActionInProgress(queue)) {
+                    return;
+                }
+
+                const key = this.queueActionKey(queue);
+                const endpoint = Horizon.basePath
+                    + '/api/queues/'
+                    + encodeURIComponent(queue.connection)
+                    + '/'
+                    + encodeURIComponent(queue.name)
+                    + '/pause';
+
+                this.queueActions.push(key);
+                this.workloadGeneration++;
+
+                const request = queue.paused
+                    ? this.$http.delete(endpoint)
+                    : this.$http.post(
+                        endpoint,
+                        durationMinutes === null ? {} : { duration_minutes: durationMinutes },
+                    );
+
+                request
+                    .then(response => {
+                        this.updateQueuePauseState(response.data);
+                    })
+                    .catch(() => {
+                        this.$root.alert.type = 'error';
+                        this.$root.alert.message = `Unable to ${queue.paused ? 'resume' : 'pause'} the ${queue.name} queue.`;
+                    })
+                    .finally(() => {
+                        this.queueActions = this.queueActions.filter(action => action !== key);
+
+                        if (this.queueActions.length === 0) {
+                            // Invalidate any poll that started during the mutation window
+                            // before the authoritative post-mutation refresh.
+                            this.workloadGeneration++;
+                            this.loadWorkload();
+                        }
                     });
             },
 
@@ -91,13 +357,28 @@
              * Poll handler to refresh the stats at regular intervals.
              */
             refreshStatsPeriodically() {
-                Promise.all([
-                    this.loadStats(),
+                return Promise.all([
                     this.loadWorkers(),
                     this.loadWorkload(),
-                ]).then(() => {
-                    this.ready = true;
-                });
+                    this.loadBatches(),
+                ]);
+            },
+
+            /**
+             * Format a live count while keeping unavailable values truthful.
+             */
+            statCount(value) {
+                return Number.isInteger(value) ? value.toLocaleString() : '—';
+            },
+
+            /**
+             * Sum an available workload field without turning missing data
+             * into a misleading zero.
+             */
+            workloadCount(field) {
+                return this.workload.every(queue => Number.isInteger(queue[field]))
+                    ? this.workload.reduce((total, queue) => total + queue[field], 0)
+                    : null;
             },
 
 
@@ -141,209 +422,430 @@
 </script>
 
 <template>
-    <div>
+    <div class="dashboard">
         <poll @poll="refreshStatsPeriodically" :interval="5" />
 
-        <div class="card overflow-hidden">
-            <div class="card-header d-flex align-items-center justify-content-between">
+        <section class="card dashboard-overview">
+            <div class="card-header d-flex align-items-center">
                 <h2 class="h6 m-0">Overview</h2>
             </div>
 
-            <div class="card-bg-secondary">
-                <div class="d-flex">
-                    <div class="w-25">
-                        <div class="p-4">
-                            <small class="text-muted fw-bold">Jobs Per Minute</small>
-
-                            <p class="h4 mt-2 mb-0">
-                                {{ stats.jobsPerMinute ? stats.jobsPerMinute.toLocaleString() : 0 }}
-                            </p>
-                        </div>
+            <div class="dashboard-overview-grid">
+                <router-link
+                    :to="{ name: 'jobs', params: { type: 'pending' } }"
+                    class="dashboard-stat dashboard-stat-link"
+                >
+                    <small class="dashboard-stat-label">Pending Jobs</small>
+                    <p class="dashboard-stat-value">
+                        {{ statCount(pendingState.total ?? stats.navigation?.pending) }}
+                    </p>
+                    <div class="dashboard-stat-details">
+                        <small class="dashboard-stat-detail-row">
+                            <span>Reserved</span>
+                            <strong>{{ statCount(pendingState.reserved) }}</strong>
+                        </small>
+                        <small class="dashboard-stat-detail-row">
+                            <span>Ready</span>
+                            <strong>{{ statCount(pendingState.ready) }}</strong>
+                        </small>
+                        <small class="dashboard-stat-detail-row">
+                            <span>Delayed</span>
+                            <strong>{{ statCount(pendingState.delayed) }}</strong>
+                        </small>
                     </div>
+                </router-link>
 
-                    <div class="w-25">
-                        <div class="p-4">
-                            <small class="text-muted fw-bold" v-text="recentJobsPeriod"></small>
-
-                            <p class="h4 mt-2 mb-0">
-                                {{ stats.recentJobs ? stats.recentJobs.toLocaleString() : 0 }}
-                            </p>
-                        </div>
+                <router-link
+                    :to="{ name: 'failed-jobs' }"
+                    class="dashboard-stat dashboard-stat-link"
+                >
+                    <small class="dashboard-stat-label">Failed Jobs</small>
+                    <p class="dashboard-stat-value">
+                        {{ statCount(stats.navigation?.failed) }}
+                    </p>
+                    <div class="dashboard-stat-details">
+                        <small class="dashboard-stat-detail-row">
+                            <span>Past hour</span>
+                            <strong>{{ statCount(stats.failedJobsPastHour) }}</strong>
+                        </small>
+                        <small class="dashboard-stat-detail-row">
+                            <span>Past 24 hours</span>
+                            <strong>{{ statCount(stats.failedJobsPastDay) }}</strong>
+                        </small>
+                        <small class="dashboard-stat-detail-row">
+                            <span>{{ failedJobsPeriod }}</span>
+                            <strong>{{ statCount(stats.failedJobs) }}</strong>
+                        </small>
                     </div>
+                </router-link>
 
-                    <div class="w-25">
-                        <div class="p-4">
-                            <small class="text-muted fw-bold" v-text="failedJobsPeriod"></small>
-
-                            <p class="h4 mt-2 mb-0">
-                                {{ stats.failedJobs ? stats.failedJobs.toLocaleString() : 0 }}
-                            </p>
-                        </div>
+                <router-link
+                    :to="{ name: 'jobs', params: { type: 'completed' } }"
+                    class="dashboard-stat dashboard-stat-link"
+                >
+                    <small class="dashboard-stat-label">Completed Jobs</small>
+                    <p class="dashboard-stat-value">
+                        {{ statCount(stats.navigation?.completed) }}
+                    </p>
+                    <div class="dashboard-stat-details">
+                        <small class="dashboard-stat-detail-row">
+                            <span>Jobs per minute</span>
+                            <strong>{{ statCount(stats.jobsPerMinute) }}</strong>
+                        </small>
+                        <small class="dashboard-stat-detail-row">
+                            <span>{{ recentJobsPeriod }}</span>
+                            <strong>{{ statCount(stats.recentJobs) }}</strong>
+                        </small>
+                        <small class="dashboard-stat-detail-row">
+                            <span>Silenced Jobs</span>
+                            <strong>{{ statCount(stats.navigation?.silenced) }}</strong>
+                        </small>
                     </div>
+                </router-link>
 
-                    <div class="w-25">
-                        <div class="p-4">
-                            <small class="text-muted fw-bold">Status</small>
+                <div class="dashboard-stat dashboard-batches-stat" v-if="batchesAvailable">
+                    <router-link :to="{ name: 'batches' }" class="dashboard-stat-link">
+                        <small class="dashboard-stat-label">Batches in progress</small>
+                        <div class="dashboard-stat-value-row">
+                            <p class="dashboard-stat-value">
+                                {{ statCount(stats.navigation.batches) }}
+                            </p>
+                            <small class="dashboard-stat-detail">
+                                in progress
+                            </small>
+                        </div>
+                    </router-link>
 
-                            <div class="d-flex align-items-center mt-2">
-                                <svg v-if="stats.status == 'running'" xmlns="http://www.w3.org/2000/svg" class="text-success" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <div class="dashboard-batch-previews" v-if="batches?.previews?.length">
+                        <router-link
+                            v-for="batch in batches.previews.slice(0, 3)"
+                            :key="batch.id"
+                            :to="{ name: 'batches-preview', params: { batchId: batch.id } }"
+                            class="dashboard-batch-preview"
+                        >
+                            <span class="dashboard-batch-name">{{ batch.name }}</span>
+                            <span
+                                class="dashboard-batch-progress"
+                                role="progressbar"
+                                aria-label="Batch progress"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                :aria-valuenow="batch.progress"
+                                :aria-valuetext="batch.progress + '%'"
+                            >
+                                <svg viewBox="0 0 16 16" aria-hidden="true">
+                                    <circle
+                                        class="dashboard-batch-progress-track"
+                                        cx="8"
+                                        cy="8"
+                                        r="6.5"
+                                        stroke-width="2.5"
+                                    />
+                                    <circle
+                                        class="dashboard-batch-progress-value"
+                                        cx="8"
+                                        cy="8"
+                                        r="6.5"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-dasharray="40.84"
+                                        :stroke-dashoffset="40.84 * (1 - batch.progress / 100)"
+                                    />
                                 </svg>
-
-                                <svg v-if="stats.status == 'paused'" xmlns="http://www.w3.org/2000/svg" class="text-warning" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-
-                                <svg v-if="stats.status == 'inactive'" xmlns="http://www.w3.org/2000/svg" class="text-danger" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                                </svg>
-
-                                <p class="h4 mb-0 ms-2">{{ {running: 'Active', paused: 'Paused', inactive: 'Inactive'}[stats.status] }}</p>
-                                <small v-if="stats.status == 'running' && stats.pausedMasters > 0" class="mb-0 ms-2">({{ stats.pausedMasters }} paused)</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex">
-                    <div class="w-25">
-                        <div class="p-4 mb-0">
-                            <small class="text-muted fw-bold">Total Processes</small>
-
-                            <p class="h4 mt-2">
-                                {{ stats.processes ? stats.processes.toLocaleString() : 0 }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="w-25">
-                        <div class="p-4 mb-0">
-                            <small class="text-muted fw-bold">Max Wait Time</small>
-
-                            <p class="mt-2 mb-0">
-                                {{ stats.max_wait_time ? humanTime(stats.max_wait_time) : '-' }}
-                            </p>
-
-                            <small class="mt-1" v-if="stats.max_wait_queue">({{ stats.max_wait_queue }})</small>
-                        </div>
-                    </div>
-
-                    <div class="w-25">
-                        <div class="p-4 mb-0">
-                            <small class="text-muted fw-bold">Max Runtime</small>
-
-                            <p class="h4 mt-2">
-                                {{ stats.queueWithMaxRuntime ? stats.queueWithMaxRuntime : '-' }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="w-25">
-                        <div class="p-4 mb-0">
-                            <small class="text-muted fw-bold">Max Throughput</small>
-
-                            <p class="h4 mt-2">
-                                {{ stats.queueWithMaxThroughput ? stats.queueWithMaxThroughput : '-' }}
-                            </p>
-                        </div>
+                                <span>{{ batch.progress }}%</span>
+                            </span>
+                        </router-link>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="card overflow-hidden mt-4" v-if="workload.length">
-            <div class="card-header d-flex align-items-center justify-content-between">
+        <section class="card dashboard-workload mt-3" v-if="workloadReady">
+            <div class="card-header d-flex align-items-center">
                 <h2 class="h6 m-0">Current Workload</h2>
             </div>
 
-            <table class="table table-hover mb-0">
+            <div class="dashboard-summary-grid" v-if="workload.length">
+                <div class="dashboard-summary">
+                    <small class="dashboard-stat-label">Total Processes</small>
+                    <p class="dashboard-summary-value">
+                        {{ statCount(stats.processes) }}
+                    </p>
+                </div>
+
+                <div class="dashboard-summary">
+                    <small class="dashboard-stat-label">Max Wait Time</small>
+                    <p class="dashboard-summary-value">
+                        {{ maxWaitTime !== null ? humanTime(maxWaitTime) : '—' }}
+                    </p>
+                    <small class="dashboard-summary-detail" v-if="maxWaitQueue">
+                        ({{ maxWaitQueue }})
+                    </small>
+                </div>
+
+                <div class="dashboard-summary">
+                    <small class="dashboard-stat-label">Max Runtime</small>
+                    <p class="dashboard-summary-value">
+                        {{ stats.queueWithMaxRuntime || '—' }}
+                    </p>
+                </div>
+
+                <div class="dashboard-summary">
+                    <small class="dashboard-stat-label">Max Throughput</small>
+                    <p class="dashboard-summary-value">
+                        {{ stats.queueWithMaxThroughput || '—' }}
+                    </p>
+                </div>
+            </div>
+
+            <table class="table table-hover mb-0" v-if="workload.length">
                 <thead>
                 <tr>
                     <th>Queue</th>
                     <th class="text-end" style="width: 120px;">Jobs</th>
                     <th class="text-end" style="width: 120px;">Processes</th>
                     <th class="text-end" style="width: 180px;">Wait</th>
+                    <th class="text-end dashboard-queue-actions-column" v-if="queuePausingSupported">Actions</th>
                 </tr>
                 </thead>
 
                 <tbody>
-                    <template v-for="queue in workload">
+                    <template v-for="queue in workload" :key="queue.connection + ':' + queue.name">
                         <tr>
                             <td :class="{ 'fw-bold': queue.split_queues }">
                                 <span>{{ queue.name.replace(/,/g, ', ') }}</span>
+                                <small
+                                    class="badge badge-warning badge-sm rounded-pill ms-2"
+                                    v-if="queue.paused"
+                                >
+                                    Paused
+                                </small>
                             </td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ humanTime(queue.wait) }}</td>
+                            <td class="text-end dashboard-queue-actions-column" v-if="queuePausingSupported">
+                                <button
+                                    type="button"
+                                    class="queue-control-action"
+                                    :title="queue.paused ? `Resume ${queue.name} queue` : `Pause ${queue.name} queue`"
+                                    :aria-label="queue.paused ? `Resume ${queue.name} queue` : `Pause ${queue.name} queue`"
+                                    :aria-busy="queueActionInProgress(queue)"
+                                    :disabled="queueActionInProgress(queue)"
+                                    @click="toggleQueue(queue)"
+                                    v-if="queue.queue_pausing_supported && !queue.split_queues"
+                                >
+                                    <svg v-if="queue.paused" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M6.5 4.61a1 1 0 0 1 1.54-.84l7 4.39a1 1 0 0 1 0 1.68l-7 4.39a1 1 0 0 1-1.54-.84V4.61Z" />
+                                    </svg>
+                                    <svg v-else viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M5.75 4.5A1.25 1.25 0 0 1 7 3.25h1A1.25 1.25 0 0 1 9.25 4.5v11A1.25 1.25 0 0 1 8 16.75H7a1.25 1.25 0 0 1-1.25-1.25v-11ZM10.75 4.5A1.25 1.25 0 0 1 12 3.25h1a1.25 1.25 0 0 1 1.25 1.25v11A1.25 1.25 0 0 1 13 16.75h-1a1.25 1.25 0 0 1-1.25-1.25v-11Z" />
+                                    </svg>
+                                </button>
+                            </td>
                         </tr>
 
-                        <tr v-for="split_queue in queue.split_queues">
-                            <td>
+                        <tr v-for="split_queue in queue.split_queues" :key="split_queue.name">
+                            <td class="dashboard-split-queue">
                                 <svg class="icon info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                                 </svg>
 
                                 <span>{{ split_queue.name.replace(/,/g, ', ') }}</span>
+                                <small
+                                    class="badge badge-warning badge-sm rounded-pill ms-2"
+                                    v-if="split_queue.paused"
+                                >
+                                    Paused
+                                </small>
                             </td>
                             <td class="text-end text-muted">{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
-                            <td class="text-end text-muted">-</td>
+                            <td class="text-end text-muted">—</td>
                             <td class="text-end text-muted">{{ humanTime(split_queue.wait) }}</td>
+                            <td class="text-end dashboard-queue-actions-column" v-if="queuePausingSupported">
+                                <button
+                                    type="button"
+                                    class="queue-control-action"
+                                    :title="split_queue.paused ? `Resume ${split_queue.name} queue` : `Pause ${split_queue.name} queue`"
+                                    :aria-label="split_queue.paused ? `Resume ${split_queue.name} queue` : `Pause ${split_queue.name} queue`"
+                                    :aria-busy="queueActionInProgress(split_queue)"
+                                    :disabled="queueActionInProgress(split_queue)"
+                                    @click="toggleQueue(split_queue)"
+                                    v-if="split_queue.queue_pausing_supported"
+                                >
+                                    <svg v-if="split_queue.paused" viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M6.5 4.61a1 1 0 0 1 1.54-.84l7 4.39a1 1 0 0 1 0 1.68l-7 4.39a1 1 0 0 1-1.54-.84V4.61Z" />
+                                    </svg>
+                                    <svg v-else viewBox="0 0 20 20" aria-hidden="true">
+                                        <path d="M5.75 4.5A1.25 1.25 0 0 1 7 3.25h1A1.25 1.25 0 0 1 9.25 4.5v11A1.25 1.25 0 0 1 8 16.75H7a1.25 1.25 0 0 1-1.25-1.25v-11ZM10.75 4.5A1.25 1.25 0 0 1 12 3.25h1a1.25 1.25 0 0 1 1.25 1.25v11A1.25 1.25 0 0 1 13 16.75h-1a1.25 1.25 0 0 1-1.25-1.25v-11Z" />
+                                    </svg>
+                                </button>
+                            </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
-        </div>
 
-
-        <div class="card overflow-hidden mt-4" v-for="worker in workers" :key="worker.name">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0">{{ worker.name }}</h2>
-
-                <svg v-if="worker.status == 'running'" xmlns="http://www.w3.org/2000/svg" class="text-success" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-
-                <svg v-if="worker.status == 'paused'" xmlns="http://www.w3.org/2000/svg" class="text-warning" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 1.5rem; height: 1.5rem;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-
-            <table class="table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>Supervisor</th>
-                    <th>Connection</th>
-                    <th>Queues</th>
-                    <th class="text-end" style="width: 120px;">Processes</th>
-                    <th class="text-end" style="width: 180px;">Balancing</th>
-                </tr>
-                </thead>
-
+            <table class="table dashboard-empty-table mb-0" v-else>
                 <tbody>
-                <tr v-for="supervisor in worker.supervisors">
-                    <td>
-                        <svg v-if="supervisor.status == 'paused'" class="fill-warning me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6h2v8H7V6zm4 0h2v8h-2V6z" />
-                        </svg>
-                        <svg v-if="supervisor.status == 'inactive'" class="fill-danger me-1" viewBox="0 0 20 20" style="width: 1rem; height: 1rem;">
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm1.41-1.41A8 8 0 1 0 15.66 4.34 8 8 0 0 0 4.34 15.66zm9.9-8.49L11.41 10l2.83 2.83-1.41 1.41L10 11.41l-2.83 2.83-1.41-1.41L8.59 10 5.76 7.17l1.41-1.41L10 8.59l2.83-2.83 1.41 1.41z" />
-                        </svg>
-                        {{ superVisorDisplayName(supervisor.name, worker.name) }}
-                    </td>
-                    <td class="text-muted">{{ supervisor.options.connection }}</td>
-                    <td class="text-muted">{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
-                    <td class="text-end text-muted">{{ countProcesses(supervisor.processes) }}</td>
-                    <td class="text-end text-muted" v-if="supervisor.options.balance">
-                        {{ upperFirst(supervisor.options.balance) }}
-                    </td>
-                    <td class="text-end text-muted" v-else>
-                        Disabled
-                    </td>
-                </tr>
+                <table-empty
+                    :columns="1"
+                    title="All queues are clear"
+                    description="Horizon has no queued workload right now."
+                    icon="queues"
+                ></table-empty>
                 </tbody>
             </table>
+        </section>
+
+        <section
+            class="card dashboard-instances mt-3"
+            v-if="workersReady && !Object.keys(workers).length"
+        >
+            <div class="card-header d-flex align-items-center">
+                <h2 class="h6 m-0">Instances</h2>
+            </div>
+
+            <table class="table dashboard-empty-table mb-0">
+                <tbody>
+                <table-empty
+                    :columns="1"
+                    title="No Horizon instances"
+                    description="Run php artisan horizon to start an instance and start processing queues."
+                    icon="instances"
+                ></table-empty>
+                </tbody>
+            </table>
+        </section>
+
+        <section
+            class="dashboard-masters mt-3"
+            v-else-if="workersReady && Object.keys(workers).length"
+        >
+            <article class="card dashboard-master" v-for="worker in workers" :key="worker.name">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="h6 m-0">{{ worker.name }}</h3>
+
+                    <svg
+                        v-if="worker.status === 'running'"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="text-success"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        width="24"
+                        height="24"
+                        aria-hidden="true"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+
+                    <svg
+                        v-if="worker.status === 'paused'"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="text-warning"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        width="24"
+                        height="24"
+                        aria-hidden="true"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>Supervisor</th>
+                        <th>Connection</th>
+                        <th>Queues</th>
+                        <th class="text-end" style="width: 120px;">Processes</th>
+                        <th class="text-end" style="width: 150px;">Balancing</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr v-for="supervisor in worker.supervisors" :key="supervisor.name">
+                        <td>{{ superVisorDisplayName(supervisor.name, worker.name) }}</td>
+                        <td class="text-muted">{{ supervisor.options.connection }}</td>
+                        <td class="text-muted">{{ supervisor.options.queue.replace(/,/g, ', ') }}</td>
+                        <td class="text-end text-muted">{{ countProcesses(supervisor.processes) }}</td>
+                        <td class="text-end text-muted" v-if="supervisor.options.balance">
+                            {{ upperFirst(supervisor.options.balance) }}
+                        </td>
+                        <td class="text-end text-muted" v-else>
+                            Disabled
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+
+        <div class="modal horizon-form-modal" id="pauseQueueModal" tabindex="-1" role="dialog" aria-labelledby="pauseQueueModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="pauseQueueModalLabel">
+                            Pause {{ pauseModalQueue ? pauseModalQueue.name : 'Queue' }}
+                        </h2>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-check mb-3">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="pauseIndefinitely"
+                                v-model="pauseIndefinitely"
+                            >
+                            <label class="form-check-label" for="pauseIndefinitely">
+                                Pause indefinitely
+                            </label>
+                        </div>
+
+                        <div v-if="!pauseIndefinitely">
+                            <label class="form-label" for="pauseDurationMinutes">Duration (minutes)</label>
+                            <input
+                                id="pauseDurationMinutes"
+                                type="number"
+                                class="form-control"
+                                :class="{ 'is-invalid': pauseDurationError }"
+                                min="1"
+                                max="525600"
+                                step="1"
+                                v-model.number="pauseDurationMinutes"
+                                :aria-invalid="pauseDurationError ? 'true' : 'false'"
+                                :aria-describedby="pauseDurationError
+                                    ? 'pauseDurationHelp pauseDurationError'
+                                    : 'pauseDurationHelp'"
+                            >
+                            <small id="pauseDurationHelp" class="text-muted">Between 1 and 525600 minutes (one year).</small>
+                            <div
+                                v-if="pauseDurationError"
+                                id="pauseDurationError"
+                                class="invalid-feedback d-block"
+                            >
+                                {{ pauseDurationError }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer justify-content-start flex-row-reverse">
+                        <button class="btn btn-primary" @click="confirmPauseModal">
+                            Pause queue
+                        </button>
+
+                        <button class="btn" @click="cancelPauseModal">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
     </div>
 </template>
