@@ -149,11 +149,7 @@
         </div>
 
 
-        <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-            <span>There aren't any jobs for this tag.</span>
-        </div>
-
-        <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
+        <table v-if="ready" class="table table-hover mb-0 horizon-table">
             <thead>
             <tr>
                 <th>Job</th>
@@ -165,22 +161,29 @@
             </thead>
 
             <tbody>
-            <tr v-if="hasNewEntries && !this.$root.autoLoadsNewEntries" key="newEntries" class="dontanimate">
-                <td colspan="100" class="text-center card-bg-secondary py-2">
-                    <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+            <table-empty
+                v-if="jobs.length === 0"
+                :columns="type === 'jobs' ? 4 : 3"
+                title="No jobs for this tag"
+                description="There aren't any jobs for this tag yet. Monitored history starts after jobs are processed with this exact tag."
+                icon="monitoring"
+            ></table-empty>
 
-                    <small v-if="loadingNewEntries">Loading...</small>
-                </td>
-            </tr>
+            <new-entries
+                v-if="hasNewEntries && !$root.autoLoadsNewEntries"
+                :columns="type === 'jobs' ? 4 : 3"
+                :loading="loadingNewEntries"
+                @load="loadNewEntries"
+            ></new-entries>
 
             <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
             </component>
             </tbody>
         </table>
 
-        <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-            <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-            <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+        <div v-if="ready && jobs.length && totalPages > 1" class="horizon-table-pagination d-flex justify-content-between border-top">
+            <button @click="previous" class="btn btn-sm" :disabled="page==1">Previous</button>
+            <button @click="next" class="btn btn-sm" :disabled="page>=totalPages">Next</button>
         </div>
     </div>
 

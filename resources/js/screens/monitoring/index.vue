@@ -118,7 +118,7 @@
     <div>
         <poll @poll="refreshTagsPeriodically" />
 
-        <div class="card overflow-hidden">
+        <div class="card overflow-hidden horizon-table-card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Monitoring</h2>
 
@@ -134,12 +134,7 @@
             </div>
 
 
-            <div v-if="ready && tags.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>You're not monitoring any tags.</span>
-            </div>
-
-
-            <table v-if="ready && tags.length > 0" class="table table-hover mb-0">
+            <table v-if="ready" class="table table-hover mb-0 horizon-table">
                 <thead>
                 <tr>
                     <th>Tag</th>
@@ -149,15 +144,23 @@
                 </thead>
 
                 <tbody>
+                <table-empty
+                    v-if="tags.length === 0"
+                    :columns="3"
+                    title="No monitored tags"
+                    description="Horizon is not monitoring any tags yet."
+                    icon="monitoring"
+                ></table-empty>
+
                 <tr v-for="tag in tags">
-                    <td>
-                        <router-link :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}" href="#">
+                    <td class="horizon-linked-cell">
+                        <router-link class="horizon-row-link horizon-cell-link" :to="{ name: 'monitoring-jobs', params: { tag:tag.tag }}" href="#">
                             {{ tag.tag }}
                         </router-link>
                     </td>
                     <td class="text-end text-muted">{{ tag.count }}</td>
                     <td class="text-end">
-                        <a href="#" @click="stopMonitoring(tag.tag)" class="control-action" title="Stop Monitoring">
+                        <a href="#" @click="stopMonitoring(tag.tag)" class="control-action horizon-row-action" title="Stop Monitoring">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                             </svg>
@@ -168,10 +171,12 @@
             </table>
         </div>
 
-        <div class="modal" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal horizon-form-modal" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="addTagModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">Monitor New Tag</div>
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="addTagModalLabel">Monitor New Tag</h2>
+                    </div>
 
                     <div class="modal-body">
                         <input type="text" class="form-control" placeholder="App\Models\User:6352"

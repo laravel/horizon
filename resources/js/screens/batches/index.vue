@@ -11,6 +11,7 @@
                 page: parseInt(this.$route.query.page) || 1,
                 previousFirstId: this.$route.query.previous_first_id || null,
                 batches: [],
+                available: true,
                 searchQuery: this.$route.query.query || '',
                 searchTimeout: null,
             };
@@ -65,14 +66,30 @@
 
                 this.$http.get(Horizon.basePath + '/api/batches?' + searchQuery + 'before_id=' + beforeId)
                     .then(response => {
+                        if (response.data.available === false) {
+                            this.available = false;
+                            this.batches = [];
+                            this.ready = true;
+
+                            return;
+                        }
+
+                        // Recover from unavailable on poll even when the table is
+                        // present but empty (empty refresh returns before assignment).
+                        if (response.data.available === true) {
+                            this.available = true;
+                        }
+
                         if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.batches.length) {
                             this.ready = true;
+
                             return;
                         }
 
                         if (!this.$root.autoLoadsNewEntries && refreshing && this.batches.length && response.data.batches[0]?.id !== this.batches[0]?.id) {
                             this.hasNewEntries = true;
                         } else {
+                            this.available = response.data.available !== false;
                             this.batches = response.data.batches;
                         }
 
@@ -170,11 +187,11 @@
     <div>
         <poll @poll="refreshBatchesPeriodically" />
 
-        <div class="card overflow-hidden">
+        <div class="card overflow-hidden horizon-table-card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Batches</h2>
 
-                <div class="form-control-with-icon">
+                <div class="form-control-with-icon" v-if="available">
                     <div class="icon-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
@@ -200,11 +217,7 @@
             </div>
 
 
-            <div v-if="ready && batches.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any batches.</span>
-            </div>
-
-            <table v-if="ready && batches.length > 0" class="table table-hover mb-0">
+            <table v-if="ready" class="table table-hover mb-0 horizon-table">
                 <thead>
                 <tr>
                     <th>Batch</th>
@@ -216,31 +229,46 @@
                 </thead>
 
                 <tbody>
-                <tr v-if="hasNewEntries && !this.$root.autoLoadsNewEntries" key="newEntries" class="dontanimate">
-                    <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                <table-empty
+                    v-if="!available"
+                    :columns="5"
+                    title="Batches unavailable"
+                    description="Create and run Laravel's job batches table migration to enable batch monitoring in Horizon."
+                    icon="batches"
+                ></table-empty>
 
-                        <small v-if="loadingNewEntries">Loading...</small>
-                    </td>
-                </tr>
+                <table-empty
+                    v-else-if="batches.length === 0"
+                    :columns="5"
+                    title="No batches"
+                    description="There aren't any batches."
+                    icon="batches"
+                ></table-empty>
+
+                <new-entries
+                    v-if="hasNewEntries && !$root.autoLoadsNewEntries"
+                    :columns="5"
+                    :loading="loadingNewEntries"
+                    @load="loadNewEntries"
+                ></new-entries>
 
                 <tr v-for="batch in batches" :key="batch.id">
-                    <td>
-                        <router-link :title="batch.id" :to="{ name: 'batches-preview', params: { batchId: batch.id }}">
+                    <td class="horizon-linked-cell">
+                        <router-link class="horizon-row-link horizon-cell-link" :title="batch.id" :to="{ name: 'batches-preview', params: { batchId: batch.id }}">
                             {{ batch.name || batch.id }}
                         </router-link>
                     </td>
                     <td>
-                        <small class="badge badge-danger badge-sm" v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small class="badge badge-danger badge-sm rounded-pill" v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="badge badge-success badge-sm" v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small class="badge badge-success badge-sm rounded-pill" v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
-                        <small class="badge badge-secondary badge-sm" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small class="badge badge-secondary badge-sm rounded-pill" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
                         </small>
-                        <small class="badge badge-warning badge-sm" v-if="batch.cancelledAt">
+                        <small class="badge badge-warning badge-sm rounded-pill" v-if="batch.cancelledAt">
                             Cancelled
                         </small>
                     </td>
@@ -254,9 +282,9 @@
                 </tbody>
             </table>
 
-            <div v-if="ready && batches.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="batches.length < 50">Next</button>
+            <div v-if="ready && batches.length && (page > 1 || batches.length === 50)" class="horizon-table-pagination d-flex justify-content-between border-top">
+                <button @click="previous" class="btn btn-sm" :disabled="page==1">Previous</button>
+                <button @click="next" class="btn btn-sm" :disabled="batches.length < 50">Next</button>
             </div>
         </div>
 

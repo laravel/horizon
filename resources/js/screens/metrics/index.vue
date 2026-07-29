@@ -11,7 +11,7 @@
 
 <template>
     <div>
-        <div class="card overflow-hidden">
+        <div class="card overflow-hidden horizon-table-card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Metrics</h2>
             </div>

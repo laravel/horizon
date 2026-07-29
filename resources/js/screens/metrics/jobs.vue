@@ -51,11 +51,7 @@
         </div>
 
 
-        <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-            <span>There aren't any jobs.</span>
-        </div>
-
-        <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
+        <table v-if="ready" class="table table-hover mb-0 horizon-table">
             <thead>
             <tr>
                 <th>Job</th>
@@ -63,11 +59,17 @@
             </thead>
 
             <tbody>
-
+            <table-empty
+                v-if="jobs.length === 0"
+                :columns="1"
+                title="No job metrics yet"
+                description="Once Horizon records its first job snapshot, throughput and runtime history will settle in here."
+                icon="metrics"
+            ></table-empty>
 
             <tr v-for="job in jobs" :key="job">
-                <td>
-                    <router-link class="text-decoration-none" :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job }}">
+                <td class="horizon-linked-cell">
+                    <router-link class="horizon-row-link horizon-cell-link" :to="{ name: 'metrics-preview', params: { type: 'jobs', slug: job }}">
                         {{ job }}
                     </router-link>
                 </td>

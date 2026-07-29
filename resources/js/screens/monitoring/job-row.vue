@@ -1,18 +1,16 @@
 <template>
     <tr>
-        <td>
-            <router-link :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $parent.type }}">
+        <td class="horizon-linked-cell">
+            <router-link class="horizon-row-link horizon-cell-link" :title="job.name" :to="{ name: 'job-preview', params: { jobId: job.id, type: $parent.type }}">
                 {{ jobBaseName(job.name) }}
+
+                <small class="horizon-row-action ms-1 badge badge-warning badge-sm rounded-pill" :title="`Delayed for ${delayed}`"
+                       v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
+                    Delayed
+                </small>
             </router-link>
 
-            <small class="ms-1 badge bg-secondary badge-sm" :title="`Delayed for ${delayed}`"
-                   v-if="delayed && (job.status == 'reserved' || job.status == 'pending')">
-                Delayed
-            </small>
-
-            <br>
-
-            <small class="text-muted">
+            <small class="horizon-row-meta text-muted">
                 Queue: {{job.queue}}
 
                 <span v-if="job.payload.tags.length">

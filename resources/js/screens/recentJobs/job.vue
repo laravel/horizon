@@ -1,13 +1,19 @@
 <template>
     <div>
         <div class="card overflow-hidden">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
-                <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
+            <div class="card-header job-detail-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0 job-detail-title" v-if="!ready">Job Preview</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="ready" :title="job.name">{{job.name}}</h2>
 
-                <a data-bs-toggle="collapse" href="#collapseDetails" role="button">
-                    Collapse
-                </a>
+                <button
+                    type="button"
+                    class="job-detail-collapse"
+                    :aria-expanded="detailsExpanded"
+                    aria-controls="collapseDetails"
+                    @click="detailsExpanded = !detailsExpanded"
+                >
+                    {{ detailsExpanded ? 'Collapse' : 'Expand' }}
+                </button>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -18,73 +24,85 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary collapse show" id="collapseDetails" v-if="ready">
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">ID</div>
-                    <div class="col">{{job.id}}</div>
+            <dl class="job-detail-properties" id="collapseDetails" v-if="ready" v-show="detailsExpanded">
+                <div class="job-detail-property">
+                    <dt>ID</dt>
+                    <dd :title="job.id">{{job.id}}</dd>
                 </div>
 
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Connection</div>
-                    <div class="col">{{job.connection}}</div>
+                <div class="job-detail-property">
+                    <dt>Connection</dt>
+                    <dd>{{job.connection}}</dd>
                 </div>
 
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Queue</div>
-                    <div class="col">{{job.queue}}</div>
+                <div class="job-detail-property">
+                    <dt>Queue</dt>
+                    <dd>{{job.queue}}</dd>
                 </div>
 
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Pushed</div>
-                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+                <div class="job-detail-property">
+                    <dt>Pushed</dt>
+                    <dd>{{ readableTimestamp(job.payload.pushedAt) }}</dd>
                 </div>
 
-                <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
-                    <div class="col-md-2 text-muted">Batch</div>
-                    <div class="col">
-                        <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
-                            {{ prettyPrintJob(job.payload.data).batchId }}
+                <div class="job-detail-property" v-if="jobData.batchId">
+                    <dt>Batch</dt>
+                    <dd>
+                        <router-link :to="{ name: 'batches-preview', params: { batchId: jobData.batchId }}">
+                            {{ jobData.batchId }}
                         </router-link>
-                    </div>
+                    </dd>
                 </div>
 
-                <div class="row mb-2" v-if="delayed">
-                    <div class="col-md-2 text-muted">Delayed Until</div>
-                    <div class="col">{{delayed}}</div>
+                <div class="job-detail-property" v-if="delayed">
+                    <dt>Delayed Until</dt>
+                    <dd>{{delayed}}</dd>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-2 text-muted">Completed</div>
-                    <div class="col" v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</div>
-                    <div class="col" v-else>-</div>
+                <div class="job-detail-property">
+                    <dt>Completed</dt>
+                    <dd v-if="job.completed_at">{{readableTimestamp(job.completed_at)}}</dd>
+                    <dd v-else>—</dd>
                 </div>
-            </div>
+            </dl>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div class="card overflow-hidden mt-3" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
 
-                <a data-bs-toggle="collapse" href="#collapseData" role="button">
-                    Collapse
-                </a>
+                <button
+                    type="button"
+                    class="job-detail-collapse"
+                    :aria-expanded="dataExpanded"
+                    aria-controls="collapseData"
+                    @click="dataExpanded = !dataExpanded"
+                >
+                    {{ dataExpanded ? 'Collapse' : 'Expand' }}
+                </button>
             </div>
 
-            <div class="card-body code-bg text-white collapse show" id="collapseData">
+            <div class="card-body code-bg text-white job-detail-code" id="collapseData" v-show="dataExpanded">
                 <vue-json-pretty :data="prettyPrintJob(job.payload.data)"></vue-json-pretty>
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready && job.payload.tags.length">
+        <div class="card overflow-hidden mt-3" v-if="ready && job.payload.tags.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Tags</h2>
 
-                <a data-bs-toggle="collapse" href="#collapseTags" role="button">
-                    Collapse
-                </a>
+                <button
+                    type="button"
+                    class="job-detail-collapse"
+                    :aria-expanded="tagsExpanded"
+                    aria-controls="collapseTags"
+                    @click="tagsExpanded = !tagsExpanded"
+                >
+                    {{ tagsExpanded ? 'Collapse' : 'Expand' }}
+                </button>
             </div>
 
-            <div class="card-body code-bg text-white collapse show" id="collapseTags">
+            <div class="card-body code-bg text-white job-detail-code" id="collapseTags" v-show="tagsExpanded">
                 <vue-json-pretty :data="job.payload.tags"></vue-json-pretty>
             </div>
         </div>
@@ -104,6 +122,9 @@
         data() {
             return {
                 ready: false,
+                detailsExpanded: true,
+                dataExpanded: true,
+                tagsExpanded: true,
                 job: {}
             };
         },
@@ -112,6 +133,12 @@
             unserialized() {
                 return phpunserialize(this.job.payload.data.command);
             },
+
+
+            jobData() {
+                return this.ready ? this.prettyPrintJob(this.job.payload.data) : {};
+            },
+
 
             delayed() {
                 let unserialized;

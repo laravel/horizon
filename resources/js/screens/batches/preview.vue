@@ -66,12 +66,12 @@
         <poll @poll="loadBatch(false)" />
 
         <div class="card overflow-hidden">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="!ready">Batch Preview</h2>
-                <h2 class="h6 m-0" v-if="ready">{{batch.name || batch.id}}</h2>
+            <div class="card-header job-detail-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0 job-detail-title" v-if="!ready">Batch Preview</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="ready" :title="batch.name || batch.id">{{batch.name || batch.id}}</h2>
 
                 <button class="btn btn-primary" v-if="failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor" :class="{spin: retrying}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon me-2" fill="currentColor" :class="{spin: retrying}">
                         <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                     </svg>
 
@@ -87,72 +87,82 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary" v-if="ready">
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">ID</div>
-                    <div class="col">
+            <dl class="job-detail-properties" v-if="ready">
+                <div class="job-detail-property">
+                    <dt>ID</dt>
+                    <dd :title="batch.id">
                         {{batch.id}}
 
-                        <small class="ms-1 badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small class="ms-1 badge badge-danger badge-sm rounded-pill" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="ms-1 badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small class="ms-1 badge badge-success badge-sm rounded-pill" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
-                        <small class="ms-1 badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small class="ms-1 badge badge-secondary badge-sm rounded-pill" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
                         </small>
-                    </div>
+                    </dd>
                 </div>
-                <div class="row mb-2" v-if="batch.name">
-                    <div class="col-md-2 text-muted">Name</div>
-                    <div class="col">{{batch.name}}</div>
+
+                <div class="job-detail-property" v-if="batch.name">
+                    <dt>Name</dt>
+                    <dd>{{batch.name}}</dd>
                 </div>
-                <div class="row mb-2" v-if="batch.options.queue">
-                    <div class="col-md-2 text-muted">Queue</div>
-                    <div class="col">{{batch.options.queue}}</div>
+
+                <div class="job-detail-property" v-if="batch.options.queue">
+                    <dt>Queue</dt>
+                    <dd>{{batch.options.queue}}</dd>
                 </div>
-                <div class="row mb-2" v-if="batch.options.connection">
-                    <div class="col-md-2 text-muted">Connection</div>
-                    <div class="col">{{batch.options.connection}}</div>
+
+                <div class="job-detail-property" v-if="batch.options.connection">
+                    <dt>Connection</dt>
+                    <dd>{{batch.options.connection}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Created</div>
-                    <div class="col">{{ formatDateIso(batch.createdAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
+
+                <div class="job-detail-property">
+                    <dt>Created</dt>
+                    <dd>{{ formatDateIso(batch.createdAt).format('YYYY-MM-DD HH:mm:ss') }}</dd>
                 </div>
-                <div class="row mb-2" v-if="batch.finishedAt">
-                    <div class="col-md-2 text-muted">Finished</div>
-                    <div class="col">{{ formatDateIso(batch.finishedAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
+
+                <div class="job-detail-property" v-if="batch.finishedAt">
+                    <dt>Finished</dt>
+                    <dd>{{ formatDateIso(batch.finishedAt).format('YYYY-MM-DD HH:mm:ss') }}</dd>
                 </div>
-                <div class="row mb-2" v-if="batch.cancelledAt">
-                    <div class="col-md-2 text-muted">Cancelled</div>
-                    <div class="col">{{ formatDateIso(batch.cancelledAt).format('YYYY-MM-DD HH:mm:ss') }}</div>
+
+                <div class="job-detail-property" v-if="batch.cancelledAt">
+                    <dt>Cancelled</dt>
+                    <dd>{{ formatDateIso(batch.cancelledAt).format('YYYY-MM-DD HH:mm:ss') }}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Total Jobs</div>
-                    <div class="col">{{batch.totalJobs}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Total Jobs</dt>
+                    <dd>{{batch.totalJobs}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Pending Jobs</div>
-                    <div class="col">{{batch.pendingJobs}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Pending Jobs</dt>
+                    <dd>{{batch.pendingJobs}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Failed Jobs</div>
-                    <div class="col">{{batch.failedJobs}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Failed Jobs</dt>
+                    <dd>{{batch.failedJobs}}</dd>
                 </div>
-                <div class="row">
-                    <div class="col-md-2 text-muted">Processed Jobs<br><small>(Including Failed)</small></div>
-                    <div class="col">{{ (batch.processedJobs) }} ({{batch.progress}}%)</div>
+
+                <div class="job-detail-property">
+                    <dt>Processed Jobs<br><small>(Including Failed)</small></dt>
+                    <dd>{{ batch.processedJobs }} ({{batch.progress}}%)</dd>
                 </div>
-            </div>
+            </dl>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready && failedJobs.length">
+        <div class="card overflow-hidden horizon-table-card mt-3" v-if="ready && failedJobs.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Failed Jobs</h2>
             </div>
 
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0 horizon-table">
                 <thead>
                 <tr>
                     <th>Job</th>
@@ -164,8 +174,8 @@
                 <tbody>
 
                 <tr v-for="failedJob in failedJobs">
-                    <td>
-                        <router-link :title="failedJob.name" :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
+                    <td class="horizon-linked-cell">
+                        <router-link class="horizon-row-link horizon-cell-link" :title="failedJob.name" :to="{ name: 'failed-jobs-preview', params: { jobId: failedJob.id }}">
                             {{ jobBaseName(failedJob.name) }}
                         </router-link>
                     </td>

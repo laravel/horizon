@@ -22,14 +22,16 @@
 
 <template>
     <div class="table-responsive">
-        <table class="table mb-0">
+        <table class="table mb-0 job-exception-table">
             <tbody>
             <tr v-for="line in lines">
                 <td class="card-bg-secondary"><code>{{line}}</code></td>
             </tr>
 
             <tr v-if="! showAll">
-                <td class="card-bg-secondary"><a href="*" class="text-decoration-none" v-on:click.prevent="showAll = true">Show All</a></td>
+                <td class="card-bg-secondary">
+                    <a href="*" class="job-exception-show-all" v-on:click.prevent="showAll = true">Show All</a>
+                </td>
             </tr>
             </tbody>
         </table>

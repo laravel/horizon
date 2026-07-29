@@ -70,6 +70,7 @@
                     .then(response => {
                         if (!this.$root.autoLoadsNewEntries && refreshing && !response.data.jobs.length) {
                             this.ready = true;
+
                             return;
                         }
 
@@ -157,6 +158,20 @@
                 return `Total retries: ${job.retried_by.length}, Last retry status: ${this.upperFirst(lastRetry.status)}`;
             },
 
+            /**
+             * Determine the badge variant for the latest retry.
+             */
+            retriedJobBadgeClass(job) {
+                let lastRetry = job.retried_by[job.retried_by.length - 1];
+
+                return {
+                    completed: 'badge-success',
+                    failed: 'badge-danger',
+                    pending: 'badge-retry',
+                    reserved: 'badge-retry',
+                }[lastRetry.status] ?? 'badge-warning';
+            },
+
 
             /**
              * Poll handler to refresh the jobs at regular intervals.
@@ -200,12 +215,12 @@
     <div>
         <poll @poll="refreshJobsPeriodically" />
 
-        <div class="card overflow-hidden">
+        <div class="card overflow-hidden horizon-table-card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Failed Jobs</h2>
 
-                <div class="form-control-with-icon">
-                    <div class="icon-wrapper">
+                <div class="failed-jobs-search-control">
+                    <div class="failed-jobs-search-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
                             <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
                         </svg>
@@ -224,47 +239,51 @@
             </div>
 
 
-            <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any failed jobs.</span>
-            </div>
-
-            <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
+            <table v-if="ready" class="table table-hover mb-0 horizon-table">
                 <thead>
                 <tr>
                     <th>Job</th>
-                    <th class="text-end">Runtime</th>
-                    <th>Failed</th>
-                    <th class="text-end">Retry</th>
+                    <th class="text-end failed-jobs-runtime">Runtime</th>
+                    <th class="failed-jobs-failed-at">Failed</th>
+                    <th class="text-end failed-jobs-retry-column">Retry</th>
                 </tr>
                 </thead>
 
                 <tbody>
-                <tr v-if="hasNewEntries && !this.$root.autoLoadsNewEntries" key="newEntries" class="dontanimate">
-                    <td colspan="100" class="text-center card-bg-secondary py-2">
-                        <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                <new-entries
+                    v-if="hasNewEntries && !$root.autoLoadsNewEntries"
+                    :columns="4"
+                    :loading="loadingNewEntries"
+                    @load="loadNewEntries"
+                ></new-entries>
 
-                        <small v-if="loadingNewEntries">Loading...</small>
-                    </td>
-                </tr>
+                <table-empty
+                    v-if="jobs.length === 0"
+                    :columns="4"
+                    title="No failed jobs"
+                    description="There aren't any failed jobs."
+                    icon="failed"
+                ></table-empty>
 
                 <tr v-for="job in jobs" :key="job.id">
-                    <td>
-                        <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">{{ jobBaseName(job.name) }}</router-link>
+                    <td class="horizon-linked-cell">
+                        <router-link class="horizon-row-link horizon-cell-link" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">
+                            {{ jobBaseName(job.name) }}
 
-                        <small class="ms-1 badge bg-secondary badge-sm"
-                               :title="retriedJobTooltip(job)"
-                               v-if="wasRetried(job)">
-                            Retried
-                        </small>
+                            <small class="horizon-row-action ms-1 badge badge-sm rounded-pill"
+                                   :class="retriedJobBadgeClass(job)"
+                                   :title="retriedJobTooltip(job)"
+                                   v-if="wasRetried(job)">
+                                Retried
+                            </small>
+                        </router-link>
 
-                        <br>
-
-                        <small class="text-muted">
+                        <small class="horizon-row-meta text-muted">
                             Queue: {{job.queue}}
                             | Attempts: {{ job.payload.attempts }}
                             <span v-if="isRetry(job)">
                             | Retry of
-                            <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
+                            <router-link class="failed-job-reference-link" :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.payload.retry_of }}">
                                 {{ job.payload.retry_of.split('-')[0] }}
                             </router-link>
                             </span>
@@ -283,8 +302,8 @@
                     </td>
 
                     <td class="text-end table-fit">
-                        <a href="#" title="Retry Job" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
-                            <svg class="fill-primary" viewBox="0 0 20 20" style="width: 1.25rem; height: 1.25rem;" :class="{spin: isRetrying(job.id)}">
+                        <a href="#" class="failed-job-retry" title="Retry Job" @click.prevent="retry(job.id)" v-if="!hasCompleted(job)">
+                            <svg viewBox="0 0 20 20" :class="{spin: isRetrying(job.id)}">
                                 <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                             </svg>
                         </a>
@@ -293,9 +312,9 @@
                 </tbody>
             </table>
 
-            <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+            <div v-if="ready && jobs.length && totalPages > 1" class="horizon-table-pagination d-flex justify-content-between border-top">
+                <button @click="previous" class="btn btn-sm" :disabled="page==1">Previous</button>
+                <button @click="next" class="btn btn-sm" :disabled="page>=totalPages">Next</button>
             </div>
         </div>
 

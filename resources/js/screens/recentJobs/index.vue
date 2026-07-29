@@ -149,7 +149,7 @@
     <div>
         <poll @poll="refreshJobsPeriodically" />
 
-        <div class="card overflow-hidden">
+        <div class="card overflow-hidden horizon-table-card">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
@@ -166,15 +166,7 @@
                 <span>Loading...</span>
             </div>
 
-            <div v-if="ready && jobs.length == 0"
-                 class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span v-if="$route.params.type == 'pending'">There aren't any pending jobs.</span>
-                <span v-else-if="$route.params.type == 'completed'">There aren't any completed jobs.</span>
-                <span v-else-if="$route.params.type == 'silenced'">There aren't any silenced jobs.</span>
-                <span v-else>There aren't any jobs.</span>
-            </div>
-
-            <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
+            <table v-if="ready" class="table table-hover mb-0 horizon-table">
                 <thead>
                     <tr>
                         <th>Job</th>
@@ -186,22 +178,29 @@
                 </thead>
 
                 <tbody>
-                    <tr v-if="hasNewEntries && !this.$root.autoLoadsNewEntries" key="newEntries" class="dontanimate">
-                        <td colspan="100" class="text-center card-bg-secondary py-1">
-                            <small><a href="#" v-on:click.prevent="loadNewEntries" v-if="!loadingNewEntries">Load New Entries</a></small>
+                    <new-entries
+                        v-if="hasNewEntries && !$root.autoLoadsNewEntries"
+                        :columns="$route.params.type === 'pending' ? 2 : 4"
+                        :loading="loadingNewEntries"
+                        @load="loadNewEntries"
+                    ></new-entries>
 
-                            <small v-if="loadingNewEntries">Loading...</small>
-                        </td>
-                    </tr>
+                    <table-empty
+                        v-if="jobs.length === 0"
+                        :columns="$route.params.type === 'pending' ? 2 : 4"
+                        :title="`No ${$route.params.type} jobs`"
+                        :description="`Horizon is not reporting any ${$route.params.type} jobs.`"
+                        :icon="$route.params.type"
+                    ></table-empty>
 
                     <component v-for="job in jobs" :key="job.id" :job="job" is="job-row">
                     </component>
                 </tbody>
             </table>
 
-            <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
-                <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
-                <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
+            <div v-if="ready && jobs.length && totalPages > 1" class="horizon-table-pagination d-flex justify-content-between border-top">
+                <button @click="previous" class="btn btn-sm" :disabled="page==1">Previous</button>
+                <button @click="next" class="btn btn-sm" :disabled="page>=totalPages">Next</button>
             </div>
         </div>
     </div>

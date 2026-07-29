@@ -15,6 +15,9 @@
             return {
                 ready: false,
                 retrying: false,
+                exceptionExpanded: true,
+                exceptionContextExpanded: true,
+                dataExpanded: true,
                 job: {}
             };
         },
@@ -98,9 +101,9 @@
         <poll @poll="reloadRetries" :immediate="false" />
 
         <div class="card overflow-hidden">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
-                <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
+            <div class="card-header job-detail-header d-flex align-items-center justify-content-between">
+                <h2 class="h6 m-0 job-detail-title" v-if="!ready">Job Preview</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="ready" :title="job.name">{{job.name}}</h2>
 
                 <button class="btn btn-primary" v-on:click.prevent="retry(job.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon" fill="currentColor" :class="{spin: retrying}">
@@ -119,94 +122,133 @@
                 <span>Loading...</span>
             </div>
 
-            <div class="card-body card-bg-secondary" v-if="ready">
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">ID</div>
-                    <div class="col">{{job.id}}</div>
+            <dl class="job-detail-properties" v-if="ready">
+                <div class="job-detail-property">
+                    <dt>ID</dt>
+                    <dd :title="job.id">{{job.id}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Connection</div>
-                    <div class="col">{{job.connection}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Connection</dt>
+                    <dd>{{job.connection}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Queue</div>
-                    <div class="col">{{job.queue}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Queue</dt>
+                    <dd>{{job.queue}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Attempts</div>
-                    <div class="col">{{job.payload.attempts}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Attempts</dt>
+                    <dd>{{job.payload.attempts}}</dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Retries</div>
-                    <div class="col">{{job.retried_by.length}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Retries</dt>
+                    <dd>{{job.retried_by.length}}</dd>
                 </div>
-                <div class="row mb-2" v-if="job.payload.retry_of">
-                    <div class="col-md-2 text-muted">Retry of ID</div>
-                    <div class="col">
-                         <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
+
+                <div class="job-detail-property" v-if="job.payload.retry_of">
+                    <dt>Retry of ID</dt>
+                    <dd>
+                        <a :href="Horizon.basePath + '/failed/' + job.payload.retry_of">
                             {{ job.payload.retry_of }}
                         </a>
-                    </div>
+                    </dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Tags</div>
-                    <div class="col">{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</div>
+
+                <div class="job-detail-property">
+                    <dt>Tags</dt>
+                    <dd>{{ job.payload.tags && job.payload.tags.length ? job.payload.tags.join(', ') : '' }}</dd>
                 </div>
-                <div class="row mb-2" v-if="prettyPrintJob(job.payload.data).batchId">
-                    <div class="col-md-2 text-muted">Batch</div>
-                    <div class="col">
+
+                <div class="job-detail-property" v-if="prettyPrintJob(job.payload.data).batchId">
+                    <dt>Batch</dt>
+                    <dd>
                         <router-link :to="{ name: 'batches-preview', params: { batchId: prettyPrintJob(job.payload.data).batchId }}">
                             {{ prettyPrintJob(job.payload.data).batchId }}
                         </router-link>
-                    </div>
+                    </dd>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-md-2 text-muted">Pushed</div>
-                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+
+                <div class="job-detail-property">
+                    <dt>Pushed</dt>
+                    <dd>{{ readableTimestamp(job.payload.pushedAt) }}</dd>
                 </div>
-                <div class="row">
-                    <div class="col-md-2 text-muted">Failed</div>
-                    <div class="col">{{readableTimestamp(job.failed_at)}}</div>
+
+                <div class="job-detail-property">
+                    <dt>Failed</dt>
+                    <dd>{{readableTimestamp(job.failed_at)}}</dd>
                 </div>
-            </div>
+            </dl>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div class="card overflow-hidden mt-3" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Exception</h2>
+
+                <button
+                    type="button"
+                    class="job-detail-collapse"
+                    :aria-expanded="exceptionExpanded"
+                    aria-controls="collapseException"
+                    @click="exceptionExpanded = !exceptionExpanded"
+                >
+                    {{ exceptionExpanded ? 'Collapse' : 'Expand' }}
+                </button>
             </div>
-            <div>
+            <div id="collapseException" v-show="exceptionExpanded">
                 <stack-trace :trace="job.exception.split('\n')"></stack-trace>
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div class="card overflow-hidden mt-3" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Exception Context</h2>
+
+                <button
+                    type="button"
+                    class="job-detail-collapse"
+                    :aria-expanded="exceptionContextExpanded"
+                    aria-controls="collapseExceptionContext"
+                    @click="exceptionContextExpanded = !exceptionContextExpanded"
+                >
+                    {{ exceptionContextExpanded ? 'Collapse' : 'Expand' }}
+                </button>
             </div>
 
-            <div class="card-body code-bg text-white">
+            <div class="card-body code-bg text-white job-detail-code" id="collapseExceptionContext" v-show="exceptionContextExpanded">
                 <vue-json-pretty :data="prettyPrintJob(job.context)"></vue-json-pretty>
             </div>
         </div>
 
 
-        <div class="card overflow-hidden mt-4" v-if="ready">
+        <div class="card overflow-hidden mt-3" v-if="ready">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
+
+                <button
+                    type="button"
+                    class="job-detail-collapse"
+                    :aria-expanded="dataExpanded"
+                    aria-controls="collapseData"
+                    @click="dataExpanded = !dataExpanded"
+                >
+                    {{ dataExpanded ? 'Collapse' : 'Expand' }}
+                </button>
             </div>
 
-            <div class="card-body code-bg text-white">
+            <div class="card-body code-bg text-white job-detail-code" id="collapseData" v-show="dataExpanded">
                 <vue-json-pretty :data="prettyPrintJob(job.payload.data)"></vue-json-pretty>
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-4" v-if="ready && job.retried_by.length">
+        <div class="card overflow-hidden horizon-table-card mt-3" v-if="ready && job.retried_by.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Recent Retries</h2>
             </div>
 
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0 horizon-table">
                 <thead>
                 <tr>
                     <th>Status</th>
@@ -234,8 +276,8 @@
                         <span class="ms-2">{{ upperFirst(retry.status) }}</span>
                     </td>
 
-                    <td class="table-fit">
-                        <a v-if="retry.status == 'failed'" :href="Horizon.basePath + '/failed/'+retry.id">
+                    <td class="table-fit" :class="{ 'horizon-linked-cell': retry.status == 'failed' }">
+                        <a v-if="retry.status == 'failed'" class="horizon-row-link horizon-cell-link" :href="Horizon.basePath + '/failed/'+retry.id">
                             {{ retry.id }}
                         </a>
                         <span v-else>{{ retry.id }}</span>
