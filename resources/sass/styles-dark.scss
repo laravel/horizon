@@ -8,41 +8,73 @@ $badge-font-size: 0.875rem;
 $link-decoration: none;
 $link-hover-decoration: underline;
 
-$primary: $violet-500;
+$primary: $violet-400;
 $secondary: $gray-500;
 $success: $emerald-500;
 $info: $blue-500;
 $warning: $amber-500;
 $danger: $red-500;
 
-$body-bg: $gray-900;
-$body-color: $gray-100;
+$action-primary: #7746ec;
+$action-primary-hover: #8659ef;
+$action-primary-highlight: #8054ed;
 
-$text-muted: $gray-400;
+$surface-canvas: $gray-900;
+$surface-sidebar: $gray-900;
+$surface-panel: $gray-800;
+$surface-panel-muted: #252f3e;
+$empty-state-icon-bg: #303b4c;
+$input-control-bg: rgba($gray-700, 0.3);
+$input-control-border: $gray-700;
+$input-control-focus-ring-opacity: 0.5;
+$input-control-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+$surface-panel-header: $gray-800;
+$foreground-primary: $gray-100;
+$foreground-muted: $gray-400;
+$border-subtle: #2b3544;
+$border-panel: $gray-700;
+$status-running-bg: #174731;
+$status-running-color: #05df72;
+$status-paused-bg: #5a3922;
+$status-paused-color: #fdc700;
+$status-inactive-bg: #792425;
+$status-inactive-color: #ffa2a2;
+$status-indicator-track: #4b5563;
+$sidebar-status-indicator-track: $gray-700;
+$status-unavailable-color: #6b7280;
+$panel-shadow: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+$panel-border-width: 1px 0 0;
+$panel-radius: 0.625rem;
 
-$border-radius-lg: 6px;
+$body-bg: $surface-canvas;
+$body-color: $foreground-primary;
 
-$logo-color: $gray-200;
+$text-muted: $foreground-muted;
 
-$link-color: $violet-400;
+$border-radius-lg: $panel-radius;
+
+$logo-color: $foreground-primary;
+$logo-mark-color: $violet-500;
+
+$link-color: $primary;
 $link-hover-color: $violet-300;
 
-$sidebar-nav-color: $gray-400;
-$sidebar-nav-hover-color: $gray-300;
+$sidebar-nav-color: $gray-300;
+$sidebar-nav-hover-color: $foreground-primary;
 $sidebar-nav-hover-bg: $gray-800;
 $sidebar-nav-icon-color: $gray-500;
 $sidebar-nav-active-bg: $gray-800;
-$sidebar-nav-active-color: $violet-400;
-$sidebar-nav-active-icon-color: $violet-500;
+$sidebar-nav-active-color: $foreground-primary;
+$sidebar-nav-active-icon-color: $primary;
 
-$pill-link: $gray-400;
-$pill-link-active: $violet-400;
-$pill-link-hover: $gray-200;
+$pill-link: $sidebar-nav-color;
+$pill-link-active: $primary;
+$pill-link-hover: $sidebar-nav-hover-color;
 
-$border-color: $gray-600;
-$table-border-color: $gray-700;
-$table-headers-color: $gray-800;
-$table-hover-bg: $gray-700;
+$border-color: $border-panel;
+$table-border-color: $border-subtle;
+$table-headers-color: $surface-panel-muted;
+$table-hover-bg: #253143;
 
 $header-border-color: $table-border-color;
 
@@ -50,46 +82,43 @@ $input-bg: $gray-800;
 $input-color: $gray-200;
 $input-border-color: $border-color;
 
-$card-cap-bg: $gray-700;
-$card-bg-secondary: $gray-800;
-$card-bg: $gray-800;
+$card-cap-bg: $surface-panel-header;
+$card-bg-secondary: $surface-panel-muted;
+$card-bg: $surface-panel;
 $card-border-radius: $border-radius-lg;
 
-$code-bg: #292d3e;
+$code-bg: #18202d;
 
 $modal-content-bg: $table-headers-color;
 $modal-backdrop-bg: $gray-600;
 $modal-footer-border-color: $input-border-color;
 $modal-header-border-color: $input-border-color;
 
-$new-entries-bg: $violet-900;
-$new-code-entries-bg: $gray-600;
+$new-entries-layer-opacity: 0.3;
+// Fixed sRGB equivalent of oklch(from $primary calc(l - 0.06) c h) for $violet-400 (#a78bfa).
+$new-entries-stripe: #9578e5;
+$new-entries-color: $white;
 
 $control-action-icon-color: $gray-500;
-$control-action-icon-hover: $violet-400;
+$control-action-icon-hover: $primary;
 
 $nav-pills-link-active-bg: $gray-800;
 
 $dropdown-bg: $gray-700;
 $dropdown-link-color: $white;
 
-$btn-muted-color: $gray-400;
-$btn-muted-bg: $gray-800;
-$btn-muted-hover-color: $gray-300;
-$btn-muted-hover-bg: $gray-700;
-$btn-muted-active-color: $white;
-$btn-muted-active-bg: $primary;
-
-$badge-secondary-bg: $gray-300;
-$badge-secondary-color: $gray-700;
-$badge-success-bg: $emerald-500;
-$badge-success-color: $white;
-$badge-info-bg: $blue-500;
-$badge-info-color: $white;
-$badge-warning-bg: $amber-500;
-$badge-warning-color: $white;
-$badge-danger-bg: $red-500;
-$badge-danger-color: $white;
+$badge-secondary-bg: #374151;
+$badge-secondary-color: #f3f4f6;
+$badge-success-bg: $status-running-bg;
+$badge-success-color: $status-running-color;
+$badge-info-bg: #1d3573;
+$badge-info-color: #50a2ff;
+$badge-warning-bg: $status-paused-bg;
+$badge-warning-color: $status-paused-color;
+$badge-danger-bg: $status-inactive-bg;
+$badge-danger-color: $status-inactive-color;
+$badge-retry-bg: #7c2146;
+$badge-retry-color: #fda5d5;
 
 $grid-breakpoints: (
     xs: 0,

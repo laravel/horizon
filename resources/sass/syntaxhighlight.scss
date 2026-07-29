@@ -1,11 +1,18 @@
 .vjs-tree {
     font-family: 'Monaco', 'Menlo', 'Consolas', 'Bitstream Vera Sans Mono', monospace !important;
+    font-size: 0.78125rem !important;
+    font-weight: 500;
+    line-height: 1.5rem;
+
     &.is-root {
         position: relative;
     }
+
     .vjs-tree-node {
         display: flex;
         position: relative;
+        line-height: 1.5rem;
+
         &:hover {
             background-color: unset;
         }

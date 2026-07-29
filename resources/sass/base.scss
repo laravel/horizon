@@ -2,7 +2,11 @@
 @import 'bootstrap';
 
 body {
-    padding-bottom: 20px;
+    min-height: 100vh;
+    padding: 0;
+    color: $foreground-primary;
+    background: $surface-canvas;
+    font-variant-numeric: tabular-nums;
 }
 
 .container {
@@ -22,37 +26,341 @@ svg.icon {
     height: 1rem;
 }
 
-.header {
-    border-bottom: solid 1px $header-border-color;
+.form-control {
+    height: 2rem;
+    padding: 0.25rem 0.625rem;
+    color: $foreground-primary;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background: $input-control-bg;
+    border: 1px solid $input-control-border;
+    border-radius: $panel-radius;
+    box-shadow: $input-control-shadow;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+
+    &::placeholder {
+        color: $foreground-muted;
+        opacity: 1;
+    }
+
+    &:focus {
+        color: $foreground-primary;
+        background: $input-control-bg;
+        border-color: $primary;
+        box-shadow:
+            0 0 0 3px rgba($primary, $input-control-focus-ring-opacity),
+            $input-control-shadow;
+    }
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.125rem;
+    padding: 0 0.8125rem;
+    color: $white;
+    border-color: $action-primary;
+    border-radius: $panel-radius;
+    background-color: $action-primary;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+    font-size: 0.84375rem;
+    font-weight: 500;
+    line-height: 1rem;
+    white-space: nowrap;
+    transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+
+    &:hover {
+        color: $white;
+        border-color: $action-primary-hover;
+        background-color: $action-primary-hover;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+    }
+
+    &:focus {
+        color: $white;
+        border-color: $action-primary;
+        background-color: $action-primary;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 3px rgba($action-primary, 0.5), 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+    }
+
+    &:active,
+    &.active,
+    .show > &.dropdown-toggle {
+        color: $white;
+        border-color: $action-primary-hover;
+        background-color: $action-primary-hover;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+        transform: translateY(1px);
+    }
+
+    &:disabled,
+    &.disabled {
+        color: $white;
+        border-color: $action-primary;
+        background-color: $action-primary;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+        opacity: 0.5;
+    }
+}
+
+.horizon-shell {
+    display: flex;
+    width: 100%;
+    max-width: 1600px;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+.horizon-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex: 0 0 256px;
+    flex-direction: column;
+    width: 256px;
+    min-width: 256px;
+    max-width: 256px;
+    height: 100vh;
+    color: $foreground-primary;
+    background: $surface-sidebar;
 
     .logo {
-        text-decoration: none;
+        width: 100%;
+        min-width: 0;
         color: $logo-color;
+        text-decoration: none;
 
         svg {
-            width: 2rem;
-            height: 2rem;
+            flex: 0 0 auto;
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .fill-primary {
+            fill: $logo-mark-color;
+        }
+
+        h1 {
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1rem;
+            white-space: nowrap;
+        }
+
+        .horizon-logo-copy {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .horizon-logo-subtitle {
+            display: block;
+            overflow: hidden;
+            color: $foreground-muted;
+            font-size: 0.6875rem;
+            line-height: 0.875rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 }
 
-.sidebar .nav-item {
-    a {
+.horizon-status-wrapper {
+    flex: 0 0 auto;
+    margin-left: 0.75rem;
+}
+
+.horizon-tooltip {
+    position: relative;
+    display: inline-flex;
+}
+
+.horizon-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    color: $status-unavailable-color;
+    border-radius: 0.25rem;
+    outline: none;
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px rgba($primary, 0.25);
+    }
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        fill: currentColor;
+    }
+}
+
+.horizon-status-running {
+    color: $primary;
+}
+
+.horizon-status-track,
+.horizon-status-progress {
+    fill: none;
+}
+
+.horizon-status-track {
+    stroke: $status-indicator-track;
+}
+
+.horizon-status-progress {
+    stroke: currentColor;
+}
+
+.horizon-status-spinner {
+    animation: horizon-status-spin 2.5s linear infinite;
+}
+
+.horizon-status[data-activity='working'] {
+    .horizon-status-spinner {
+        animation-duration: 0.32s;
+    }
+}
+
+.horizon-status-paused {
+    color: $status-paused-color;
+}
+
+.horizon-status-inactive {
+    color: $foreground-muted;
+    opacity: 0.7;
+}
+
+.horizon-status-unavailable {
+    color: $status-inactive-color;
+}
+
+.horizon-tooltip-content {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 0.5rem);
+    z-index: 5;
+    padding: 0.375rem 0.5rem;
+    color: $surface-panel;
+    border-radius: 0.375rem;
+    background: $foreground-primary;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.14);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-0.25rem, -50%);
+    transition: opacity 120ms ease, transform 120ms ease, visibility 120ms ease;
+    visibility: hidden;
+    white-space: nowrap;
+
+    &::before {
+        position: absolute;
+        top: 50%;
+        right: 100%;
+        border-top: 0.25rem solid transparent;
+        border-right: 0.25rem solid $foreground-primary;
+        border-bottom: 0.25rem solid transparent;
+        content: '';
+        transform: translateY(-50%);
+    }
+}
+
+.horizon-tooltip:hover .horizon-tooltip-content,
+.horizon-tooltip:focus-within .horizon-tooltip-content {
+    opacity: 1;
+    transform: translate(0, -50%);
+    visibility: visible;
+}
+
+@keyframes horizon-status-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .horizon-status-spinner {
+        animation: none;
+    }
+}
+
+.horizon-sidebar-header {
+    display: flex;
+    align-items: center;
+    min-height: 4.8rem;
+    padding: 0.3125rem 1.1875rem 0 1.25rem;
+
+    .horizon-status-track {
+        stroke: $sidebar-status-indicator-track;
+    }
+
+    .logo {
+        flex: 1 1 auto;
+        width: auto;
+    }
+}
+
+.horizon-sidebar-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0 0.75rem 1.5rem;
+}
+
+.horizon-sidebar-footer {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.horizon-sidebar-label {
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    margin: 0;
+    padding: 0 0.5rem;
+    color: $foreground-muted;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1rem;
+    letter-spacing: 0.015em;
+}
+
+.horizon-sidebar .nav-item {
+    margin-bottom: 0.375rem;
+
+    .nav-link {
+        min-height: 2.25rem;
+        padding: 0.5rem 0.625rem;
         color: $sidebar-nav-color;
-        padding: 0.5rem 0.75rem;
-        margin-bottom: 4px;
-        border-radius: $border-radius-lg;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        text-decoration: none;
+        transition: color 120ms ease, background-color 120ms ease;
 
         svg {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 15px;
+            flex: 0 0 auto;
+            width: 1rem;
+            height: 1rem;
+            margin-right: 0.625rem;
             fill: $sidebar-nav-icon-color;
         }
 
-        &:hover {
+        &:hover,
+        &:focus {
             background-color: $sidebar-nav-hover-bg;
             color: $sidebar-nav-hover-color;
+            text-decoration: none;
         }
 
         &.active {
@@ -66,9 +374,107 @@ svg.icon {
     }
 }
 
+.horizon-nav-count {
+    overflow: hidden;
+    min-width: 1.5rem;
+    max-width: 5rem;
+    color: $foreground-muted;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1rem;
+    text-align: right;
+    text-overflow: ellipsis;
+}
+
+.horizon-sidebar .nav-link.active .horizon-nav-count {
+    color: currentColor;
+}
+
+.horizon-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0.5rem 0.625rem;
+    color: $sidebar-nav-color;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+
+    &:hover,
+    &:focus {
+        color: $sidebar-nav-hover-color;
+        background: $sidebar-nav-hover-bg;
+        box-shadow: none;
+    }
+
+    .icon {
+        flex: 0 0 auto;
+        margin-right: 0.625rem;
+        color: $sidebar-nav-icon-color;
+    }
+}
+
+.horizon-setting + .horizon-setting {
+    margin-top: 0.375rem;
+}
+
+.horizon-setting-label {
+    display: flex;
+    align-items: center;
+}
+
+.horizon-switch {
+    display: flex;
+    align-items: center;
+    width: 2rem;
+    height: 1.125rem;
+    padding: 0.125rem;
+    border-radius: 999px;
+    background: $border-panel;
+    transition: background-color 120ms ease;
+
+    span {
+        width: 0.875rem;
+        height: 0.875rem;
+        border-radius: 50%;
+        background: $white;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+        transition: transform 120ms ease;
+    }
+}
+
+.horizon-setting.active .horizon-switch {
+    background: $primary;
+
+    span {
+        background: $white;
+        transform: translateX(0.875rem);
+    }
+}
+
+.horizon-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.horizon-content {
+    width: 100%;
+    padding: 1rem 0.875rem 2rem 1.5rem;
+}
+
 .card {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    border: none;
+    overflow: hidden;
+    border-color: $border-panel;
+    border-style: solid;
+    border-width: $panel-border-width;
+    border-radius: $panel-radius;
+    box-shadow: $panel-shadow;
 
     .bottom-radius {
         border-bottom-left-radius: $card-border-radius;
@@ -76,11 +482,10 @@ svg.icon {
     }
 
     .card-header {
-        padding-top: 0.7rem;
-        padding-bottom: 0.7rem;
+        min-height: 3.375rem;
+        padding: 0.75rem 1.5rem;
         background-color: $card-cap-bg;
-        border-bottom: none;
-        min-height: 60px;
+        border-bottom: 1px solid $border-subtle;
 
         .btn-group {
             .btn {
@@ -132,6 +537,11 @@ svg.icon {
     }
 
     .table {
+        tbody {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
         th,
         td {
             padding: 0.75rem 1.25rem;
@@ -146,9 +556,15 @@ svg.icon {
 
         th {
             background-color: $table-headers-color;
-            font-size: 0.875rem;
-            padding: 0.5rem 1.25rem;
+            color: $foreground-muted;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
             border-bottom: 0;
+        }
+
+        thead th {
+            border-top: 1px solid $table-border-color;
         }
 
         &:not(.table-borderless) {
@@ -170,6 +586,408 @@ svg.icon {
             white-space: nowrap;
         }
     }
+
+    .card-header + .table thead th {
+        border-top: 0;
+    }
+}
+
+.dashboard-overview-grid,
+.dashboard-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dashboard .card {
+    border-radius: 0.875rem;
+}
+
+.dashboard .table {
+    th:first-child,
+    td:first-child {
+        padding-left: 1.5rem;
+    }
+
+    th:last-child,
+    td:last-child {
+        padding-right: 1.5rem;
+    }
+}
+
+.dashboard-overview {
+    .card-header {
+        min-height: 3.5rem;
+    }
+}
+
+.dashboard-stat,
+.dashboard-summary {
+    min-width: 0;
+    padding: 1.25rem 1.5rem;
+
+    &:not(:last-child) {
+        border-right: 1px solid $border-subtle;
+    }
+}
+
+.dashboard-stat {
+    min-height: 13.375rem;
+    padding-bottom: 1.5rem;
+}
+
+.dashboard-summary-grid {
+    border-bottom: 1px solid $border-subtle;
+}
+
+.dashboard-summary-grid + .table thead th {
+    border-top: 0;
+}
+
+.dashboard-queue-actions-column {
+    width: 5rem;
+}
+
+.queue-control-action {
+    display: inline-flex;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    color: $foreground-muted;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    transition:
+        color 120ms ease,
+        background-color 120ms ease,
+        opacity 120ms ease;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        fill: currentColor;
+    }
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+        color: $primary;
+        background: $surface-panel-muted;
+        outline: none;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px rgba($primary, 0.3);
+    }
+
+    &:disabled {
+        cursor: wait;
+        opacity: 0.45;
+    }
+}
+
+.dashboard-summary {
+    min-height: 7rem;
+}
+
+.dashboard-stat-label {
+    display: block;
+    overflow: hidden;
+    color: $foreground-muted;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-stat-value,
+.dashboard-summary-value {
+    margin: 0.75rem 0 0;
+    color: $foreground-primary;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.75rem;
+    letter-spacing: -0.025em;
+}
+
+.dashboard-stat-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    min-width: 0;
+}
+
+.dashboard-stat-link {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: inherit;
+        text-decoration: none;
+
+        .dashboard-stat-label {
+            color: $primary;
+        }
+    }
+}
+
+.dashboard-overview-grid > .dashboard-stat-link {
+    transition: background-color 120ms ease;
+
+    &:hover,
+    &:focus {
+        background: $surface-panel-muted;
+    }
+}
+
+.dashboard-stat-detail {
+    overflow: hidden;
+    color: $foreground-muted;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-stat-details {
+    display: grid;
+    margin-top: 0.875rem;
+    color: $foreground-muted;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+}
+
+.dashboard-stat-detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.4375rem 0;
+    border-top: 1px dashed $border-subtle;
+    font-size: 0.8125rem;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    strong {
+        flex: 0 0 auto;
+        color: $foreground-muted;
+        font-weight: 400;
+    }
+}
+
+.dashboard-batch-previews {
+    display: grid;
+    margin-top: 0.875rem;
+}
+
+.dashboard-batch-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.4375rem 0;
+    color: $foreground-muted;
+    border-top: 1px dashed $border-subtle;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $foreground-primary;
+        text-decoration: none;
+    }
+}
+
+.dashboard-batch-name {
+    overflow: hidden;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-batch-progress {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.375rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        transform: rotate(-90deg);
+    }
+
+    circle {
+        fill: none;
+    }
+
+    span {
+        min-width: 3ch;
+    }
+}
+
+.dashboard-batch-progress-track {
+    stroke: $border-panel;
+}
+
+.dashboard-batch-progress-value {
+    stroke: $primary;
+    transition: stroke-dashoffset 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-batch-progress-value {
+        transition: none;
+    }
+}
+
+.dashboard-summary-detail {
+    display: block;
+    margin-top: 0.25rem;
+    color: $foreground-muted;
+    font-size: 0.75rem;
+}
+
+.job-detail-header {
+    min-height: 3.375rem;
+    padding: 0 1.5rem;
+}
+
+.job-detail-title {
+    overflow: hidden;
+    min-width: 0;
+    margin-right: 1rem !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.job-detail-collapse {
+    flex: 0 0 auto;
+    padding: 0;
+    color: $foreground-muted;
+    border: 0;
+    background: transparent;
+    font-size: 0.8125rem;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $primary;
+        text-decoration: none;
+    }
+}
+
+.job-detail-properties {
+    margin: 0;
+    padding: 0.375rem 0 0.625rem;
+}
+
+.job-detail-property {
+    display: flex;
+    gap: 1rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+
+    & + & {
+        border-top: 1px dashed $border-subtle;
+    }
+
+    dt {
+        flex: 0 0 10rem;
+        color: $foreground-muted;
+        font-weight: 400;
+    }
+
+    dd {
+        min-width: 0;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    a {
+        color: $foreground-primary;
+        text-decoration-color: rgba($foreground-primary, 0.4);
+        text-underline-offset: 0.25rem;
+
+        &:hover,
+        &:focus {
+            color: $primary;
+            text-decoration-color: $primary;
+        }
+    }
+}
+
+.card .job-exception-table td {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.card .job-exception-table tbody tr:first-child td {
+    border-top: 0;
+}
+
+.job-exception-show-all {
+    color: $foreground-primary;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $primary;
+        text-decoration: none;
+    }
+}
+
+.job-detail-code {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .job-detail-property {
+        gap: 0.75rem;
+
+        dt {
+            flex-basis: 7.5rem;
+        }
+    }
+}
+
+.dashboard-split-queue {
+    padding-left: 2rem !important;
+
+    .icon {
+        margin-right: 0.375rem;
+    }
+}
+
+.dashboard-master .card-header h3 {
+    overflow: hidden;
+    min-width: 0;
+    margin-right: 1rem !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-master + .dashboard-master {
+    margin-top: 1rem;
+}
+
+.card .table.dashboard-empty-table:not(.table-borderless) tbody td {
+    border-top: 0;
 }
 
 .fill-text-color {
@@ -212,22 +1030,6 @@ button:hover {
     box-shadow: none !important;
 }
 
-.btn-muted {
-    color: $btn-muted-color;
-    background: $btn-muted-bg;
-
-    &:hover,
-    &:focus {
-        color: $btn-muted-hover-color;
-        background: $btn-muted-hover-bg;
-    }
-
-    &.active {
-        color: $btn-muted-active-color;
-        background: $btn-muted-active-bg;
-    }
-}
-
 .badge-secondary {
     background: $badge-secondary-bg;
     color: $badge-secondary-color;
@@ -251,6 +1053,11 @@ button:hover {
 .badge-danger {
     background: $badge-danger-bg;
     color: $badge-danger-color;
+}
+
+.badge-retry {
+    background: $badge-retry-bg;
+    color: $badge-retry-color;
 }
 
 .control-action {
@@ -335,24 +1142,419 @@ button:hover {
     }
 }
 
-.list-enter-active:not(.dontanimate) {
-    transition: background 1s linear;
-}
-
-.list-enter:not(.dontanimate),
-.list-leave-to:not(.dontanimate) {
-    background: $new-entries-bg;
-}
-
-.code-bg .list-enter:not(.dontanimate),
-.code-bg .list-leave-to:not(.dontanimate) {
-    background: $new-code-entries-bg;
-}
-
 .card table {
     td {
         vertical-align: middle !important;
     }
+}
+
+.horizon-table-card {
+    .card-header {
+        min-height: 3.375rem;
+        padding: 0.625rem 1.5rem;
+        gap: 1rem;
+    }
+}
+
+.failed-jobs-search-control {
+    position: relative;
+    display: flex;
+    flex: 0 1 12.5rem;
+    width: 12.5rem;
+    min-width: 11rem;
+    max-width: 50%;
+    height: 2rem;
+    align-items: center;
+    color: $foreground-muted;
+    background: $input-control-bg;
+    border: 1px solid $input-control-border;
+    border-radius: $panel-radius;
+    box-shadow: $input-control-shadow;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+
+    &:focus-within {
+        border-color: $primary;
+        box-shadow:
+            0 0 0 3px rgba($primary, $input-control-focus-ring-opacity),
+            $input-control-shadow;
+    }
+}
+
+.failed-jobs-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $foreground-muted;
+    pointer-events: none;
+
+    .icon {
+        width: 1rem;
+        height: 1rem;
+        fill: currentColor;
+    }
+}
+
+.failed-jobs-search-control .form-control {
+    height: 2rem;
+    padding: 0.25rem 0.75rem 0.25rem 2.25rem;
+    color: $foreground-primary;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    &::placeholder {
+        color: $foreground-muted;
+        opacity: 1;
+    }
+
+    &:focus {
+        color: $foreground-primary;
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+}
+
+.card .horizon-table {
+    position: relative;
+    margin-top: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+
+    thead th {
+        padding: 0.75rem 1.5rem;
+        color: $foreground-muted;
+        font-size: 0.8125rem;
+        line-height: 1.125rem;
+        background: $table-headers-color;
+        border-top: 0 !important;
+        box-shadow: inset 0 -1px 0 $border-subtle;
+    }
+
+    tbody td {
+        padding: 0.75rem 1.5rem;
+        color: $foreground-primary;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        border-top: 0 !important;
+        border-bottom: 1px solid $border-subtle;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .failed-jobs-runtime {
+        width: 6.25rem;
+    }
+
+    .failed-jobs-failed-at {
+        width: 11.875rem;
+    }
+
+    .failed-jobs-retry-column {
+        width: 5rem;
+    }
+
+    td.text-muted {
+        color: $foreground-muted !important;
+    }
+}
+
+.horizon-row-link {
+    color: $foreground-primary;
+    font-weight: 400;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+        color: $primary;
+        text-decoration: none;
+    }
+}
+
+.horizon-linked-cell {
+    position: relative;
+    cursor: pointer;
+}
+
+.horizon-cell-link {
+    &::after {
+        position: absolute;
+        inset: 0;
+        content: '';
+    }
+
+    &:focus-visible {
+        outline: none;
+
+        &::after {
+            outline: 2px solid $primary;
+            outline-offset: -2px;
+        }
+    }
+}
+
+.horizon-row-action,
+.failed-job-reference-link {
+    position: relative;
+    z-index: 1;
+}
+
+.horizon-row-meta {
+    display: block;
+    min-height: 1.25rem;
+    margin-top: 0.25rem;
+    color: $foreground-muted;
+    font-size: 0.78125rem;
+    line-height: 1.25rem;
+}
+
+.failed-job-reference-link {
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.125rem;
+    vertical-align: baseline;
+
+    &:hover,
+    &:focus-visible {
+        color: $primary;
+        text-decoration: underline;
+    }
+}
+
+.failed-job-retry {
+    display: inline-flex;
+    width: 1.75rem;
+    height: 1.75rem;
+    align-items: center;
+    justify-content: center;
+    color: $foreground-muted;
+    border-radius: 0.5rem;
+    transition:
+        color 120ms ease,
+        background-color 120ms ease;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        fill: currentColor;
+    }
+
+    &:hover,
+    &:focus-visible {
+        color: $primary;
+        background: $surface-panel-muted;
+        outline: none;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px rgba($primary, 0.3);
+    }
+}
+
+/**
+ * Typography for Horizon form modals only (monitor tag + pause queue).
+ * Does not restyle Alert.vue or global Bootstrap modals.
+ */
+.horizon-form-modal {
+    .modal-header,
+    .modal-title,
+    .modal-body,
+    .form-label,
+    .form-check-label,
+    .form-control,
+    .modal-footer .btn {
+        font-size: 0.875rem;
+    }
+
+    .modal-title {
+        margin: 0;
+        font-weight: 500;
+        line-height: 1.25rem;
+    }
+
+    .modal-body {
+        line-height: 1.25rem;
+    }
+
+    .form-control {
+        line-height: 1.25rem;
+    }
+
+    .text-muted,
+    .invalid-feedback,
+    small {
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+    }
+}
+
+.horizon-table-pagination {
+    min-height: 3.375rem;
+    align-items: center;
+    padding: 0.625rem 1.5rem;
+    border-top: 1px solid $border-subtle !important;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    box-shadow: none;
+
+    .btn {
+        min-height: 2rem;
+        padding: 0.3125rem 0.625rem;
+        color: $foreground-muted;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        background: $surface-panel-muted;
+        border: 1px solid $border-panel;
+        border-radius: 0.5rem;
+
+        &:hover:not(:disabled),
+        &:focus-visible {
+            color: $foreground-primary;
+            background: $table-hover-bg;
+            border-color: $border-panel;
+            box-shadow: none;
+        }
+
+        &:disabled {
+            color: $foreground-muted;
+            background: $surface-panel-muted;
+            border-color: $border-panel;
+            opacity: 0.5;
+        }
+    }
+}
+
+.table-empty-row,
+.new-entries-row {
+    > td,
+    &:hover > td {
+        --bs-table-accent-bg: transparent;
+
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+.card .horizon-table .new-entries-cell {
+    position: relative;
+    overflow: hidden;
+    padding: 0.75rem 1.5rem;
+    color: $new-entries-color;
+    text-align: center;
+    white-space: normal;
+}
+
+.new-entries-layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: $new-entries-stripe;
+    background: $primary;
+    opacity: $new-entries-layer-opacity;
+    pointer-events: none;
+}
+
+.new-entries-pattern {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.new-entries-content {
+    position: relative;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.new-entries-message {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        flex: 0 0 auto;
+        fill: currentColor;
+    }
+
+    a {
+        color: inherit;
+        font-weight: 500;
+        text-decoration: underline;
+        text-decoration-color: rgba($new-entries-color, 0.5);
+        text-underline-offset: 0.25rem;
+        transition: text-decoration-color 150ms ease;
+
+        &:hover,
+        &:focus-visible {
+            color: inherit;
+            text-decoration-color: currentColor;
+        }
+    }
+}
+
+.empty-state {
+    display: flex;
+    min-height: 11rem;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.empty-state-content {
+    display: flex;
+    max-width: 24rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.empty-state-icon {
+    display: flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    color: $foreground-muted;
+    border-radius: 0.5rem;
+    background: $empty-state-icon-bg;
+    opacity: 0.7;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        fill: currentColor;
+    }
+}
+
+.empty-state-title {
+    color: $foreground-muted;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+}
+
+.empty-state-description {
+    color: $foreground-muted;
+    font-size: 0.875rem;
+    line-height: 1.5;
 }
 
 .card-bg-secondary {
@@ -371,6 +1573,7 @@ button:hover {
 
 .badge-sm {
     font-size: 0.75rem;
+    font-weight: 500;
 }
 
 .table > :not(:first-child) {
