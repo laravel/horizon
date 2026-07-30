@@ -32,8 +32,8 @@
          * Watch these properties for changes.
          */
         watch: {
-            searchQuery(newVal, oldVal) {
-                if (!oldVal || !this.searchSupported) return;
+            searchQuery() {
+                if (!this.searchSupported) return;
 
                 clearTimeout(this.searchTimeout);
 
