@@ -1,5 +1,11 @@
 <script type="text/ecmascript-6">
+    import EmptyState from '../../components/EmptyState.vue';
+
     export default {
+        components: {
+            EmptyState,
+        },
+
         /**
          * The component's data.
          */
@@ -30,7 +36,7 @@
                 this.$http.get(Horizon.basePath + '/api/batches/' + this.$route.params.batchId)
                     .then(response => {
                         this.batch = response.data.batch;
-                        this.failedJobs = response.data.failedJobs;
+                        this.failedJobs = response.data.failedJobs || [];
 
                         this.ready = true;
                     });
@@ -67,10 +73,10 @@
 
         <div class="card overflow-hidden">
             <div class="card-header job-detail-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0 job-detail-title" v-if="!ready">Batch Preview</h2>
-                <h2 class="h6 m-0 job-detail-title" v-if="ready" :title="batch.name || batch.id">{{batch.name || batch.id}}</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="!ready || !batch">Batch Preview</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="ready && batch" :title="batch.name || batch.id">{{batch.name || batch.id}}</h2>
 
-                <button class="btn btn-primary" v-if="failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
+                <button class="btn btn-primary" v-if="batch && failedJobs.length > 0" v-on:click.prevent="retry(batch.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon me-2" fill="currentColor" :class="{spin: retrying}">
                         <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
                     </svg>
@@ -87,20 +93,30 @@
                 <span>Loading...</span>
             </div>
 
-            <dl class="job-detail-properties" v-if="ready">
+            <empty-state
+                v-if="ready && !batch"
+                title="Batch no longer available"
+                description="This batch may have been pruned from the application database."
+                icon="batches"
+            ></empty-state>
+
+            <dl class="job-detail-properties" v-if="ready && batch">
                 <div class="job-detail-property">
                     <dt>ID</dt>
                     <dd :title="batch.id">
                         {{batch.id}}
 
-                        <small class="ms-1 badge badge-danger badge-sm rounded-pill" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
+                        <small class="ms-1 badge badge-danger badge-sm rounded-pill" v-if="!batch.cancelledAt && batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="ms-1 badge badge-success badge-sm rounded-pill" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
+                        <small class="ms-1 badge badge-success badge-sm rounded-pill" v-if="!batch.cancelledAt && batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
-                        <small class="ms-1 badge badge-secondary badge-sm rounded-pill" v-if="batch.pendingJobs > 0 && !batch.failedJobs">
+                        <small class="ms-1 badge badge-secondary badge-sm rounded-pill" v-if="!batch.cancelledAt && batch.pendingJobs > 0 && !batch.failedJobs">
                             Pending
+                        </small>
+                        <small class="ms-1 badge badge-warning badge-sm rounded-pill" v-if="batch.cancelledAt">
+                            Cancelled
                         </small>
                     </dd>
                 </div>
@@ -151,13 +167,13 @@
                 </div>
 
                 <div class="job-detail-property">
-                    <dt>Processed Jobs<br><small>(Including Failed)</small></dt>
+                    <dt>Processed Jobs</dt>
                     <dd>{{ batch.processedJobs }} ({{batch.progress}}%)</dd>
                 </div>
             </dl>
         </div>
 
-        <div class="card overflow-hidden horizon-table-card mt-3" v-if="ready && failedJobs.length">
+        <div class="card overflow-hidden horizon-table-card mt-3" v-if="ready && batch && failedJobs.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Failed Jobs</h2>
             </div>

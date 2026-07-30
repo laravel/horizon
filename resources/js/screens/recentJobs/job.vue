@@ -2,12 +2,13 @@
     <div>
         <div class="card overflow-hidden">
             <div class="card-header job-detail-header d-flex align-items-center justify-content-between">
-                <h2 class="h6 m-0 job-detail-title" v-if="!ready">Job Preview</h2>
-                <h2 class="h6 m-0 job-detail-title" v-if="ready" :title="job.name">{{job.name}}</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="!ready || !job.id">Job Preview</h2>
+                <h2 class="h6 m-0 job-detail-title" v-if="ready && job.id" :title="job.name">{{job.name}}</h2>
 
                 <button
                     type="button"
                     class="job-detail-collapse"
+                    v-if="ready && job.id"
                     :aria-expanded="detailsExpanded"
                     aria-controls="collapseDetails"
                     @click="detailsExpanded = !detailsExpanded"
@@ -24,7 +25,13 @@
                 <span>Loading...</span>
             </div>
 
-            <dl class="job-detail-properties" id="collapseDetails" v-if="ready" v-show="detailsExpanded">
+            <empty-state
+                v-if="ready && !job.id"
+                title="Job no longer available"
+                description="This job may have been trimmed from Horizon."
+            ></empty-state>
+
+            <dl class="job-detail-properties" id="collapseDetails" v-if="ready && job.id" v-show="detailsExpanded">
                 <div class="job-detail-property">
                     <dt>ID</dt>
                     <dd :title="job.id">{{job.id}}</dd>
@@ -67,7 +74,7 @@
             </dl>
         </div>
 
-        <div class="card overflow-hidden mt-3" v-if="ready">
+        <div class="card overflow-hidden mt-3" v-if="ready && job.id">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Data</h2>
 
@@ -87,7 +94,7 @@
             </div>
         </div>
 
-        <div class="card overflow-hidden mt-3" v-if="ready && job.payload.tags.length">
+        <div class="card overflow-hidden mt-3" v-if="ready && job.id && job.payload.tags.length">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Tags</h2>
 
@@ -112,10 +119,12 @@
 <script type="text/ecmascript-6">
     import phpunserialize from 'phpunserialize';
     import moment from 'moment-timezone';
+    import EmptyState from './../../components/EmptyState.vue';
     import StackTrace from './../../components/Stacktrace.vue';
 
     export default {
         components: {
+            EmptyState,
             'stack-trace': StackTrace,
         },
 
@@ -136,11 +145,15 @@
 
 
             jobData() {
-                return this.ready ? this.prettyPrintJob(this.job.payload.data) : {};
+                return this.ready && this.job.payload ? this.prettyPrintJob(this.job.payload.data) : {};
             },
 
 
             delayed() {
+                if (!this.job.payload) {
+                    return null;
+                }
+
                 let unserialized;
 
                 try {
