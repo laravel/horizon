@@ -70,8 +70,6 @@
                     .then(response => {
                         this.searchSupported = response.data.supportsSearch !== false;
 
-                        // Backend ignores unsupported search queries and returns
-                        // the normal list; drop residual query from client state.
                         if (!this.searchSupported && this.searchQuery) {
                             this.searchQuery = '';
                             this.updateQueryParams(beforeId);
