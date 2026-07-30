@@ -254,9 +254,10 @@ svg.icon {
     border-radius: 0.375rem;
     background: $foreground-primary;
     box-shadow: 0 4px 10px rgb(0 0 0 / 0.14);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     line-height: 1rem;
+    letter-spacing: 0.01em;
     opacity: 0;
     pointer-events: none;
     transform: translate(-0.25rem, -50%);
@@ -281,6 +282,26 @@ svg.icon {
     opacity: 1;
     transform: translate(0, -50%);
     visibility: visible;
+}
+
+.horizon-tooltip-left {
+    .horizon-tooltip-content {
+        right: calc(100% + 0.5rem);
+        left: auto;
+        transform: translate(0.25rem, -50%);
+
+        &::before {
+            right: auto;
+            left: 100%;
+            border-right: 0;
+            border-left: 0.25rem solid $foreground-primary;
+        }
+    }
+
+    &:hover .horizon-tooltip-content,
+    &:focus-within .horizon-tooltip-content {
+        transform: translate(0, -50%);
+    }
 }
 
 @keyframes horizon-status-spin {
@@ -466,12 +487,12 @@ svg.icon {
 
 .horizon-content {
     width: 100%;
-    padding: 1rem 0.875rem 2rem 1.5rem;
+    padding: 0.875rem 0.875rem 0.875rem 1.5rem;
 }
 
 .card {
     overflow: hidden;
-    border-color: $border-panel;
+    border-color: $panel-top-highlight;
     border-style: solid;
     border-width: $panel-border-width;
     border-radius: $panel-radius;
@@ -593,10 +614,25 @@ svg.icon {
     }
 }
 
-.dashboard-overview-grid,
-.dashboard-summary-grid {
+.dashboard-overview-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dashboard-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border-bottom: 1px solid $border-subtle;
+}
+
+.dashboard-section + .dashboard-section {
+    margin-top: 0.4375rem;
+}
+
+@media (min-width: 1140px) {
+    .dashboard-section + .dashboard-section {
+        margin-top: 0.875rem;
+    }
 }
 
 .dashboard .card {
@@ -634,10 +670,6 @@ svg.icon {
 .dashboard-stat {
     min-height: 13.375rem;
     padding-bottom: 1.5rem;
-}
-
-.dashboard-summary-grid {
-    border-bottom: 1px solid $border-subtle;
 }
 
 .dashboard-summary-grid + .table thead th {
@@ -687,10 +719,6 @@ svg.icon {
     }
 }
 
-.dashboard-summary {
-    min-height: 7rem;
-}
-
 .dashboard-stat-label {
     display: block;
     overflow: hidden;
@@ -710,13 +738,6 @@ svg.icon {
     font-weight: 500;
     line-height: 1.75rem;
     letter-spacing: -0.025em;
-}
-
-.dashboard-stat-value-row {
-    display: flex;
-    align-items: baseline;
-    gap: 0.375rem;
-    min-width: 0;
 }
 
 .dashboard-stat-link {
@@ -741,15 +762,6 @@ svg.icon {
     &:focus {
         background: $surface-panel-muted;
     }
-}
-
-.dashboard-stat-detail {
-    overflow: hidden;
-    color: $foreground-muted;
-    font-size: 0.8125rem;
-    line-height: 1.25rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .dashboard-stat-details {
@@ -851,13 +863,6 @@ svg.icon {
     .dashboard-batch-progress-value {
         transition: none;
     }
-}
-
-.dashboard-summary-detail {
-    display: block;
-    margin-top: 0.25rem;
-    color: $foreground-muted;
-    font-size: 0.75rem;
 }
 
 .job-detail-header {

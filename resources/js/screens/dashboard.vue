@@ -1,8 +1,13 @@
 <script type="text/ecmascript-6">
     import moment from 'moment';
     import { Modal } from 'bootstrap';
+    import Tooltip from '../components/Tooltip.vue';
 
     export default {
+        components: {
+            Tooltip,
+        },
+
         /**
          * The component's data.
          */
@@ -20,6 +25,7 @@
                 queueActions: [],
                 batches: {
                     available: false,
+                    active: null,
                     previews: [],
                 },
                 pauseModal: null,
@@ -92,7 +98,7 @@
 
             /**
              * Whether database batching is available for the dashboard card.
-             * Scalar count comes from /api/stats navigation; null means hide.
+             * Total retained count from /api/stats navigation; null means hide.
              */
             batchesAvailable() {
                 return Number.isInteger(this.stats.navigation?.batches);
@@ -133,22 +139,26 @@
 
 
             /**
-             * Determine the recent job period label.
-             */
-            recentJobsPeriod() {
-                return !this.$root.statsReady || !this.stats.periods?.recentJobs
-                    ? 'Jobs Past Hour'
-                    : `Jobs Past ${this.determinePeriod(this.stats.periods.recentJobs)}`;
-            },
-
-
-            /**
              * Determine the recently failed job period label.
              */
             failedJobsPeriod() {
                 return !this.$root.statsReady || !this.stats.periods?.failedJobs
                     ? 'Past 7 Days'
                     : `Past ${this.determinePeriod(this.stats.periods.failedJobs)}`;
+            },
+
+
+            /**
+             * Determine the completed job retention period.
+             */
+            completedRetentionPeriod() {
+                if (!this.$root.statsReady || !Number.isInteger(this.stats.periods?.completedJobs)) {
+                    return null;
+                }
+
+                return moment.duration(
+                    moment().diff(moment().subtract(this.stats.periods.completedJobs, "minutes"))
+                ).humanize();
             },
         },
 
@@ -371,6 +381,7 @@
                 return Number.isInteger(value) ? value.toLocaleString() : '—';
             },
 
+
             /**
              * Sum an available workload field without turning missing data
              * into a misleading zero.
@@ -416,7 +427,7 @@
                 return moment.duration(moment().diff(moment().subtract(minutes, "minutes"))).humanize().replace(/^An?\s/i, '').replace(/^(.)|\s(.)/g, function ($1) {
                     return $1.toUpperCase();
                 });
-            }
+            },
         }
     }
 </script>
@@ -425,7 +436,7 @@
     <div class="dashboard">
         <poll @poll="refreshStatsPeriodically" :interval="5" />
 
-        <section class="card dashboard-overview">
+        <section class="card dashboard-section dashboard-overview">
             <div class="card-header d-flex align-items-center">
                 <h2 class="h6 m-0">Overview</h2>
             </div>
@@ -441,15 +452,36 @@
                     </p>
                     <div class="dashboard-stat-details">
                         <small class="dashboard-stat-detail-row">
-                            <span>Reserved</span>
+                            <tooltip>
+                                <template #default="{ tooltipId }">
+                                    <span :aria-describedby="tooltipId" tabindex="0">Reserved</span>
+                                </template>
+                                <template #content>
+                                    Jobs currently being worked on.
+                                </template>
+                            </tooltip>
                             <strong>{{ statCount(pendingState.reserved) }}</strong>
                         </small>
                         <small class="dashboard-stat-detail-row">
-                            <span>Ready</span>
+                            <tooltip>
+                                <template #default="{ tooltipId }">
+                                    <span :aria-describedby="tooltipId" tabindex="0">Ready</span>
+                                </template>
+                                <template #content>
+                                    Jobs waiting for an available worker.
+                                </template>
+                            </tooltip>
                             <strong>{{ statCount(pendingState.ready) }}</strong>
                         </small>
                         <small class="dashboard-stat-detail-row">
-                            <span>Delayed</span>
+                            <tooltip>
+                                <template #default="{ tooltipId }">
+                                    <span :aria-describedby="tooltipId" tabindex="0">Delayed</span>
+                                </template>
+                                <template #content>
+                                    Jobs scheduled to run later.
+                                </template>
+                            </tooltip>
                             <strong>{{ statCount(pendingState.delayed) }}</strong>
                         </small>
                     </div>
@@ -485,7 +517,19 @@
                 >
                     <small class="dashboard-stat-label">Completed Jobs</small>
                     <p class="dashboard-stat-value">
-                        {{ statCount(stats.navigation?.completed) }}
+                        <tooltip v-if="completedRetentionPeriod">
+                            <template #default="{ tooltipId }">
+                                <span :aria-describedby="tooltipId" tabindex="0">
+                                    {{ statCount(stats.navigation?.completed) }}
+                                </span>
+                            </template>
+                            <template #content>
+                                Completed jobs are retained for {{ completedRetentionPeriod }}.
+                            </template>
+                        </tooltip>
+                        <template v-else>
+                            {{ statCount(stats.navigation?.completed) }}
+                        </template>
                     </p>
                     <div class="dashboard-stat-details">
                         <small class="dashboard-stat-detail-row">
@@ -493,8 +537,8 @@
                             <strong>{{ statCount(stats.jobsPerMinute) }}</strong>
                         </small>
                         <small class="dashboard-stat-detail-row">
-                            <span>{{ recentJobsPeriod }}</span>
-                            <strong>{{ statCount(stats.recentJobs) }}</strong>
+                            <span>Throughput</span>
+                            <strong>{{ statCount(stats.throughput) }}</strong>
                         </small>
                         <small class="dashboard-stat-detail-row">
                             <span>Silenced Jobs</span>
@@ -506,14 +550,9 @@
                 <div class="dashboard-stat dashboard-batches-stat" v-if="batchesAvailable">
                     <router-link :to="{ name: 'batches' }" class="dashboard-stat-link">
                         <small class="dashboard-stat-label">Batches in progress</small>
-                        <div class="dashboard-stat-value-row">
-                            <p class="dashboard-stat-value">
-                                {{ statCount(stats.navigation.batches) }}
-                            </p>
-                            <small class="dashboard-stat-detail">
-                                in progress
-                            </small>
-                        </div>
+                        <p class="dashboard-stat-value">
+                            {{ statCount(batches.active) }}
+                        </p>
                     </router-link>
 
                     <div class="dashboard-batch-previews" v-if="batches?.previews?.length">
@@ -560,8 +599,8 @@
             </div>
         </section>
 
-        <section class="card dashboard-workload mt-3" v-if="workloadReady">
-            <div class="card-header d-flex align-items-center">
+        <section class="card dashboard-section dashboard-workload" v-if="workloadReady">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h2 class="h6 m-0">Current Workload</h2>
             </div>
 
@@ -576,24 +615,76 @@
                 <div class="dashboard-summary">
                     <small class="dashboard-stat-label">Max Wait Time</small>
                     <p class="dashboard-summary-value">
-                        {{ maxWaitTime !== null ? humanTime(maxWaitTime) : '—' }}
+                        <tooltip v-if="maxWaitQueue">
+                            <template #default="{ tooltipId }">
+                                <span :aria-describedby="tooltipId" tabindex="0">
+                                    {{ maxWaitTime !== null ? humanTime(maxWaitTime) : '—' }}
+                                </span>
+                            </template>
+                            <template #content>
+                                Queue with the maximum wait time: {{ maxWaitQueue }}.
+                            </template>
+                        </tooltip>
+                        <template v-else>
+                            {{ maxWaitTime !== null ? humanTime(maxWaitTime) : '—' }}
+                        </template>
                     </p>
-                    <small class="dashboard-summary-detail" v-if="maxWaitQueue">
-                        ({{ maxWaitQueue }})
-                    </small>
                 </div>
 
                 <div class="dashboard-summary">
                     <small class="dashboard-stat-label">Max Runtime</small>
                     <p class="dashboard-summary-value">
-                        {{ stats.queueWithMaxRuntime || '—' }}
+                        <tooltip v-if="stats.queueWithMaxRuntime && typeof stats.maxRuntime === 'number'">
+                            <template #default="{ tooltipId }">
+                                <span :aria-describedby="tooltipId" tabindex="0">
+                                    {{ stats.queueWithMaxRuntime }}
+                                </span>
+                            </template>
+                            <template #content>
+                                Average runtime for {{ stats.queueWithMaxRuntime }}: {{ stats.maxRuntime.toLocaleString() }}s.
+                            </template>
+                        </tooltip>
+                        <template v-else>
+                            {{ stats.queueWithMaxRuntime || '—' }}
+                        </template>
                     </p>
                 </div>
 
                 <div class="dashboard-summary">
                     <small class="dashboard-stat-label">Max Throughput</small>
                     <p class="dashboard-summary-value">
-                        {{ stats.queueWithMaxThroughput || '—' }}
+                        <tooltip
+                            v-if="stats.queueWithMaxThroughput && typeof stats.maxThroughput === 'number'"
+                            class="horizon-tooltip-left"
+                        >
+                            <template #default="{ tooltipId }">
+                                <span :aria-describedby="tooltipId" tabindex="0">
+                                    {{ stats.queueWithMaxThroughput }}
+                                </span>
+                            </template>
+                            <template #content>
+                                Throughput for {{ stats.queueWithMaxThroughput }} since the last metrics snapshot: {{ statCount(stats.maxThroughput) }} jobs.
+                            </template>
+                        </tooltip>
+                        <template v-else>
+                            {{ stats.queueWithMaxThroughput || '—' }}
+                        </template>
+                    </p>
+                </div>
+
+                <div class="dashboard-summary">
+                    <small class="dashboard-stat-label">Hourly Pressure</small>
+                    <p class="dashboard-summary-value">
+                        <tooltip class="horizon-tooltip-left">
+                            <template #default="{ tooltipId }">
+                                <span :aria-describedby="tooltipId" tabindex="0">
+                                    {{ statCount(stats.recentJobsPastHour) }}
+                                </span>
+                            </template>
+                            <template #content>
+                                The number of jobs received by Horizon in the past hour.
+                            </template>
+                        </tooltip>
                     </p>
                 </div>
             </div>
@@ -602,8 +693,9 @@
                 <thead>
                 <tr>
                     <th>Queue</th>
-                    <th class="text-end" style="width: 120px;">Jobs</th>
+                    <th class="text-end" style="width: 120px;">Ready Jobs</th>
                     <th class="text-end" style="width: 120px;">Processes</th>
+                    <th class="text-end" style="width: 120px;">Throughput</th>
                     <th class="text-end" style="width: 180px;">Wait</th>
                     <th class="text-end dashboard-queue-actions-column" v-if="queuePausingSupported">Actions</th>
                 </tr>
@@ -623,6 +715,7 @@
                             </td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
+                            <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ statCount(queue.throughput) }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ humanTime(queue.wait) }}</td>
                             <td class="text-end dashboard-queue-actions-column" v-if="queuePausingSupported">
                                 <button
@@ -661,6 +754,7 @@
                             </td>
                             <td class="text-end text-muted">{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted">—</td>
+                            <td class="text-end text-muted">{{ statCount(split_queue.throughput) }}</td>
                             <td class="text-end text-muted">{{ humanTime(split_queue.wait) }}</td>
                             <td class="text-end dashboard-queue-actions-column" v-if="queuePausingSupported">
                                 <button
@@ -699,7 +793,7 @@
         </section>
 
         <section
-            class="card dashboard-instances mt-3"
+            class="card dashboard-section dashboard-instances"
             v-if="workersReady && !Object.keys(workers).length"
         >
             <div class="card-header d-flex align-items-center">
@@ -719,7 +813,7 @@
         </section>
 
         <section
-            class="dashboard-masters mt-3"
+            class="dashboard-section dashboard-masters"
             v-else-if="workersReady && Object.keys(workers).length"
         >
             <article class="card dashboard-master" v-for="worker in workers" :key="worker.name">
