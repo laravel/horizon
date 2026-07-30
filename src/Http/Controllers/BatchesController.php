@@ -39,20 +39,34 @@ class BatchesController extends Controller
      */
     public function index(Request $request)
     {
+        $searchSupported = $this->supportsDatabaseBatchQueries();
+
         try {
-            $batches = $request->query('query')
-                ? $this->searchBatches($request)
-                : $this->batches->get(50, $request->query('before_id'));
+            if ($request->query('query')) {
+                if (! $searchSupported) {
+                    return [
+                        'batches' => [],
+                        'available' => true,
+                        'search_supported' => false,
+                    ];
+                }
+
+                $batches = $this->searchBatches($request);
+            } else {
+                $batches = $this->batches->get(50, $request->query('before_id'));
+            }
         } catch (QueryException $e) {
             return [
                 'batches' => [],
                 'available' => false,
+                'search_supported' => false,
             ];
         }
 
         return [
             'batches' => $batches,
             'available' => true,
+            'search_supported' => $searchSupported,
         ];
     }
 

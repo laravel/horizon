@@ -17,6 +17,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=Import');
 
         $response->assertOk();
+        $this->assertTrue($response->original['search_supported']);
 
         $batches = $response->original['batches'];
 
@@ -33,6 +34,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=batch-2');
 
         $response->assertOk();
+        $this->assertTrue($response->original['search_supported']);
 
         $batches = $response->original['batches'];
 
@@ -49,6 +51,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=%25');
 
         $response->assertOk();
+        $this->assertTrue($response->original['search_supported']);
 
         $this->assertEmpty($response->original['batches']);
     }
@@ -65,6 +68,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=Import&before_id=batch-3');
 
         $response->assertOk();
+        $this->assertTrue($response->original['search_supported']);
 
         $batches = $response->original['batches'];
 
@@ -174,6 +178,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertExactJson([
                 'batches' => [],
                 'available' => false,
+                'search_supported' => false,
             ]);
     }
 
@@ -187,7 +192,65 @@ class BatchesControllerTest extends ControllerTest
             ->assertExactJson([
                 'batches' => [],
                 'available' => true,
+                'search_supported' => true,
             ]);
+    }
+
+    public function test_dynamodb_batching_lists_batches_without_search_support()
+    {
+        $this->app['config']->set('queue.batching.driver', 'dynamodb');
+
+        $batch = (object) [
+            'id' => 'dynamo-batch-1',
+            'name' => 'Dynamo finished review batch',
+        ];
+
+        $repository = \Mockery::mock(\Illuminate\Bus\BatchRepository::class);
+        $repository->shouldReceive('get')
+            ->once()
+            ->with(50, null)
+            ->andReturn([$batch]);
+        $repository->shouldNotReceive('find');
+
+        $this->app->instance(\Illuminate\Bus\BatchRepository::class, $repository);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches')
+            ->assertOk()
+            ->assertExactJson([
+                'batches' => [
+                    [
+                        'id' => 'dynamo-batch-1',
+                        'name' => 'Dynamo finished review batch',
+                    ],
+                ],
+                'available' => true,
+                'search_supported' => false,
+            ]);
+    }
+
+    public function test_dynamodb_batching_does_not_execute_relational_search()
+    {
+        $this->setupBatchTable();
+        $this->seedBatches();
+        $this->app['config']->set('queue.batching.driver', 'dynamodb');
+
+        $repository = \Mockery::mock(\Illuminate\Bus\BatchRepository::class);
+        $repository->shouldNotReceive('get');
+        $repository->shouldNotReceive('find');
+
+        $this->app->instance(\Illuminate\Bus\BatchRepository::class, $repository);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches?query=Import')
+            ->assertOk()
+            ->assertExactJson([
+                'batches' => [],
+                'available' => true,
+                'search_supported' => false,
+            ]);
+
+        $this->assertSame(3, DB::connection('testing')->table('job_batches')->count());
     }
 
     private function setupBatchTable()
