@@ -35,8 +35,8 @@ show.url = (args: { type: string | number, id: string | number } | [type: string
     }
 
     return show.definition.url
-            .replace('{type}', parsedArgs.type.toString())
-            .replace('{id}', parsedArgs.id.toString())
+            .replace('{type}', encodeURIComponent(parsedArgs.type.toString()))
+            .replace('{id}', encodeURIComponent(parsedArgs.id.toString()))
             .replace(/\/+$/, '') + queryParams(options)
 }
 

@@ -78,4 +78,45 @@ if (result.status !== 0) {
     };
 
     normalizeSourcePaths(generatedRoutesPath);
+    encodePathParameters(generatedRoutesPath);
+}
+
+/**
+ * Wayfinder substitutes path parameters with raw `.toString()` values. Horizon
+ * tags and metric names are often FQCNs (`App\Jobs\Foo`) or slash-containing
+ * queue/tag values; unencoded backslashes break after URL parsing, and slashes
+ * must remain percent-encoded path segments. Wrap every path placeholder
+ * replacement so regeneration always preserves encodeURIComponent behavior.
+ */
+function encodePathParameters(directory) {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const entryPath = path.join(directory, entry.name);
+
+        if (entry.isDirectory()) {
+            encodePathParameters(entryPath);
+            continue;
+        }
+
+        if (!entry.name.endsWith(".ts")) {
+            continue;
+        }
+
+        const content = readFileSync(entryPath, "utf8");
+        const encoded = content.replace(
+            /\.replace\(\s*(['"`]\{[^}'"`]+\}['"`])\s*,\s*((?:(?!encodeURIComponent)[^)])+)\s*\)/g,
+            (match, placeholder, valueExpr) => {
+                const trimmed = valueExpr.trim();
+
+                if (trimmed.startsWith("encodeURIComponent(")) {
+                    return match;
+                }
+
+                return `.replace(${placeholder}, encodeURIComponent(${trimmed}))`;
+            },
+        );
+
+        if (encoded !== content) {
+            writeFileSync(entryPath, encoded);
+        }
+    }
 }

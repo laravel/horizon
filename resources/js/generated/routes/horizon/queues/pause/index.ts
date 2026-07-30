@@ -35,8 +35,8 @@ store.url = (args: { connection: string | number, queue: string | number } | [co
     }
 
     return store.definition.url
-            .replace('{connection}', parsedArgs.connection.toString())
-            .replace('{queue}', parsedArgs.queue.toString())
+            .replace('{connection}', encodeURIComponent(parsedArgs.connection.toString()))
+            .replace('{queue}', encodeURIComponent(parsedArgs.queue.toString()))
             .replace(/\/+$/, '') + queryParams(options)
 }
 
@@ -86,8 +86,8 @@ destroy.url = (args: { connection: string | number, queue: string | number } | [
     }
 
     return destroy.definition.url
-            .replace('{connection}', parsedArgs.connection.toString())
-            .replace('{queue}', parsedArgs.queue.toString())
+            .replace('{connection}', encodeURIComponent(parsedArgs.connection.toString()))
+            .replace('{queue}', encodeURIComponent(parsedArgs.queue.toString()))
             .replace(/\/+$/, '') + queryParams(options)
 }
 

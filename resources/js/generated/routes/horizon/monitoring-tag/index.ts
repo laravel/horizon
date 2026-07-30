@@ -37,7 +37,7 @@ paginate.url = (args: { tag: string | number } | [tag: string | number ] | strin
     }
 
     return paginate.definition.url
-            .replace('{tag}', parsedArgs.tag.toString())
+            .replace('{tag}', encodeURIComponent(parsedArgs.tag.toString()))
             .replace(/\/+$/, '') + queryParams(options)
 }
 
@@ -99,7 +99,7 @@ destroy.url = (args: { tag: string | number } | [tag: string | number ] | string
     }
 
     return destroy.definition.url
-            .replace('{tag}', parsedArgs.tag.toString())
+            .replace('{tag}', encodeURIComponent(parsedArgs.tag.toString()))
             .replace(/\/+$/, '') + queryParams(options)
 }
 

@@ -37,7 +37,7 @@ page.url = (args: { tag: string | number } | [tag: string | number ] | string | 
     }
 
     return page.definition.url
-            .replace('{tag}', parsedArgs.tag.toString())
+            .replace('{tag}', encodeURIComponent(parsedArgs.tag.toString()))
             .replace(/\/+$/, '') + queryParams(options)
 }
 
