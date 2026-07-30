@@ -32,7 +32,7 @@
          * Watch these properties for changes.
          */
         watch: {
-            searchQuery() {
+            searchQuery(newVal) {
                 if (!this.searchSupported) return;
 
                 clearTimeout(this.searchTimeout);

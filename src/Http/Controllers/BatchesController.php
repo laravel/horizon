@@ -42,8 +42,6 @@ class BatchesController extends Controller
         $searchSupported = $this->supportsDatabaseBatchQueries();
 
         try {
-            // When search is unsupported (e.g. DynamoDB), ignore query and list
-            // from the repository so clients never see a false empty match set.
             $batches = $request->query('query') && $searchSupported
                 ? $this->searchBatches($request)
                 : $this->batches->get(50, $request->query('before_id'));
