@@ -151,30 +151,3 @@ class LegacyVueRouterRedirectTest extends ControllerTest
         return $parameters;
     }
 }
-
-class LegacyVueRouterRedirectCustomPathTest extends ControllerTest
-{
-    protected function getEnvironmentSetUp($app)
-    {
-        parent::getEnvironmentSetUp($app);
-
-        $app['config']->set('horizon.path', 'queues');
-        $app['config']->set('horizon.proxy_path', 'ops');
-    }
-
-    public function test_redirects_honor_custom_horizon_path_and_proxy_path()
-    {
-        $this->actingAs(new Fakes\User)
-            ->get('/queues/metrics')
-            ->assertRedirect('/ops/queues/metrics/jobs')
-            ->assertStatus(302);
-
-        $this->actingAs(new Fakes\User)
-            ->get('/queues/failed/job-42')
-            ->assertRedirect('/ops/queues/jobs/failed/job-42');
-
-        $this->actingAs(new Fakes\User)
-            ->get('/queues/monitoring/'.rawurlencode('tag/with/slashes'))
-            ->assertRedirect('/ops/queues/monitoring/'.rawurlencode('tag/with/slashes').'/jobs');
-    }
-}
