@@ -1,4 +1,4 @@
-export type HorizonStatus = "running" | "paused" | "inactive";
+export type HorizonStatus = "running" | "paused" | "partially_paused" | "inactive";
 
 export type NavigationCounts = {
     monitoring: number;

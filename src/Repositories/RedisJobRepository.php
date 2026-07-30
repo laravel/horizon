@@ -197,6 +197,38 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+     * Get the count of failed jobs within the given number of minutes.
+     *
+     * This helper is intentionally not part of JobRepository so third-party
+     * Horizon 5.x implementations are not required to provide it.
+     *
+     * @param  int  $minutes
+     * @return int
+     */
+    public function countFailedSince($minutes)
+    {
+        return $this->connection()->zcount(
+            'failed_jobs', '-inf', CarbonImmutable::now()->subMinutes($minutes)->getTimestamp() * -1
+        );
+    }
+
+    /**
+     * Get the count of recent jobs within the given number of minutes.
+     *
+     * This helper is intentionally not part of JobRepository so third-party
+     * Horizon 5.x implementations are not required to provide it.
+     *
+     * @param  int  $minutes
+     * @return int
+     */
+    public function countRecentSince($minutes)
+    {
+        return $this->connection()->zcount(
+            'recent_jobs', '-inf', CarbonImmutable::now()->subMinutes($minutes)->getTimestamp() * -1
+        );
+    }
+
+    /**
      * Get the count of pending jobs.
      *
      * @return int

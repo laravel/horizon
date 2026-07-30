@@ -2,10 +2,12 @@
 
 namespace Laravel\Horizon\Tests\Controller;
 
+use Illuminate\Bus\BatchRepository;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
+use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\Tests\ControllerTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
@@ -36,12 +38,32 @@ class DashboardStatsControllerTest extends ControllerTest
         $metrics->shouldReceive('jobsProcessedPerMinute')->andReturn(1);
         $metrics->shouldReceive('queueWithMaximumRuntime')->andReturn('default');
         $metrics->shouldReceive('queueWithMaximumThroughput')->andReturn('default');
+        $metrics->shouldReceive('measuredJobs')->andReturn(['App\\Jobs\\One']);
+        $metrics->shouldReceive('measuredQueues')->andReturn(['default', 'reports']);
         $this->app->instance(MetricsRepository::class, $metrics);
 
         $jobs = Mockery::mock(JobRepository::class);
         $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
         $jobs->shouldReceive('countRecent')->andReturn(1);
+        $jobs->shouldReceive('countPending')->andReturn(4);
+        $jobs->shouldReceive('countCompleted')->andReturn(8);
+        $jobs->shouldReceive('countSilenced')->andReturn(2);
+        $jobs->shouldReceive('countFailed')->andReturn(1);
         $this->app->instance(JobRepository::class, $jobs);
+
+        $tags = Mockery::mock(TagRepository::class);
+        $tags->shouldReceive('monitoring')->andReturn(['first', 'second', 'third']);
+        $this->app->instance(TagRepository::class, $tags);
+
+        $batches = Mockery::mock(BatchRepository::class);
+        $batches->shouldReceive('get')->with(51, null)->andReturn([
+            (object) ['id' => 'batch-1'],
+        ]);
+        $this->app->instance(BatchRepository::class, $batches);
+
+        $masters = Mockery::mock(MasterSupervisorRepository::class);
+        $masters->shouldReceive('all')->andReturn([]);
+        $this->app->instance(MasterSupervisorRepository::class, $masters);
 
         // Setup wait time data...
         $wait = Mockery::mock(WaitTimeCalculator::class);
@@ -66,6 +88,15 @@ class DashboardStatsControllerTest extends ControllerTest
             'periods' => [
                 'failedJobs' => 10080,
                 'recentJobs' => 60,
+            ],
+            'navigationCounts' => [
+                'monitoring' => 3,
+                'metrics' => 3,
+                'batches' => 1,
+                'pending' => 4,
+                'completed' => 8,
+                'silenced' => 2,
+                'failed' => 1,
             ],
         ]);
     }
@@ -107,8 +138,10 @@ class DashboardStatsControllerTest extends ControllerTest
         $response = $this->actingAs(new Fakes\User)
             ->get('/horizon/api/stats');
 
+        // Legacy public API keeps the running|paused|inactive enum.
         $response->assertJson([
             'status' => 'running',
+            'pausedMasters' => 1,
         ]);
     }
 }

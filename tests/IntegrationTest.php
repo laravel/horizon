@@ -2,8 +2,12 @@
 
 namespace Laravel\Horizon\Tests;
 
+use Illuminate\Foundation\Vite;
 use Illuminate\Queue\WorkerOptions;
 use Illuminate\Support\Facades\Redis;
+use Laravel\Horizon\Assets\AssetPath;
+use Laravel\Horizon\Assets\AssetsPublisher;
+use Laravel\Horizon\Assets\PackageBuild;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\Horizon;
@@ -22,6 +26,7 @@ abstract class IntegrationTest extends TestCase
     {
         $this->afterApplicationCreated(function () {
             Redis::connection()->flushdb();
+            $this->publishHorizonDashboardAssets();
         });
 
         $this->beforeApplicationDestroyed(function () {
@@ -29,6 +34,7 @@ abstract class IntegrationTest extends TestCase
             WorkerCommandString::reset();
             SupervisorCommandString::reset();
             Horizon::$authUsing = null;
+            app(Vite::class)->useCspNonce('');
         });
 
         parent::setUp();
@@ -115,6 +121,24 @@ abstract class IntegrationTest extends TestCase
     }
 
     /**
+     * Publish package-built dashboard assets into the Testbench public path.
+     */
+    protected function publishHorizonDashboardAssets(): void
+    {
+        $packageBuild = app(PackageBuild::class)->path();
+
+        if (! is_dir($packageBuild) || ! is_file($packageBuild.DIRECTORY_SEPARATOR.'manifest.json')) {
+            return;
+        }
+
+        app(AssetsPublisher::class)->publish(
+            destination: app(AssetPath::class)->absolute(),
+            force: false,
+            source: $packageBuild,
+        );
+    }
+
+    /**
      * Get the service providers for the package.
      *
      * @param  \Illuminate\Foundation\Application  $app
@@ -122,7 +146,10 @@ abstract class IntegrationTest extends TestCase
      */
     protected function getPackageProviders($app)
     {
-        return ['Laravel\Horizon\HorizonServiceProvider'];
+        return [
+            'Inertia\ServiceProvider',
+            'Laravel\Horizon\HorizonServiceProvider',
+        ];
     }
 
     /**
@@ -133,7 +160,11 @@ abstract class IntegrationTest extends TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('cache.default', 'array');
         $app['config']->set('queue.default', 'redis');
+        // Full-suite PHPUnit memory often exceeds the production default (64MB),
+        // which would make MonitorMasterSupervisorMemory terminate masters mid-loop.
+        $app['config']->set('horizon.memory_limit', 512);
 
         RedisClusterHelper::configure($app);
 

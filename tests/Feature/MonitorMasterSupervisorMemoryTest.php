@@ -12,6 +12,8 @@ class MonitorMasterSupervisorMemoryTest extends IntegrationTest
 {
     public function test_supervisor_is_terminated_when_using_too_much_memory()
     {
+        config(['horizon.memory_limit' => 64]);
+
         $monitor = new MonitorMasterSupervisorMemory;
 
         $master = Mockery::mock(MasterSupervisor::class);
@@ -25,6 +27,8 @@ class MonitorMasterSupervisorMemoryTest extends IntegrationTest
 
     public function test_supervisor_is_not_terminated_when_using_low_memory()
     {
+        config(['horizon.memory_limit' => 64]);
+
         $monitor = new MonitorMasterSupervisorMemory;
 
         $master = Mockery::mock(MasterSupervisor::class);
