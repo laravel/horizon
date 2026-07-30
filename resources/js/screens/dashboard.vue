@@ -420,13 +420,43 @@
 
 
             /**
-             *
-             * @returns {string}
+             * Format a wait estimate from integer seconds into a compact label.
              */
             humanTime(time) {
-                return moment.duration(time, "seconds").humanize().replace(/^(.)/g, function ($1) {
-                    return $1.toUpperCase();
-                });
+                const seconds = Math.max(0, Math.floor(Number(time) || 0));
+
+                if (seconds === 0) {
+                    return 'Sub-second';
+                }
+
+                if (seconds < 60) {
+                    return seconds + 's';
+                }
+
+                if (seconds < 3600) {
+                    const minutes = Math.floor(seconds / 60);
+                    const remainingSeconds = seconds % 60;
+
+                    return remainingSeconds
+                        ? minutes + 'm ' + remainingSeconds + 's'
+                        : minutes + 'm';
+                }
+
+                if (seconds < 86400) {
+                    const hours = Math.floor(seconds / 3600);
+                    const remainingMinutes = Math.floor((seconds % 3600) / 60);
+
+                    return remainingMinutes
+                        ? hours + 'h ' + remainingMinutes + 'm'
+                        : hours + 'h';
+                }
+
+                const days = Math.floor(seconds / 86400);
+                const remainingHours = Math.floor((seconds % 86400) / 3600);
+
+                return remainingHours
+                    ? days + 'd ' + remainingHours + 'h'
+                    : days + 'd';
             },
 
 
