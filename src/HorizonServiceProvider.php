@@ -8,6 +8,7 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Connectors\RedisConnector;
+use Laravel\Horizon\Support\FrameworkCapabilities;
 use Laravel\Sentinel\Http\Middleware\SentinelMiddleware;
 
 class HorizonServiceProvider extends ServiceProvider
@@ -120,6 +121,7 @@ class HorizonServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Console\AssetsCommand::class,
                 Console\ClearCommand::class,
                 Console\ClearMetricsCommand::class,
                 Console\ContinueCommand::class,
@@ -168,6 +170,14 @@ class HorizonServiceProvider extends ServiceProvider
         });
 
         $this->configure();
+        $this->app->singleton(FrameworkCapabilities::class, function () {
+            return FrameworkCapabilities::detect();
+        });
+        $this->app->singleton(Assets\PackageBuild::class);
+        $this->app->singleton(Assets\AssetPath::class);
+        $this->app->singleton(Assets\AssetsPublisher::class);
+        $this->app->singleton(Assets\AssetManifest::class);
+        $this->app->singleton(Support\ComposerAssetHook::class);
         $this->registerServices();
         $this->registerQueueConnectors();
 

@@ -10,24 +10,26 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "ext-json": "*",
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "illuminate/contracts": "^9.21|^10.0|^11.0|^12.0|^13.0",
-        "illuminate/queue": "^9.21|^10.0|^11.0|^12.0|^13.0",
-        "illuminate/support": "^9.21|^10.0|^11.0|^12.0|^13.0",
+        "illuminate/contracts": "^11.35|^12.0|^13.0",
+        "illuminate/queue": "^11.35|^12.0|^13.0",
+        "illuminate/support": "^11.35|^12.0|^13.0",
+        "inertiajs/inertia-laravel": "^3.0",
         "laravel/sentinel": "^1.0",
         "nesbot/carbon": "^2.17|^3.0",
         "ramsey/uuid": "^4.0",
-        "symfony/console": "^6.0|^7.0|^8.0",
-        "symfony/error-handler": "^6.0|^7.0|^8.0",
+        "symfony/console": "^7.0|^8.0",
+        "symfony/error-handler": "^7.0|^8.0",
         "symfony/polyfill-php83": "^1.28",
-        "symfony/process": "^6.0|^7.0|^8.0"
+        "symfony/process": "^7.0|^8.0"
     },
     "require-dev": {
+        "laravel/wayfinder": "^0.1.20",
         "mockery/mockery": "^1.0",
-        "orchestra/testbench": "^7.56|^8.37|^9.16|^10.9|^11.0",
+        "orchestra/testbench": "^9.9|^10.0|^11.0",
         "phpstan/phpstan": "^1.10|^2.0",
         "predis/predis": "^1.1|^2.0|^3.0"
     },
