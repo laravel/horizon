@@ -322,8 +322,14 @@ function FailedJobsTable({
 
 function FailedJobsSearch({ tag, baseUrl }: { tag: string; baseUrl: string }) {
     const [search, setSearch] = useState(tag);
+    const committedTagRef = useRef(tag);
 
     useEffect(() => {
+        if (tag === committedTagRef.current) {
+            return;
+        }
+
+        committedTagRef.current = tag;
         setSearch(tag);
     }, [tag]);
 

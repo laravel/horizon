@@ -48,7 +48,7 @@ export default function Dashboard({
     return (
         <>
             <Head title="Horizon - Dashboard" />
-            <div className="flex flex-col gap-[7px] min-[1140px]:gap-3.5" aria-live="polite">
+            <div className="flex flex-col gap-[7px] min-[1140px]:gap-3.5">
                 <DashboardOverview
                     stats={stats}
                     navigationCounts={navigationCounts}

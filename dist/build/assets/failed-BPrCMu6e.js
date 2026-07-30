@@ -1,0 +1,1 @@
+import{d as e}from"./navigation-icons-D1WJ9iK9.js";import{t}from"./job-list-74wIJ3mr.js";var n=e(),r=e=>(0,n.jsx)(t,{...e,title:`Failed Jobs`,type:`failed`});export{r as default};

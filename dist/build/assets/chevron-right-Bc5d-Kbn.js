@@ -1,0 +1,1 @@
+import{h as e}from"./navigation-icons-D1WJ9iK9.js";var t=e(`chevron-right`,[[`path`,{d:`m9 18 6-6-6-6`,key:`mthhwq`}]]);export{t};
