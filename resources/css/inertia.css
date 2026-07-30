@@ -1,0 +1,365 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "sonner/dist/styles.css";
+
+/* Instrument Sans Variable — latin + latin-ext (UI) */
+@font-face {
+    font-family: "Instrument Sans Variable";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400 700;
+    src: url("../fonts/instrument-sans-latin-ext-wght-normal.woff2") format("woff2-variations");
+    unicode-range:
+        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+        U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+        U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Instrument Sans Variable";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400 700;
+    src: url("../fonts/instrument-sans-latin-wght-normal.woff2") format("woff2-variations");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* JetBrains Mono — latin + latin-ext, weights used by code surfaces */
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url("../fonts/jetbrains-mono-latin-ext-400-normal.woff2") format("woff2");
+    unicode-range:
+        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+        U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+        U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url("../fonts/jetbrains-mono-latin-ext-500-normal.woff2") format("woff2");
+    unicode-range:
+        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+        U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+        U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url("../fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Inverse of the dashboard surface (matches Tooltip bg-foreground / text-background). */
+.toaster[data-sonner-toaster] {
+    --normal-bg: var(--foreground);
+    --normal-text: var(--background);
+    --normal-border: var(--border);
+    --border-radius: var(--radius);
+}
+
+/* Light toast in dashboard dark mode: success icon needs the light-surface green. */
+.dark .toaster[data-sonner-toaster] {
+    --ok: #22c55e;
+}
+
+@source "../js";
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --font-weight-normal: 450;
+    --font-weight-semibold: 500;
+    --font-weight-bold: 500;
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-action: var(--destructive-action);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-ring: var(--ring);
+    --color-action-primary: var(--action-primary);
+    --color-action-primary-hover: var(--action-primary-hover);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-muted-foreground: var(--sidebar-muted-foreground);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-primary-hover: var(--primary-hover);
+    --color-nav-top: var(--nav-top);
+    --color-status-success-icon: var(--status-success-icon);
+    --color-status-warning-icon: var(--status-warning-icon);
+    --color-status-destructive-icon: var(--status-destructive-icon);
+    --color-status-idle: var(--status-idle);
+    --color-status-working: var(--status-working);
+    --color-separator: var(--separator);
+    --color-panel-border: var(--panel-border);
+    --color-panel-top: var(--panel-top);
+    --color-table-row-hover: var(--table-row-hover);
+    --color-table-row-action-hover: var(--table-row-action-hover);
+    --color-new-entries-foreground: var(--new-entries-foreground);
+    --color-dropdown-item-hover: var(--dropdown-item-hover);
+    --color-chart-grid: var(--chart-grid);
+    --color-th: var(--th-bg);
+    --color-status-running: var(--status-running);
+    --color-status-running-foreground: var(--status-running-foreground);
+    --color-status-paused: var(--status-paused);
+    --color-status-paused-foreground: var(--status-paused-foreground);
+    --color-status-failed: var(--status-failed);
+    --color-status-failed-foreground: var(--status-failed-foreground);
+    --color-status-retry: var(--status-retry);
+    --color-status-retry-foreground: var(--status-retry-foreground);
+    --color-status-inactive: var(--status-inactive);
+    --color-ok: var(--ok);
+    --color-error: var(--error);
+    --color-code: var(--code-bg);
+    --color-code-foreground: var(--code-fg);
+    --color-code-control: var(--code-control);
+    --color-code-control-hover: var(--code-control-hover);
+    --color-code-control-hover-foreground: var(--code-control-hover-foreground);
+    --color-code-control-hover-border: var(--code-control-hover-border);
+    --color-code-control-foreground: var(--code-control-foreground);
+    --color-code-control-border: var(--code-control-border);
+    --shadow-panel: var(--panel-shadow);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+    --background: #f9f9fa;
+    --foreground: #09090b;
+    --card: #ffffff;
+    --card-foreground: #09090b;
+    /* Shared floating surfaces used by dropdowns and dialogs. */
+    --popover: var(--card);
+    --popover-foreground: var(--card-foreground);
+    --primary: #7746ec;
+    --primary-hover: #8659ef;
+    --primary-foreground: #ffffff;
+    --secondary: #f4f4f5;
+    --secondary-foreground: #18181b;
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
+    --accent: #efeff1;
+    --accent-foreground: #18181b;
+    --destructive: #dc2626;
+    --destructive-action: var(--color-red-600);
+    --border: #e4e4e7;
+    --input: #e9e9ec;
+    --ring: #7746ec;
+    --sidebar: #fafafa;
+    --sidebar-foreground: #18181b;
+    --sidebar-muted-foreground: #6b6b73;
+    --sidebar-accent: #efeff1;
+    --sidebar-accent-foreground: #18181b;
+    --sidebar-ring: #7746ec;
+    --nav-top: transparent;
+    --separator: #eeeef0;
+    --panel-border: #e9e9ec;
+    --panel-top: #e9e9ec;
+    --table-row-hover: color-mix(in oklab, var(--primary) 5%, var(--card));
+    --table-row-action-hover: color-mix(in oklab, var(--table-row-hover) 90%, var(--primary) 10%);
+    --new-entries-foreground: var(--primary);
+    --new-entries-layer-opacity: 0.1;
+    --new-entries-stripe: oklch(from var(--primary) calc(l - 0.13) c h);
+    --dropdown-item-hover: color-mix(in oklab, var(--primary) 8%, var(--popover));
+    --th-bg: color-mix(in oklab, var(--muted) 60%, var(--card) 40%);
+    --status-running: #dcfce7;
+    --status-running-foreground: #15803d;
+    --status-paused: #fef9c3;
+    --status-paused-foreground: #a16207;
+    --status-failed: #fee2e2;
+    --status-failed-foreground: #b91c1c;
+    --status-retry: var(--color-pink-100);
+    --status-retry-foreground: var(--color-pink-700);
+    --status-inactive: #3f3f46;
+    --ok: #15803d;
+    --error: #b91c1c;
+    --action-primary: #7746ec;
+    --action-primary-hover: #8659ef;
+    --action-primary-highlight: #8054ed;
+    --code-bg: #f4f4f5;
+    --code-fg: #383a42;
+    --code-key: #a626a4;
+    --code-string: #50a14f;
+    --code-punctuation: #0184bc;
+    --code-number: #986801;
+    --code-muted: #a0a1a7;
+    --code-error: #ca1243;
+    --code-control: color-mix(in oklab, var(--code-fg) 8%, var(--code-bg));
+    --code-control-hover: color-mix(in oklab, var(--primary) 10%, var(--code-bg));
+    --code-control-hover-foreground: var(--primary);
+    --code-control-hover-border: color-mix(in oklab, var(--primary) 32%, var(--code-bg));
+    --code-control-foreground: var(--code-fg);
+    --code-control-border: color-mix(in oklab, var(--code-fg) 18%, transparent);
+    --status-success-icon: #22c55e;
+    --status-warning-icon: #eab308;
+    --status-destructive-icon: #ef4444;
+    --status-idle: var(--primary);
+    --status-idle-track: #e4e4e7;
+    --status-working: var(--primary);
+    --status-working-track: color-mix(in oklab, var(--primary) 20%, var(--background) 80%);
+    --chart-grid: color-mix(in oklab, var(--border) 70%, transparent);
+    --radius: 0.625rem;
+    --panel-shadow: 0 1px 6px rgb(0 0 0 / 4%), 0 1px 4px -1px rgb(0 0 0 / 4%);
+}
+
+.dark {
+    --background: #111827;
+    --foreground: #f3f4f6;
+    --card: #1f2937;
+    --card-foreground: #f3f4f6;
+    --primary: #a78bfa;
+    --primary-hover: #b59cfb;
+    --primary-foreground: #111827;
+    --secondary: #374151;
+    --secondary-foreground: #f3f4f6;
+    --muted: #374151;
+    --muted-foreground: #9ca3af;
+    --accent: #273244;
+    --accent-foreground: #f3f4f6;
+    --destructive: color-mix(in oklab, var(--color-red-400) 70%, var(--color-red-300) 30%);
+    --destructive-action: var(--destructive);
+    --border: #374151;
+    --input: #374151;
+    --ring: #a78bfa;
+    --sidebar: #111827;
+    --sidebar-foreground: #f3f4f6;
+    --sidebar-muted-foreground: #9ca3af;
+    --sidebar-accent: #1f2937;
+    --sidebar-accent-foreground: #f3f4f6;
+    --sidebar-ring: #a78bfa;
+    --nav-top: #2b3544;
+    --separator: #2b3544;
+    --panel-border: transparent;
+    --panel-top: #2b3544;
+    --table-row-hover: color-mix(in oklab, var(--primary) 8%, var(--card));
+    --new-entries-foreground: var(--foreground);
+    --new-entries-layer-opacity: 0.3;
+    --new-entries-stripe: oklch(from var(--primary) calc(l - 0.06) c h);
+    --th-bg: #252f3e;
+    --status-running: color-mix(in oklab, #14532d 70%, var(--card) 30%);
+    --status-running-foreground: #4ade80;
+    --status-paused: color-mix(in oklab, #713f12 70%, var(--card) 30%);
+    --status-paused-foreground: #facc15;
+    --status-failed: color-mix(in oklab, #7f1d1d 70%, var(--card) 30%);
+    --status-failed-foreground: #fca5a5;
+    --status-retry: color-mix(in oklab, var(--color-pink-800) 70%, var(--card) 30%);
+    --status-retry-foreground: var(--color-pink-300);
+    --status-inactive: #9ca3af;
+    --ok: #4ade80;
+    --error: var(--color-red-500);
+    --action-primary: #7746ec;
+    --action-primary-hover: #8659ef;
+    --action-primary-highlight: #8054ed;
+    --status-success-icon: var(--status-running-foreground);
+    --status-warning-icon: #facc15;
+    --status-destructive-icon: #f87171;
+    --status-idle: var(--primary);
+    --status-idle-track: color-mix(in oklab, var(--background) 80%, var(--foreground) 20%);
+    --status-working: var(--primary);
+    --status-working-track: color-mix(in oklab, var(--primary) 25%, var(--background) 75%);
+    --chart-grid: color-mix(in oklab, var(--border) 50%, transparent);
+    --panel-shadow: 0 1px 3px rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%);
+}
+
+.dark,
+[data-code-theme="dark"] {
+    --code-bg: #18202d;
+    --code-fg: #a6accd;
+    --code-key: #c792ea;
+    --code-string: #c3e88d;
+    --code-punctuation: #89ddff;
+    --code-number: #f78c6c;
+    --code-muted: #7681a8;
+    --code-error: #f07178;
+    --code-control: color-mix(in oklab, var(--code-fg) 12%, var(--code-bg));
+    --code-control-hover: color-mix(in oklab, var(--action-primary) 16%, var(--code-control));
+    --code-control-hover-foreground: color-mix(
+        in oklab,
+        var(--action-primary) 65%,
+        var(--primary-foreground)
+    );
+    --code-control-hover-border: color-mix(in oklab, var(--action-primary) 40%, var(--code-bg));
+    --code-control-foreground: var(--code-fg);
+    --code-control-border: color-mix(in oklab, var(--code-fg) 24%, transparent);
+}
+
+@keyframes horizon-status-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@utility animate-horizon-status {
+    animation: horizon-status-spin 2.5s linear infinite;
+}
+
+@utility animate-horizon-status-working {
+    animation: horizon-status-spin 0.32s linear infinite;
+}
+
+@utility shadow-action {
+    box-shadow:
+        0 1px 2px rgb(0 0 0 / 5%),
+        inset 0 1px 0 var(--action-primary-highlight);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    html {
+        min-width: 1140px;
+        @apply font-sans;
+    }
+
+    body {
+        @apply min-h-svh bg-background font-normal text-foreground antialiased tabular-nums;
+    }
+
+    ::selection {
+        @apply bg-primary text-primary-foreground;
+    }
+}

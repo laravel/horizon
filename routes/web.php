@@ -1,6 +1,44 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Horizon\Http\Middleware\EnsureQueuePausingIsSupported;
+use Laravel\Horizon\Http\Middleware\HandleInertiaRequests;
+
+Route::middleware(HandleInertiaRequests::class)->group(function () {
+    Route::get('/', 'DashboardController@index')->name('horizon.index');
+    Route::get('/dashboard', 'DashboardController@index')->name('horizon.dashboard');
+    Route::get('/jobs/pending', 'JobPageController@pending')->name('horizon.pending-jobs.page');
+    Route::get('/jobs/completed', 'JobPageController@completed')->name('horizon.completed-jobs.page');
+    Route::get('/jobs/failed', 'JobPageController@failed')->name('horizon.failed-jobs.page');
+    Route::get('/jobs/silenced', 'JobPageController@silenced')->name('horizon.silenced-jobs.page');
+    Route::get('/jobs/{type}/{id}', 'JobPageController@show')
+        ->where('type', 'pending|completed|silenced|failed')
+        ->name('horizon.jobs.page.show');
+    Route::get('/monitoring', 'MonitoringPageController@index')->name('horizon.monitoring.page');
+    Route::get('/monitoring/{tag}/jobs', 'MonitoringPageController@jobs')
+        ->where('tag', '.*')
+        ->name('horizon.monitoring-jobs.page');
+    Route::get('/monitoring/{tag}/failed', 'MonitoringPageController@failed')
+        ->where('tag', '.*')
+        ->name('horizon.monitoring-failed.page');
+    // Upstream Vue-router: /monitoring/:tag (parent) → Inertia jobs tab.
+    Route::get('/monitoring/{tag}', 'LegacyRedirectController@monitoringTag')
+        ->where('tag', '.*');
+    // Upstream Vue-router: /metrics → /metrics/jobs.
+    Route::get('/metrics', 'LegacyRedirectController@metrics');
+    Route::get('/metrics/{type}', 'MetricsPageController@index')
+        ->where('type', 'jobs|queues')
+        ->name('horizon.metrics.page');
+    Route::get('/metrics/{type}/{name}', 'MetricController@show')
+        ->where('type', 'jobs|queues')
+        ->where('name', '.+')
+        ->name('horizon.metrics.page.show');
+    Route::get('/batches', 'BatchPageController@index')->name('horizon.batches.page');
+    Route::get('/batches/{id}', 'BatchPageController@show')->name('horizon.batches.page.show');
+    // Upstream Vue-router: /failed and /failed/:jobId.
+    Route::get('/failed', 'LegacyRedirectController@failedJobs');
+    Route::get('/failed/{id}', 'LegacyRedirectController@failedJob');
+});
 
 Route::prefix('api')->group(function () {
     // Dashboard Routes...
@@ -8,6 +46,14 @@ Route::prefix('api')->group(function () {
 
     // Workload Routes...
     Route::get('/workload', 'WorkloadController@index')->name('horizon.workload.index');
+
+    // Queue controls...
+    Route::post('/queues/{connection}/{queue}/pause', 'QueuePauseController@store')
+        ->middleware(EnsureQueuePausingIsSupported::class)
+        ->name('horizon.queues.pause.store');
+    Route::delete('/queues/{connection}/{queue}/pause', 'QueuePauseController@destroy')
+        ->middleware(EnsureQueuePausingIsSupported::class)
+        ->name('horizon.queues.pause.destroy');
 
     // Master Supervisor Routes...
     Route::get('/masters', 'MasterSupervisorController@index')->name('horizon.masters.index');
@@ -42,6 +88,3 @@ Route::prefix('api')->group(function () {
     Route::post('/jobs/retry/{id}', 'RetryController@store')->name('horizon.retry-jobs.show');
     Route::get('/jobs/{id}', 'JobsController@show')->name('horizon.jobs.show');
 });
-
-// Catch-all Route...
-Route::get('/{view?}', 'HomeController@index')->where('view', '(.*)')->name('horizon.index');
