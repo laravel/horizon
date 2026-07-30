@@ -910,10 +910,6 @@
                     </div>
 
                     <div class="modal-body">
-                        <p class="text-center mb-3">
-                            Are you sure you want to pause this queue?
-                        </p>
-
                         <div class="form-check mb-3">
                             <input
                                 class="form-check-input"
