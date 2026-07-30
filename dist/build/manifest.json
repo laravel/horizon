@@ -69,38 +69,38 @@
     "file": "assets/format-duration-nkzD-Z2D.js",
     "name": "format-duration"
   },
-  "_horizon-layout-2kbEkKyq.js": {
-    "file": "assets/horizon-layout-2kbEkKyq.js",
+  "_horizon-layout-BOMBaMru.js": {
+    "file": "assets/horizon-layout-BOMBaMru.js",
     "name": "horizon-layout",
     "imports": [
       "_rolldown-runtime-Bh1tDfsg.js",
       "_navigation-icons-D1WJ9iK9.js",
       "_switch-BQ4BZoVU.js",
-      "_horizon-route-C_rEt4GF.js"
+      "_horizon-route-COvOBjhm.js"
     ]
   },
-  "_horizon-route-C_rEt4GF.js": {
-    "file": "assets/horizon-route-C_rEt4GF.js",
+  "_horizon-route-COvOBjhm.js": {
+    "file": "assets/horizon-route-COvOBjhm.js",
     "name": "horizon-route"
   },
   "_interactive-target-BNJM0QCR.js": {
     "file": "assets/interactive-target-BNJM0QCR.js",
     "name": "interactive-target"
   },
-  "_job-list-74wIJ3mr.js": {
-    "file": "assets/job-list-74wIJ3mr.js",
+  "_job-list-Cm3R-TjQ.js": {
+    "file": "assets/job-list-Cm3R-TjQ.js",
     "name": "job-list",
     "imports": [
       "_rolldown-runtime-Bh1tDfsg.js",
       "_navigation-icons-D1WJ9iK9.js",
       "_table-empty-mprBiN9N.js",
-      "_horizon-layout-2kbEkKyq.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-layout-BOMBaMru.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js",
       "_badge-rPm-Q3Hb.js",
-      "_use-auto-load-BLgf-jxu.js"
+      "_use-auto-load-Bc8z93RA.js"
     ]
   },
   "_loader-circle-CuAI1huq.js": {
@@ -181,17 +181,17 @@
       "_popupStateMapping-DH1B4XJa.js"
     ]
   },
-  "_use-auto-load-BLgf-jxu.js": {
-    "file": "assets/use-auto-load-BLgf-jxu.js",
+  "_use-auto-load-Bc8z93RA.js": {
+    "file": "assets/use-auto-load-Bc8z93RA.js",
     "name": "use-auto-load",
     "imports": [
       "_rolldown-runtime-Bh1tDfsg.js",
       "_navigation-icons-D1WJ9iK9.js",
       "_loader-circle-CuAI1huq.js",
-      "_horizon-layout-2kbEkKyq.js",
+      "_horizon-layout-BOMBaMru.js",
       "_rotate-ccw-BfZ0KMDI.js",
       "_useButton-BiauxDcD.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_table-D4OaP4ib.js",
       "_button-BKwLJUte.js"
     ]
@@ -260,14 +260,14 @@
     "src": "resources/images/favicon.svg"
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-DXgo26WB.js",
+    "file": "assets/app-B_wc_M78.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
       "_loader-circle-CuAI1huq.js",
-      "_horizon-layout-2kbEkKyq.js",
+      "_horizon-layout-BOMBaMru.js",
       "_useButton-BiauxDcD.js",
       "_tooltip-C6vl9S6e.js"
     ],
@@ -298,7 +298,7 @@
     ]
   },
   "resources/js/pages/batches.tsx": {
-    "file": "assets/batches-DxwJU3VG.js",
+    "file": "assets/batches-DGi58ip8.js",
     "name": "batches",
     "src": "resources/js/pages/batches.tsx",
     "isDynamicEntry": true,
@@ -307,14 +307,14 @@
       "_navigation-icons-D1WJ9iK9.js",
       "_progress-ring-BhW-9Bmo.js",
       "_table-empty-mprBiN9N.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js"
     ]
   },
   "resources/js/pages/batches/show.tsx": {
-    "file": "assets/show-CCaKL0mv.js",
+    "file": "assets/show-DzDkdcHH.js",
     "name": "show",
     "src": "resources/js/pages/batches/show.tsx",
     "isDynamicEntry": true,
@@ -328,7 +328,7 @@
       "_dialog-UiOYEQNx.js",
       "_useButton-BiauxDcD.js",
       "_tooltip-C6vl9S6e.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js",
@@ -337,7 +337,7 @@
     ]
   },
   "resources/js/pages/dashboard.tsx": {
-    "file": "assets/dashboard-CBaX_jou.js",
+    "file": "assets/dashboard-B3uYrG1g.js",
     "name": "dashboard",
     "src": "resources/js/pages/dashboard.tsx",
     "isDynamicEntry": true,
@@ -352,7 +352,7 @@
       "_useButton-BiauxDcD.js",
       "_tooltip-C6vl9S6e.js",
       "_switch-BQ4BZoVU.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_button-BKwLJUte.js",
@@ -361,37 +361,37 @@
     ]
   },
   "resources/js/pages/jobs/completed.tsx": {
-    "file": "assets/completed-BBCsX9OD.js",
+    "file": "assets/completed-tdHCGjZW.js",
     "name": "completed",
     "src": "resources/js/pages/jobs/completed.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
-      "_job-list-74wIJ3mr.js"
+      "_job-list-Cm3R-TjQ.js"
     ]
   },
   "resources/js/pages/jobs/failed.tsx": {
-    "file": "assets/failed-BPrCMu6e.js",
+    "file": "assets/failed-r_Pswwvx.js",
     "name": "failed",
     "src": "resources/js/pages/jobs/failed.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
-      "_job-list-74wIJ3mr.js"
+      "_job-list-Cm3R-TjQ.js"
     ]
   },
   "resources/js/pages/jobs/pending.tsx": {
-    "file": "assets/pending-HXpRWCd1.js",
+    "file": "assets/pending-D9Yz4oyD.js",
     "name": "pending",
     "src": "resources/js/pages/jobs/pending.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
-      "_job-list-74wIJ3mr.js"
+      "_job-list-Cm3R-TjQ.js"
     ]
   },
   "resources/js/pages/jobs/show.tsx": {
-    "file": "assets/show-DNfjQvPs.js",
+    "file": "assets/show-LfxX7E3J.js",
     "name": "show",
     "src": "resources/js/pages/jobs/show.tsx",
     "isDynamicEntry": true,
@@ -407,7 +407,7 @@
       "_tooltip-C6vl9S6e.js",
       "_useScrollLock-DdCQvR5g.js",
       "_useControlled-Ok1vn5ds.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js",
@@ -417,24 +417,24 @@
     ]
   },
   "resources/js/pages/jobs/silenced.tsx": {
-    "file": "assets/silenced-yqWAwRP7.js",
+    "file": "assets/silenced-CjvXmH4S.js",
     "name": "silenced",
     "src": "resources/js/pages/jobs/silenced.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
-      "_job-list-74wIJ3mr.js"
+      "_job-list-Cm3R-TjQ.js"
     ]
   },
   "resources/js/pages/metrics.tsx": {
-    "file": "assets/metrics-LP8_8TpQ.js",
+    "file": "assets/metrics-vE5-tnYI.js",
     "name": "metrics",
     "src": "resources/js/pages/metrics.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
       "_table-empty-mprBiN9N.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js"
@@ -452,7 +452,7 @@
     ]
   },
   "resources/js/pages/monitoring.tsx": {
-    "file": "assets/monitoring-D_q0GXU_.js",
+    "file": "assets/monitoring-BcpWCYPQ.js",
     "name": "monitoring",
     "src": "resources/js/pages/monitoring.tsx",
     "isDynamicEntry": true,
@@ -462,7 +462,7 @@
       "_table-empty-mprBiN9N.js",
       "_dialog-UiOYEQNx.js",
       "_useButton-BiauxDcD.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js",
@@ -470,7 +470,7 @@
     ]
   },
   "resources/js/pages/monitoring/tag-jobs.tsx": {
-    "file": "assets/tag-jobs-8VTYGFs5.js",
+    "file": "assets/tag-jobs-DALWlHin.js",
     "name": "tag-jobs",
     "src": "resources/js/pages/monitoring/tag-jobs.tsx",
     "isDynamicEntry": true,
@@ -478,13 +478,13 @@
       "_rolldown-runtime-Bh1tDfsg.js",
       "_navigation-icons-D1WJ9iK9.js",
       "_table-empty-mprBiN9N.js",
-      "_horizon-layout-2kbEkKyq.js",
-      "_horizon-route-C_rEt4GF.js",
+      "_horizon-layout-BOMBaMru.js",
+      "_horizon-route-COvOBjhm.js",
       "_card-ChxDYvEn.js",
       "_table-D4OaP4ib.js",
       "_interactive-target-BNJM0QCR.js",
       "_badge-rPm-Q3Hb.js",
-      "_use-auto-load-BLgf-jxu.js"
+      "_use-auto-load-Bc8z93RA.js"
     ]
   }
 }
