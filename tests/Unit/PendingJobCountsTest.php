@@ -2,14 +2,16 @@
 
 namespace Laravel\Horizon\Tests\Unit;
 
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\Dashboard\PendingJobCounts;
-use Laravel\Horizon\Tests\IntegrationTest;
+use Laravel\Horizon\Tests\UnitTest;
 use Laravel\Horizon\WaitTimeCalculator;
 use Mockery;
 use RuntimeException;
 
-class PendingJobCountsTest extends IntegrationTest
+class PendingJobCountsTest extends UnitTest
 {
     public function test_it_aggregates_pending_state_across_unique_supervised_queues()
     {
@@ -58,6 +60,8 @@ class PendingJobCountsTest extends IntegrationTest
         $queues = Mockery::mock(QueueFactory::class);
         $queues->shouldReceive('connection')->once()->with('redis')->andReturn($customQueue);
 
+        $this->withSilentExceptionHandler();
+
         $counts = (new PendingJobCounts($queues, $waits))->get();
 
         $this->assertSame([
@@ -80,6 +84,8 @@ class PendingJobCountsTest extends IntegrationTest
 
         $queues = Mockery::mock(QueueFactory::class);
         $queues->shouldReceive('connection')->once()->with('redis')->andReturn($redisQueue);
+
+        $this->withSilentExceptionHandler();
 
         $counts = (new PendingJobCounts($queues, $waits))->get([
             'redis:default' => 1,
@@ -110,6 +116,8 @@ class PendingJobCountsTest extends IntegrationTest
         $queues = Mockery::mock(QueueFactory::class);
         $queues->shouldReceive('connection')->once()->with('redis')->andReturn($redisQueue);
 
+        $this->withSilentExceptionHandler();
+
         $counts = (new PendingJobCounts($queues, $waits))->get([
             'redis:default' => 1,
         ]);
@@ -120,5 +128,30 @@ class PendingJobCountsTest extends IntegrationTest
             'delayed' => null,
             'total' => null,
         ], $counts);
+    }
+
+    /**
+     * Unit tests do not boot the application; bind a silent handler so report() works.
+     */
+    private function withSilentExceptionHandler(): void
+    {
+        $container = new Container;
+        Container::setInstance($container);
+
+        $handler = Mockery::mock(ExceptionHandler::class);
+        $handler->shouldReceive('report')->andReturnNull();
+        $handler->shouldReceive('shouldReport')->andReturn(false);
+        $handler->shouldReceive('render')->zeroOrMoreTimes();
+        $handler->shouldReceive('renderForConsole')->zeroOrMoreTimes();
+
+        $container->instance(ExceptionHandler::class, $handler);
+        $container->instance('app', $container);
+    }
+
+    protected function tearDown(): void
+    {
+        Container::setInstance(null);
+
+        parent::tearDown();
     }
 }
