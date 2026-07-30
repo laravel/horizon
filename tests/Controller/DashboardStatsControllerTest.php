@@ -42,8 +42,11 @@ class DashboardStatsControllerTest extends ControllerTest
         // Setup metrics data...
         $metrics = Mockery::mock(MetricsRepository::class);
         $metrics->shouldReceive('jobsProcessedPerMinute')->andReturn(1);
-        $metrics->shouldReceive('queueWithMaximumRuntime')->andReturn('default');
-        $metrics->shouldReceive('queueWithMaximumThroughput')->andReturn('default');
+        $metrics->shouldReceive('throughput')->andReturn(42);
+        $metrics->shouldReceive('queueWithMaximumRuntime')->once()->andReturn('default');
+        $metrics->shouldReceive('queueWithMaximumThroughput')->once()->andReturn('default');
+        $metrics->shouldReceive('runtimeForQueue')->once()->with('default')->andReturn(1500);
+        $metrics->shouldReceive('throughputForQueue')->once()->with('default')->andReturn(230);
         $metrics->shouldReceive('measuredJobs')->andReturn(['App\\Jobs\\A', 'App\\Jobs\\B']);
         $metrics->shouldReceive('measuredQueues')->andReturn(['default', 'reports', 'mail']);
         $this->app->instance(MetricsRepository::class, $metrics);
@@ -59,6 +62,7 @@ class DashboardStatsControllerTest extends ControllerTest
         $jobs->shouldReceive('countFailedSince')->with(60)->andReturn(2);
         $jobs->shouldReceive('countFailedSince')->with(1440)->andReturn(7);
         $jobs->shouldReceive('countRecent')->andReturn(1);
+        $jobs->shouldReceive('countRecentSince')->with(60)->andReturn(11);
         $jobs->shouldReceive('countPending')->andReturn(2);
         $jobs->shouldReceive('countCompleted')->andReturn(30);
         $jobs->shouldReceive('countSilenced')->andReturn(4);
@@ -82,6 +86,7 @@ class DashboardStatsControllerTest extends ControllerTest
 
         $response->assertJson([
             'jobsPerMinute' => 1,
+            'throughput' => 42,
             'wait' => ['first' => 20],
             'processes' => 30,
             'processing' => true,
@@ -90,11 +95,15 @@ class DashboardStatsControllerTest extends ControllerTest
             'failedJobsPastHour' => 2,
             'failedJobsPastDay' => 7,
             'recentJobs' => 1,
+            'recentJobsPastHour' => 11,
             'queueWithMaxRuntime' => 'default',
             'queueWithMaxThroughput' => 'default',
+            'maxRuntime' => 1.5,
+            'maxThroughput' => 230,
             'periods' => [
                 'failedJobs' => 10080,
                 'recentJobs' => 60,
+                'completedJobs' => 60,
             ],
             'navigation' => [
                 'monitoring' => 3,
@@ -135,8 +144,11 @@ class DashboardStatsControllerTest extends ControllerTest
 
         $metrics = Mockery::mock(MetricsRepository::class);
         $metrics->shouldReceive('jobsProcessedPerMinute')->andReturn(0);
-        $metrics->shouldReceive('queueWithMaximumRuntime')->andReturn(null);
-        $metrics->shouldReceive('queueWithMaximumThroughput')->andReturn(null);
+        $metrics->shouldReceive('throughput')->andReturn(0);
+        $metrics->shouldReceive('queueWithMaximumRuntime')->once()->andReturn(null);
+        $metrics->shouldReceive('queueWithMaximumThroughput')->once()->andReturn(null);
+        $metrics->shouldReceive('runtimeForQueue')->never();
+        $metrics->shouldReceive('throughputForQueue')->never();
         $metrics->shouldReceive('measuredJobs')->andReturn([]);
         $metrics->shouldReceive('measuredQueues')->andReturn([]);
         $this->app->instance(MetricsRepository::class, $metrics);
@@ -150,10 +162,14 @@ class DashboardStatsControllerTest extends ControllerTest
             ->assertOk()
             ->assertJsonPath('navigation.batches', null)
             ->assertJsonPath('navigation.monitoring', 0)
-            ->assertJsonPath('navigation.metrics', 0);
+            ->assertJsonPath('navigation.metrics', 0)
+            ->assertJsonPath('queueWithMaxRuntime', null)
+            ->assertJsonPath('queueWithMaxThroughput', null)
+            ->assertJsonPath('maxRuntime', null)
+            ->assertJsonPath('maxThroughput', null);
     }
 
-    public function test_navigation_batch_count_returns_exact_active_batches()
+    public function test_navigation_batch_count_returns_total_retained_batches()
     {
         $this->setupBatchTableForStats();
 
@@ -230,6 +246,18 @@ class DashboardStatsControllerTest extends ControllerTest
                 'created_at' => 100,
                 'finished_at' => null,
             ],
+            [
+                'id' => 'batch-0',
+                'name' => 'Finished',
+                'total_jobs' => 10,
+                'pending_jobs' => 0,
+                'failed_jobs' => 0,
+                'failed_job_ids' => '[]',
+                'options' => serialize([]),
+                'cancelled_at' => null,
+                'created_at' => 50,
+                'finished_at' => 75,
+            ],
         ]);
 
         $jobs = Mockery::mock(JobRepository::class);
@@ -250,7 +278,7 @@ class DashboardStatsControllerTest extends ControllerTest
         $this->actingAs(new Fakes\User)
             ->getJson('/horizon/api/stats')
             ->assertOk()
-            ->assertJsonPath('navigation.batches', 4);
+            ->assertJsonPath('navigation.batches', 7);
     }
 
     public function test_navigation_batch_count_is_null_for_dynamodb_batching()
@@ -302,6 +330,58 @@ class DashboardStatsControllerTest extends ControllerTest
             ->assertJsonPath('failedJobsPastDay', null);
     }
 
+    public function test_recent_jobs_past_hour_is_null_when_repository_lacks_count_recent_since()
+    {
+        $jobs = Mockery::mock(JobRepository::class);
+        $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
+        $jobs->shouldReceive('countRecent')->andReturn(1);
+        $jobs->shouldReceive('countPending')->andReturn(0);
+        $jobs->shouldReceive('countCompleted')->andReturn(0);
+        $jobs->shouldReceive('countSilenced')->andReturn(0);
+        $jobs->shouldReceive('countFailed')->andReturn(0);
+        $this->app->instance(JobRepository::class, $jobs);
+
+        $this->stubNavigationDependencies();
+
+        $workload = Mockery::mock(WorkloadRepository::class);
+        $workload->shouldReceive('get')->once()->andReturn([]);
+        $this->app->instance(WorkloadRepository::class, $workload);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/stats')
+            ->assertOk()
+            ->assertJsonPath('recentJobsPastHour', null);
+    }
+
+    public function test_recent_jobs_past_hour_is_null_when_recent_trim_is_below_one_hour()
+    {
+        $this->app['config']->set('horizon.trim.recent', 30);
+
+        $jobs = Mockery::mock(RedisJobRepository::class);
+        $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
+        $jobs->shouldReceive('countFailedSince')->with(60)->andReturn(2);
+        $jobs->shouldReceive('countFailedSince')->with(1440)->andReturn(7);
+        $jobs->shouldReceive('countRecent')->andReturn(1);
+        $jobs->shouldReceive('countRecentSince')->never();
+        $jobs->shouldReceive('countPending')->andReturn(0);
+        $jobs->shouldReceive('countCompleted')->andReturn(0);
+        $jobs->shouldReceive('countSilenced')->andReturn(0);
+        $jobs->shouldReceive('countFailed')->andReturn(0);
+        $this->app->instance(JobRepository::class, $jobs);
+
+        $this->stubNavigationDependencies();
+
+        $workload = Mockery::mock(RedisWorkloadRepository::class);
+        $workload->shouldReceive('processing')->once()->andReturnFalse();
+        $this->app->instance(WorkloadRepository::class, $workload);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/stats')
+            ->assertOk()
+            ->assertJsonPath('recentJobsPastHour', null)
+            ->assertJsonPath('periods.recentJobs', 30);
+    }
+
     public function test_failed_jobs_past_hour_is_null_when_failed_trim_is_below_one_hour()
     {
         $this->app['config']->set('horizon.trim.failed', 30);
@@ -310,6 +390,7 @@ class DashboardStatsControllerTest extends ControllerTest
         $jobs->shouldReceive('countRecentlyFailed')->andReturn(1);
         $jobs->shouldReceive('countFailedSince')->never();
         $jobs->shouldReceive('countRecent')->andReturn(1);
+        $jobs->shouldReceive('countRecentSince')->with(60)->andReturn(4);
         $jobs->shouldReceive('countPending')->andReturn(0);
         $jobs->shouldReceive('countCompleted')->andReturn(0);
         $jobs->shouldReceive('countSilenced')->andReturn(0);
@@ -338,6 +419,7 @@ class DashboardStatsControllerTest extends ControllerTest
         $jobs->shouldReceive('countFailedSince')->with(60)->andReturn(2);
         $jobs->shouldReceive('countFailedSince')->with(1440)->never();
         $jobs->shouldReceive('countRecent')->andReturn(1);
+        $jobs->shouldReceive('countRecentSince')->with(60)->andReturn(4);
         $jobs->shouldReceive('countPending')->andReturn(0);
         $jobs->shouldReceive('countCompleted')->andReturn(0);
         $jobs->shouldReceive('countSilenced')->andReturn(0);
@@ -423,8 +505,11 @@ class DashboardStatsControllerTest extends ControllerTest
 
         $metrics = Mockery::mock(MetricsRepository::class);
         $metrics->shouldReceive('jobsProcessedPerMinute')->andReturn(0);
+        $metrics->shouldReceive('throughput')->andReturn(0);
         $metrics->shouldReceive('queueWithMaximumRuntime')->andReturn(null);
         $metrics->shouldReceive('queueWithMaximumThroughput')->andReturn(null);
+        $metrics->shouldReceive('runtimeForQueue')->never();
+        $metrics->shouldReceive('throughputForQueue')->never();
         $metrics->shouldReceive('measuredJobs')->andReturn([]);
         $metrics->shouldReceive('measuredQueues')->andReturn([]);
         $this->app->instance(MetricsRepository::class, $metrics);

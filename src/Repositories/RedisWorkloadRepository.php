@@ -5,6 +5,7 @@ namespace Laravel\Horizon\Repositories;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\WorkloadRepository;
 use Laravel\Horizon\WaitTimeCalculator;
@@ -40,12 +41,20 @@ class RedisWorkloadRepository implements WorkloadRepository
     private $supervisors;
 
     /**
+     * The metrics repository implementation.
+     *
+     * @var \Laravel\Horizon\Contracts\MetricsRepository
+     */
+    private $metrics;
+
+    /**
      * Create a new repository instance.
      *
      * @param  \Illuminate\Contracts\Queue\Factory  $queue
      * @param  \Laravel\Horizon\WaitTimeCalculator  $waitTime
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
      * @return void
      */
     public function __construct(
@@ -53,11 +62,13 @@ class RedisWorkloadRepository implements WorkloadRepository
         WaitTimeCalculator $waitTime,
         MasterSupervisorRepository $masters,
         SupervisorRepository $supervisors,
+        MetricsRepository $metrics,
     ) {
         $this->queue = $queue;
         $this->masters = $masters;
         $this->waitTime = $waitTime;
         $this->supervisors = $supervisors;
+        $this->metrics = $metrics;
     }
 
     /**
@@ -81,7 +92,7 @@ class RedisWorkloadRepository implements WorkloadRepository
     /**
      * Get the current workload of each queue.
      *
-     * @return array<int, array{"connection": string, "name": string, "length": int, "reserved": int, "delayed": int, "wait": int, "processes": int, "split_queues": null|array<int, array{"connection": string, "name": string, "wait": int, "length": int}>}>
+     * @return array<int, array{"connection": string, "name": string, "length": int, "reserved": int, "delayed": int, "wait": int, "processes": int, "throughput": int, "split_queues": null|array<int, array{"connection": string, "name": string, "wait": int, "length": int, "throughput": int}>}>
      */
     public function get()
     {
@@ -119,6 +130,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                                 $totalProcesses,
                                 [$queueName => $length],
                             ),
+                            'throughput' => $this->metrics->throughputForQueue($queueName),
                         ];
                     })->values()->all()
                     : null;
@@ -131,6 +143,9 @@ class RedisWorkloadRepository implements WorkloadRepository
                     'delayed' => $pending->sum('delayed'),
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
+                    'throughput' => $splitQueues
+                        ? collect($splitQueues)->sum('throughput')
+                        : $this->metrics->throughputForQueue($queueName),
                     'split_queues' => $splitQueues,
                 ];
             })

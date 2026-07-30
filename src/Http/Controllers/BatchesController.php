@@ -70,6 +70,7 @@ class BatchesController extends Controller
 
             return [
                 'available' => true,
+                'active' => (int) $this->activeBatchesQuery()->count(),
                 'previews' => $this->activeBatchPreviews(),
             ];
         } catch (QueryException $e) {
@@ -182,6 +183,7 @@ class BatchesController extends Controller
     {
         return [
             'available' => false,
+            'active' => null,
             'previews' => [],
         ];
     }

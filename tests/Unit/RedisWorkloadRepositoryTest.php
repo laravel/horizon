@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Tests\Unit;
 
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Laravel\Horizon\Contracts\MasterSupervisorRepository;
+use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Repositories\RedisWorkloadRepository;
 use Laravel\Horizon\Tests\UnitTest;
@@ -29,6 +30,7 @@ class RedisWorkloadRepositoryTest extends UnitTest
         $waitTime = Mockery::mock(WaitTimeCalculator::class);
         $masters = Mockery::mock(MasterSupervisorRepository::class);
         $supervisors = Mockery::mock(SupervisorRepository::class);
+        $metrics = Mockery::mock(MetricsRepository::class);
 
         $supervisors->shouldReceive('all')->once()->andReturn([
             (object) [
@@ -47,12 +49,14 @@ class RedisWorkloadRepositoryTest extends UnitTest
         ]);
 
         $waitTime->shouldNotReceive('calculateTimeToClear');
+        $metrics->shouldNotReceive('throughputForQueue');
 
         $repository = new RedisWorkloadRepository(
             $queue,
             $waitTime,
             $masters,
-            $supervisors
+            $supervisors,
+            $metrics
         );
 
         return $repository->processing();
@@ -65,6 +69,7 @@ class RedisWorkloadRepositoryTest extends UnitTest
         $waitTime = Mockery::mock(WaitTimeCalculator::class);
         $masters = Mockery::mock(MasterSupervisorRepository::class);
         $supervisors = Mockery::mock(SupervisorRepository::class);
+        $metrics = Mockery::mock(MetricsRepository::class);
 
         $supervisors->shouldReceive('all')->once()->andReturn([
             (object) [
@@ -110,11 +115,16 @@ class RedisWorkloadRepositoryTest extends UnitTest
             ->with('redis', 'batches', 3, ['batches' => 9])
             ->andReturn(3);
 
+        $metrics->shouldReceive('throughputForQueue')->once()->with('default')->andReturn(11);
+        $metrics->shouldReceive('throughputForQueue')->once()->with('reports')->andReturn(4);
+        $metrics->shouldReceive('throughputForQueue')->once()->with('batches')->andReturn(6);
+
         $repository = new RedisWorkloadRepository(
             $queue,
             $waitTime,
             $masters,
-            $supervisors
+            $supervisors,
+            $metrics
         );
 
         $this->assertSame([
@@ -126,6 +136,7 @@ class RedisWorkloadRepositoryTest extends UnitTest
                 'delayed' => 1,
                 'wait' => 4,
                 'processes' => 2,
+                'throughput' => 11,
                 'split_queues' => null,
             ],
             [
@@ -136,18 +147,21 @@ class RedisWorkloadRepositoryTest extends UnitTest
                 'delayed' => 4,
                 'wait' => 10,
                 'processes' => 3,
+                'throughput' => 10,
                 'split_queues' => [
                     [
                         'connection' => 'redis',
                         'name' => 'reports',
                         'length' => 5,
                         'wait' => 2,
+                        'throughput' => 4,
                     ],
                     [
                         'connection' => 'redis',
                         'name' => 'batches',
                         'length' => 9,
                         'wait' => 5,
+                        'throughput' => 6,
                     ],
                 ],
             ],

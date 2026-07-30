@@ -42,4 +42,27 @@ class RedisJobRepositoryTest extends UnitTest
 
         $this->assertSame(3, (new RedisJobRepository($redis))->countFailedSince(60));
     }
+
+    public function test_it_counts_recent_jobs_from_the_past_hour()
+    {
+        $now = CarbonImmutable::parse('2026-07-28 12:00:00', 'UTC');
+        CarbonImmutable::setTestNow($now);
+
+        $container = new Container;
+        $container->instance('config', new ConfigRepository([
+            'horizon.trim.recent' => 60,
+        ]));
+        Container::setInstance($container);
+
+        $redis = Mockery::mock(RedisFactory::class);
+        $connection = Mockery::mock();
+
+        $redis->shouldReceive('connection')->once()->with('horizon')->andReturn($connection);
+        $connection->shouldReceive('zcount')
+            ->once()
+            ->with('recent_jobs', '-inf', $now->subMinutes(60)->getTimestamp() * -1)
+            ->andReturn(11);
+
+        $this->assertSame(11, (new RedisJobRepository($redis))->countRecentSince(60));
+    }
 }

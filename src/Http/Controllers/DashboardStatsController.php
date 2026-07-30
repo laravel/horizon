@@ -23,22 +23,33 @@ class DashboardStatsController extends Controller
     {
         $jobs = app(JobRepository::class);
         $metrics = app(MetricsRepository::class);
+        $queueWithMaxRuntime = $metrics->queueWithMaximumRuntime();
+        $queueWithMaxThroughput = $metrics->queueWithMaximumThroughput();
 
         return [
             'failedJobs' => $jobs->countRecentlyFailed(),
             'failedJobsPastHour' => $this->failedJobsPastHour($jobs),
             'failedJobsPastDay' => $this->failedJobsPastDay($jobs),
             'jobsPerMinute' => $metrics->jobsProcessedPerMinute(),
+            'throughput' => $metrics->throughput(),
             'pausedMasters' => $this->totalPausedMasters(),
             'periods' => [
                 'failedJobs' => config('horizon.trim.recent_failed', config('horizon.trim.failed')),
                 'recentJobs' => config('horizon.trim.recent'),
+                'completedJobs' => config('horizon.trim.completed'),
             ],
             'processes' => $this->totalProcessCount(),
             'processing' => $this->processing(),
-            'queueWithMaxRuntime' => $metrics->queueWithMaximumRuntime(),
-            'queueWithMaxThroughput' => $metrics->queueWithMaximumThroughput(),
+            'queueWithMaxRuntime' => $queueWithMaxRuntime,
+            'queueWithMaxThroughput' => $queueWithMaxThroughput,
+            'maxRuntime' => $queueWithMaxRuntime !== null
+                ? round($metrics->runtimeForQueue($queueWithMaxRuntime) / 1000, 3)
+                : null,
+            'maxThroughput' => $queueWithMaxThroughput !== null
+                ? $metrics->throughputForQueue($queueWithMaxThroughput)
+                : null,
             'recentJobs' => $jobs->countRecent(),
+            'recentJobsPastHour' => $this->recentJobsPastHour($jobs),
             'status' => $this->currentStatus(),
             'wait' => collect(app(WaitTimeCalculator::class)->calculate())->take(1),
             'navigation' => [
@@ -72,7 +83,7 @@ class DashboardStatsController extends Controller
     }
 
     /**
-     * Get the active batch count for sidebar navigation.
+     * Get the retained batch count for sidebar navigation.
      *
      * @return int|null
      */
@@ -85,8 +96,6 @@ class DashboardStatsController extends Controller
 
             return (int) DB::connection(config('queue.batching.database'))
                 ->table(config('queue.batching.table', 'job_batches'))
-                ->whereNull('cancelled_at')
-                ->whereColumn('pending_jobs', '>', 'failed_jobs')
                 ->count();
         } catch (QueryException $e) {
             return null;
@@ -121,6 +130,21 @@ class DashboardStatsController extends Controller
         }
 
         return $jobs->countFailedSince(1440);
+    }
+
+    /**
+     * Get the number of jobs received by Horizon during the past hour.
+     *
+     * @param  \Laravel\Horizon\Contracts\JobRepository  $jobs
+     * @return int|null
+     */
+    protected function recentJobsPastHour(JobRepository $jobs)
+    {
+        if (config('horizon.trim.recent', 60) < 60 || ! method_exists($jobs, 'countRecentSince')) {
+            return null;
+        }
+
+        return $jobs->countRecentSince(60);
     }
 
     /**

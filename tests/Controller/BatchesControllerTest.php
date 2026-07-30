@@ -89,6 +89,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertOk()
             ->assertExactJson([
                 'available' => true,
+                'active' => 3,
                 'previews' => [
                     ['id' => 'batch-5', 'name' => 'Archive Audit Logs', 'progress' => 60],
                     ['id' => 'batch-4', 'name' => 'Send Reports', 'progress' => 50],
@@ -111,6 +112,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertOk()
             ->assertExactJson([
                 'available' => true,
+                'active' => 4,
                 'previews' => [
                     ['id' => 'batch-newest', 'name' => 'Newest Active', 'progress' => 20],
                     ['id' => 'batch-mid-b', 'name' => 'Middle Active B', 'progress' => 30],
@@ -133,6 +135,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertOk()
             ->assertExactJson([
                 'available' => false,
+                'active' => null,
                 'previews' => [],
             ]);
     }
@@ -151,6 +154,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertOk()
             ->assertExactJson([
                 'available' => false,
+                'active' => null,
                 'previews' => [],
             ]);
     }

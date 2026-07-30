@@ -187,6 +187,19 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+     * Get the count of recent jobs within the given number of minutes.
+     *
+     * @param  int  $minutes
+     * @return int
+     */
+    public function countRecentSince($minutes)
+    {
+        return $this->connection()->zcount(
+            'recent_jobs', '-inf', CarbonImmutable::now()->subMinutes($minutes)->getTimestamp() * -1
+        );
+    }
+
+    /**
      * Get the count of failed jobs.
      *
      * @return int
