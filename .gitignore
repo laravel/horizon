@@ -10,3 +10,12 @@
 composer.phar
 composer.lock
 Thumbs.db
+
+# Local AI / tooling (not PR-intended package guidance)
+/.ai/
+/.codex/
+/boost.json
+/skills-lock.json
+
+# Testbench / app runtime artifacts
+/storage/

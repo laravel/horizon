@@ -22,4 +22,10 @@ phpunit.xml.dist export-ignore
 RELEASE.md export-ignore
 testbench.yaml export-ignore
 UPGRADE.md export-ignore
-vite.config.js export-ignore
+vite.config.ts export-ignore
+
+# Contributor / build / Testbench-only (consumers receive built dist assets)
+/tsconfig.json export-ignore
+/components.json export-ignore
+/scripts export-ignore
+/bootstrap export-ignore
