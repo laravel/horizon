@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../
 import page1ac1a6 from './page'
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::page
-* @see src/Http/Controllers/BatchPageController.php:28
+* @see src/Http/Controllers/BatchPageController.php:30
 * @route '/horizon/batches'
 */
 export const page = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -17,7 +17,7 @@ page.definition = {
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::page
-* @see src/Http/Controllers/BatchPageController.php:28
+* @see src/Http/Controllers/BatchPageController.php:30
 * @route '/horizon/batches'
 */
 page.url = (options?: RouteQueryOptions) => {
@@ -26,7 +26,7 @@ page.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::page
-* @see src/Http/Controllers/BatchPageController.php:28
+* @see src/Http/Controllers/BatchPageController.php:30
 * @route '/horizon/batches'
 */
 page.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -36,7 +36,7 @@ page.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::page
-* @see src/Http/Controllers/BatchPageController.php:28
+* @see src/Http/Controllers/BatchPageController.php:30
 * @route '/horizon/batches'
 */
 page.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

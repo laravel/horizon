@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Horizon\Batches\BatchPresentation;
+use Laravel\Horizon\Batches\DatabaseBatchCapability;
 use Laravel\Horizon\Support\HorizonScrollMetadata;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Throwable;
@@ -21,6 +22,7 @@ final class BatchPageController extends Controller
     public function __construct(
         private readonly BatchRepository $batches,
         private readonly BatchPresentation $presentation,
+        private readonly DatabaseBatchCapability $capability,
     ) {
         parent::__construct();
     }
@@ -98,6 +100,14 @@ final class BatchPageController extends Controller
      */
     private function page(?string $beforeId): array
     {
+        if (! $this->capability->available()) {
+            return [
+                'items' => [],
+                'current' => $beforeId,
+                'next' => null,
+            ];
+        }
+
         try {
             $batches = $this->batches->get(self::PAGE_SIZE + 1, $beforeId);
             $slice = array_values(array_slice($batches, 0, self::PAGE_SIZE));

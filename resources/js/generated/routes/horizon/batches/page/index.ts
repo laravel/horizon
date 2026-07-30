@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::show
-* @see src/Http/Controllers/BatchPageController.php:55
+* @see src/Http/Controllers/BatchPageController.php:57
 * @route '/horizon/batches/{id}'
 */
 export const show = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ show.definition = {
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::show
-* @see src/Http/Controllers/BatchPageController.php:55
+* @see src/Http/Controllers/BatchPageController.php:57
 * @route '/horizon/batches/{id}'
 */
 show.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ show.url = (args: { id: string | number } | [id: string | number ] | string | nu
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::show
-* @see src/Http/Controllers/BatchPageController.php:55
+* @see src/Http/Controllers/BatchPageController.php:57
 * @route '/horizon/batches/{id}'
 */
 show.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +53,7 @@ show.get = (args: { id: string | number } | [id: string | number ] | string | nu
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\BatchPageController::show
-* @see src/Http/Controllers/BatchPageController.php:55
+* @see src/Http/Controllers/BatchPageController.php:57
 * @route '/horizon/batches/{id}'
 */
 show.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

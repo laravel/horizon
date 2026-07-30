@@ -5,8 +5,13 @@ namespace Laravel\Horizon\Tests\Controller;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\BatchRepository;
+use Illuminate\Bus\DatabaseBatchRepository;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Builder;
 use Inertia\Testing\AssertableInertia;
+use Laravel\Horizon\Batches\DatabaseBatchCapability;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\Tests\ControllerTest;
@@ -260,5 +265,49 @@ class BatchPageControllerTest extends ControllerTest
             ->assertJsonPath('props.batch', null)
             ->assertJsonPath('props.failedJobs', [])
             ->assertJsonPath('props.failedJobsComplete', true);
+    }
+
+    public function test_missing_job_batches_table_is_unavailable_without_reporting()
+    {
+        $schema = Mockery::mock(Builder::class);
+        $schema->shouldReceive('hasTable')->once()->with('job_batches')->andReturn(false);
+
+        $connection = Mockery::mock(Connection::class);
+        $connection->shouldReceive('getSchemaBuilder')->once()->andReturn($schema);
+
+        $repository = Mockery::mock(DatabaseBatchRepository::class);
+        $repository->shouldReceive('getConnection')->once()->andReturn($connection);
+        $repository->shouldNotReceive('get');
+        $this->app->instance(BatchRepository::class, $repository);
+        $this->app->instance(DatabaseBatchCapability::class, new DatabaseBatchCapability($repository));
+
+        $reported = 0;
+        $handler = Mockery::mock(ExceptionHandler::class);
+        $handler->shouldReceive('report')->andReturnUsing(function () use (&$reported): void {
+            $reported++;
+        });
+        $handler->shouldReceive('render')->zeroOrMoreTimes();
+        $handler->shouldReceive('renderForConsole')->zeroOrMoreTimes();
+        $handler->shouldReceive('shouldReport')->andReturn(true);
+        $this->app->instance(ExceptionHandler::class, $handler);
+
+        $jobs = Mockery::mock(JobRepository::class);
+        $jobs->shouldReceive('countPending')->andReturn(0);
+        $jobs->shouldReceive('countCompleted')->andReturn(0);
+        $jobs->shouldReceive('countSilenced')->andReturn(0);
+        $jobs->shouldReceive('countFailed')->andReturn(0);
+        $this->app->instance(JobRepository::class, $jobs);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/batches', [
+                'X-Inertia' => 'true',
+                'X-Inertia-Version' => Horizon::inertiaVersion(),
+                'X-Inertia-Partial-Component' => 'batches',
+                'X-Inertia-Partial-Data' => 'batches',
+            ])
+            ->assertOk()
+            ->assertJsonCount(0, 'props.batches.data');
+
+        $this->assertSame(0, $reported);
     }
 }
