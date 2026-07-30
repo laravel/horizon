@@ -3,14 +3,11 @@
 namespace Laravel\Horizon\Tests\Unit;
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Cache\Factory as CacheFactory;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Queue\QueueManager;
 use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\WorkloadRepository;
 use Laravel\Horizon\Dashboard\Workload;
-use Laravel\Horizon\Queues\QueuePauseMetadata;
 use Laravel\Horizon\Queues\QueuePauseStatus;
 use Laravel\Horizon\Support\FrameworkCapabilities;
 use Laravel\Horizon\Tests\UnitTest;
@@ -170,21 +167,8 @@ class WorkloadTest extends UnitTest
         $queues->shouldReceive('isPaused')->once()->with('redis', 'high')->andReturn(true);
         $queues->shouldReceive('isPaused')->once()->with('redis', 'reports')->andReturn(true);
 
-        $defaultKey = 'horizon:queue-pause:'.hash('sha256', "redis\0default");
-        $highKey = 'horizon:queue-pause:'.hash('sha256', "redis\0high");
-        $reportsKey = 'horizon:queue-pause:'.hash('sha256', "redis\0reports");
-
-        $store = Mockery::mock(CacheRepository::class);
-        $store->shouldReceive('forget')->once()->with($defaultKey);
-        $store->shouldReceive('get')->once()->with($highKey)->andReturn(null);
-        $store->shouldReceive('get')->once()->with($reportsKey)->andReturn(1_700_000_000);
-
-        $cache = Mockery::mock(CacheFactory::class);
-        $cache->shouldReceive('store')->andReturn($store);
-
         $pauseStatus = new QueuePauseStatus(
             $queues,
-            new QueuePauseMetadata($cache),
             new FrameworkCapabilities(queuePausing: true, queuePauseFor: true),
         );
 
@@ -223,7 +207,8 @@ class WorkloadTest extends UnitTest
         $this->assertSame('redis', $workload[1]['connection']);
         $this->assertSame('reports', $workload[1]['name']);
         $this->assertTrue($workload[1]['paused']);
-        $this->assertSame(1_700_000_000, $workload[1]['pausedUntil']);
+        // Resume deadlines are not readable from Laravel's pauseFor TTL storage.
+        $this->assertNull($workload[1]['pausedUntil']);
         $this->assertSame(12, $workload[1]['throughput']);
     }
 
@@ -247,15 +232,8 @@ class WorkloadTest extends UnitTest
         $queues = Mockery::mock(QueueManager::class);
         $queues->shouldReceive('isPaused')->andReturn(false);
 
-        $store = Mockery::mock(CacheRepository::class);
-        $store->shouldReceive('forget')->twice();
-
-        $cache = Mockery::mock(CacheFactory::class);
-        $cache->shouldReceive('store')->andReturn($store);
-
         $pauseStatus = new QueuePauseStatus(
             $queues,
-            new QueuePauseMetadata($cache),
             new FrameworkCapabilities(queuePausing: true, queuePauseFor: true),
         );
 
@@ -289,15 +267,8 @@ class WorkloadTest extends UnitTest
         $queues = Mockery::mock(QueueManager::class);
         $queues->shouldReceive('isPaused')->once()->with('redis', 'reports')->andReturn(false);
 
-        $store = Mockery::mock(CacheRepository::class);
-        $store->shouldReceive('forget')->once();
-
-        $cache = Mockery::mock(CacheFactory::class);
-        $cache->shouldReceive('store')->andReturn($store);
-
         $pauseStatus = new QueuePauseStatus(
             $queues,
-            new QueuePauseMetadata($cache),
             new FrameworkCapabilities(queuePausing: true, queuePauseFor: true),
         );
 
@@ -346,15 +317,8 @@ class WorkloadTest extends UnitTest
         $queues = Mockery::mock(QueueManager::class);
         $queues->shouldReceive('isPaused')->andReturn(false);
 
-        $store = Mockery::mock(CacheRepository::class);
-        $store->shouldReceive('forget')->times(3);
-
-        $cache = Mockery::mock(CacheFactory::class);
-        $cache->shouldReceive('store')->andReturn($store);
-
         $pauseStatus = new QueuePauseStatus(
             $queues,
-            new QueuePauseMetadata($cache),
             new FrameworkCapabilities(queuePausing: true, queuePauseFor: true),
         );
 
@@ -407,17 +371,8 @@ class WorkloadTest extends UnitTest
         $queues = Mockery::mock(QueueManager::class);
         $queues->shouldNotReceive('isPaused');
 
-        $store = Mockery::mock(CacheRepository::class);
-        $store->shouldNotReceive('get');
-        $store->shouldNotReceive('forget');
-        $store->shouldNotReceive('put');
-
-        $cache = Mockery::mock(CacheFactory::class);
-        $cache->shouldReceive('store')->never();
-
         return new QueuePauseStatus(
             $queues,
-            new QueuePauseMetadata($cache),
             new FrameworkCapabilities(queuePausing: true, queuePauseFor: true),
         );
     }

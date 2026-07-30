@@ -63,7 +63,16 @@ class RedisWorkloadRepository implements WorkloadRepository
     /**
      * Get the current workload of each queue.
      *
-     * @return array<int, array{"name": string, "length": int, "wait": int, "processes": int, "split_queues": null|array<int, array{"name": string, "wait": int, "length": int}>}>
+     * Always includes a non-empty "connection" for pause/resume targeting.
+     *
+     * @return array<int, array{
+     *     name: string,
+     *     connection: string,
+     *     length: int,
+     *     wait: int,
+     *     processes: int,
+     *     split_queues: null|array<int, array{name: string, wait: int, length: int}>
+     * }>
      */
     public function get()
     {
@@ -91,6 +100,7 @@ class RedisWorkloadRepository implements WorkloadRepository
 
                 return [
                     'name' => $queueName,
+                    'connection' => $connection,
                     'length' => $length->sum(),
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
