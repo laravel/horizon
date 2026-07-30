@@ -260,7 +260,7 @@
     "src": "resources/images/favicon.svg"
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-BRXwuIMB.js",
+    "file": "assets/app-DXgo26WB.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
@@ -337,7 +337,7 @@
     ]
   },
   "resources/js/pages/dashboard.tsx": {
-    "file": "assets/dashboard-A38Ol2bB.js",
+    "file": "assets/dashboard-CBaX_jou.js",
     "name": "dashboard",
     "src": "resources/js/pages/dashboard.tsx",
     "isDynamicEntry": true,
