@@ -39,9 +39,9 @@ $status-paused-bg: #5a3922;
 $status-paused-color: #fdc700;
 $status-inactive-bg: #792425;
 $status-inactive-color: #ffa2a2;
-$status-indicator-track: #4b5563;
+$status-indicator-track: $gray-600;
 $sidebar-status-indicator-track: $gray-700;
-$status-unavailable-color: #6b7280;
+$status-unavailable-color: $gray-500;
 $panel-shadow: 0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 $panel-border-width: 1px 0 0;
 $panel-radius: 0.625rem;
@@ -66,6 +66,7 @@ $sidebar-nav-icon-color: $gray-500;
 $sidebar-nav-active-bg: $gray-800;
 $sidebar-nav-active-color: $foreground-primary;
 $sidebar-nav-active-icon-color: $primary;
+$sidebar-nav-active-highlight: inset 0 1px 0 $border-panel;
 
 $pill-link: $sidebar-nav-color;
 $pill-link-active: $primary;
@@ -107,8 +108,8 @@ $nav-pills-link-active-bg: $gray-800;
 $dropdown-bg: $gray-700;
 $dropdown-link-color: $white;
 
-$badge-secondary-bg: #374151;
-$badge-secondary-color: #f3f4f6;
+$badge-secondary-bg: $gray-700;
+$badge-secondary-color: $foreground-primary;
 $badge-success-bg: $status-running-bg;
 $badge-success-color: $status-running-color;
 $badge-info-bg: #1d3573;
@@ -138,5 +139,5 @@ $container-max-widths: (
 @import 'base';
 
 .btn-primary {
-    color: rgb(255, 255, 255);
+    color: $white;
 }

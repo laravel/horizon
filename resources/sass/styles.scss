@@ -15,7 +15,7 @@ $info: $blue-500;
 $warning: $amber-500;
 $danger: $red-500;
 
-$action-primary: #7746ec;
+$action-primary: $primary;
 $action-primary-hover: #8659ef;
 $action-primary-highlight: #8054ed;
 
@@ -37,8 +37,8 @@ $status-running-bg: #dcfce7;
 $status-running-color: #15803d;
 $status-paused-bg: #fef9c3;
 $status-paused-color: #854d0e;
-$status-inactive-bg: #fee2e2;
-$status-inactive-color: #b91c1c;
+$status-inactive-bg: $red-100;
+$status-inactive-color: $red-700;
 $status-indicator-track: #d4d4d8;
 $sidebar-status-indicator-track: $status-indicator-track;
 $status-unavailable-color: #a1a1aa;
@@ -61,10 +61,11 @@ $logo-mark-color: $primary;
 $sidebar-nav-color: #3f3f46;
 $sidebar-nav-hover-color: $foreground-primary;
 $sidebar-nav-hover-bg: #f1f1f3;
-$sidebar-nav-icon-color: #71717a;
+$sidebar-nav-icon-color: $foreground-muted;
 $sidebar-nav-active-bg: #efeff1;
 $sidebar-nav-active-color: $foreground-primary;
 $sidebar-nav-active-icon-color: $primary;
+$sidebar-nav-active-highlight: none;
 
 $pill-link: $sidebar-nav-color;
 $pill-link-active: $violet-600;
@@ -102,11 +103,11 @@ $dropdown-bg: $white;
 $dropdown-link-color: $gray-700;
 
 $badge-secondary-bg: #f4f4f5;
-$badge-secondary-color: #18181b;
+$badge-secondary-color: $foreground-primary;
 $badge-success-bg: $status-running-bg;
 $badge-success-color: $status-running-color;
-$badge-info-bg: #dbeafe;
-$badge-info-color: #1d4ed8;
+$badge-info-bg: $blue-100;
+$badge-info-color: $blue-700;
 $badge-warning-bg: $status-paused-bg;
 $badge-warning-color: $status-paused-color;
 $badge-danger-bg: $status-inactive-bg;

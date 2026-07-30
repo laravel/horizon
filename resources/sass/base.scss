@@ -366,6 +366,7 @@ svg.icon {
         &.active {
             background-color: $sidebar-nav-active-bg;
             color: $sidebar-nav-active-color;
+            box-shadow: $sidebar-nav-active-highlight;
 
             svg {
                 fill: $sidebar-nav-active-icon-color;
@@ -1016,7 +1017,7 @@ svg.icon {
 
 button:hover {
     .fill-primary {
-        fill: #fff;
+        fill: $white;
     }
 }
 
@@ -1567,7 +1568,7 @@ button:hover {
 
 .disabled-watcher {
     padding: 0.75rem;
-    color: #fff;
+    color: $white;
     background: $danger;
 }
 
