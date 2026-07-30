@@ -5,7 +5,12 @@ namespace Laravel\Horizon\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Horizon\Assets\AssetPath;
+use Laravel\Horizon\Assets\AssetsPublisher;
+use Laravel\Horizon\Support\ComposerAssetHook;
+use Laravel\Horizon\Support\ComposerAssetHookResult;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Throwable;
 
 #[AsCommand(name: 'horizon:install')]
 class InstallCommand extends Command
@@ -15,7 +20,9 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:install';
+    protected $signature = 'horizon:install
+        {--force : Refresh previously published assets}
+        {--no-composer-hook : Skip adding the Composer post-autoload-dump asset refresh hook}';
 
     /**
      * The console command description.
@@ -26,10 +33,8 @@ class InstallCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(AssetsPublisher $publisher, AssetPath $assetPath, ComposerAssetHook $composerAssetHook): int
     {
         $this->components->info('Installing Horizon resources.');
 
@@ -40,7 +45,28 @@ class InstallCommand extends Command
 
         $this->registerHorizonServiceProvider();
 
+        try {
+            $this->components->task('Dashboard assets', function () use ($publisher, $assetPath) {
+                $publisher->publish(
+                    destination: $assetPath->absolute(),
+                    force: (bool) $this->option('force'),
+                );
+
+                return true;
+            });
+        } catch (Throwable $exception) {
+            $this->components->error($exception->getMessage());
+
+            return self::FAILURE;
+        }
+
+        if (! $this->option('no-composer-hook')) {
+            $this->ensureComposerAssetHook($composerAssetHook);
+        }
+
         $this->components->info('Horizon scaffolding installed successfully.');
+
+        return self::SUCCESS;
     }
 
     /**
@@ -73,5 +99,25 @@ class InstallCommand extends Command
             "namespace {$namespace}\Providers;",
             file_get_contents(app_path('Providers/HorizonServiceProvider.php'))
         ));
+    }
+
+    /**
+     * Idempotently append the horizon:assets Composer hook.
+     */
+    protected function ensureComposerAssetHook(ComposerAssetHook $composerAssetHook): void
+    {
+        $result = $composerAssetHook->ensure(base_path('composer.json'));
+
+        match ($result) {
+            ComposerAssetHookResult::Added => $this->components->info(
+                'Added the Horizon asset refresh Composer hook.',
+            ),
+            ComposerAssetHookResult::AlreadyPresent => null,
+            ComposerAssetHookResult::Missing,
+            ComposerAssetHookResult::Malformed,
+            ComposerAssetHookResult::Failed => $this->components->warn(
+                'Could not update composer.json with the asset refresh hook. Run `php artisan horizon:assets` after Composer installs, or add `@php artisan horizon:assets --ansi` to scripts.post-autoload-dump manually.',
+            ),
+        };
     }
 }

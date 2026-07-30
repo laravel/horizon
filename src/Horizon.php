@@ -4,10 +4,9 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Illuminate\Foundation\Vite;
 use Illuminate\Redis\Connections\Connection;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Js;
-use RuntimeException;
+use Laravel\Horizon\Assets\AssetManifest;
 
 class Horizon
 {
@@ -64,13 +63,6 @@ class Horizon
         'Jobs', 'Supervisors', 'CommandQueue', 'Tags',
         'Metrics', 'Locks', 'Processes',
     ];
-
-    /**
-     * The CSP nonce to use for style and script tags.
-     *
-     * @var string
-     */
-    public static $nonceAttribute = '';
 
     /**
      * Determine if the given request can access the Horizon dashboard.
@@ -178,54 +170,13 @@ class Horizon
     }
 
     /**
-     * Get the CSS for the Horizon dashboard.
+     * Get the asset version for the Horizon dashboard.
      *
-     * @return Illuminate\Contracts\Support\Htmlable
+     * @return string
      */
-    public static function css()
+    public static function inertiaVersion()
     {
-        if (($light = @file_get_contents(__DIR__.'/../dist/styles.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard light CSS.');
-        }
-
-        if (($dark = @file_get_contents(__DIR__.'/../dist/styles-dark.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard dark CSS.');
-        }
-
-        if (($app = @file_get_contents(__DIR__.'/../dist/app.css')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard CSS.');
-        }
-
-        $nonceAttribute = static::$nonceAttribute;
-
-        return new HtmlString(<<<HTML
-            <style data-scheme="light"{$nonceAttribute}>{$light}</style>
-            <style data-scheme="dark"{$nonceAttribute}>{$dark}</style>
-            <style{$nonceAttribute}>{$app}</style>
-            HTML);
-    }
-
-    /**
-     * Get the JS for the Horizon dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Htmlable
-     */
-    public static function js()
-    {
-        if (($js = @file_get_contents(__DIR__.'/../dist/app.js')) === false) {
-            throw new RuntimeException('Unable to load the Horizon dashboard JavaScript.');
-        }
-
-        $horizon = Js::from(static::scriptVariables());
-
-        $nonceAttribute = static::$nonceAttribute;
-
-        return new HtmlString(<<<HTML
-            <script type="module"{$nonceAttribute}>
-                window.Horizon = {$horizon};
-                {$js}
-            </script>
-            HTML);
+        return app(AssetManifest::class)->version();
     }
 
     /**
@@ -240,19 +191,6 @@ class Horizon
         static::$useDarkTheme = true;
 
         return new static;
-    }
-
-    /**
-     * Get the default JavaScript variables for Horizon.
-     *
-     * @return array
-     */
-    public static function scriptVariables()
-    {
-        return [
-            'path' => config('horizon.path'),
-            'proxy_path' => config('horizon.proxy_path', ''),
-        ];
     }
 
     /**
@@ -297,14 +235,14 @@ class Horizon
     }
 
     /**
-     * Set the CSP nonce to use for style and script tags.
+     * Set the CSP nonce for Horizon dashboard assets (adapter for Laravel Vite).
      *
      * @param  string  $nonce
      * @return static
      */
     public static function cspNonce($nonce)
     {
-        static::$nonceAttribute = " nonce=\"{$nonce}\"";
+        app(Vite::class)->useCspNonce($nonce);
 
         return new static;
     }

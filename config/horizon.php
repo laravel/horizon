@@ -45,6 +45,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Vite Development Server
+    |--------------------------------------------------------------------------
+    |
+    | When present, Horizon serves its Inertia entry from this URL instead of
+    | the compiled distribution assets.
+    |
+    */
+
+    'vite_dev_server' => env('HORIZON_VITE_DEV_SERVER'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizon Redis Connection
     |--------------------------------------------------------------------------
     |
