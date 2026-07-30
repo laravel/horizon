@@ -514,48 +514,6 @@ svg.icon {
                 padding: 0.2rem 0.5rem;
             }
         }
-
-        .form-control-with-icon {
-            position: relative;
-
-            .icon-wrapper {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                top: 0;
-                left: 0.75rem;
-                bottom: 0;
-
-                .icon {
-                    fill: $text-muted;
-                }
-            }
-
-            .form-control {
-                padding-left: 2.25rem;
-                font-size: 0.875rem;
-                border-radius: 9999px;
-            }
-
-            .clear-search {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                top: 0;
-                right: 0.5rem;
-                bottom: 0;
-
-                .icon {
-                    fill: $text-muted;
-                }
-
-                &:hover .icon {
-                    fill: $body-color;
-                }
-            }
-        }
     }
 
     .table {
@@ -1061,11 +1019,6 @@ button:hover {
     color: $badge-danger-color;
 }
 
-.badge-retry {
-    background: $badge-retry-bg;
-    color: $badge-retry-color;
-}
-
 .control-action {
     svg {
         fill: $control-action-icon-color;
@@ -1162,7 +1115,7 @@ button:hover {
     }
 }
 
-.failed-jobs-search-control {
+.horizon-search-control {
     position: relative;
     display: flex;
     flex: 0 1 12.5rem;
@@ -1186,9 +1139,30 @@ button:hover {
             0 0 0 3px rgba($primary, $input-control-focus-ring-opacity),
             $input-control-shadow;
     }
+
+    .clear-search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        right: 0.5rem;
+        bottom: 0;
+        color: $foreground-muted;
+
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            fill: currentColor;
+        }
+
+        &:hover {
+            color: $foreground-primary;
+        }
+    }
 }
 
-.failed-jobs-search-icon {
+.horizon-search-control-icon {
     position: absolute;
     left: 0.75rem;
     z-index: 1;
@@ -1205,7 +1179,7 @@ button:hover {
     }
 }
 
-.failed-jobs-search-control .form-control {
+.horizon-search-control .form-control {
     height: 2rem;
     padding: 0.25rem 0.75rem 0.25rem 2.25rem;
     color: $foreground-primary;
