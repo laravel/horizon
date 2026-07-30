@@ -62,6 +62,57 @@ class RedisWorkloadRepositoryTest extends UnitTest
         return $repository->processing();
     }
 
+    public function test_four_argument_construction_remains_valid_without_metrics()
+    {
+        $queue = Mockery::mock(QueueFactory::class);
+        $connection = Mockery::mock();
+        $waitTime = Mockery::mock(WaitTimeCalculator::class);
+        $masters = Mockery::mock(MasterSupervisorRepository::class);
+        $supervisors = Mockery::mock(SupervisorRepository::class);
+
+        $supervisors->shouldReceive('all')->once()->andReturn([
+            (object) [
+                'processes' => [
+                    'redis:default' => 2,
+                ],
+            ],
+        ]);
+
+        $queue->shouldReceive('connection')->with('redis')->andReturn($connection);
+
+        $connection->shouldReceive('pendingState')->once()->with('default')->andReturn([
+            'ready' => 7,
+            'reserved' => 2,
+            'delayed' => 1,
+        ]);
+
+        $waitTime->shouldReceive('calculateTimeToClear')
+            ->once()
+            ->with('redis', 'default', 2, ['default' => 7])
+            ->andReturn(4);
+
+        $repository = new RedisWorkloadRepository(
+            $queue,
+            $waitTime,
+            $masters,
+            $supervisors
+        );
+
+        $this->assertSame([
+            [
+                'connection' => 'redis',
+                'name' => 'default',
+                'length' => 7,
+                'reserved' => 2,
+                'delayed' => 1,
+                'wait' => 4,
+                'processes' => 2,
+                'throughput' => 0,
+                'split_queues' => null,
+            ],
+        ], $repository->get());
+    }
+
     public function test_pending_state_is_aggregated_without_reading_ready_counts_twice()
     {
         $queue = Mockery::mock(QueueFactory::class);

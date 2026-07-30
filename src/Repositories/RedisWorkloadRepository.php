@@ -43,7 +43,7 @@ class RedisWorkloadRepository implements WorkloadRepository
     /**
      * The metrics repository implementation.
      *
-     * @var \Laravel\Horizon\Contracts\MetricsRepository
+     * @var \Laravel\Horizon\Contracts\MetricsRepository|null
      */
     private $metrics;
 
@@ -54,7 +54,7 @@ class RedisWorkloadRepository implements WorkloadRepository
      * @param  \Laravel\Horizon\WaitTimeCalculator  $waitTime
      * @param  \Laravel\Horizon\Contracts\MasterSupervisorRepository  $masters
      * @param  \Laravel\Horizon\Contracts\SupervisorRepository  $supervisors
-     * @param  \Laravel\Horizon\Contracts\MetricsRepository  $metrics
+     * @param  \Laravel\Horizon\Contracts\MetricsRepository|null  $metrics
      * @return void
      */
     public function __construct(
@@ -62,7 +62,7 @@ class RedisWorkloadRepository implements WorkloadRepository
         WaitTimeCalculator $waitTime,
         MasterSupervisorRepository $masters,
         SupervisorRepository $supervisors,
-        MetricsRepository $metrics,
+        ?MetricsRepository $metrics = null,
     ) {
         $this->queue = $queue;
         $this->masters = $masters;
@@ -130,7 +130,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                                 $totalProcesses,
                                 [$queueName => $length],
                             ),
-                            'throughput' => $this->metrics->throughputForQueue($queueName),
+                            'throughput' => $this->metrics?->throughputForQueue($queueName) ?? 0,
                         ];
                     })->values()->all()
                     : null;
@@ -145,7 +145,7 @@ class RedisWorkloadRepository implements WorkloadRepository
                     'processes' => $totalProcesses,
                     'throughput' => $splitQueues
                         ? collect($splitQueues)->sum('throughput')
-                        : $this->metrics->throughputForQueue($queueName),
+                        : $this->metrics?->throughputForQueue($queueName) ?? 0,
                     'split_queues' => $splitQueues,
                 ];
             })
