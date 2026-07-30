@@ -61,37 +61,74 @@ class RedisWorkloadRepository implements WorkloadRepository
     }
 
     /**
+     * Determine if Horizon is actively processing any jobs.
+     *
+     * @return bool
+     */
+    public function processing()
+    {
+        return collect(array_keys($this->processes()))->contains(function ($queue) {
+            [$connection, $queueNames] = explode(':', $queue, 2);
+
+            $queueConnection = $this->queue->connection($connection);
+
+            return collect(explode(',', $queueNames))->contains(
+                fn ($queueName) => $queueConnection->pendingState($queueName)['reserved'] > 0
+            );
+        });
+    }
+
+    /**
      * Get the current workload of each queue.
      *
-     * @return array<int, array{"name": string, "length": int, "wait": int, "processes": int, "split_queues": null|array<int, array{"name": string, "wait": int, "length": int}>}>
+     * @return array<int, array{"connection": string, "name": string, "length": int, "reserved": int, "delayed": int, "wait": int, "processes": int, "split_queues": null|array<int, array{"connection": string, "name": string, "wait": int, "length": int}>}>
      */
     public function get()
     {
         $processes = $this->processes();
 
-        return collect($this->waitTime->calculate())
-            ->map(function ($waitTime, $queue) use ($processes) {
+        return collect($processes)
+            ->map(function ($totalProcesses, $queue) {
                 [$connection, $queueName] = explode(':', $queue, 2);
 
-                $totalProcesses = $processes[$queue] ?? 0;
+                $queueConnection = $this->queue->connection($connection);
 
-                $length = ! Str::contains($queue, ',')
-                    ? collect([$queueName => $this->queue->connection($connection)->readyNow($queueName)])
-                    : collect(explode(',', $queueName))->mapWithKeys(function ($queueName) use ($connection) {
-                        return [$queueName => $this->queue->connection($connection)->readyNow($queueName)];
-                    });
+                $pending = collect(explode(',', $queueName))
+                    ->mapWithKeys(fn ($queueName) => [$queueName => $queueConnection->pendingState($queueName)]);
 
-                $splitQueues = Str::contains($queue, ',') ? $length->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait) {
-                    return [
-                        'name' => $queueName,
-                        'length' => $length,
-                        'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, $queueName, $totalProcesses),
-                    ];
-                }) : null;
+                $ready = $pending->mapWithKeys(fn ($state, $queueName) => [$queueName => $state['ready']]);
+
+                $waitTime = $this->waitTime->calculateTimeToClear(
+                    $connection,
+                    $queueName,
+                    $totalProcesses,
+                    $ready->all(),
+                );
+
+                $wait = 0;
+
+                $splitQueues = Str::contains($queueName, ',')
+                    ? $ready->map(function ($length, $queueName) use ($connection, $totalProcesses, &$wait) {
+                        return [
+                            'connection' => $connection,
+                            'name' => $queueName,
+                            'length' => $length,
+                            'wait' => $wait += $this->waitTime->calculateTimeToClear(
+                                $connection,
+                                $queueName,
+                                $totalProcesses,
+                                [$queueName => $length],
+                            ),
+                        ];
+                    })->values()->all()
+                    : null;
 
                 return [
+                    'connection' => $connection,
                     'name' => $queueName,
-                    'length' => $length->sum(),
+                    'length' => $pending->sum('ready'),
+                    'reserved' => $pending->sum('reserved'),
+                    'delayed' => $pending->sum('delayed'),
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
                     'split_queues' => $splitQueues,

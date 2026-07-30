@@ -5,6 +5,26 @@ namespace Laravel\Horizon;
 class LuaScripts
 {
     /**
+     * Get the number of ready, reserved, and delayed jobs for a queue.
+     *
+     * KEYS[1] - The ready queue
+     * KEYS[2] - The reserved queue
+     * KEYS[3] - The delayed queue
+     *
+     * @return string
+     */
+    public static function pendingState()
+    {
+        return <<<'LUA'
+            return {
+                redis.call('llen', KEYS[1]),
+                redis.call('zcard', KEYS[2]),
+                redis.call('zcard', KEYS[3])
+            }
+LUA;
+    }
+
+    /**
      * Update the metrics for a job.
      *
      * KEYS[1] - The name of the key being updated

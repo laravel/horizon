@@ -120,14 +120,15 @@ class WaitTimeCalculator
      * @param  string  $connection
      * @param  string  $queue
      * @param  int  $totalProcesses
+     * @param  array<string, int>  $ready
      * @return float
      */
-    public function calculateTimeToClear($connection, $queue, $totalProcesses)
+    public function calculateTimeToClear($connection, $queue, $totalProcesses, $ready = [])
     {
         $timeToClear = ! Str::contains($queue ?? '', ',')
-            ? $this->timeToClearFor($connection, $queue)
-            : collect(explode(',', $queue))->sum(function ($queueName) use ($connection) {
-                return $this->timeToClearFor($connection, $queueName);
+            ? $this->timeToClearFor($connection, $queue, $ready[$queue] ?? null)
+            : collect(explode(',', $queue))->sum(function ($queueName) use ($connection, $ready) {
+                return $this->timeToClearFor($connection, $queueName, $ready[$queueName] ?? null);
             });
 
         return $totalProcesses === 0
@@ -140,11 +141,12 @@ class WaitTimeCalculator
      *
      * @param  string  $connection
      * @param  string  $queue
+     * @param  int|null  $ready
      * @return float
      */
-    protected function timeToClearFor($connection, $queue)
+    protected function timeToClearFor($connection, $queue, $ready = null)
     {
-        $size = $this->queue->connection($connection)->readyNow($queue);
+        $size = $ready ?? $this->queue->connection($connection)->readyNow($queue);
 
         return $size * $this->metrics->runtimeForQueue($queue);
     }

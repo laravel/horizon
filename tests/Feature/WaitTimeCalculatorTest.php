@@ -149,6 +149,28 @@ class WaitTimeCalculatorTest extends IntegrationTest
         );
     }
 
+    public function test_known_ready_counts_can_be_reused()
+    {
+        $queue = Mockery::mock(QueueFactory::class);
+        $supervisors = Mockery::mock(SupervisorRepository::class);
+        $metrics = Mockery::mock(MetricsRepository::class);
+
+        $metrics->shouldReceive('runtimeForQueue')->once()->with('first')->andReturn(1000);
+        $metrics->shouldReceive('runtimeForQueue')->once()->with('second')->andReturn(2000);
+
+        $calculator = new WaitTimeCalculator($queue, $supervisors, $metrics);
+
+        $this->assertSame(
+            10.0,
+            $calculator->calculateTimeToClear(
+                'redis',
+                'first,second',
+                2,
+                ['first' => 4, 'second' => 8],
+            ),
+        );
+    }
+
     protected function with_scenario(array $supervisorSettings, array $queues)
     {
         $queue = Mockery::mock(QueueFactory::class);

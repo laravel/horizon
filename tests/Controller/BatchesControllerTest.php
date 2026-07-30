@@ -73,6 +73,119 @@ class BatchesControllerTest extends ControllerTest
         $this->assertSame('batch-1', $batches[1]->id);
     }
 
+    public function test_batch_overview_returns_the_latest_three_active_previews()
+    {
+        $this->setupBatchTable();
+
+        $this->insertBatchRow('batch-5', 'Archive Audit Logs', 100, 40, 0, null, 500);
+        $this->insertBatchRow('batch-4', 'Send Reports', 20, 10, 2, null, 400);
+        $this->insertBatchRow('batch-3', '', 10, 10, 0, null, 300);
+        $this->insertBatchRow('batch-2', 'Failure Stalled', 10, 2, 2, null, 200);
+        $this->insertBatchRow('batch-1', 'Cancelled', 10, 5, 0, 100, 100);
+        $this->insertBatchRow('batch-0', 'Finished', 10, 0, 0, null, 50);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches/overview')
+            ->assertOk()
+            ->assertExactJson([
+                'available' => true,
+                'previews' => [
+                    ['id' => 'batch-5', 'name' => 'Archive Audit Logs', 'progress' => 60],
+                    ['id' => 'batch-4', 'name' => 'Send Reports', 'progress' => 50],
+                    ['id' => 'batch-3', 'name' => 'batch-3', 'progress' => 0],
+                ],
+            ]);
+    }
+
+    public function test_batch_overview_limits_to_the_latest_three_of_four_active_batches()
+    {
+        $this->setupBatchTable();
+
+        $this->insertBatchRow('batch-oldest', 'Oldest Active', 10, 5, 0, null, 100);
+        $this->insertBatchRow('batch-mid-a', 'Middle Active A', 10, 6, 0, null, 200);
+        $this->insertBatchRow('batch-mid-b', 'Middle Active B', 10, 7, 0, null, 300);
+        $this->insertBatchRow('batch-newest', 'Newest Active', 10, 8, 0, null, 400);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches/overview')
+            ->assertOk()
+            ->assertExactJson([
+                'available' => true,
+                'previews' => [
+                    ['id' => 'batch-newest', 'name' => 'Newest Active', 'progress' => 20],
+                    ['id' => 'batch-mid-b', 'name' => 'Middle Active B', 'progress' => 30],
+                    ['id' => 'batch-mid-a', 'name' => 'Middle Active A', 'progress' => 40],
+                ],
+            ]);
+    }
+
+    public function test_missing_batch_table_returns_unavailable_overview_shape()
+    {
+        $this->app['config']->set('queue.batching.database', 'testing');
+        $this->app['config']->set('queue.batching.table', 'missing_job_batches');
+        $this->app['config']->set('database.connections.testing', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+        ]);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches/overview')
+            ->assertOk()
+            ->assertExactJson([
+                'available' => false,
+                'previews' => [],
+            ]);
+    }
+
+    public function test_dynamodb_batching_returns_unavailable_overview_shape()
+    {
+        $this->app['config']->set('queue.batching.driver', 'dynamodb');
+
+        $this->app->instance(
+            \Illuminate\Bus\BatchRepository::class,
+            \Mockery::mock(\Illuminate\Bus\BatchRepository::class)
+        );
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches/overview')
+            ->assertOk()
+            ->assertExactJson([
+                'available' => false,
+                'previews' => [],
+            ]);
+    }
+
+    public function test_missing_batch_table_marks_batch_listing_unavailable()
+    {
+        $this->app['config']->set('queue.batching.database', 'testing');
+        $this->app['config']->set('queue.batching.table', 'missing_job_batches');
+        $this->app['config']->set('database.connections.testing', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+        ]);
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches')
+            ->assertOk()
+            ->assertExactJson([
+                'batches' => [],
+                'available' => false,
+            ]);
+    }
+
+    public function test_empty_batch_table_marks_batch_listing_available()
+    {
+        $this->setupBatchTable();
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/batches')
+            ->assertOk()
+            ->assertExactJson([
+                'batches' => [],
+                'available' => true,
+            ]);
+    }
+
     private function setupBatchTable()
     {
         $this->app['config']->set('queue.batching.database', 'testing');
@@ -105,18 +218,23 @@ class BatchesControllerTest extends ControllerTest
 
     private function insertBatch($id, $name)
     {
+        $this->insertBatchRow($id, $name, 10, 0, 0, null, time());
+    }
+
+    private function insertBatchRow($id, $name, $totalJobs, $pendingJobs, $failedJobs, $cancelledAt, $createdAt)
+    {
         DB::connection('testing')
             ->table('job_batches')
             ->insert([
                 'id' => $id,
                 'name' => $name,
-                'total_jobs' => 10,
-                'pending_jobs' => 0,
-                'failed_jobs' => 0,
+                'total_jobs' => $totalJobs,
+                'pending_jobs' => $pendingJobs,
+                'failed_jobs' => $failedJobs,
                 'failed_job_ids' => '[]',
                 'options' => serialize([]),
-                'created_at' => time(),
-                'cancelled_at' => null,
+                'created_at' => $createdAt,
+                'cancelled_at' => $cancelledAt,
                 'finished_at' => null,
             ]);
     }

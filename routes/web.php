@@ -9,6 +9,14 @@ Route::prefix('api')->group(function () {
     // Workload Routes...
     Route::get('/workload', 'WorkloadController@index')->name('horizon.workload.index');
 
+    // Queue Pause Routes...
+    Route::post('/queues/{connection}/{queue}/pause', 'QueuePauseController@store')
+        ->name('horizon.queues.pause.store')
+        ->where('queue', '.*');
+    Route::delete('/queues/{connection}/{queue}/pause', 'QueuePauseController@destroy')
+        ->name('horizon.queues.pause.destroy')
+        ->where('queue', '.*');
+
     // Master Supervisor Routes...
     Route::get('/masters', 'MasterSupervisorController@index')->name('horizon.masters.index');
 
@@ -30,6 +38,7 @@ Route::prefix('api')->group(function () {
 
     // Batches Routes...
     Route::get('/batches', 'BatchesController@index')->name('horizon.jobs-batches.index');
+    Route::get('/batches/overview', 'BatchesController@overview')->name('horizon.jobs-batches.overview');
     Route::get('/batches/{id}', 'BatchesController@show')->name('horizon.jobs-batches.show');
     Route::post('/batches/retry/{id}', 'BatchesController@retry')->name('horizon.jobs-batches.retry');
 

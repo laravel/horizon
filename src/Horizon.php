@@ -4,6 +4,8 @@ namespace Laravel\Horizon;
 
 use Closure;
 use Exception;
+use Illuminate\Queue\QueueManager;
+use Illuminate\Queue\Worker;
 use Illuminate\Redis\Connections\Connection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Js;
@@ -175,6 +177,38 @@ class Horizon
     protected static function supportsClustering()
     {
         return method_exists(Connection::class, 'hasHashTag');
+    }
+
+    /**
+     * Determine if the framework supports basic indefinite queue pausing.
+     *
+     * @return bool
+     */
+    public static function supportsQueuePausing()
+    {
+        if (! method_exists(QueueManager::class, 'pause')
+            || ! method_exists(QueueManager::class, 'resume')
+            || ! method_exists(QueueManager::class, 'isPaused')) {
+            return false;
+        }
+
+        // Laravel Cloud and withoutInterruptionPolling() disable worker pause checks.
+        if (property_exists(Worker::class, 'pausable') && ! Worker::$pausable) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if the framework supports timed queue pausing.
+     *
+     * @return bool
+     */
+    public static function supportsTimedQueuePausing()
+    {
+        return static::supportsQueuePausing()
+            && method_exists(QueueManager::class, 'pauseFor');
     }
 
     /**

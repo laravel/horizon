@@ -197,6 +197,19 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+     * Get the count of failed jobs within the given number of minutes.
+     *
+     * @param  int  $minutes
+     * @return int
+     */
+    public function countFailedSince($minutes)
+    {
+        return $this->connection()->zcount(
+            'failed_jobs', '-inf', CarbonImmutable::now()->subMinutes($minutes)->getTimestamp() * -1
+        );
+    }
+
+    /**
      * Get the count of pending jobs.
      *
      * @return int

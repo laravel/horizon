@@ -41,6 +41,22 @@ class QueueProcessingTest extends IntegrationTest
         $this->assertSame('pending', Redis::connection('horizon')->hget($id, 'status'));
     }
 
+    public function test_pending_queue_state_is_counted_by_storage_location()
+    {
+        $queue = Queue::connection('redis');
+
+        $queue->push(new Jobs\BasicJob, '', 'default');
+        $queue->push(new Jobs\BasicJob, '', 'default');
+        $queue->later(60, new Jobs\BasicJob, '', 'default');
+        $queue->pop('default');
+
+        $this->assertSame([
+            'ready' => 1,
+            'reserved' => 1,
+            'delayed' => 1,
+        ], $queue->pendingState('default'));
+    }
+
     public function test_pending_jobs_are_stored_with_their_tags()
     {
         $id = Queue::push(new Jobs\BasicJob);
