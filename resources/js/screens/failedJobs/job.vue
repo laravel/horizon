@@ -269,16 +269,16 @@
             <table class="table table-hover mb-0 horizon-table">
                 <thead>
                 <tr>
-                    <th>Status</th>
+                    <th class="table-fit">Status</th>
                     <th>ID</th>
-                    <th class="text-end">Retry Time</th>
+                    <th class="text-end table-fit">Retry Time</th>
                 </tr>
                 </thead>
 
                 <tbody>
 
                 <tr v-for="retry in job.retried_by">
-                    <td>
+                    <td class="table-fit">
                         <small class="badge badge-success badge-sm rounded-pill" v-if="retry.status == 'completed'">
                             Completed
                         </small>
@@ -293,7 +293,7 @@
                         </small>
                     </td>
 
-                    <td class="table-fit" :class="{ 'horizon-linked-cell': retry.status == 'failed' }">
+                    <td :class="{ 'horizon-linked-cell': retry.status == 'failed' }">
                         <a v-if="retry.status == 'failed'" class="horizon-row-link horizon-cell-link" :href="Horizon.basePath + '/failed/'+retry.id">
                             {{ retry.id }}
                         </a>
