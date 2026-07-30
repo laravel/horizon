@@ -892,7 +892,7 @@
                             {{ upperFirst(supervisor.options.balance) }}
                         </td>
                         <td class="text-end text-muted" v-else>
-                            Disabled
+                            Fixed
                         </td>
                     </tr>
                     </tbody>
