@@ -65,6 +65,30 @@ class QueuePauseControllerTest extends ControllerTest
         $this->assertFalse(app(QueueManager::class)->isPaused('redis', 'reports'));
     }
 
+    public function test_queue_pause_and_resume_support_slash_containing_queue_names()
+    {
+        $this->requireQueuePausingSupport();
+        $this->app->instance(FrameworkCapabilities::class, new FrameworkCapabilities(
+            queuePausing: true,
+            queuePauseFor: false,
+        ));
+
+        $queues = app(QueueManager::class);
+        $queue = 'reports/daily';
+
+        $this->actingAs(new Fakes\User)
+            ->post('/horizon/api/queues/redis/'.$queue.'/pause')
+            ->assertNoContent();
+
+        $this->assertTrue($queues->isPaused('redis', $queue));
+
+        $this->actingAs(new Fakes\User)
+            ->delete('/horizon/api/queues/redis/'.$queue.'/pause')
+            ->assertNoContent();
+
+        $this->assertFalse($queues->isPaused('redis', $queue));
+    }
+
     public function test_timed_queue_pausing_uses_framework_pause_for_without_horizon_deadline_storage()
     {
         $this->requireTimedQueuePausingSupport();

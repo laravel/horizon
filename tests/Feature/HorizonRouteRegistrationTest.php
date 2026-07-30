@@ -146,11 +146,15 @@ class HorizonRouteRegistrationTest extends ControllerTest
         $metricsPage = Route::getRoutes()->getByName('horizon.metrics.page');
         $monitoringJobs = Route::getRoutes()->getByName('horizon.monitoring-jobs.page');
         $monitoringDestroy = Route::getRoutes()->getByName('horizon.monitoring-tag.destroy');
+        $queuePauseStore = Route::getRoutes()->getByName('horizon.queues.pause.store');
+        $queuePauseDestroy = Route::getRoutes()->getByName('horizon.queues.pause.destroy');
 
         $this->assertSame('pending|completed|silenced|failed', $jobShow->wheres['type'] ?? null);
         $this->assertSame('jobs|queues', $metricsPage->wheres['type'] ?? null);
         $this->assertSame('.*', $monitoringJobs->wheres['tag'] ?? null);
         $this->assertSame('.*', $monitoringDestroy->wheres['tag'] ?? null);
+        $this->assertSame('.*', $queuePauseStore->wheres['queue'] ?? null);
+        $this->assertSame('.*', $queuePauseDestroy->wheres['queue'] ?? null);
     }
 
     /**

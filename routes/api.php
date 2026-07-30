@@ -12,10 +12,12 @@ Route::get('/workload', 'WorkloadController@index')->name('horizon.workload.inde
 // Queue controls...
 Route::post('/queues/{connection}/{queue}/pause', 'QueuePauseController@store')
     ->middleware(EnsureQueuePausingIsSupported::class)
-    ->name('horizon.queues.pause.store');
+    ->name('horizon.queues.pause.store')
+    ->where('queue', '.*');
 Route::delete('/queues/{connection}/{queue}/pause', 'QueuePauseController@destroy')
     ->middleware(EnsureQueuePausingIsSupported::class)
-    ->name('horizon.queues.pause.destroy');
+    ->name('horizon.queues.pause.destroy')
+    ->where('queue', '.*');
 
 // Master Supervisor Routes...
 Route::get('/masters', 'MasterSupervisorController@index')->name('horizon.masters.index');
