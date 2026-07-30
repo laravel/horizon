@@ -65,8 +65,8 @@
       "_button-BKwLJUte.js"
     ]
   },
-  "_format-duration-DBOInzOo.js": {
-    "file": "assets/format-duration-DBOInzOo.js",
+  "_format-duration-nkzD-Z2D.js": {
+    "file": "assets/format-duration-nkzD-Z2D.js",
     "name": "format-duration"
   },
   "_horizon-layout-2kbEkKyq.js": {
@@ -260,7 +260,7 @@
     "src": "resources/images/favicon.svg"
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-D_57pjNn.js",
+    "file": "assets/app-CKkQtNT7.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
@@ -286,7 +286,7 @@
       "resources/js/pages/monitoring.tsx"
     ],
     "css": [
-      "assets/app-DaWwDlcb.css"
+      "assets/app-CJQxRJ3W.css"
     ],
     "assets": [
       "assets/instrument-sans-latin-ext-wght-normal-B5bTHO_g.woff2",
@@ -337,7 +337,7 @@
     ]
   },
   "resources/js/pages/dashboard.tsx": {
-    "file": "assets/dashboard-DiHw0emL.js",
+    "file": "assets/dashboard-A38Ol2bB.js",
     "name": "dashboard",
     "src": "resources/js/pages/dashboard.tsx",
     "isDynamicEntry": true,
@@ -357,7 +357,7 @@
       "_table-D4OaP4ib.js",
       "_button-BKwLJUte.js",
       "_badge-rPm-Q3Hb.js",
-      "_format-duration-DBOInzOo.js"
+      "_format-duration-nkzD-Z2D.js"
     ]
   },
   "resources/js/pages/jobs/completed.tsx": {
@@ -441,14 +441,14 @@
     ]
   },
   "resources/js/pages/metrics/show.tsx": {
-    "file": "assets/show-54sqvdub.js",
+    "file": "assets/show-dFHtQXL3.js",
     "name": "show",
     "src": "resources/js/pages/metrics/show.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_navigation-icons-D1WJ9iK9.js",
       "_card-ChxDYvEn.js",
-      "_format-duration-DBOInzOo.js"
+      "_format-duration-nkzD-Z2D.js"
     ]
   },
   "resources/js/pages/monitoring.tsx": {
