@@ -260,7 +260,7 @@
     "src": "resources/images/favicon.svg"
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-CKkQtNT7.js",
+    "file": "assets/app-BRXwuIMB.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
@@ -286,7 +286,7 @@
       "resources/js/pages/monitoring.tsx"
     ],
     "css": [
-      "assets/app-CJQxRJ3W.css"
+      "assets/app-DaWwDlcb.css"
     ],
     "assets": [
       "assets/instrument-sans-latin-ext-wght-normal-B5bTHO_g.woff2",
