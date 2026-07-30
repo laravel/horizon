@@ -229,23 +229,36 @@ class BatchesControllerTest extends ControllerTest
             ]);
     }
 
-    public function test_dynamodb_batching_does_not_execute_relational_search()
+    public function test_dynamodb_batching_ignores_query_and_returns_repository_page()
     {
         $this->setupBatchTable();
         $this->seedBatches();
         $this->app['config']->set('queue.batching.driver', 'dynamodb');
 
+        $batch = (object) [
+            'id' => 'dynamo-batch-1',
+            'name' => 'Dynamo finished review batch',
+        ];
+
         $repository = \Mockery::mock(\Illuminate\Bus\BatchRepository::class);
-        $repository->shouldNotReceive('get');
+        $repository->shouldReceive('get')
+            ->once()
+            ->with(50, 'cursor-1')
+            ->andReturn([$batch]);
         $repository->shouldNotReceive('find');
 
         $this->app->instance(\Illuminate\Bus\BatchRepository::class, $repository);
 
         $this->actingAs(new Fakes\User)
-            ->getJson('/horizon/api/batches?query=Import')
+            ->getJson('/horizon/api/batches?query=Import&before_id=cursor-1')
             ->assertOk()
             ->assertExactJson([
-                'batches' => [],
+                'batches' => [
+                    [
+                        'id' => 'dynamo-batch-1',
+                        'name' => 'Dynamo finished review batch',
+                    ],
+                ],
                 'available' => true,
                 'supportsSearch' => false,
             ]);

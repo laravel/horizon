@@ -42,19 +42,11 @@ class BatchesController extends Controller
         $searchSupported = $this->supportsDatabaseBatchQueries();
 
         try {
-            if ($request->query('query')) {
-                if (! $searchSupported) {
-                    return [
-                        'batches' => [],
-                        'available' => true,
-                        'supportsSearch' => false,
-                    ];
-                }
-
-                $batches = $this->searchBatches($request);
-            } else {
-                $batches = $this->batches->get(50, $request->query('before_id'));
-            }
+            // When search is unsupported (e.g. DynamoDB), ignore query and list
+            // from the repository so clients never see a false empty match set.
+            $batches = $request->query('query') && $searchSupported
+                ? $this->searchBatches($request)
+                : $this->batches->get(50, $request->query('before_id'));
         } catch (QueryException $e) {
             return [
                 'batches' => [],

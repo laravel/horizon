@@ -70,14 +70,11 @@
                     .then(response => {
                         this.searchSupported = response.data.supportsSearch !== false;
 
-                        // DynamoDB (and similar drivers) cannot search; drop any
-                        // residual query and load the normal repository list.
+                        // Backend ignores unsupported search queries and returns
+                        // the normal list; drop residual query from client state.
                         if (!this.searchSupported && this.searchQuery) {
                             this.searchQuery = '';
-                            this.loadBatches(beforeId, refreshing);
                             this.updateQueryParams(beforeId);
-
-                            return;
                         }
 
                         if (response.data.available === false) {
