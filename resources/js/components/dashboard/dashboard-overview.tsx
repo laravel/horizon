@@ -1,10 +1,8 @@
-import { Link } from "@inertiajs/react";
 import { useId, type ReactNode } from "react";
 
 import { ProgressRing } from "@/components/batches/progress-ring";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Statistic,
     StatisticDetail,
     StatisticDetails,
     StatisticGrid,
@@ -243,19 +241,13 @@ export function DashboardOverview({
                         <OverviewDetail label="Silenced Jobs" value={navigationCounts.silenced} />
                     </OverviewStatLink>
 
-                    <Statistic className="outline-none transition-colors hover:bg-table-row-hover">
-                        <Link
-                            href={links.batches}
-                            prefetch
-                            className="block outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                            <StatisticLabel>Batches in progress</StatisticLabel>
-                            <StatisticValue>
-                                {stats.activeBatches === null
-                                    ? "—"
-                                    : numberFormatter.format(stats.activeBatches)}
-                            </StatisticValue>
-                        </Link>
+                    <StatisticLink href={links.batches} prefetch>
+                        <StatisticLabel>Batches in progress</StatisticLabel>
+                        <StatisticValue>
+                            {stats.activeBatches === null
+                                ? "—"
+                                : numberFormatter.format(stats.activeBatches)}
+                        </StatisticValue>
                         <StatisticDetails>
                             {stats.batchPreviews.map((batch) => (
                                 <div
@@ -272,7 +264,7 @@ export function DashboardOverview({
                                 </div>
                             ))}
                         </StatisticDetails>
-                    </Statistic>
+                    </StatisticLink>
                 </StatisticGrid>
             </CardContent>
         </Card>
