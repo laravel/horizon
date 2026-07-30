@@ -73,3 +73,34 @@ export function formatDuration(seconds: number, precise = false): string {
 
     return `${numberFormatter.format(Math.round(duration / 86_400))}d`;
 }
+
+export function formatWaitDuration(seconds: number): string {
+    const value = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
+
+    if (value === 0) {
+        return "Sub-second";
+    }
+
+    if (value < 60) {
+        return `${value}s`;
+    }
+
+    if (value < 3_600) {
+        const minutes = Math.floor(value / 60);
+        const remainingSeconds = value % 60;
+
+        return remainingSeconds ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+    }
+
+    if (value < 86_400) {
+        const hours = Math.floor(value / 3_600);
+        const remainingMinutes = Math.floor((value % 3_600) / 60);
+
+        return remainingMinutes ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+    }
+
+    const days = Math.floor(value / 86_400);
+    const remainingHours = Math.floor((value % 86_400) / 3_600);
+
+    return remainingHours ? `${days}d ${remainingHours}h` : `${days}d`;
+}

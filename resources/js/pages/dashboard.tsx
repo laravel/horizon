@@ -16,7 +16,7 @@ import { page as batchesPage } from "@/generated/routes/horizon/batches";
 import { page as completedJobsPage } from "@/generated/routes/horizon/completed-jobs";
 import { page as failedJobsPage } from "@/generated/routes/horizon/failed-jobs";
 import { page as pendingJobsPage } from "@/generated/routes/horizon/pending-jobs";
-import { formatDuration } from "@/lib/format-duration";
+import { formatWaitDuration } from "@/lib/format-duration";
 import { resolveHorizonRoute } from "@/lib/horizon-route";
 import type { DashboardPageProps } from "@/types/dashboard";
 
@@ -31,8 +31,7 @@ export default function Dashboard({
 }: DashboardPageProps) {
     const [maxWaitDescriptor, maxWaitSeconds] = Object.entries(stats.wait)[0] ?? [];
     const base = horizon.baseUrl;
-    const hasMaxWait =
-        maxWaitDescriptor !== undefined && maxWaitSeconds !== undefined && maxWaitSeconds > 0;
+    const hasMaxWait = maxWaitDescriptor !== undefined && maxWaitSeconds !== undefined;
     const maxWaitTooltip = hasMaxWait
         ? `Queue with the maximum wait time: ${maxWaitDescriptor}.`
         : undefined;
@@ -69,7 +68,7 @@ export default function Dashboard({
                                 <WorkloadStat label="Total Processes" value={stats.processes} />
                                 <WorkloadStat
                                     label="Max Wait Time"
-                                    value={hasMaxWait ? formatDuration(maxWaitSeconds) : "—"}
+                                    value={hasMaxWait ? formatWaitDuration(maxWaitSeconds) : "—"}
                                     valueTooltip={maxWaitTooltip}
                                 />
                                 <WorkloadStat

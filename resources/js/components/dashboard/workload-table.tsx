@@ -18,7 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { formatDuration } from "@/lib/format-duration";
+import { formatWaitDuration } from "@/lib/format-duration";
 import type { WorkloadItem } from "@/types/dashboard";
 
 const numberFormatter = new Intl.NumberFormat();
@@ -101,7 +101,7 @@ export function WorkloadTable({
                                 {formatThroughput(queue.throughput)}
                             </TableCell>
                             <TableCell className="text-right text-muted-foreground">
-                                {formatDuration(queue.wait)}
+                                {formatWaitDuration(queue.wait)}
                             </TableCell>
                             {queuePausing ? (
                                 <TableCell className="w-px text-right">
@@ -146,7 +146,7 @@ export function WorkloadTable({
                                     {formatThroughput(splitQueue.throughput)}
                                 </TableCell>
                                 <TableCell className="text-right text-muted-foreground">
-                                    {formatDuration(splitQueue.wait)}
+                                    {formatWaitDuration(splitQueue.wait)}
                                 </TableCell>
                                 {queuePausing ? (
                                     <TableCell className="w-px text-right">
