@@ -241,7 +241,7 @@ svg.icon {
 }
 
 .horizon-status-unavailable {
-    color: $status-inactive-color;
+    color: $status-unavailable-color;
 }
 
 .horizon-tooltip-content {
@@ -490,6 +490,46 @@ svg.icon {
     padding: 0.875rem 0.875rem 0.875rem 1.5rem;
 }
 
+.horizon-system-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    border-radius: 0.75rem;
+
+    > svg {
+        flex-shrink: 0;
+        width: 1rem;
+        height: 1rem;
+        margin-top: 0.125rem;
+    }
+}
+
+.horizon-system-alert-warning {
+    color: $status-paused-color;
+    background: $status-paused-bg;
+    border: 1px solid rgba($status-paused-color, 0.3);
+}
+
+.horizon-system-alert-error {
+    color: $status-inactive-color;
+    background: $system-alert-error-bg;
+    border: 1px solid rgba($status-inactive-color, 0.3);
+}
+
+.horizon-system-alert-title {
+    margin: 0;
+    font-weight: 500;
+}
+
+.horizon-system-alert-body {
+    margin: 0.125rem 0 0;
+    opacity: 0.9;
+}
+
 .card {
     overflow: hidden;
     border-color: $panel-top-highlight;
@@ -575,6 +615,10 @@ svg.icon {
 .dashboard-overview-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    &.dashboard-overview-grid-without-batches {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 .dashboard-summary-grid {

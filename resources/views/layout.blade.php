@@ -174,10 +174,34 @@
         <main class="horizon-main">
             <div class="horizon-content">
                 @if ($isDownForMaintenance)
-                    <div class="alert alert-warning">
-                        This application is in "maintenance mode". Queued jobs may not be processed unless your worker is using the "force" flag.
+                    <div class="horizon-system-alert horizon-system-alert-warning" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                            <path d="M12 9v4" />
+                            <path d="M12 17h.01" />
+                        </svg>
+                        <div>
+                            <p class="horizon-system-alert-title">Application maintenance mode</p>
+                            <p class="horizon-system-alert-body">
+                                Queued jobs may not be processed unless the worker is using the force flag.
+                            </p>
+                        </div>
                     </div>
                 @endif
+
+                <div class="horizon-system-alert horizon-system-alert-error" role="alert" v-if="statsUnavailable">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                        <path d="M12 9v4" />
+                        <path d="M12 17h.01" />
+                    </svg>
+                    <div>
+                        <p class="horizon-system-alert-title">Horizon is unavailable</p>
+                        <p class="horizon-system-alert-body">
+                            Horizon could not load its data. Check the Redis connection and application logs.
+                        </p>
+                    </div>
+                </div>
 
                 <router-view></router-view>
             </div>

@@ -172,7 +172,7 @@
         </div>
 
         <div class="modal horizon-form-modal" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="addTagModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2 class="modal-title" id="addTagModalLabel">Monitor New Tag</h2>

@@ -47,6 +47,7 @@ const app = createApp({
                 },
             },
             statsReady: false,
+            statsUnavailable: false,
         };
     },
 
@@ -57,6 +58,24 @@ const app = createApp({
                     // /api/stats is the sole authority for shell-wide processing.
                     this.stats = response.data;
                     this.statsReady = true;
+                    this.statsUnavailable = false;
+                })
+                .catch(() => {
+                    this.statsUnavailable = true;
+                    this.statsReady = false;
+                    this.stats = {
+                        status: null,
+                        processing: false,
+                        navigation: {
+                            monitoring: null,
+                            metrics: null,
+                            batches: null,
+                            pending: null,
+                            completed: null,
+                            silenced: null,
+                            failed: null,
+                        },
+                    };
                 });
         },
 

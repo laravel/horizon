@@ -441,7 +441,10 @@
                 <h2 class="h6 m-0">Overview</h2>
             </div>
 
-            <div class="dashboard-overview-grid">
+            <div
+                class="dashboard-overview-grid"
+                :class="{ 'dashboard-overview-grid-without-batches': !batchesAvailable }"
+            >
                 <router-link
                     :to="{ name: 'jobs', params: { type: 'pending' } }"
                     class="dashboard-stat dashboard-stat-link"
@@ -599,12 +602,26 @@
             </div>
         </section>
 
-        <section class="card dashboard-section dashboard-workload" v-if="workloadReady">
+        <section
+            class="card dashboard-section dashboard-workload"
+            v-if="$root.statsUnavailable || workloadReady"
+        >
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h2 class="h6 m-0">Current Workload</h2>
             </div>
 
-            <div class="dashboard-summary-grid" v-if="workload.length">
+            <table class="table dashboard-empty-table mb-0" v-if="$root.statsUnavailable">
+                <tbody>
+                <table-empty
+                    :columns="1"
+                    title="Current workload unavailable"
+                    description="Horizon could not load the current queue workload."
+                    icon="queues"
+                ></table-empty>
+                </tbody>
+            </table>
+
+            <div class="dashboard-summary-grid" v-if="!$root.statsUnavailable && workload.length">
                 <div class="dashboard-summary">
                     <small class="dashboard-stat-label">Total Processes</small>
                     <p class="dashboard-summary-value">
@@ -689,7 +706,7 @@
                 </div>
             </div>
 
-            <table class="table table-hover mb-0" v-if="workload.length">
+            <table class="table table-hover mb-0" v-if="!$root.statsUnavailable && workload.length">
                 <thead>
                 <tr>
                     <th>Queue</th>
@@ -780,7 +797,7 @@
                 </tbody>
             </table>
 
-            <table class="table dashboard-empty-table mb-0" v-else>
+            <table class="table dashboard-empty-table mb-0" v-if="!$root.statsUnavailable && workloadReady && !workload.length">
                 <tbody>
                 <table-empty
                     :columns="1"
@@ -794,7 +811,7 @@
 
         <section
             class="card dashboard-section dashboard-instances"
-            v-if="workersReady && !Object.keys(workers).length"
+            v-if="$root.statsUnavailable || (workersReady && !Object.keys(workers).length)"
         >
             <div class="card-header d-flex align-items-center">
                 <h2 class="h6 m-0">Instances</h2>
@@ -803,6 +820,15 @@
             <table class="table dashboard-empty-table mb-0">
                 <tbody>
                 <table-empty
+                    v-if="$root.statsUnavailable"
+                    :columns="1"
+                    title="Horizon instances unavailable"
+                    description="Horizon could not load the active masters and supervisors."
+                    icon="instances"
+                ></table-empty>
+
+                <table-empty
+                    v-else
                     :columns="1"
                     title="No Horizon instances"
                     description="Run php artisan horizon to start an instance and start processing queues."
@@ -820,35 +846,19 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="h6 m-0">{{ worker.name }}</h3>
 
-                    <svg
+                    <small
+                        class="badge badge-success badge-sm rounded-pill"
                         v-if="worker.status === 'running'"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="text-success"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        width="24"
-                        height="24"
-                        aria-hidden="true"
                     >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                        Running
+                    </small>
 
-                    <svg
+                    <small
+                        class="badge badge-warning badge-sm rounded-pill"
                         v-if="worker.status === 'paused'"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="text-warning"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        width="24"
-                        height="24"
-                        aria-hidden="true"
                     >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                        Paused
+                    </small>
                 </div>
 
                 <table class="table table-hover mb-0">
@@ -881,7 +891,7 @@
         </section>
 
         <div class="modal horizon-form-modal" id="pauseQueueModal" tabindex="-1" role="dialog" aria-labelledby="pauseQueueModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2 class="modal-title" id="pauseQueueModalLabel">
