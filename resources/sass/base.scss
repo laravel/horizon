@@ -757,12 +757,21 @@ svg.icon {
     }
 }
 
-.dashboard-overview-grid > .dashboard-stat-link {
+.dashboard-overview-grid > .dashboard-stat-link,
+.dashboard-overview-grid > .dashboard-batches-stat {
     transition: background-color 120ms ease;
 
     &:hover,
-    &:focus {
+    &:focus,
+    &:focus-within {
         background: $surface-panel-muted;
+    }
+}
+
+.dashboard-overview-grid > .dashboard-batches-stat {
+    &:hover .dashboard-stat-label,
+    &:focus-within .dashboard-stat-label {
+        color: $primary;
     }
 }
 
@@ -803,6 +812,8 @@ svg.icon {
 }
 
 .dashboard-batch-preview {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: space-between;

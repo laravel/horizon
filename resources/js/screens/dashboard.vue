@@ -590,8 +590,14 @@
                     </div>
                 </router-link>
 
-                <div class="dashboard-stat dashboard-batches-stat" v-if="batchesAvailable">
-                    <router-link :to="{ name: 'batches' }" class="dashboard-stat-link">
+                <div
+                    class="dashboard-stat dashboard-batches-stat position-relative"
+                    v-if="batchesAvailable"
+                >
+                    <router-link
+                        :to="{ name: 'batches' }"
+                        class="dashboard-stat-link stretched-link"
+                    >
                         <small class="dashboard-stat-label">Batches in progress</small>
                         <p class="dashboard-stat-value">
                             {{ statCount(batches.active) }}
