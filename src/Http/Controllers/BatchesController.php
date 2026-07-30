@@ -47,7 +47,7 @@ class BatchesController extends Controller
                     return [
                         'batches' => [],
                         'available' => true,
-                        'search_supported' => false,
+                        'supportsSearch' => false,
                     ];
                 }
 
@@ -59,14 +59,14 @@ class BatchesController extends Controller
             return [
                 'batches' => [],
                 'available' => false,
-                'search_supported' => false,
+                'supportsSearch' => false,
             ];
         }
 
         return [
             'batches' => $batches,
             'available' => true,
-            'search_supported' => $searchSupported,
+            'supportsSearch' => $searchSupported,
         ];
     }
 

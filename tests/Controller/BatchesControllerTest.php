@@ -17,7 +17,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=Import');
 
         $response->assertOk();
-        $this->assertTrue($response->original['search_supported']);
+        $this->assertTrue($response->original['supportsSearch']);
 
         $batches = $response->original['batches'];
 
@@ -34,7 +34,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=batch-2');
 
         $response->assertOk();
-        $this->assertTrue($response->original['search_supported']);
+        $this->assertTrue($response->original['supportsSearch']);
 
         $batches = $response->original['batches'];
 
@@ -51,7 +51,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=%25');
 
         $response->assertOk();
-        $this->assertTrue($response->original['search_supported']);
+        $this->assertTrue($response->original['supportsSearch']);
 
         $this->assertEmpty($response->original['batches']);
     }
@@ -68,7 +68,7 @@ class BatchesControllerTest extends ControllerTest
             ->get('/horizon/api/batches?query=Import&before_id=batch-3');
 
         $response->assertOk();
-        $this->assertTrue($response->original['search_supported']);
+        $this->assertTrue($response->original['supportsSearch']);
 
         $batches = $response->original['batches'];
 
@@ -178,7 +178,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertExactJson([
                 'batches' => [],
                 'available' => false,
-                'search_supported' => false,
+                'supportsSearch' => false,
             ]);
     }
 
@@ -192,7 +192,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertExactJson([
                 'batches' => [],
                 'available' => true,
-                'search_supported' => true,
+                'supportsSearch' => true,
             ]);
     }
 
@@ -225,7 +225,7 @@ class BatchesControllerTest extends ControllerTest
                     ],
                 ],
                 'available' => true,
-                'search_supported' => false,
+                'supportsSearch' => false,
             ]);
     }
 
@@ -247,7 +247,7 @@ class BatchesControllerTest extends ControllerTest
             ->assertExactJson([
                 'batches' => [],
                 'available' => true,
-                'search_supported' => false,
+                'supportsSearch' => false,
             ]);
 
         $this->assertSame(3, DB::connection('testing')->table('job_batches')->count());

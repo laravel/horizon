@@ -68,7 +68,7 @@
 
                 this.$http.get(Horizon.basePath + '/api/batches?' + searchQuery + 'before_id=' + beforeId)
                     .then(response => {
-                        this.searchSupported = response.data.search_supported !== false;
+                        this.searchSupported = response.data.supportsSearch !== false;
 
                         // DynamoDB (and similar drivers) cannot search; drop any
                         // residual query and load the normal repository list.
