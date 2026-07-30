@@ -201,6 +201,16 @@
              * Load the dashboard-only batch overview.
              */
             loadBatches() {
+                if (!this.batchesAvailable) {
+                    this.batches = {
+                        available: false,
+                        active: null,
+                        previews: [],
+                    };
+
+                    return Promise.resolve();
+                }
+
                 return this.$http.get(Horizon.basePath + '/api/batches/overview')
                     .then(response => {
                         this.batches = response.data;

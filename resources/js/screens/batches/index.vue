@@ -15,6 +15,11 @@
                 searchSupported: true,
                 searchQuery: this.$route.query.query || '',
                 searchTimeout: null,
+                /**
+                 * Bumped on each list request so in-flight responses cannot
+                 * overwrite newer batch list state.
+                 */
+                batchesGeneration: 0,
             };
         },
 
@@ -63,11 +68,16 @@
                     this.ready = false;
                 }
 
+                const generation = ++this.batchesGeneration;
                 var searching = this.searchSupported && this.searchQuery;
                 var searchQuery = searching ? 'query=' + encodeURIComponent(this.searchQuery) + '&' : '';
 
                 this.$http.get(Horizon.basePath + '/api/batches?' + searchQuery + 'before_id=' + beforeId)
                     .then(response => {
+                        if (generation !== this.batchesGeneration) {
+                            return;
+                        }
+
                         this.searchSupported = response.data.supportsSearch !== false;
 
                         if (!this.searchSupported && this.searchQuery) {
