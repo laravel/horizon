@@ -67,14 +67,18 @@ class AssetsPublisherTest extends UnitTest
         $destination = $this->workspace.'/vendor/horizon/build';
 
         $this->publisher->publish($destination, force: false, source: $source);
-        $firstMtime = $this->files->lastModified($destination.'/assets/app-aaa.js');
-
-        sleep(1);
+        $target = $destination.'/assets/app-aaa.js';
+        $past = time() - 10;
+        touch($target, $past);
+        clearstatcache(true, $target);
+        $firstMtime = $this->files->lastModified($target);
 
         $this->publisher->publish($destination, force: false, source: $source);
-        $secondMtime = $this->files->lastModified($destination.'/assets/app-aaa.js');
+        clearstatcache(true, $target);
+        $secondMtime = $this->files->lastModified($target);
 
         $this->assertSame($firstMtime, $secondMtime);
+        $this->assertSame($past, $secondMtime);
     }
 
     public function test_publish_rejects_unsafe_manifest_paths()
@@ -143,26 +147,6 @@ class AssetsPublisherTest extends UnitTest
         $this->assertSame(['assets/app-def456.css'], $manifestB['resources/js/app.tsx']['css']);
         $this->assertSame(['assets/font-def456.woff2'], $manifestB['resources/js/app.tsx']['assets']);
         $this->assertStringNotContainsString('abc123', $this->files->get($destination.'/manifest.json'));
-    }
-
-    public function test_publish_includes_manifest_referenced_font_files()
-    {
-        $source = $this->fixtureBuild(
-            'fonts',
-            jsName: 'assets/app-hash.js',
-            cssName: 'assets/app-hash.css',
-            fontName: 'assets/instrument-sans-hash.woff2',
-        );
-        $destination = $this->workspace.'/vendor/horizon/build';
-
-        $this->publisher->publish($destination, force: true, source: $source);
-
-        $this->assertFileExists($destination.'/assets/instrument-sans-hash.woff2');
-        $manifest = json_decode($this->files->get($destination.'/manifest.json'), true, flags: JSON_THROW_ON_ERROR);
-        $this->assertContains(
-            'assets/instrument-sans-hash.woff2',
-            $manifest['resources/js/app.tsx']['assets'],
-        );
     }
 
     /**

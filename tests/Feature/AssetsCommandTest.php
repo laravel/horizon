@@ -51,15 +51,16 @@ class AssetsCommandTest extends IntegrationTest
         $scriptRelative = $this->relativeToBuild($packageBuild, $packageBuild->script());
 
         $this->artisan('horizon:assets', ['--force' => true])->assertSuccessful();
-        $mtime = filemtime($destination.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $scriptRelative));
-
-        sleep(1);
+        $scriptPath = $destination.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $scriptRelative);
+        $past = time() - 10;
+        touch($scriptPath, $past);
+        clearstatcache(true, $scriptPath);
+        $mtime = filemtime($scriptPath);
 
         $this->artisan('horizon:assets')->assertSuccessful();
-        $this->assertSame(
-            $mtime,
-            filemtime($destination.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $scriptRelative)),
-        );
+        clearstatcache(true, $scriptPath);
+        $this->assertSame($mtime, filemtime($scriptPath));
+        $this->assertSame($past, filemtime($scriptPath));
     }
 
     private function relativeToBuild(PackageBuild $packageBuild, string $absolute): string

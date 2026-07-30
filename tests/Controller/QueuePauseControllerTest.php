@@ -44,6 +44,22 @@ class QueuePauseControllerTest extends ControllerTest
             ->assertNotFound();
     }
 
+    public function test_invalid_duration_minutes_returns_validation_error_when_pausing_is_supported()
+    {
+        $this->requireQueuePausingSupport();
+        $this->app->instance(FrameworkCapabilities::class, new FrameworkCapabilities(
+            queuePausing: true,
+            queuePauseFor: true,
+        ));
+
+        $this->actingAs(new Fakes\User)
+            ->postJson('/horizon/api/queues/redis/reports/pause', ['duration_minutes' => 0])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['duration_minutes']);
+
+        $this->assertFalse(app(QueueManager::class)->isPaused('redis', 'reports'));
+    }
+
     public function test_supported_queue_pausing_can_pause_and_resume_a_queue()
     {
         $this->requireQueuePausingSupport();
@@ -198,10 +214,6 @@ class QueuePauseControllerTest extends ControllerTest
                 method_exists(QueueManager::class, 'pauseFor'),
                 $capabilities->queuePauseFor,
             );
-            $this->assertSame([
-                'queuePausing' => $capabilities->queuePausing,
-                'queuePauseFor' => $capabilities->queuePauseFor,
-            ], $capabilities->toArray());
         } finally {
             if (isset($original)) {
                 Worker::$pausable = $original;

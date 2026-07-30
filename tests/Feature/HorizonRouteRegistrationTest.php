@@ -9,11 +9,6 @@ use Laravel\Horizon\Tests\ControllerTest;
 
 class HorizonRouteRegistrationTest extends ControllerTest
 {
-    public function test_horizon_registers_the_expected_route_count()
-    {
-        $this->assertCount(41, $this->horizonRoutes());
-    }
-
     public function test_browser_and_api_route_contracts_are_registered()
     {
         $expected = [

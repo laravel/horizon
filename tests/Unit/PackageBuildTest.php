@@ -83,11 +83,9 @@ class PackageBuildTest extends UnitTest
             $this->assertFileExists($asset);
         }
 
-        $css = (string) file_get_contents($entry['styles'][0]);
-        $this->assertMatchesRegularExpression('#url\(\./[^)]+\.woff2\)#', $css);
-        $this->assertStringNotContainsString('data:font', $css);
-        $this->assertStringNotContainsString('/build/assets/', $css);
-        $this->assertDoesNotMatchRegularExpression('#url\(/build/[^)]+\.woff2\)#', $css);
+        // Font URL policy (relative ./woff2, no data: fonts) is covered by
+        // AssetManifestTest::test_package_and_published_css_use_relocatable_relative_font_urls.
+        $this->assertNotSame('', (string) file_get_contents($entry['styles'][0]));
     }
 
     public function test_is_complete_rejects_css_and_assets_when_not_arrays()

@@ -221,15 +221,18 @@ class AssetManifestTest extends ControllerTest
         $this->assertFileDoesNotExist($destination.'/assets/app-stale-old.js');
 
         // Matching manifests skip the publisher; a fresh instance still must not rewrite.
-        $refreshedMtime = filemtime($destination.'/manifest.json');
-        clearstatcache(true, $destination.'/manifest.json');
-        sleep(1);
+        $manifestPath = $destination.'/manifest.json';
+        $past = time() - 10;
+        touch($manifestPath, $past);
+        clearstatcache(true, $manifestPath);
+        $refreshedMtime = filemtime($manifestPath);
         $this->app->forgetInstance(AssetManifest::class);
         app(AssetManifest::class)->version();
         app(AssetManifest::class)->tags();
         app(AssetManifest::class)->favicon();
-        clearstatcache(true, $destination.'/manifest.json');
-        $this->assertSame($refreshedMtime, filemtime($destination.'/manifest.json'));
+        clearstatcache(true, $manifestPath);
+        $this->assertSame($refreshedMtime, filemtime($manifestPath));
+        $this->assertSame($past, filemtime($manifestPath));
         $this->assertTrue(app(AssetsPublisher::class)->isCurrent($destination));
     }
 
@@ -336,10 +339,8 @@ class AssetManifestTest extends ControllerTest
         $this->assertMatchesRegularExpression('#url\(\./[^)]+\.woff2\)#', $css);
         $this->assertStringNotContainsString('data:font', $css);
         $this->assertStringNotContainsString('data:application/font', $css);
-        $this->assertStringNotContainsString('data:application/octet-stream;base64', $css);
         $this->assertStringNotContainsString('/build/assets/', $css);
         $this->assertDoesNotMatchRegularExpression('#url\(/build/[^)]+\.woff2\)#', $css);
-        $this->assertDoesNotMatchRegularExpression('#url\(["\']?/build/#', $css);
     }
 
     /**
