@@ -167,7 +167,7 @@ class AssetsPublisher
     /**
      * Delete destination files that are not part of the new staged build.
      *
-     * @param  list<string>  $retainedPaths Relative paths from the staged build (includes manifest.json).
+     * @param  list<string>  $retainedPaths  Relative paths from the staged build (includes manifest.json).
      */
     protected function pruneSupersededAssets(string $destination, array $retainedPaths): void
     {

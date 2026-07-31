@@ -52,8 +52,7 @@ class PendingJobCountsTest extends UnitTest
         $waits = Mockery::mock(WaitTimeCalculator::class);
         $waits->shouldReceive('calculate')->andReturn(['redis:default' => 1]);
 
-        $customQueue = new class
-        {
+        $customQueue = new class {
             // No pendingState() method.
         };
 

@@ -77,7 +77,7 @@ class PackageBuildTest extends UnitTest
         $this->assertStringStartsWith($this->packageBuild->path().DIRECTORY_SEPARATOR, $entry['script']);
         $this->assertNotEmpty($entry['assets']);
         $this->assertTrue(
-            !empty(array_filter($entry['assets'], fn (string $path): bool => str_ends_with($path, '.woff2'))),
+            ! empty(array_filter($entry['assets'], fn (string $path): bool => str_ends_with($path, '.woff2'))),
         );
         foreach ($entry['assets'] as $asset) {
             $this->assertFileExists($asset);

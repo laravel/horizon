@@ -13,7 +13,6 @@ use Laravel\Horizon\Support\FrameworkCapabilities;
 use Laravel\Horizon\Tests\UnitTest;
 use Mockery;
 use RuntimeException;
-use Throwable;
 
 class WorkloadTest extends UnitTest
 {

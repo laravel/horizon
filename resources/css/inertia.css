@@ -1,76 +1,67 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "sonner/dist/styles.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'sonner/dist/styles.css';
 
 /* Instrument Sans Variable — latin + latin-ext (UI) */
 @font-face {
-    font-family: "Instrument Sans Variable";
+    font-family: 'Instrument Sans Variable';
     font-style: normal;
     font-display: swap;
     font-weight: 400 700;
-    src: url("../fonts/instrument-sans-latin-ext-wght-normal.woff2") format("woff2-variations");
-    unicode-range:
-        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
-        U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
-        U+2C60-2C7F, U+A720-A7FF;
+    src: url('../fonts/instrument-sans-latin-ext-wght-normal.woff2') format('woff2-variations');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+        U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
-    font-family: "Instrument Sans Variable";
+    font-family: 'Instrument Sans Variable';
     font-style: normal;
     font-display: swap;
     font-weight: 400 700;
-    src: url("../fonts/instrument-sans-latin-wght-normal.woff2") format("woff2-variations");
-    unicode-range:
-        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
-        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    src: url('../fonts/instrument-sans-latin-wght-normal.woff2') format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+        U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* JetBrains Mono — latin + latin-ext, weights used by code surfaces */
 @font-face {
-    font-family: "JetBrains Mono";
+    font-family: 'JetBrains Mono';
     font-style: normal;
     font-display: swap;
     font-weight: 400;
-    src: url("../fonts/jetbrains-mono-latin-ext-400-normal.woff2") format("woff2");
-    unicode-range:
-        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
-        U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
-        U+2C60-2C7F, U+A720-A7FF;
+    src: url('../fonts/jetbrains-mono-latin-ext-400-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+        U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
-    font-family: "JetBrains Mono";
+    font-family: 'JetBrains Mono';
     font-style: normal;
     font-display: swap;
     font-weight: 400;
-    src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
-    unicode-range:
-        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
-        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    src: url('../fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+        U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-    font-family: "JetBrains Mono";
+    font-family: 'JetBrains Mono';
     font-style: normal;
     font-display: swap;
     font-weight: 500;
-    src: url("../fonts/jetbrains-mono-latin-ext-500-normal.woff2") format("woff2");
-    unicode-range:
-        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
-        U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
-        U+2C60-2C7F, U+A720-A7FF;
+    src: url('../fonts/jetbrains-mono-latin-ext-500-normal.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+        U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
-    font-family: "JetBrains Mono";
+    font-family: 'JetBrains Mono';
     font-style: normal;
     font-display: swap;
     font-weight: 500;
-    src: url("../fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2");
-    unicode-range:
-        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
-        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    src: url('../fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+        U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* Inverse of the dashboard surface (matches Tooltip bg-foreground / text-background). */
@@ -91,8 +82,8 @@
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     --font-weight-normal: 450;
     --font-weight-semibold: 500;
     --font-weight-bold: 500;
@@ -304,7 +295,7 @@
 }
 
 .dark,
-[data-code-theme="dark"] {
+[data-code-theme='dark'] {
     --code-bg: #18202d;
     --code-fg: #a6accd;
     --code-key: #c792ea;
@@ -315,11 +306,7 @@
     --code-error: #f07178;
     --code-control: color-mix(in oklab, var(--code-fg) 12%, var(--code-bg));
     --code-control-hover: color-mix(in oklab, var(--action-primary) 16%, var(--code-control));
-    --code-control-hover-foreground: color-mix(
-        in oklab,
-        var(--action-primary) 65%,
-        var(--primary-foreground)
-    );
+    --code-control-hover-foreground: color-mix(in oklab, var(--action-primary) 65%, var(--primary-foreground));
     --code-control-hover-border: color-mix(in oklab, var(--action-primary) 40%, var(--code-bg));
     --code-control-foreground: var(--code-fg);
     --code-control-border: color-mix(in oklab, var(--code-fg) 24%, transparent);
@@ -340,9 +327,7 @@
 }
 
 @utility shadow-action {
-    box-shadow:
-        0 1px 2px rgb(0 0 0 / 5%),
-        inset 0 1px 0 var(--action-primary-highlight);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 5%), inset 0 1px 0 var(--action-primary-highlight);
 }
 
 @layer base {

@@ -3,8 +3,8 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Illuminate\Bus\BatchRepository;
-use Illuminate\Foundation\Vite;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Vite;
 use Illuminate\Support\Str;
 use Laravel\Horizon\Assets\AssetManifest;
 use Laravel\Horizon\Assets\AssetPath;

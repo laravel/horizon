@@ -5,8 +5,8 @@
     "scripts": {
         "build": "vp build",
         "dev": "vp dev",
-        "format": "vp fmt resources/js resources/css scripts vite.config.ts",
-        "format:check": "vp fmt --check resources/js resources/css scripts vite.config.ts",
+        "format": "vp fmt resources/js scripts vite.config.ts",
+        "format:check": "vp fmt --check resources/js scripts vite.config.ts",
         "lint": "vp lint resources/js scripts",
         "typecheck": "vp check --no-fmt --no-lint resources/js scripts vite.config.ts",
         "watch": "vp build --watch",
