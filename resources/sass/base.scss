@@ -36,9 +36,7 @@ svg.icon {
     border: 1px solid $input-control-border;
     border-radius: $panel-radius;
     box-shadow: $input-control-shadow;
-    transition:
-        border-color 150ms ease,
-        box-shadow 150ms ease;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
 
     &::placeholder {
         color: $foreground-muted;
@@ -49,9 +47,7 @@ svg.icon {
         color: $foreground-primary;
         background: $input-control-bg;
         border-color: $primary;
-        box-shadow:
-            0 0 0 3px rgba($primary, $input-control-focus-ring-opacity),
-            $input-control-shadow;
+        box-shadow: 0 0 0 3px rgba($primary, $input-control-focus-ring-opacity), $input-control-shadow;
     }
 }
 
@@ -70,7 +66,8 @@ svg.icon {
     font-weight: 500;
     line-height: 1rem;
     white-space: nowrap;
-    transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease,
+        transform 120ms ease;
 
     &:hover {
         color: $white;
@@ -87,7 +84,8 @@ svg.icon {
     }
 
     &:focus-visible {
-        box-shadow: 0 0 0 3px rgba($action-primary, 0.5), 0 1px 2px rgb(0 0 0 / 0.05), inset 0 1px 0 $action-primary-highlight;
+        box-shadow: 0 0 0 3px rgba($action-primary, 0.5), 0 1px 2px rgb(0 0 0 / 0.05),
+            inset 0 1px 0 $action-primary-highlight;
     }
 
     &:active,
@@ -693,10 +691,7 @@ svg.icon {
     border: 0;
     border-radius: 0.5rem;
     background: transparent;
-    transition:
-        color 120ms ease,
-        background-color 120ms ease,
-        opacity 120ms ease;
+    transition: color 120ms ease, background-color 120ms ease, opacity 120ms ease;
 
     svg {
         width: 1rem;
@@ -1184,15 +1179,11 @@ button:hover {
     border: 1px solid $input-control-border;
     border-radius: $panel-radius;
     box-shadow: $input-control-shadow;
-    transition:
-        border-color 150ms ease,
-        box-shadow 150ms ease;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
 
     &:focus-within {
         border-color: $primary;
-        box-shadow:
-            0 0 0 3px rgba($primary, $input-control-focus-ring-opacity),
-            $input-control-shadow;
+        box-shadow: 0 0 0 3px rgba($primary, $input-control-focus-ring-opacity), $input-control-shadow;
     }
 
     .clear-search {
@@ -1376,9 +1367,7 @@ button:hover {
     justify-content: center;
     color: $foreground-muted;
     border-radius: 0.5rem;
-    transition:
-        color 120ms ease,
-        background-color 120ms ease;
+    transition: color 120ms ease, background-color 120ms ease;
 
     svg {
         width: 1rem;

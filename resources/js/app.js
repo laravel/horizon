@@ -53,8 +53,9 @@ const app = createApp({
 
     methods: {
         loadStats() {
-            return this.$http.get(Horizon.basePath + '/api/stats')
-                .then(response => {
+            return this.$http
+                .get(Horizon.basePath + '/api/stats')
+                .then((response) => {
                     // /api/stats is the sole authority for shell-wide processing.
                     this.stats = response.data;
                     this.statsReady = true;
