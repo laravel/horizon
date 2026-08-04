@@ -20,6 +20,9 @@
         <testsuite name="Controller">
             <directory suffix="Test.php">./tests/Controller</directory>
         </testsuite>
+        <testsuite name="Diagnostics">
+            <directory suffix="Test.php">./tests/Diagnostics</directory>
+        </testsuite>
     </testsuites>
     <php>
         <server name="REDIS_CLIENT" value="predis"/>
