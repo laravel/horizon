@@ -113,7 +113,7 @@ class RedisQueue extends BaseQueue
     #[\Override]
     public function later($delay, $job, $data = '', $queue = null)
     {
-        $args = version_compare(Application::class, '12.11.0', '>=')
+        $args = version_compare(Application::VERSION, '12.11.0', '>=')
             ? [$job, $queue, $data, $delay]
             : [$job, $queue, $data];
 
