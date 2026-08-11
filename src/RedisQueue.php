@@ -38,6 +38,33 @@ class RedisQueue extends BaseQueue
     }
 
     /**
+     * Get the number of ready, reserved, and delayed jobs.
+     *
+     * @param  string|null  $queue
+     * @return array{ready: int, reserved: int, delayed: int}
+     */
+    public function pendingState($queue = null)
+    {
+        $key = method_exists(parent::class, 'getQueueRedisKey')
+            ? $this->getQueueRedisKey($queue)
+            : $this->getQueue($queue);
+
+        $state = $this->getConnection()->eval(
+            LuaScripts::pendingState(),
+            3,
+            $key,
+            $key.':reserved',
+            $key.':delayed',
+        );
+
+        return [
+            'ready' => (int) ($state[0] ?? 0),
+            'reserved' => (int) ($state[1] ?? 0),
+            'delayed' => (int) ($state[2] ?? 0),
+        ];
+    }
+
+    /**
      * Push a new job onto the queue.
      *
      * @param  object|string  $job

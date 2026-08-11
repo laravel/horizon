@@ -2,21 +2,22 @@
 
 namespace Laravel\Horizon\Http\Controllers;
 
-use Laravel\Horizon\Contracts\WorkloadRepository;
+use Laravel\Horizon\Dashboard\Workload;
 
 class WorkloadController extends Controller
 {
+    public function __construct(private Workload $workload)
+    {
+        parent::__construct();
+    }
+
     /**
      * Get the current queue workload for the application.
      *
-     * @param  \Laravel\Horizon\Contracts\WorkloadRepository  $workload
      * @return array
      */
-    public function index(WorkloadRepository $workload)
+    public function index()
     {
-        return collect($workload->get())
-            ->sortBy('name')
-            ->values()
-            ->toArray();
+        return $this->workload->get();
     }
 }

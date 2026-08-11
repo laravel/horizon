@@ -26,28 +26,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.1, 8.2, 8.3, 8.4, 8.5]
-        laravel: [10, 11, 12, 13]
-        include:
-          - php: '8.0'
-            laravel: 9
-          - php: 8.1
-            laravel: 9
-          - php: 8.2
-            laravel: 9
+        php: [8.2, 8.3, 8.4, 8.5]
+        laravel: [11, 12, 13]
         exclude:
-          - php: 8.1
-            laravel: 11
-          - php: 8.1
-            laravel: 12
-          - php: 8.1
-            laravel: 13
+          # laravel/framework ^13 requires php ^8.3
           - php: 8.2
             laravel: 13
-          - php: 8.4
-            laravel: 10
-          - php: 8.5
-            laravel: 10
+          # Matches upstream 5.x matrix; not re-enabled without a proven
+          # full-suite --fail-on-deprecation pass on this exact combination.
           - php: 8.5
             laravel: 11
 
@@ -72,8 +58,38 @@ jobs:
         run: |
           composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts:^${{ matrix.laravel }}"
 
+      - name: Assert resolved Laravel major
+        env:
+          LARAVEL_MAJOR: ${{ matrix.laravel }}
+        run: |
+          php -r '
+            require "vendor/autoload.php";
+            $version = \Composer\InstalledVersions::getPrettyVersion("laravel/framework")
+                ?? \Composer\InstalledVersions::getPrettyVersion("illuminate/contracts");
+            if ($version === null) {
+                fwrite(STDERR, "Unable to determine the resolved Laravel version.\n");
+                exit(1);
+            }
+
+            $major = (int) explode(".", ltrim($version, "v"))[0];
+            $expected = (int) getenv("LARAVEL_MAJOR");
+
+            if ($major !== $expected) {
+                fwrite(STDERR, "Expected Laravel major {$expected}, resolved {$version}.\n");
+                exit(1);
+            }
+
+            $inertia = \Composer\InstalledVersions::getPrettyVersion("inertiajs/inertia-laravel");
+            if ($inertia === null || ! str_starts_with(ltrim($inertia, "v"), "3.")) {
+                fwrite(STDERR, "Expected inertiajs/inertia-laravel 3.x, resolved ".($inertia ?? "null").".\n");
+                exit(1);
+            }
+
+            echo "Resolved laravel/framework {$version}; inertiajs/inertia-laravel {$inertia}\n";
+          '
+
       - name: Execute tests
-        run: vendor/bin/phpunit --fail-on-risky --fail-on-warning --stop-on-error --stop-on-failure ${{ matrix.laravel >= 10 && '--fail-on-deprecation' || '' }}
+        run: vendor/bin/phpunit --fail-on-risky --fail-on-warning --stop-on-error --stop-on-failure --fail-on-deprecation
 
   cluster-tests:
     runs-on: ubuntu-24.04
@@ -104,6 +120,20 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts:^13"
 
+      - name: Assert resolved Laravel major
+        run: |
+          php -r '
+            require "vendor/autoload.php";
+            $version = \Composer\InstalledVersions::getPrettyVersion("laravel/framework")
+                ?? \Composer\InstalledVersions::getPrettyVersion("illuminate/contracts");
+            $major = (int) explode(".", ltrim((string) $version, "v"))[0];
+            if ($major !== 13) {
+                fwrite(STDERR, "Expected Laravel major 13, resolved {$version}.\n");
+                exit(1);
+            }
+            echo "Resolved laravel/framework {$version}\n";
+          '
+
       - name: Create Redis Cluster
         run: |
           sudo apt update
@@ -132,3 +162,64 @@ jobs:
           REDIS_CLIENT: ${{ matrix.client }}
           REDIS_CLUSTER_HOSTS_AND_PORTS: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002
           QUEUE_CONNECTION: redis
+
+  frontend:
+    runs-on: ubuntu-22.04
+    name: Frontend assets
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: 8.4
+          extensions: dom, curl, libxml, mbstring, redis, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          # Vite+ 0.2.6 requires ^20.19 || ^22.18 || >=24.11
+          node-version: 22.18
+          cache: npm
+
+      - name: Install PHP dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Generate Wayfinder routes
+        run: npm run wayfinder:generate
+
+      - name: Check frontend formatting
+        run: npm run format:check
+
+      - name: Lint frontend
+        run: npm run lint
+
+      - name: Type-check frontend
+        run: npm run typecheck
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Verify generated assets are committed
+        run: |
+          # Fail on tracked diffs and untracked generated/dist files.
+          if ! git diff --exit-code -- resources/js/generated dist/; then
+            echo "Tracked generated/dist files differ from the commit."
+            exit 1
+          fi
+
+          untracked="$(git ls-files --others --exclude-standard -- resources/js/generated dist/)"
+          if [ -n "$untracked" ]; then
+            echo "Untracked generated/dist files must be committed:"
+            printf '%s\n' "$untracked"
+            exit 1
+          fi

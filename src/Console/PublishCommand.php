@@ -3,10 +3,13 @@
 namespace Laravel\Horizon\Console;
 
 use Illuminate\Console\Command;
+use Laravel\Horizon\Assets\AssetPath;
+use Laravel\Horizon\Assets\AssetsPublisher;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Throwable;
 
 /**
- * @deprecated This command no longer publishes Horizon assets.
+ * @deprecated Use horizon:assets or horizon:install to publish dashboard assets.
  */
 #[AsCommand(name: 'horizon:publish')]
 class PublishCommand extends Command
@@ -16,22 +19,36 @@ class PublishCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'horizon:publish';
+    protected $signature = 'horizon:publish
+        {--force : Refresh previously published assets}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Publish all of the Horizon resources';
+    protected $description = 'Deprecated: use horizon:assets or horizon:install to publish Horizon assets';
 
     /**
-     * Execute the console command.
-     *
-     * @return void
+     * Publish packaged dashboard assets (kept for existing Composer hooks).
      */
-    public function handle()
+    public function handle(AssetsPublisher $publisher, AssetPath $assetPath): int
     {
-        $this->components->warn('Horizon no longer publishes its assets. You may stop calling the `horizon:publish` command.');
+        $this->components->warn('horizon:publish is deprecated; use horizon:assets or horizon:install.');
+
+        try {
+            $publisher->publish(
+                destination: $assetPath->absolute(),
+                force: (bool) $this->option('force'),
+            );
+        } catch (Throwable $exception) {
+            $this->components->error($exception->getMessage());
+
+            return self::FAILURE;
+        }
+
+        $this->components->info('Horizon assets are ready.');
+
+        return self::SUCCESS;
     }
 }

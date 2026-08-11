@@ -19,6 +19,12 @@ trait ServiceBindings
         Lock::class,
         Stopwatch::class,
 
+        // Batch overview and presentation...
+        Batches\DatabaseBatchCapability::class,
+        Batches\BatchRepositoryOverview::class,
+        Batches\BatchFailedJobLineages::class,
+        Batches\BatchPresentation::class,
+
         // Repository services...
         Contracts\JobRepository::class => Repositories\RedisJobRepository::class,
         Contracts\MasterSupervisorRepository::class => Repositories\RedisMasterSupervisorRepository::class,
