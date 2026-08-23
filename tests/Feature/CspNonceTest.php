@@ -35,4 +35,16 @@ class CspNonceTest extends ControllerTest
             ->assertSee("<style nonce=\"{$nonce}\">", false)
             ->assertSee("<script type=\"module\" nonce=\"{$nonce}\">", false);
     }
+
+    public function test_csp_nonce_value_is_escaped_when_rendered()
+    {
+        Horizon::cspNonce('"><script>alert(1)</script>');
+
+        $response = $this->actingAs(new Fakes\User)
+                    ->get('/horizon');
+
+        $response->assertOk()
+            ->assertDontSee('<script>alert(1)</script>', false)
+            ->assertSee('&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;', false);
+    }
 }
