@@ -244,6 +244,48 @@ class AutoScalerTest extends IntegrationTest
         $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
     }
 
+    public function test_scaler_may_scale_down_to_zero_processes_when_min_processes_is_zero()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
+            'first' => ['current' => 2, 'size' => 0, 'runtime' => 0],
+            'second' => ['current' => 1, 'size' => 0, 'runtime' => 0],
+        ], ['minProcesses' => 0]);
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(1, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(0, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(0, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(0, $supervisor->processPools['second']->totalProcessCount());
+
+        // Assert scaler stays at zero while the queues are empty...
+        $scaler->scale($supervisor);
+
+        $this->assertSame(0, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(0, $supervisor->processPools['second']->totalProcessCount());
+    }
+
+    public function test_scaler_scales_up_from_zero_processes_when_jobs_are_pushed()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
+            'first' => ['current' => 0, 'size' => 50, 'runtime' => 10],
+            'second' => ['current' => 0, 'size' => 0, 'runtime' => 0],
+        ], ['minProcesses' => 0, 'balanceMaxShift' => 5]);
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(5, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(0, $supervisor->processPools['second']->totalProcessCount());
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(10, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(0, $supervisor->processPools['second']->totalProcessCount());
+    }
+
     public function test_scaler_assigns_more_processes_to_queue_with_more_jobs_when_using_size_strategy()
     {
         [$scaler, $supervisor] = $this->with_scaling_scenario(100, [

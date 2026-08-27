@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Exception;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\MasterSupervisor;
 use Laravel\Horizon\MasterSupervisorCommands\AddSupervisor;
@@ -140,5 +141,42 @@ class ProvisioningPlanTest extends IntegrationTest
         $results = (new ProvisioningPlan(MasterSupervisor::name(), $plan))->toSupervisorOptions();
 
         $this->assertSame('30,60', $results['local']['supervisor-2']->backoff);
+    }
+
+    public function test_min_processes_may_be_zero()
+    {
+        $plan = [
+            'local' => [
+                'supervisor-1' => [
+                    'connection' => 'redis',
+                    'queue' => 'default',
+                    'balance' => 'auto',
+                    'minProcesses' => 0,
+                    'maxProcesses' => 10,
+                ],
+            ],
+        ];
+
+        $results = (new ProvisioningPlan(MasterSupervisor::name(), $plan))->toSupervisorOptions();
+
+        $this->assertSame(0, $results['local']['supervisor-1']->minProcesses);
+    }
+
+    public function test_negative_min_processes_are_rejected()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('The value of [supervisor-1.minProcesses] must be greater than or equal to 0.');
+
+        $plan = [
+            'local' => [
+                'supervisor-1' => [
+                    'connection' => 'redis',
+                    'queue' => 'default',
+                    'minProcesses' => -1,
+                ],
+            ],
+        ];
+
+        (new ProvisioningPlan(MasterSupervisor::name(), $plan))->toSupervisorOptions();
     }
 }

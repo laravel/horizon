@@ -10,8 +10,15 @@ class FakeSupervisorFactory extends SupervisorFactory
 {
     public $supervisor;
 
+    public $supervisorClass;
+
+    public function __construct($supervisorClass = SupervisorWithFakeMonitor::class)
+    {
+        $this->supervisorClass = $supervisorClass;
+    }
+
     public function make(SupervisorOptions $options)
     {
-        return $this->supervisor = new SupervisorWithFakeMonitor($options);
+        return $this->supervisor = new $this->supervisorClass($options);
     }
 }

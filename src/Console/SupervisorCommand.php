@@ -96,7 +96,13 @@ class SupervisorCommand extends Command
 
         $supervisor->working = ! $this->option('paused');
 
-        $balancedWorkerCount = floor(($this->option('min-processes') + $this->option('max-processes')) / 2);
+        // When the supervisor is allowed to scale down to zero processes, we will not
+        // start any workers up front. The auto-scaler will start them as soon as it
+        // sees jobs waiting on the queue, so idle queues consume no resources...
+        $balancedWorkerCount = (int) $this->option('min-processes') === 0
+            ? 0
+            : floor(($this->option('min-processes') + $this->option('max-processes')) / 2);
+
         $supervisor->scale(max(
             0, $balancedWorkerCount - $supervisor->totalSystemProcessCount()
         ));

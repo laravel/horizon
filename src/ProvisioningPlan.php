@@ -182,8 +182,8 @@ class ProvisioningPlan
             return [Str::camel($key) => $value];
         })->all();
 
-        if (isset($options['minProcesses']) && $options['minProcesses'] < 1) {
-            throw new Exception("The value of [{$supervisor}.minProcesses] must be greater than 0.");
+        if (isset($options['minProcesses']) && $options['minProcesses'] < 0) {
+            throw new Exception("The value of [{$supervisor}.minProcesses] must be greater than or equal to 0.");
         }
 
         $options['parentId'] = getmypid();
