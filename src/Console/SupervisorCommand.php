@@ -39,7 +39,8 @@ class SupervisorCommand extends Command
                             {--balance-max-shift=1 : The maximum number of processes to increase or decrease per one scaling}
                             {--workers-name=default : The name that should be assigned to the workers}
                             {--parent-id=0 : The parent process ID}
-                            {--rest=0 : Number of seconds to rest between jobs}';
+                            {--rest=0 : Number of seconds to rest between jobs}
+                            {--json : Output the queue worker information as JSON}';
 
     /**
      * The console command description.
@@ -140,7 +141,8 @@ class SupervisorCommand extends Command
             $this->option('balance-max-shift'),
             $this->option('parent-id'),
             $this->option('rest'),
-            $autoScalingStrategy
+            $autoScalingStrategy,
+            $this->option('json')
         );
     }
 

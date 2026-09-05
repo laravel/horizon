@@ -59,6 +59,10 @@ class QueueCommandString
             $string .= ' --force';
         }
 
+        if ($options->json) {
+            $string .= ' --json';
+        }
+
         if ($paused) {
             $string .= ' --paused';
         }
