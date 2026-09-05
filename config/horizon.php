@@ -141,6 +141,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Automatic Job Tagging
+    |--------------------------------------------------------------------------
+    |
+    | Jobs that do not define a "tags" method are tagged automatically: Horizon
+    | reflects over the job's properties and records a tag for every Eloquent
+    | model it holds, such as "App\Models\User:1". Those tags power the tag
+    | search on the failed jobs screen and the monitoring feature, but they
+    | cost reflection on every push, bytes in every stored payload, and a
+    | Redis key per model instance for each failed job. Set this option to
+    | false to keep only the tags your jobs declare themselves.
+    |
+    */
+
+    'auto_tags' => env('HORIZON_AUTO_TAGS', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Metrics
     |--------------------------------------------------------------------------
     |

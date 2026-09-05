@@ -60,6 +60,48 @@ class RedisPayloadTest extends IntegrationTest
         $this->assertEquals([FakeModel::class.':1', FakeModel::class.':2'], $JobPayload->decoded['tags']);
     }
 
+    public function test_automatic_model_tags_can_be_disabled()
+    {
+        config(['horizon.auto_tags' => false]);
+
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $first = new FakeModel;
+        $first->id = 1;
+
+        $JobPayload->prepare(new FakeJobWithEloquentModel($first, new FakeModel));
+        $this->assertEquals([], $JobPayload->decoded['tags']);
+    }
+
+    public function test_explicit_tags_are_kept_when_automatic_tagging_is_disabled()
+    {
+        config(['horizon.auto_tags' => false]);
+
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $JobPayload->prepare(new FakeJobWithTagsMethod);
+        $this->assertEquals(['first', 'second'], $JobPayload->decoded['tags']);
+    }
+
+    public function test_listener_model_tags_are_dropped_when_automatic_tagging_is_disabled()
+    {
+        config(['horizon.auto_tags' => false]);
+
+        $JobPayload = new JobPayload(json_encode(['id' => 1]));
+
+        $job = new CallQueuedListener(FakeListenerWithProperties::class, 'handle', [new FakeEventWithModel(42)]);
+
+        $JobPayload->prepare($job);
+        $this->assertEquals([], $JobPayload->decoded['tags']);
+
+        $job = new CallQueuedListener(FakeListener::class, 'handle', [new FakeEvent()]);
+
+        $JobPayload->prepare($job);
+        $this->assertEquals([
+            'listenerTag1', 'listenerTag2', 'eventTag1', 'eventTag2',
+        ], $JobPayload->decoded['tags']);
+    }
+
     public function test_tags_are_correctly_gathered_from_collections()
     {
         $JobPayload = new JobPayload(json_encode(['id' => 1]));

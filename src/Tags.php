@@ -33,9 +33,27 @@ class Tags
             return $tags;
         }
 
+        if (! static::autoTaggingEnabled()) {
+            return [];
+        }
+
         return static::modelsFor(static::targetsFor($job))
             ->map(fn ($model) => get_class($model).':'.$model->getKey())
             ->all();
+    }
+
+    /**
+     * Determine if jobs without explicit tags should be tagged with their models.
+     *
+     * Reflecting over every queued job to find its Eloquent models costs time on
+     * each push and stores a tag per model instance in the payload, so it may be
+     * turned off by applications that never look a job up by model.
+     *
+     * @return bool
+     */
+    public static function autoTaggingEnabled()
+    {
+        return (bool) config('horizon.auto_tags', true);
     }
 
     /**
