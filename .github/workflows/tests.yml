@@ -109,12 +109,6 @@ jobs:
           sudo apt update
           sudo apt-get install -y --fix-missing redis-server
           sudo service redis-server stop
-          # Every node needs its own --dir. Redis 7 keeps the AOF in
-          # "<dir>/appendonlydir" and stages the manifest through a fixed
-          # "temp-appendonly.aof.manifest" name, so nodes sharing a directory
-          # race to rename the same temp file. The loser dies at startup with
-          # "Error trying to rename the temporary AOF manifest file ... No such
-          # file or directory" and never comes up.
           for port in 7000 7001 7002; do
             mkdir -p "$RUNNER_TEMP/redis-$port"
             redis-server --daemonize yes --port $port --appendonly yes \
@@ -122,10 +116,6 @@ jobs:
               --dir "$RUNNER_TEMP/redis-$port" \
               --logfile "$RUNNER_TEMP/redis-$port/redis.log"
           done
-          # "redis-server --daemonize yes" returns before the node is actually
-          # accepting connections, which races "redis-cli --cluster create" into
-          # "Node 127.0.0.1:7000 is not configured as a cluster node". Wait for
-          # every node to respond to PING before forming the cluster.
           for port in 7000 7001 7002; do
             for attempt in $(seq 1 30); do
               if [ "$(redis-cli -h 127.0.0.1 -p $port ping 2>/dev/null)" = "PONG" ]; then
