@@ -109,9 +109,37 @@ jobs:
           sudo apt update
           sudo apt-get install -y --fix-missing redis-server
           sudo service redis-server stop
-          redis-server --daemonize yes --port 7000 --appendonly yes --cluster-enabled yes --cluster-config-file nodes-7000.conf
-          redis-server --daemonize yes --port 7001 --appendonly yes --cluster-enabled yes --cluster-config-file nodes-7001.conf
-          redis-server --daemonize yes --port 7002 --appendonly yes --cluster-enabled yes --cluster-config-file nodes-7002.conf
+          # Every node needs its own --dir. Redis 7 keeps the AOF in
+          # "<dir>/appendonlydir" and stages the manifest through a fixed
+          # "temp-appendonly.aof.manifest" name, so nodes sharing a directory
+          # race to rename the same temp file. The loser dies at startup with
+          # "Error trying to rename the temporary AOF manifest file ... No such
+          # file or directory" and never comes up.
+          for port in 7000 7001 7002; do
+            mkdir -p "$RUNNER_TEMP/redis-$port"
+            redis-server --daemonize yes --port $port --appendonly yes \
+              --cluster-enabled yes --cluster-config-file nodes-$port.conf \
+              --dir "$RUNNER_TEMP/redis-$port" \
+              --logfile "$RUNNER_TEMP/redis-$port/redis.log"
+          done
+          # "redis-server --daemonize yes" returns before the node is actually
+          # accepting connections, which races "redis-cli --cluster create" into
+          # "Node 127.0.0.1:7000 is not configured as a cluster node". Wait for
+          # every node to respond to PING before forming the cluster.
+          for port in 7000 7001 7002; do
+            for attempt in $(seq 1 30); do
+              if [ "$(redis-cli -h 127.0.0.1 -p $port ping 2>/dev/null)" = "PONG" ]; then
+                break
+              fi
+              if [ "$attempt" -eq 30 ]; then
+                echo "Redis node on port $port did not become ready within 30s" >&2
+                echo "--- $RUNNER_TEMP/redis-$port/redis.log ---" >&2
+                cat "$RUNNER_TEMP/redis-$port/redis.log" >&2 || true
+                exit 1
+              fi
+              sleep 1
+            done
+          done
           redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 --cluster-replicas 0 --cluster-yes
 
       - name: Check Redis Cluster is ready
