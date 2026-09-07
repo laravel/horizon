@@ -173,6 +173,13 @@ class SupervisorOptions
     public $retryAfter;
 
     /**
+     * Indicates if the workers should output their information as JSON.
+     *
+     * @var bool
+     */
+    public $json = false;
+
+    /**
      * Create a new worker options instance.
      *
      * @param  string  $name
@@ -196,6 +203,7 @@ class SupervisorOptions
      * @param  int  $parentId
      * @param  int  $rest
      * @param  string|null  $autoScalingStrategy
+     * @param  bool  $json
      */
     public function __construct(
         $name,
@@ -219,6 +227,7 @@ class SupervisorOptions
         $parentId = 0,
         $rest = 0,
         $autoScalingStrategy = 'time',
+        $json = false,
     ) {
         $this->name = $name;
         $this->connection = $connection;
@@ -241,6 +250,7 @@ class SupervisorOptions
         $this->parentId = $parentId;
         $this->rest = $rest;
         $this->autoScalingStrategy = $autoScalingStrategy;
+        $this->json = $json;
     }
 
     /**
@@ -345,6 +355,7 @@ class SupervisorOptions
             'parentId' => $this->parentId,
             'rest' => $this->rest,
             'autoScalingStrategy' => $this->autoScalingStrategy,
+            'json' => $this->json,
         ];
     }
 
