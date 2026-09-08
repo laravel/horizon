@@ -1,6 +1,13 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.48.3...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.49.0...5.x)
+
+## [v5.49.0](https://github.com/laravel/horizon/compare/v5.48.3...v5.49.0) - 2026-09-07
+
+* Escape CSP nonce attribute value by [@iliaal](https://github.com/iliaal) in https://github.com/laravel/horizon/pull/1811
+* Bump immutable and sass by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1814
+* Fix Redis Cluster tests in the CI by [@laravel-o11y](https://github.com/laravel-o11y) in https://github.com/laravel/horizon/pull/1817
+* Allow enabling json logs in workers by [@laravel-o11y](https://github.com/laravel-o11y) in https://github.com/laravel/horizon/pull/1815
 
 ## [v5.48.3](https://github.com/laravel/horizon/compare/v5.48.2...v5.48.3) - 2026-08-10
 
