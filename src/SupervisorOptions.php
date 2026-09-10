@@ -40,7 +40,7 @@ class SupervisorOptions
     public $balance = 'off';
 
     /**
-     * Indicates whether auto-scaling strategy should use "time" (time-to-complete) or "size" (total count of jobs) strategies.
+     * Indicates whether auto-scaling strategy should use "time" (time-to-complete), "size" (total count of jobs), or "log" (logarithmic job count) strategies.
      *
      * @var string|null
      */
@@ -294,6 +294,16 @@ class SupervisorOptions
     public function autoScaleByNumberOfJobs()
     {
         return $this->autoScalingStrategy === 'size';
+    }
+
+    /**
+     * Determine if auto-scaling should use logarithmic queue sizes.
+     *
+     * @return bool
+     */
+    public function autoScaleLogarithmically()
+    {
+        return $this->autoScalingStrategy === 'log';
     }
 
     /**

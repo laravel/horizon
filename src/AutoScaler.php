@@ -104,8 +104,11 @@ class AutoScaler
     {
         $timeToClearAll = $queues->sum('time');
         $totalJobs = $queues->sum('size');
+        $totalLogJobs = $supervisor->options->autoScaleLogarithmically()
+            ? $queues->sum(fn ($queue) => log1p($queue['size']))
+            : 0;
 
-        return $queues->mapWithKeys(function ($timeToClear, $queue) use ($supervisor, $timeToClearAll, $totalJobs) {
+        return $queues->mapWithKeys(function ($timeToClear, $queue) use ($supervisor, $timeToClearAll, $totalJobs, $totalLogJobs) {
             if (! $supervisor->options->balancing()) {
                 $targetProcesses = min(
                     $supervisor->options->maxProcesses,
@@ -117,9 +120,13 @@ class AutoScaler
 
             if ($timeToClearAll > 0 &&
                 $supervisor->options->autoScaling()) {
-                $numberOfProcesses = $supervisor->options->autoScaleByNumberOfJobs()
-                    ? ($timeToClear['size'] / $totalJobs)
-                    : ($timeToClear['time'] / $timeToClearAll);
+                if ($supervisor->options->autoScaleByNumberOfJobs()) {
+                    $numberOfProcesses = $timeToClear['size'] / $totalJobs;
+                } elseif ($supervisor->options->autoScaleLogarithmically()) {
+                    $numberOfProcesses = log1p($timeToClear['size']) / $totalLogJobs;
+                } else {
+                    $numberOfProcesses = $timeToClear['time'] / $timeToClearAll;
+                }
 
                 return [$queue => $numberOfProcesses *= $supervisor->options->maxProcesses];
             } elseif ($timeToClearAll == 0 &&
