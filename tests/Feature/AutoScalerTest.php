@@ -262,6 +262,71 @@ class AutoScalerTest extends IntegrationTest
         $this->assertSame(48, $supervisor->processPools['second']->totalProcessCount());
     }
 
+    public function test_scaler_assigns_processes_using_logarithmic_queue_sizes()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
+            'first' => ['current' => 1, 'size' => 999, 'runtime' => 10],
+            'second' => ['current' => 1, 'size' => 99, 'runtime' => 10],
+            'third' => ['current' => 1, 'size' => 99, 'runtime' => 10],
+            'fourth' => ['current' => 1, 'size' => 99, 'runtime' => 10],
+            'fifth' => ['current' => 1, 'size' => 9, 'runtime' => 10],
+        ], ['autoScalingStrategy' => 'log', 'balanceMaxShift' => 10]);
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(3, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['second']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['third']->totalProcessCount());
+        $this->assertSame(2, $supervisor->processPools['fourth']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['fifth']->totalProcessCount());
+    }
+
+    public function test_logarithmic_scaling_allocates_more_workers_to_smaller_busy_queue_than_size_scaling()
+    {
+        $queues = [
+            'A' => ['current' => 1, 'size' => 946, 'runtime' => 1],
+            'B' => ['current' => 1, 'size' => 13702, 'runtime' => 1],
+            'C' => ['current' => 1, 'size' => 0, 'runtime' => 0],
+        ];
+
+        [$sizeScaler, $sizeSupervisor] = $this->with_scaling_scenario(25, $queues, [
+            'autoScalingStrategy' => 'size',
+            'balanceMaxShift' => 25,
+        ]);
+
+        $sizeScaler->scale($sizeSupervisor);
+
+        $this->assertSame(2, $sizeSupervisor->processPools['A']->totalProcessCount());
+        $this->assertSame(22, $sizeSupervisor->processPools['B']->totalProcessCount());
+        $this->assertSame(1, $sizeSupervisor->processPools['C']->totalProcessCount());
+        $this->assertSame(25, $sizeSupervisor->totalProcessCount());
+
+        [$logScaler, $logSupervisor] = $this->with_scaling_scenario(25, $queues, [
+            'autoScalingStrategy' => 'log',
+            'balanceMaxShift' => 25,
+        ]);
+
+        $logScaler->scale($logSupervisor);
+
+        $this->assertSame(11, $logSupervisor->processPools['A']->totalProcessCount());
+        $this->assertSame(13, $logSupervisor->processPools['B']->totalProcessCount());
+        $this->assertSame(1, $logSupervisor->processPools['C']->totalProcessCount());
+        $this->assertSame(25, $logSupervisor->totalProcessCount());
+    }
+
+    public function test_logarithmic_scaling_is_based_on_queue_size_instead_of_runtime()
+    {
+        [$scaler, $supervisor] = $this->with_scaling_scenario(3, [
+            'first' => ['current' => 1, 'size' => 99, 'runtime' => 1],
+            'second' => ['current' => 1, 'size' => 9, 'runtime' => 1000],
+        ], ['autoScalingStrategy' => 'log']);
+
+        $scaler->scale($supervisor);
+
+        $this->assertSame(2, $supervisor->processPools['first']->totalProcessCount());
+        $this->assertSame(1, $supervisor->processPools['second']->totalProcessCount());
+    }
+
     public function test_scaler_works_with_a_single_process_pool()
     {
         [$scaler, $supervisor] = $this->with_scaling_scenario(10, [
