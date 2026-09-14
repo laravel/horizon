@@ -58,13 +58,33 @@
             },
 
             delayed() {
-                if (this.unserialized && this.unserialized.delay && this.unserialized.delay.date) {
-                    return moment.tz(this.unserialized.delay.date, this.unserialized.delay.timezone)
+                const delay = this.unserialized && this.unserialized.delay;
+
+                if (delay && delay.date) {
+                    return moment.tz(delay.date, delay.timezone).fromNow(true);
+                }
+
+                if (delay && typeof delay === 'object') {
+                    // A DateInterval / CarbonInterval instance serializes with
+                    // y/m/d/h/i/s keys, which don't line up with moment's own
+                    // shorthand unit keys (e.g. its "m" means minutes, not
+                    // months), so they must be mapped explicitly.
+                    return this.formatDate(this.job.payload.pushedAt).add({
+                        years: delay.y,
+                        months: delay.m,
+                        days: delay.d,
+                        hours: delay.h,
+                        minutes: delay.i,
+                        seconds: delay.s,
+                    }).fromNow(true);
+                }
+
+                if (delay) {
+                    return this.formatDate(this.job.payload.pushedAt).add(delay, 'seconds')
                         .fromNow(true);
-                } else if (this.unserialized && this.unserialized.delay) {
-                    return this.formatDate(this.job.payload.pushedAt).add(this.unserialized.delay, 'seconds')
-                        .fromNow(true);
-                } else if (this.job.delay > 0) {
+                }
+
+                if (this.job.delay > 0) {
                     return moment.duration(this.job.delay, 'seconds').humanize();
                 }
 

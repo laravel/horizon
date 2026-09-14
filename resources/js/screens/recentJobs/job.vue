@@ -122,17 +122,36 @@
                     //
                 }
 
-                if (unserialized && unserialized.delay && unserialized.delay.date) {
+                if (!unserialized || !unserialized.delay) {
+                    return null;
+                }
+
+                if (unserialized.delay.date) {
                     return moment.tz(unserialized.delay.date, unserialized.delay.timezone)
-                        .local()
-                        .format('YYYY-MM-DD HH:mm:ss');
-                } else if (unserialized && unserialized.delay) {
-                    return this.formatDate(this.job.payload.pushedAt).add(unserialized.delay, 'seconds')
                         .local()
                         .format('YYYY-MM-DD HH:mm:ss');
                 }
 
-                return null;
+                if (typeof unserialized.delay === 'object') {
+                    // A DateInterval / CarbonInterval instance serializes with
+                    // y/m/d/h/i/s keys, which don't line up with moment's own
+                    // shorthand unit keys (e.g. its "m" means minutes, not
+                    // months), so they must be mapped explicitly.
+                    return this.formatDate(this.job.payload.pushedAt).add({
+                        years: unserialized.delay.y,
+                        months: unserialized.delay.m,
+                        days: unserialized.delay.d,
+                        hours: unserialized.delay.h,
+                        minutes: unserialized.delay.i,
+                        seconds: unserialized.delay.s,
+                    })
+                        .local()
+                        .format('YYYY-MM-DD HH:mm:ss');
+                }
+
+                return this.formatDate(this.job.payload.pushedAt).add(unserialized.delay, 'seconds')
+                    .local()
+                    .format('YYYY-MM-DD HH:mm:ss');
             },
         },
 
