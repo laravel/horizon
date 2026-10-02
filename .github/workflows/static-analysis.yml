@@ -12,4 +12,6 @@ permissions:
 
 jobs:
   tests:
-    uses: laravel/.github/.github/workflows/static-analysis.yml@dd86ce0a18475504e42fa809d7454c1cb1a88028 # main
+    uses: laravel/.github/.github/workflows/static-analysis.yml@41cb33d868e3f67ea2c9bb53f1ebd9a379400f63 # main
+    with:
+      php: "8.4"

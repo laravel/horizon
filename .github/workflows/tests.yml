@@ -68,6 +68,10 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Remove incompatible dependencies
+        if: matrix.laravel < 12 || matrix.php < 8.3
+        run: composer remove laravel/doctor --dev --no-update --no-interaction
+
       - name: Install dependencies
         run: |
           composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts:^${{ matrix.laravel }}"
