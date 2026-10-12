@@ -5,7 +5,7 @@ const poll = process.argv[3] ? true : false;
 
 // Chokidar removed support for glob in version 4...
 const chokidarPackagePath = require.resolve('chokidar').replace('index.js', 'package.json');
-const chokidarVersion4 = require(chokidarPackagePath).version.startsWith('4.');
+const chokidarVersion4 = parseInt(require(chokidarPackagePath).version, 10) >= 4;
 
 const extractWildcardExtension = (path) => {
     // Match patterns like *.php, **/*.blade.php
