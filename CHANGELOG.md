@@ -1,6 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.50.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.50.1...5.x)
+
+## [v5.50.1](https://github.com/laravel/horizon/compare/v5.50.0...v5.50.1) - 2026-10-13
+
+* Bump moment from 2.30.1 to 2.31.0 by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1822
+* Bump axios from 1.18.0 to 1.20.0 by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1823
+* Bump [@vue](https://github.com/vue)/server-renderer and vue by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1831
+* Bump source-map-js from 1.2.1 to 1.2.2 by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1830
+* [5.x] Fix `horizon:listen` ignoring glob paths with chokidar 5 by [@svidskiy](https://github.com/svidskiy) in https://github.com/laravel/horizon/pull/1832
+* Bump shivammathur/setup-php from 2.37.2 to 2.40.0 in the github-actions group by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1833
 
 ## [v5.50.0](https://github.com/laravel/horizon/compare/v5.49.0...v5.50.0) - 2026-09-15
 
