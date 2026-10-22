@@ -2,6 +2,7 @@
 
 namespace Laravel\Horizon\Tests\Feature;
 
+use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\TagRepository;
@@ -30,6 +31,55 @@ class MonitoringTest extends IntegrationTest
         $repository = resolve(TagRepository::class);
         dispatch(new MonitorTag('first'));
         $this->assertEquals(['first'], $repository->monitored(['first', 'second']));
+    }
+
+    public function test_monitored_lookup_preserves_keys_and_duplicates_and_sees_changes_immediately()
+    {
+        $repository = resolve(TagRepository::class);
+        $tags = [3 => 'first', 7 => 'second', 'last' => 'first'];
+
+        $this->assertSame([], $repository->monitored($tags));
+        $repository->monitor('first');
+        $this->assertSame([3 => 'first', 'last' => 'first'], $repository->monitored($tags));
+        $repository->stopMonitoring('first');
+        $repository->monitor('second');
+        $this->assertSame([7 => 'second'], $repository->monitored($tags));
+        $repository->stopMonitoring('second');
+        $this->assertSame([], $repository->monitored($tags));
+    }
+
+    public function test_monitored_lookup_keeps_the_original_tag_values()
+    {
+        $repository = resolve(TagRepository::class);
+        $repository->monitor('0');
+        $repository->monitor('');
+        $tags = [2 => 0, 4 => '0', 6 => '00', 8 => ''];
+
+        $this->assertSame([2 => 0, 4 => '0', 8 => ''], $repository->monitored($tags));
+    }
+
+    public function test_monitored_lookup_supports_phpredis_serialized_members()
+    {
+        $connection = Redis::connection('horizon');
+
+        if (! $connection instanceof PhpRedisConnection || ! $connection->client() instanceof \Redis) {
+            $this->markTestSkipped('A standalone PhpRedis connection is required.');
+        }
+
+        $client = $connection->client();
+        $serializer = $client->getOption(\Redis::OPT_SERIALIZER);
+        $client->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+        $repository = resolve(TagRepository::class);
+
+        try {
+            $repository->monitor('first');
+            $this->assertSame([2 => 'first'], $repository->monitored([2 => 'first', 4 => 'second']));
+            $repository->stopMonitoring('first');
+            $this->assertSame([], $repository->monitored(['first']));
+        } finally {
+            $connection->del('monitoring');
+            $client->setOption(\Redis::OPT_SERIALIZER, $serializer);
+        }
     }
 
     public function test_can_stop_monitoring_tags()

@@ -3,6 +3,8 @@
 namespace Laravel\Horizon\Repositories;
 
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
+use Illuminate\Redis\Connections\PhpRedisConnection;
+use Illuminate\Redis\Connections\PredisConnection;
 use Laravel\Horizon\Contracts\TagRepository;
 
 class RedisTagRepository implements TagRepository
@@ -45,7 +47,44 @@ class RedisTagRepository implements TagRepository
      */
     public function monitored(array $tags)
     {
-        return array_intersect($tags, $this->monitoring());
+        if ($tags === []) {
+            return [];
+        }
+
+        $connection = $this->connection();
+        if (! $connection instanceof PhpRedisConnection && ! $connection instanceof PredisConnection) {
+            return array_intersect($tags, $this->monitoring());
+        }
+
+        if ($connection instanceof PhpRedisConnection) {
+            $client = $connection->client();
+            // Lua arguments must match the stored set members without client-side encoding.
+            if (
+                ! $client instanceof \Redis
+                || $client->getOption(\Redis::OPT_SERIALIZER) !== \Redis::SERIALIZER_NONE
+                || $client->getOption(\Redis::OPT_COMPRESSION) !== \Redis::COMPRESSION_NONE
+            ) {
+                return array_intersect($tags, $this->monitoring());
+            }
+        }
+
+        $matches = $connection->eval(<<<'LUA'
+            local matches = {}
+            for i, tag in ipairs(ARGV) do
+                matches[i] = redis.call('sismember', KEYS[1], tag)
+            end
+            return matches
+            LUA, 1, 'monitoring', ...array_values($tags));
+
+        $monitored = [];
+        $index = 0;
+        foreach ($tags as $key => $tag) {
+            if ($matches[$index++] === 1) {
+                $monitored[$key] = $tag;
+            }
+        }
+
+        return $monitored;
     }
 
     /**
