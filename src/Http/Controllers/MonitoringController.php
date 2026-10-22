@@ -3,10 +3,12 @@
 namespace Laravel\Horizon\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\Jobs\MonitorTag;
 use Laravel\Horizon\Jobs\StopMonitoringTag;
+use Laravel\Horizon\Repositories\RedisMonitoringMetadataRepository;
 
 class MonitoringController extends Controller
 {
@@ -44,13 +46,19 @@ class MonitoringController extends Controller
      *
      * @return \Illuminate\Support\Collection
      */
-    public function index()
+    public function index(RedisMonitoringMetadataRepository $metadata)
     {
-        return collect($this->tags->monitoring())
+        $tags = $this->tags->monitoring();
+        $details = $metadata->get($tags);
+
+        return collect($tags)
             ->map(fn ($tag) => [
                 'tag' => $tag,
                 'count' => $this->tags->count($tag) + $this->tags->count('failed:'.$tag),
-            ])
+                'created_at_human' => $details[$tag]['created_at']
+                    ? Carbon::parse($details[$tag]['created_at'])->diffForHumans()
+                    : null,
+            ] + $details[$tag])
             ->sortBy('tag')
             ->values();
     }
@@ -103,7 +111,39 @@ class MonitoringController extends Controller
      */
     public function store(Request $request)
     {
-        dispatch(new MonitorTag($request->tag));
+        abort_unless($request->user(), 403);
+
+        $request->merge([
+            'tag' => is_string($request->tag) ? trim($request->tag) : $request->tag,
+            'reason' => is_string($request->reason) ? trim($request->reason) : $request->reason,
+        ]);
+        $data = $request->validate([
+            'tag' => ['required', 'string'],
+            'reason' => ['required', 'string', 'max:500'],
+        ]);
+
+        $user = $request->user();
+
+        dispatch(new MonitorTag($data['tag'], $data['reason'], [
+            'id' => $user->getAuthIdentifier(),
+            'name' => $user->name ?? (string) $user->getAuthIdentifier(),
+        ]));
+    }
+
+    /**
+     * Update the reason without changing the monitor's creation details.
+     */
+    public function update(Request $request, $tag, RedisMonitoringMetadataRepository $metadata)
+    {
+        abort_unless($request->user(), 403);
+        abort_unless(in_array($tag, $this->tags->monitoring(), true), 404);
+
+        $request->merge([
+            'reason' => is_string($request->reason) ? trim($request->reason) : $request->reason,
+        ]);
+        $data = $request->validate(['reason' => ['required', 'string', 'max:500']]);
+
+        $metadata->updateReason($tag, $data['reason']);
     }
 
     /**
@@ -112,8 +152,10 @@ class MonitoringController extends Controller
      * @param  string  $tag
      * @return void
      */
-    public function destroy($tag)
+    public function destroy(Request $request, $tag)
     {
+        abort_unless($request->user(), 403);
+
         dispatch(new StopMonitoringTag($tag));
     }
 }

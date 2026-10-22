@@ -87,7 +87,7 @@ class MonitoringControllerTest extends ControllerTest
         $tags = resolve(TagRepository::class);
 
         $this->actingAs(new Fakes\User)
-             ->post('/horizon/api/monitoring', ['tag' => 'taylor']);
+             ->post('/horizon/api/monitoring', ['tag' => 'taylor', 'reason' => 'Investigate slow jobs']);
 
         $this->assertEquals(['taylor'], $tags->monitoring());
     }

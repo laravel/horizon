@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Jobs;
 
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Repositories\RedisMonitoringMetadataRepository;
 
 class MonitorTag
 {
@@ -14,6 +15,8 @@ class MonitorTag
      */
     public function __construct(
         public $tag,
+        public $reason = null,
+        public $createdBy = null,
     ) {
     }
 
@@ -23,8 +26,12 @@ class MonitorTag
      * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
      * @return void
      */
-    public function handle(TagRepository $tags)
+    public function handle(TagRepository $tags, RedisMonitoringMetadataRepository $metadata)
     {
+        if (! in_array($this->tag, $tags->monitoring(), true)) {
+            $metadata->create($this->tag, $this->reason, $this->createdBy);
+        }
+
         $tags->monitor($this->tag);
     }
 }

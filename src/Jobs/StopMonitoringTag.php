@@ -4,6 +4,7 @@ namespace Laravel\Horizon\Jobs;
 
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\Contracts\TagRepository;
+use Laravel\Horizon\Repositories\RedisMonitoringMetadataRepository;
 
 class StopMonitoringTag
 {
@@ -25,9 +26,10 @@ class StopMonitoringTag
      * @param  \Laravel\Horizon\Contracts\TagRepository  $tags
      * @return void
      */
-    public function handle(JobRepository $jobs, TagRepository $tags)
+    public function handle(JobRepository $jobs, TagRepository $tags, RedisMonitoringMetadataRepository $metadata)
     {
         $tags->stopMonitoring($this->tag);
+        $metadata->forget($this->tag);
 
         $monitored = $tags->paginate($this->tag);
 
