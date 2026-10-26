@@ -2,7 +2,12 @@
 
 namespace Laravel\Horizon;
 
+use Illuminate\Bus\UniqueLock;
+use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Foundation\Application;
 use Illuminate\Queue\RedisQueue as BaseQueue;
 use Illuminate\Support\Str;
@@ -12,6 +17,7 @@ use Laravel\Horizon\Events\JobPushed;
 use Laravel\Horizon\Events\JobReleased;
 use Laravel\Horizon\Events\JobReserved;
 use Laravel\Horizon\Events\JobsMigrated;
+use Throwable;
 
 class RedisQueue extends BaseQueue
 {
@@ -203,6 +209,71 @@ class RedisQueue extends BaseQueue
         parent::deleteAndRelease($queue, $job, $delay);
 
         $this->event($this->getQueue($queue), new JobReleased($job->getReservedJob(), $delay));
+    }
+
+    /**
+     * Delete all of the jobs from the queue.
+     *
+     * The unique locks of the removed jobs are released. Reserved jobs whose
+     * reservation has not expired yet may still be running, so their locks
+     * are left for the worker to release once the job has finished.
+     *
+     * @param  string|null  $queue
+     * @return int
+     */
+    #[\Override]
+    public function clear($queue = null)
+    {
+        $queue = method_exists(parent::class, 'getQueueRedisKey')
+            ? $this->getQueueRedisKey($queue)
+            : $this->getQueue($queue);
+
+        [$size, $payloads] = $this->getConnection()->eval(
+            LuaScripts::clear(), 4, $queue, $queue.':delayed', $queue.':reserved', $queue.':notify',
+            is_null($this->retryAfter) ? '-inf' : $this->currentTime()
+        );
+
+        foreach ($payloads as $payload) {
+            $this->releaseUniqueLock($payload);
+        }
+
+        return (int) $size;
+    }
+
+    /**
+     * Release the unique lock held by the job in the given payload.
+     *
+     * @param  string  $payload
+     * @return void
+     */
+    protected function releaseUniqueLock($payload)
+    {
+        $payload = json_decode($payload, true);
+
+        $class = $payload['data']['commandName'] ?? null;
+
+        if (! is_string($class) || ! is_a($class, ShouldBeUnique::class, true) ||
+            ! is_string($payload['data']['command'] ?? null)) {
+            return;
+        }
+
+        // Jobs that are unique until processing release their lock when they start...
+        if (is_a($class, ShouldBeUniqueUntilProcessing::class, true) &&
+            ($payload['attempts'] ?? 0) > 0) {
+            return;
+        }
+
+        try {
+            $command = str_starts_with($payload['data']['command'], 'O:')
+                ? unserialize($payload['data']['command'])
+                : unserialize($this->container[Encrypter::class]->decrypt($payload['data']['command']));
+        } catch (Throwable) {
+            return;
+        }
+
+        if ($command instanceof ShouldBeUnique && method_exists(UniqueLock::class, 'release')) {
+            (new UniqueLock($this->container->make(Cache::class)))->release($command);
+        }
     }
 
     /**

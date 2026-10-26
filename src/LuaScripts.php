@@ -72,4 +72,36 @@ LUA;
             return {count, cursor}
 LUA;
     }
+
+    /**
+     * Get the Lua script for removing all jobs from a queue and returning their payloads.
+     *
+     * KEYS[1] - The queue we are clearing
+     * KEYS[2] - The queue of delayed jobs
+     * KEYS[3] - The queue of reserved jobs
+     * KEYS[4] - The notification list for the queue
+     * ARGV[1] - The current UNIX timestamp, reservations at or before it have expired
+     *
+     * @return string
+     */
+    public static function clear()
+    {
+        return <<<'LUA'
+            local size = redis.call('llen', KEYS[1]) + redis.call('zcard', KEYS[2]) + redis.call('zcard', KEYS[3])
+
+            local jobs = redis.call('lrange', KEYS[1], 0, -1)
+
+            for _, job in ipairs(redis.call('zrange', KEYS[2], 0, -1)) do
+                table.insert(jobs, job)
+            end
+
+            for _, job in ipairs(redis.call('zrangebyscore', KEYS[3], '-inf', ARGV[1])) do
+                table.insert(jobs, job)
+            end
+
+            redis.call('del', KEYS[1], KEYS[2], KEYS[3], KEYS[4])
+
+            return {size, jobs}
+LUA;
+    }
 }
