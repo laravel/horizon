@@ -370,16 +370,22 @@ class RedisJobRepository implements JobRepository
      */
     public function reserved($connection, $queue, JobPayload $payload)
     {
-        $time = str_replace(',', '.', microtime(true));
+        $this->pipeline(function ($pipe) use ($payload) {
+            $time = str_replace(',', '.', microtime(true));
 
-        $this->connection()->hmset(
-            $payload->id(), [
-                'status' => 'reserved',
-                'payload' => $payload->value,
-                'updated_at' => $time,
-                'reserved_at' => $time,
-            ]
-        );
+            $pipe->hmset(
+                $payload->id(), [
+                    'status' => 'reserved',
+                    'payload' => $payload->value,
+                    'updated_at' => $time,
+                    'reserved_at' => $time,
+                ]
+            );
+
+            $pipe->expireat(
+                $payload->id(), CarbonImmutable::now()->addMinutes($this->pendingJobExpires)->getTimestamp()
+            );
+        });
     }
 
     /**
@@ -393,14 +399,20 @@ class RedisJobRepository implements JobRepository
      */
     public function released($connection, $queue, JobPayload $payload, $delay = 0)
     {
-        $this->connection()->hmset(
-            $payload->id(), [
-                'status' => 'pending',
-                'payload' => $payload->value,
-                'updated_at' => str_replace(',', '.', microtime(true)),
-                'delay' => $delay,
-            ]
-        );
+        $this->pipeline(function ($pipe) use ($payload, $delay) {
+            $pipe->hmset(
+                $payload->id(), [
+                    'status' => 'pending',
+                    'payload' => $payload->value,
+                    'updated_at' => str_replace(',', '.', microtime(true)),
+                    'delay' => $delay,
+                ]
+            );
+
+            $pipe->expireat(
+                $payload->id(), CarbonImmutable::now()->addMinutes($this->pendingJobExpires)->getTimestamp()
+            );
+        });
     }
 
     /**
@@ -453,6 +465,10 @@ class RedisJobRepository implements JobRepository
                         'updated_at' => str_replace(',', '.', microtime(true)),
                         'delay' => 0,
                     ]
+                );
+
+                $pipe->expireat(
+                    $payload->id(), CarbonImmutable::now()->addMinutes($this->pendingJobExpires)->getTimestamp()
                 );
             }
         });

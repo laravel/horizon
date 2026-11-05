@@ -3,6 +3,7 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Exception;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\IntegrationTest;
@@ -136,5 +137,44 @@ class RedisJobRepositoryTest extends IntegrationTest
 
         $this->assertSame('pending', $job->status);
         $this->assertSame('0', $job->delay);
+    }
+
+    public function test_it_sets_an_expiration_when_a_job_is_reserved()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+        Redis::connection('horizon')->del(1);
+
+        $repository->reserved('redis', 'default', $payload);
+
+        $this->assertGreaterThan(0, Redis::connection('horizon')->ttl(1));
+    }
+
+    public function test_it_sets_an_expiration_when_a_job_is_released()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+        Redis::connection('horizon')->del(1);
+
+        $repository->released('redis', 'default', $payload, 60);
+
+        $this->assertGreaterThan(0, Redis::connection('horizon')->ttl(1));
+    }
+
+    public function test_it_sets_an_expiration_when_jobs_are_migrated()
+    {
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo']));
+
+        $repository->pushed('redis', 'default', $payload);
+        Redis::connection('horizon')->del(1);
+
+        $repository->migrated('redis', 'default', collect([$payload]));
+
+        $this->assertGreaterThan(0, Redis::connection('horizon')->ttl(1));
     }
 }
