@@ -69,6 +69,16 @@ interface JobRepository
     public function getSilenced($afterIndex = null);
 
     /**
+     * Search the jobs of the given type set by name or tag.
+     *
+     * @param  string  $type
+     * @param  string  $search
+     * @param  string|null  $afterIndex
+     * @return array{jobs: \Illuminate\Support\Collection, total: int}
+     */
+    public function searchJobs($type, $search, $afterIndex = null);
+
+    /**
      * Get the count of recent jobs.
      *
      * @return int

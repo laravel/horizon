@@ -81,6 +81,26 @@ class RedisJobRepositoryTest extends IntegrationTest
         $this->assertCount(2, $repository->getJobs([1, 2, 3, 4, 5]));
     }
 
+    public function test_it_can_search_jobs_by_name_or_tag()
+    {
+        $repository = $this->app->make(JobRepository::class);
+
+        $repository->pushed('redis', 'default', new JobPayload(json_encode(['id' => 1, 'displayName' => 'App\\Jobs\\SendEmail', 'tags' => ['user:1']])));
+        $repository->pushed('redis', 'default', new JobPayload(json_encode(['id' => 2, 'displayName' => 'App\\Jobs\\ProcessPodcast', 'tags' => ['user:2']])));
+        $repository->pushed('redis', 'default', new JobPayload(json_encode(['id' => 3, 'displayName' => 'App\\Jobs\\SendSms', 'tags' => []])));
+
+        $byName = $repository->searchJobs('pending_jobs', 'sendemail');
+        $byTag = $repository->searchJobs('pending_jobs', 'USER:2');
+        $partial = $repository->searchJobs('pending_jobs', 'Send');
+
+        $this->assertSame(1, $byName['total']);
+        $this->assertSame('1', $byName['jobs'][0]->id);
+        $this->assertSame(1, $byTag['total']);
+        $this->assertSame('2', $byTag['jobs'][0]->id);
+        $this->assertSame(2, $partial['total']);
+        $this->assertCount(0, $repository->searchJobs('completed_jobs', 'Send')['jobs']);
+    }
+
     public function test_it_will_delete_a_failed_job()
     {
         $repository = $this->app->make(JobRepository::class);

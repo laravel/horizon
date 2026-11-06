@@ -253,6 +253,48 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+     * Search the jobs of the given type set by name or tag.
+     *
+     * @param  string  $type
+     * @param  string  $search
+     * @param  string|null  $afterIndex
+     * @return array{jobs: \Illuminate\Support\Collection, total: int}
+     */
+    public function searchJobs($type, $search, $afterIndex = null)
+    {
+        $afterIndex = $afterIndex === null ? -1 : (int) $afterIndex;
+        $search = mb_strtolower(trim($search));
+        $matches = [];
+
+        for ($offset = 0; $ids = $this->connection()->zrange($type, $offset, $offset + 999); $offset += 1000) {
+            $rows = $this->pipeline(function ($pipe) use ($ids) {
+                foreach ($ids as $id) {
+                    $pipe->hmget($id, ['name', 'payload']);
+                }
+            });
+
+            foreach (array_values($ids) as $i => $id) {
+                [$name, $payload] = array_values((array) ($rows[$i] ?? [])) + [null, null];
+
+                if ($name === null || $name === false) {
+                    continue;
+                }
+
+                $tags = json_decode((string) $payload, true)['tags'] ?? [];
+
+                if (str_contains(mb_strtolower($name.' '.implode(' ', (array) $tags)), $search)) {
+                    $matches[] = $id;
+                }
+            }
+        }
+
+        return [
+            'jobs' => $this->getJobs(array_slice($matches, $afterIndex + 1, 50), $afterIndex + 1),
+            'total' => count($matches),
+        ];
+    }
+
+    /**
      * Get the number of jobs in a given type set.
      *
      * @param  string  $type

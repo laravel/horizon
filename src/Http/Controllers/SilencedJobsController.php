@@ -35,6 +35,15 @@ class SilencedJobsController extends Controller
      */
     public function index(Request $request)
     {
+        if (filled($search = $request->query('search'))) {
+            $result = $this->jobs->searchJobs('silenced_jobs', $search, $request->query('starting_at', -1));
+
+            return [
+                'jobs' => $result['jobs']->map(fn ($job) => $this->decode($job))->values(),
+                'total' => $result['total'],
+            ];
+        }
+
         $jobs = $this->jobs
             ->getSilenced($request->query('starting_at', -1))
             ->map(function ($job) {
