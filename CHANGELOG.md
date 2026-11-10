@@ -1,6 +1,17 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.50.1...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.51.0...5.x)
+
+## [v5.51.0](https://github.com/laravel/horizon/compare/v5.50.1...v5.51.0) - 2026-11-02
+
+### What's Changed
+
+* Remove security policy in favor of the org-wide default by [@pushpak1300](https://github.com/pushpak1300) in https://github.com/laravel/horizon/pull/1834
+* Bump follow-redirects from 1.16.0 to 1.16.1 by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1835
+* Bump vite and [@vitejs](https://github.com/vitejs)/plugin-vue by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1842
+* Bump follow-redirects from 1.16.1 to 1.16.2 by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/horizon/pull/1844
+
+**Full Changelog**: https://github.com/laravel/horizon/compare/v5.50.1...v5.51.0
 
 ## [v5.50.1](https://github.com/laravel/horizon/compare/v5.50.0...v5.50.1) - 2026-10-13
 
