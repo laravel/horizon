@@ -26,6 +26,7 @@
         "symfony/process": "^7.4.5|^8.0.5"
     },
     "require-dev": {
+        "laravel/doctor": "^0.1",
         "mockery/mockery": "^1.0",
         "orchestra/testbench": "^10.9|^11.0",
         "phpstan/phpstan": "^1.10|^2.0",
