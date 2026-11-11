@@ -7,7 +7,6 @@ use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Arr;
 use Laravel\Horizon\Contracts\JobRepository;
-use Laravel\Horizon\RedisQueue;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'horizon:clear')]
@@ -40,12 +39,6 @@ class ClearCommand extends Command
     public function handle(JobRepository $jobRepository, QueueManager $manager)
     {
         if (! $this->confirmToProceed()) {
-            return 1;
-        }
-
-        if (! method_exists(RedisQueue::class, 'clear')) {
-            $this->components->error('Clearing queues is not supported on this version of Laravel.');
-
             return 1;
         }
 
