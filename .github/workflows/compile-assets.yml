@@ -11,4 +11,4 @@ jobs:
     with:
       cmd: build
       build_path: "dist/"
-      node: "21"
+      node: "22"
