@@ -7,6 +7,8 @@ use Laravel\Horizon\Contracts\JobRepository;
 
 class CompletedJobsController extends Controller
 {
+    use SearchesJobs;
+
     /**
      * The job repository implementation.
      *
@@ -35,6 +37,10 @@ class CompletedJobsController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->filled('search')) {
+            return $this->search($request, 'completed');
+        }
+
         $jobs = $this->jobs
             ->getCompleted($request->query('starting_at', -1))
             ->map(function ($job) {

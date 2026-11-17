@@ -13,7 +13,11 @@
                 page: 1,
                 perPage: 50,
                 totalPages: 1,
-                jobs: []
+                jobs: [],
+                searchPhrase: '',
+                phraseTimeout: null,
+                searching: false,
+                nextCursor: null,
             };
         },
 
@@ -45,8 +49,24 @@
 
                 this.page = 1;
 
-                this.loadJobs();
+                if (this.searchPhrase) {
+                    this.searchPhrase = '';
+                } else {
+                    this.loadJobs();
+                }
             },
+
+            searchPhrase() {
+                clearTimeout(this.phraseTimeout);
+
+                this.phraseTimeout = setTimeout(() => {
+                    this.page = 1;
+                    this.hasNewEntries = false;
+
+                    this.searchPhrase ? this.searchJobs() : this.loadJobs(-1);
+                }, 500);
+            },
+
 
             '$root.autoLoadsNewEntries'(autoLoadsNewEntries) {
                 if (autoLoadsNewEntries && this.hasNewEntries) {
@@ -57,6 +77,28 @@
 
 
         methods: {
+            /**
+             * Search the jobs for the current search phrase.
+             */
+            searchJobs(starting = -1) {
+                if (starting === -1) {
+                    this.ready = false;
+                }
+
+                this.searching = true;
+
+                this.$http.get(Horizon.basePath + '/api/jobs/' + this.$route.params.type + '?search=' + encodeURIComponent(this.searchPhrase) + '&starting_at=' + starting)
+                    .then(response => {
+                        this.jobs = starting === -1 ? response.data.jobs : this.jobs.concat(response.data.jobs);
+
+                        this.nextCursor = response.data.next;
+
+                        this.ready = true;
+                    })
+                    .finally(() => this.searching = false);
+            },
+
+
             /**
              * Load the jobs of the given tag.
              */
@@ -93,7 +135,7 @@
              * Poll handler to refresh the jobs at regular intervals.
              */
             refreshJobsPeriodically() {
-                if (this.page != 1) {
+                if (this.page != 1 || this.searchPhrase) {
                     return;
                 }
 
@@ -154,6 +196,16 @@
                 <h2 class="h6 m-0" v-if="$route.params.type == 'pending'">Pending Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'completed'">Completed Jobs</h2>
                 <h2 class="h6 m-0" v-if="$route.params.type == 'silenced'">Silenced Jobs</h2>
+
+                <div class="form-control-with-icon">
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+
+                    <input type="text" class="form-control w-100" v-model="searchPhrase" placeholder="Search Jobs">
+                </div>
             </div>
 
             <div v-if="!ready"
@@ -168,7 +220,8 @@
 
             <div v-if="ready && jobs.length == 0"
                  class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span v-if="$route.params.type == 'pending'">There aren't any pending jobs.</span>
+                <span v-if="searchPhrase">No jobs match your search.</span>
+                <span v-else-if="$route.params.type == 'pending'">There aren't any pending jobs.</span>
                 <span v-else-if="$route.params.type == 'completed'">There aren't any completed jobs.</span>
                 <span v-else-if="$route.params.type == 'silenced'">There aren't any silenced jobs.</span>
                 <span v-else>There aren't any jobs.</span>
@@ -199,7 +252,11 @@
                 </tbody>
             </table>
 
-            <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
+            <div v-if="ready && searchPhrase && nextCursor !== null" class="p-3 d-flex justify-content-center border-top">
+                <button @click="searchJobs(nextCursor)" class="btn btn-secondary btn-sm" :disabled="searching">Load More</button>
+            </div>
+
+            <div v-if="ready && jobs.length && !searchPhrase" class="p-3 d-flex justify-content-between border-top">
                 <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
                 <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
             </div>

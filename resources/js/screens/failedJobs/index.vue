@@ -15,6 +15,10 @@
                 totalPages: 1,
                 jobs: [],
                 retryingJobs: [],
+                searchPhrase: '',
+                phraseTimeout: null,
+                searching: false,
+                nextCursor: null,
             };
         },
 
@@ -38,6 +42,17 @@
             },
 
 
+            searchPhrase() {
+                clearTimeout(this.phraseTimeout);
+
+                this.phraseTimeout = setTimeout(() => {
+                    this.page = 1;
+                    this.hasNewEntries = false;
+
+                    this.searchPhrase ? this.searchJobs() : this.loadJobs(0);
+                }, 500);
+            },
+
             tagSearchPhrase() {
                 clearTimeout(this.searchTimeout);
 
@@ -56,6 +71,28 @@
 
 
         methods: {
+            /**
+             * Search the jobs for the current search phrase.
+             */
+            searchJobs(starting = -1) {
+                if (starting === -1) {
+                    this.ready = false;
+                }
+
+                this.searching = true;
+
+                this.$http.get(Horizon.basePath + '/api/jobs/failed?search=' + encodeURIComponent(this.searchPhrase) + '&starting_at=' + starting)
+                    .then(response => {
+                        this.jobs = starting === -1 ? response.data.jobs : this.jobs.concat(response.data.jobs);
+
+                        this.nextCursor = response.data.next;
+
+                        this.ready = true;
+                    })
+                    .finally(() => this.searching = false);
+            },
+
+
             /**
              * Load the jobs of the given tag.
              */
@@ -162,6 +199,10 @@
              * Poll handler to refresh the jobs at regular intervals.
              */
             refreshJobsPeriodically() {
+                if (this.searchPhrase) {
+                    return;
+                }
+
                 this.loadJobs((this.page - 1) * this.perPage, true);
             },
 
@@ -204,14 +245,26 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h2 class="h6 m-0">Failed Jobs</h2>
 
-                <div class="form-control-with-icon">
-                    <div class="icon-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
-                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-                        </svg>
+                <div class="d-flex">
+                    <div class="form-control-with-icon me-2">
+                        <div class="icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+
+                        <input type="text" class="form-control w-100" v-model="tagSearchPhrase" placeholder="Search Tags" :disabled="!!searchPhrase">
                     </div>
 
-                    <input type="text" class="form-control w-100" v-model="tagSearchPhrase" placeholder="Search Tags">
+                    <div class="form-control-with-icon">
+                        <div class="icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon">
+                                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+
+                        <input type="text" class="form-control w-100" v-model="searchPhrase" placeholder="Search Jobs">
+                    </div>
                 </div>
             </div>
 
@@ -225,7 +278,8 @@
 
 
             <div v-if="ready && jobs.length == 0" class="d-flex flex-column align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                <span>There aren't any failed jobs.</span>
+                <span v-if="searchPhrase">No jobs match your search.</span>
+                <span v-else>There aren't any failed jobs.</span>
             </div>
 
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
@@ -293,7 +347,11 @@
                 </tbody>
             </table>
 
-            <div v-if="ready && jobs.length" class="p-3 d-flex justify-content-between border-top">
+            <div v-if="ready && searchPhrase && nextCursor !== null" class="p-3 d-flex justify-content-center border-top">
+                <button @click="searchJobs(nextCursor)" class="btn btn-secondary btn-sm" :disabled="searching">Load More</button>
+            </div>
+
+            <div v-if="ready && jobs.length && !searchPhrase" class="p-3 d-flex justify-content-between border-top">
                 <button @click="previous" class="btn btn-secondary btn-sm" :disabled="page==1">Previous</button>
                 <button @click="next" class="btn btn-secondary btn-sm" :disabled="page>=totalPages">Next</button>
             </div>

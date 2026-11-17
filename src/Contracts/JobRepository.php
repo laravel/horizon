@@ -90,6 +90,17 @@ interface JobRepository
     public function countPending();
 
     /**
+     * Search the jobs of the given type for the given phrase.
+     *
+     * @param  string  $type
+     * @param  string  $query
+     * @param  int  $afterIndex
+     * @param  int  $limit
+     * @return array{jobs: \Illuminate\Support\Collection, next: int|null}
+     */
+    public function search($type, $query, $afterIndex = -1, $limit = 50);
+
+    /**
      * Get the count of completed jobs.
      *
      * @return int

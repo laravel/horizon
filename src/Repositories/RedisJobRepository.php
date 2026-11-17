@@ -6,6 +6,8 @@ use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Laravel\Horizon\Contracts\JobRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\LuaScripts;
@@ -31,6 +33,13 @@ class RedisJobRepository implements JobRepository
         'exception', 'context', 'failed_at', 'completed_at', 'retried_by',
         'reserved_at', 'delay',
     ];
+
+    /**
+     * The maximum number of jobs to scan per search request.
+     *
+     * @var int
+     */
+    public $searchScanLimit = 2000;
 
     /**
      * The number of minutes until recently failed jobs should be purged.
@@ -250,6 +259,81 @@ class RedisJobRepository implements JobRepository
         return $this->getJobs($this->connection()->zrange(
             $type, $afterIndex + 1, $afterIndex + 50
         ), $afterIndex + 1);
+    }
+
+    /**
+     * Search the jobs of the given type for the given phrase.
+     *
+     * @param  string  $type
+     * @param  string  $query
+     * @param  int  $afterIndex
+     * @param  int  $limit
+     * @return array{jobs: \Illuminate\Support\Collection, next: int|null}
+     */
+    public function search($type, $query, $afterIndex = -1, $limit = 50)
+    {
+        if (! in_array($type, ['pending', 'completed', 'silenced', 'failed'])) {
+            throw new InvalidArgumentException("Unable to search jobs of type [{$type}].");
+        }
+
+        $jobs = collect();
+        $index = (int) $afterIndex;
+        $scanned = 0;
+
+        while ($scanned < $this->searchScanLimit) {
+            $ids = $this->connection()->zrange(
+                $type.'_jobs', $index + 1, $index + min(200, $this->searchScanLimit - $scanned)
+            );
+
+            if (empty($ids)) {
+                return ['jobs' => $jobs, 'next' => null];
+            }
+
+            $records = $this->pipeline(function ($pipe) use ($ids) {
+                foreach ($ids as $id) {
+                    $pipe->hmget($id, $this->keys);
+                }
+            });
+
+            foreach ($records as $record) {
+                $index++;
+                $scanned++;
+
+                $record = is_array($record) ? array_values($record) : null;
+
+                if (! $record || $record[0] === null || $record[0] === false) {
+                    continue;
+                }
+
+                $job = (object) array_combine($this->keys, $record);
+
+                $job->index = $index;
+
+                if ($this->matchesSearch($job, $query)) {
+                    $jobs->push($job);
+
+                    if ($jobs->count() >= $limit) {
+                        return ['jobs' => $jobs, 'next' => $index];
+                    }
+                }
+            }
+        }
+
+        return ['jobs' => $jobs, 'next' => $index];
+    }
+
+    /**
+     * Determine if the given job matches the search phrase.
+     *
+     * @param  object  $job
+     * @param  string  $query
+     * @return bool
+     */
+    protected function matchesSearch($job, $query)
+    {
+        return Str::contains(
+            implode("\n", [$job->id, $job->name, $job->queue, $job->payload, $job->exception]), $query, true
+        );
     }
 
     /**

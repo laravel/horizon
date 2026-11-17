@@ -8,6 +8,8 @@ use Laravel\Horizon\Contracts\TagRepository;
 
 class FailedJobsController extends Controller
 {
+    use SearchesJobs;
+
     /**
      * The job repository implementation.
      *
@@ -45,6 +47,10 @@ class FailedJobsController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->filled('search')) {
+            return $this->search($request, 'failed');
+        }
+
         $jobs = ! $request->query('tag')
             ? $this->paginate($request)
             : $this->paginateByTag($request, $request->query('tag'));
