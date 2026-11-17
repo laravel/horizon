@@ -726,6 +726,19 @@ class RedisJobRepository implements JobRepository
     }
 
     /**
+     * Delete a pending job by ID.
+     *
+     * @param  string  $id
+     * @return int
+     */
+    public function deletePending($id)
+    {
+        return $this->connection()->zrem('pending_jobs', $id) != 1
+            ? 0
+            : tap($this->connection()->del($id), fn () => $this->connection()->zrem('recent_jobs', $id));
+    }
+
+    /**
      * Delete pending and reserved jobs for a queue.
      *
      * @param  string  $queue

@@ -72,4 +72,50 @@ LUA;
             return {count, cursor}
 LUA;
     }
+
+    /**
+     * Remove a pending job from the queue.
+     *
+     * KEYS[1] - The queue the job is waiting on
+     * KEYS[2] - The delayed queue the job may be waiting on
+     * ARGV[1] - The raw payload of the job
+     *
+     * @return string
+     */
+    public static function deletePending()
+    {
+        return <<<'LUA'
+local removed = redis.call('lrem', KEYS[1], 1, ARGV[1])
+
+if removed == 0 then
+    removed = redis.call('zrem', KEYS[2], ARGV[1])
+end
+
+return removed
+LUA;
+    }
+
+    /**
+     * Move a delayed job onto the queue so it can be processed immediately.
+     *
+     * KEYS[1] - The delayed queue the job is waiting on
+     * KEYS[2] - The queue the job should be pushed onto
+     * KEYS[3] - The notification list for the queue
+     * ARGV[1] - The raw payload of the job
+     *
+     * @return string
+     */
+    public static function runDelayedNow()
+    {
+        return <<<'LUA'
+if redis.call('zrem', KEYS[1], ARGV[1]) == 0 then
+    return 0
+end
+
+redis.call('rpush', KEYS[2], ARGV[1])
+redis.call('rpush', KEYS[3], 1)
+
+return 1
+LUA;
+    }
 }

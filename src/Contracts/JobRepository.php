@@ -244,4 +244,12 @@ interface JobRepository
      * @return int
      */
     public function deleteFailed($id);
+
+    /**
+     * Delete a pending job by ID.
+     *
+     * @param  string  $id
+     * @return int
+     */
+    public function deletePending($id);
 }

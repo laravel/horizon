@@ -30,11 +30,52 @@ class RedisQueue extends BaseQueue
      */
     public function readyNow($queue = null)
     {
-        $key = method_exists(parent::class, 'getQueueRedisKey')
+        return $this->getConnection()->llen($this->queueKey($queue));
+    }
+
+    /**
+     * Remove the given pending or delayed job from the queue.
+     *
+     * @param  string|null  $queue
+     * @param  string  $payload
+     * @return bool
+     */
+    public function deletePending($queue, $payload)
+    {
+        $key = $this->queueKey($queue);
+
+        return (bool) $this->getConnection()->eval(
+            LuaScripts::deletePending(), 2, $key, $key.':delayed', $payload
+        );
+    }
+
+    /**
+     * Move the given delayed job onto the queue so it is processed immediately.
+     *
+     * @param  string|null  $queue
+     * @param  string  $payload
+     * @return bool
+     */
+    public function runDelayedNow($queue, $payload)
+    {
+        $key = $this->queueKey($queue);
+
+        return (bool) $this->getConnection()->eval(
+            LuaScripts::runDelayedNow(), 3, $key.':delayed', $key, $key.':notify', $payload
+        );
+    }
+
+    /**
+     * Get the Redis key for the given queue.
+     *
+     * @param  string|null  $queue
+     * @return string
+     */
+    protected function queueKey($queue = null)
+    {
+        return method_exists(parent::class, 'getQueueRedisKey')
             ? $this->getQueueRedisKey($queue)
             : $this->getQueue($queue);
-
-        return $this->getConnection()->llen($key);
     }
 
     /**

@@ -5,9 +5,21 @@
                 <h2 class="h6 m-0" v-if="!ready">Job Preview</h2>
                 <h2 class="h6 m-0" v-if="ready">{{job.name}}</h2>
 
-                <a data-bs-toggle="collapse" href="#collapseDetails" role="button">
-                    Collapse
-                </a>
+                <div class="d-flex align-items-center">
+                    <template v-if="ready && job.status == 'pending'">
+                        <button v-if="delayed" class="btn btn-primary btn-sm me-2" :disabled="busy" @click.prevent="runNow">
+                            Run Now
+                        </button>
+
+                        <button v-if="! batchId" class="btn btn-outline-danger btn-sm me-3" :disabled="busy" @click.prevent="deleteJob">
+                            Delete
+                        </button>
+                    </template>
+
+                    <a data-bs-toggle="collapse" href="#collapseDetails" role="button">
+                        Collapse
+                    </a>
+                </div>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -104,6 +116,7 @@
         data() {
             return {
                 ready: false,
+                busy: false,
                 job: {}
             };
         },
@@ -111,6 +124,10 @@
         computed: {
             unserialized() {
                 return phpunserialize(this.job.payload.data.command);
+            },
+
+            batchId() {
+                return this.prettyPrintJob(this.job.payload.data).batchId;
             },
 
             delayed() {
@@ -175,6 +192,48 @@
                         this.ready = true;
                     });
             },
+
+            /**
+             * Push the delayed job onto its queue so it runs immediately.
+             */
+            runNow() {
+                this.busy = true;
+
+                this.$http.post(Horizon.basePath + '/api/jobs/pending/' + this.job.id + '/run')
+                    .then(() => this.loadJob(this.job.id))
+                    .catch(error => this.showError(error))
+                    .finally(() => this.busy = false);
+            },
+
+
+            /**
+             * Delete the pending job from its queue.
+             */
+            deleteJob() {
+                this.$root.alert.type = 'confirmation';
+                this.$root.alert.message = 'Are you sure you want to delete this job? It will be removed from the queue and will not be processed.';
+                this.$root.alert.confirmationProceed = () => {
+                    this.busy = true;
+
+                    this.$http.delete(Horizon.basePath + '/api/jobs/pending/' + this.job.id)
+                        .then(() => this.$router.push({ name: 'jobs', params: { type: 'pending' } }))
+                        .catch(error => this.showError(error))
+                        .finally(() => this.busy = false);
+                };
+            },
+
+
+            /**
+             * Show the error returned by the given failed request.
+             */
+            showError(error) {
+                this.$root.alert.type = 'error';
+                this.$root.alert.message = (error.response && error.response.data && error.response.data.message)
+                    || 'Something went wrong.';
+
+                this.loadJob(this.job.id);
+            },
+
 
             /**
              * Pretty print serialized job.

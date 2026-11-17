@@ -35,6 +35,8 @@ Route::prefix('api')->group(function () {
 
     // Job Routes...
     Route::get('/jobs/pending', 'PendingJobsController@index')->name('horizon.pending-jobs.index');
+    Route::delete('/jobs/pending/{id}', 'PendingJobsController@destroy')->name('horizon.pending-jobs.destroy');
+    Route::post('/jobs/pending/{id}/run', 'PendingJobsController@run')->name('horizon.pending-jobs.run');
     Route::get('/jobs/completed', 'CompletedJobsController@index')->name('horizon.completed-jobs.index');
     Route::get('/jobs/silenced', 'SilencedJobsController@index')->name('horizon.silenced-jobs.index');
     Route::get('/jobs/failed', 'FailedJobsController@index')->name('horizon.failed-jobs.index');
