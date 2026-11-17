@@ -15,6 +15,8 @@
                 totalPages: 1,
                 jobs: [],
                 retryingJobs: [],
+                selected: [],
+                bulkWorking: false,
             };
         },
 
@@ -113,6 +115,72 @@
                     }).catch(error => {
                         this.retryingJobs = this.retryingJobs.filter(job => job != id);
                     });
+            },
+
+
+            /**
+             * Determine if all of the visible jobs are selected.
+             */
+            allVisibleSelected() {
+                return this.jobs.length > 0 && this.jobs.every(job => this.selected.includes(job.id));
+            },
+
+
+            /**
+             * Select or deselect all of the visible jobs.
+             */
+            toggleAllVisible() {
+                const ids = this.jobs.map(job => job.id);
+
+                this.selected = this.allVisibleSelected()
+                    ? this.selected.filter(id => !ids.includes(id))
+                    : [...new Set([...this.selected, ...ids])];
+            },
+
+
+            /**
+             * Retry all of the selected jobs.
+             */
+            retrySelected() {
+                const ids = [...this.selected];
+
+                this.bulkWorking = true;
+                this.retryingJobs.push(...ids);
+
+                this.$http.post(Horizon.basePath + '/api/jobs/retry', { ids })
+                    .then(() => {
+                        this.selected = [];
+
+                        setTimeout(() => {
+                            this.retryingJobs = this.retryingJobs.filter(id => !ids.includes(id));
+                        }, 5000);
+                    })
+                    .catch(() => {
+                        this.retryingJobs = this.retryingJobs.filter(id => !ids.includes(id));
+                    })
+                    .finally(() => this.bulkWorking = false);
+            },
+
+
+            /**
+             * Delete all of the selected jobs.
+             */
+            deleteSelected() {
+                const ids = [...this.selected];
+
+                this.$root.alert.type = 'confirmation';
+                this.$root.alert.message = 'Are you sure you want to delete ' + ids.length + ' failed ' + (ids.length === 1 ? 'job' : 'jobs') + '? They will no longer be available to retry.';
+                this.$root.alert.confirmationProceed = () => {
+                    this.bulkWorking = true;
+
+                    this.$http.delete(Horizon.basePath + '/api/jobs/failed', { data: { ids } })
+                        .then(() => {
+                            this.selected = [];
+
+                            this.loadJobs((this.page - 1) * this.perPage);
+                        })
+                        .finally(() => this.bulkWorking = false);
+                };
             },
 
 
@@ -228,9 +296,23 @@
                 <span>There aren't any failed jobs.</span>
             </div>
 
+            <div v-if="selected.length" class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom card-bg-secondary">
+                <small>{{ selected.length.toLocaleString() }} selected</small>
+
+                <div>
+                    <button class="btn btn-link btn-sm" :disabled="bulkWorking" @click="selected = []">Clear</button>
+                    <button class="btn btn-outline-danger btn-sm ms-2" :disabled="bulkWorking" @click="deleteSelected">Delete</button>
+                    <button class="btn btn-primary btn-sm ms-2" :disabled="bulkWorking" @click="retrySelected">Retry</button>
+                </div>
+            </div>
+
             <table v-if="ready && jobs.length > 0" class="table table-hover mb-0">
                 <thead>
                 <tr>
+                    <th class="table-fit">
+                        <input type="checkbox" class="form-check-input" title="Select all visible jobs"
+                               :checked="allVisibleSelected()" @change="toggleAllVisible">
+                    </th>
                     <th>Job</th>
                     <th class="text-end">Runtime</th>
                     <th>Failed</th>
@@ -248,6 +330,10 @@
                 </tr>
 
                 <tr v-for="job in jobs" :key="job.id">
+                    <td class="table-fit">
+                        <input type="checkbox" class="form-check-input" :value="job.id" v-model="selected" :aria-label="'Select ' + job.name">
+                    </td>
+
                     <td>
                         <router-link :title="job.name" :to="{ name: 'failed-jobs-preview', params: { jobId: job.id }}">{{ jobBaseName(job.name) }}</router-link>
 

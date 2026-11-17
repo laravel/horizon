@@ -60,6 +60,30 @@ class FailedJobsController extends Controller
     }
 
     /**
+     * Delete the given failed jobs.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array{deleted: int}
+     */
+    public function destroy(Request $request)
+    {
+        $ids = $request->validate([
+            'ids' => ['required', 'array', 'max:1000'],
+            'ids.*' => ['required', 'string', 'distinct'],
+        ])['ids'];
+
+        $deleted = 0;
+
+        foreach ($ids as $id) {
+            $deleted += $this->jobs->deleteFailed($id) ? 1 : 0;
+
+            app('queue.failer')->forget($id);
+        }
+
+        return ['deleted' => $deleted];
+    }
+
+    /**
      * Paginate the failed jobs for the request.
      *
      * @param  \Illuminate\Http\Request  $request
