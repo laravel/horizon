@@ -29,6 +29,7 @@ abstract class IntegrationTest extends TestCase
             WorkerCommandString::reset();
             SupervisorCommandString::reset();
             Horizon::$authUsing = null;
+            Horizon::$manageUsing = null;
         });
 
         parent::setUp();

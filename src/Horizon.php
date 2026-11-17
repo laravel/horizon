@@ -19,6 +19,13 @@ class Horizon
     public static $authUsing;
 
     /**
+     * The callback that should be used to authorize dashboard actions.
+     *
+     * @var \Closure|null
+     */
+    public static $manageUsing;
+
+    /**
      * The Slack notifications webhook URL.
      *
      * @var string
@@ -94,6 +101,32 @@ class Horizon
     public static function auth(Closure $callback)
     {
         static::$authUsing = $callback;
+
+        return new static;
+    }
+
+    /**
+     * Determine if the given request can perform actions such as retrying jobs.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    public static function canManage($request)
+    {
+        return static::$manageUsing
+            ? (bool) (static::$manageUsing)($request)
+            : true;
+    }
+
+    /**
+     * Set the callback that should be used to authorize dashboard actions.
+     *
+     * @param  \Closure  $callback
+     * @return static
+     */
+    public static function manage(Closure $callback)
+    {
+        static::$manageUsing = $callback;
 
         return new static;
     }
@@ -252,6 +285,7 @@ class Horizon
         return [
             'path' => config('horizon.path'),
             'proxy_path' => config('horizon.proxy_path', ''),
+            'can_manage' => static::canManage(request()),
         ];
     }
 

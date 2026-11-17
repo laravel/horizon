@@ -35,6 +35,7 @@ const app = createApp({
 });
 
 app.config.globalProperties.$http = axios.create();
+app.config.globalProperties.$canManage = window.Horizon.can_manage !== false;
 
 let proxyPath = window.Horizon.proxy_path;
 window.Horizon.basePath = proxyPath + '/' + window.Horizon.path;
