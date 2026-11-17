@@ -331,9 +331,48 @@ class RedisJobRepository implements JobRepository
      */
     protected function matchesSearch($job, $query)
     {
-        return Str::contains(
-            implode("\n", [$job->id, $job->name, $job->queue, $job->payload, $job->exception]), $query, true
-        );
+        $payload = json_decode((string) $job->payload, true) ?: [];
+
+        $values = [$job->id, $job->name, $job->queue, $job->exception];
+
+        $this->collectSearchableValues($payload['tags'] ?? [], $values);
+
+        $data = $payload['data'] ?? [];
+
+        if (is_array($data) && is_string($data['command'] ?? null)) {
+            $data = @unserialize($data['command'], ['allowed_classes' => false]);
+        }
+
+        $this->collectSearchableValues($data, $values);
+
+        return Str::contains(implode("\n", $values), $query, true);
+    }
+
+    /**
+     * Collect the scalar values of the given job data, ignoring keys and property names.
+     *
+     * @param  mixed  $value
+     * @param  array  $values
+     * @param  int  $depth
+     * @return void
+     */
+    protected function collectSearchableValues($value, array &$values, $depth = 0)
+    {
+        if ($depth > 10) {
+            return;
+        }
+
+        if (is_object($value)) {
+            $value = (array) $value;
+        }
+
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                $this->collectSearchableValues($item, $values, $depth + 1);
+            }
+        } elseif (is_scalar($value)) {
+            $values[] = (string) $value;
+        }
     }
 
     /**

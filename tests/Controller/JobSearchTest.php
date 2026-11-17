@@ -69,7 +69,7 @@ class JobSearchTest extends ControllerTest
 
     public function test_search_results_are_paginated_with_a_cursor()
     {
-        $ids = collect(range(1, 60))->map(fn ($i) => Queue::push(BasicJob::class, ['needle' => $i]));
+        $ids = collect(range(1, 60))->map(fn ($i) => Queue::push(BasicJob::class, ['reference' => 'needle-'.$i]));
 
         $first = $this->actingAs(new Fakes\User)
             ->getJson('/horizon/api/jobs/pending?search=needle')
@@ -106,6 +106,34 @@ class JobSearchTest extends ControllerTest
             ->getJson('/horizon/api/jobs/pending?search=no-such-thing&starting_at=19')
             ->assertJsonCount(0, 'jobs')
             ->assertJsonPath('next', null);
+    }
+
+    public function test_serialized_property_names_are_not_matched()
+    {
+        Queue::push(new SearchableJob('abc-123'));
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/jobs/pending?search=reference')
+            ->assertJsonCount(0, 'jobs');
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/jobs/pending?search=fails')
+            ->assertJsonCount(0, 'jobs');
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/jobs/pending?search=abc-123')
+            ->assertJsonCount(1, 'jobs');
+    }
+
+    public function test_jobs_can_be_searched_by_tag()
+    {
+        $tagged = Queue::push(new BasicJob);
+        Queue::push(new SearchableJob('untagged'));
+
+        $this->actingAs(new Fakes\User)
+            ->getJson('/horizon/api/jobs/pending?search=second')
+            ->assertJsonCount(1, 'jobs')
+            ->assertJsonPath('jobs.0.id', $tagged);
     }
 
     public function test_listing_without_search_is_unchanged()
