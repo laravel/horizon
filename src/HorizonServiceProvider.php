@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Doctor\Doctor;
 use Laravel\Horizon\Connectors\RedisConnector;
 use Laravel\Sentinel\Http\Middleware\SentinelMiddleware;
 
@@ -32,6 +33,24 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->offerPublishing();
         $this->registerCommands();
+        $this->registerDiagnostics();
+    }
+
+    /**
+     * Register the package's Doctor diagnostics.
+     *
+     * @return void
+     */
+    protected function registerDiagnostics()
+    {
+        if ($this->app->bound(Doctor::class)) {
+            $this->app->make(Doctor::class)->diagnostics([
+                Diagnostics\HorizonIsRunning::class,
+                Diagnostics\HorizonEnvironmentIsDefined::class,
+                Diagnostics\HorizonProcessesDefaultRedisQueue::class,
+                Diagnostics\HorizonSnapshotIsScheduled::class,
+            ]);
+        }
     }
 
     /**
