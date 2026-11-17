@@ -7,7 +7,6 @@ use Illuminate\Cache\RedisStore;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Redis\Connections\PhpRedisConnection;
 use Illuminate\Redis\Connections\PredisConnection;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class UniqueLocks
