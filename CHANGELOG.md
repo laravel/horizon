@@ -1,6 +1,19 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/horizon/compare/v5.51.0...5.x)
+## [Unreleased](https://github.com/laravel/horizon/compare/v5.52.0...5.x)
+
+## [v5.52.0](https://github.com/laravel/horizon/compare/v5.51.0...v5.52.0) - 2026-11-16
+
+### What's Changed
+
+* Dependency floor bump by [@pushpak1300](https://github.com/pushpak1300) in https://github.com/laravel/horizon/pull/1848
+* [5.x] Fix asset compilation after the Vite 8 bump by [@mikebowyerdev](https://github.com/mikebowyerdev) in https://github.com/laravel/horizon/pull/1850
+
+### New Contributors
+
+* [@mikebowyerdev](https://github.com/mikebowyerdev) made their first contribution in https://github.com/laravel/horizon/pull/1850
+
+**Full Changelog**: https://github.com/laravel/horizon/compare/v5.51.0...v5.52.0
 
 ## [v5.51.0](https://github.com/laravel/horizon/compare/v5.50.1...v5.51.0) - 2026-11-02
 
