@@ -63,7 +63,7 @@ class RedisWorkloadRepository implements WorkloadRepository
     /**
      * Get the current workload of each queue.
      *
-     * @return array<int, array{"name": string, "length": int, "wait": int, "processes": int, "split_queues": null|array<int, array{"name": string, "wait": int, "length": int}>}>
+     * @return array<int, array{"name": string, "connection": string, "length": int, "wait": int, "processes": int, "paused": bool, "split_queues": null|array<int, array{"name": string, "wait": int, "length": int, "paused": bool}>}>
      */
     public function get()
     {
@@ -86,19 +86,37 @@ class RedisWorkloadRepository implements WorkloadRepository
                         'name' => $queueName,
                         'length' => $length,
                         'wait' => $wait += $this->waitTime->calculateTimeToClear($connection, $queueName, $totalProcesses),
+                        'paused' => $this->isPaused($connection, $queueName),
                     ];
                 }) : null;
 
                 return [
                     'name' => $queueName,
+                    'connection' => $connection,
                     'length' => $length->sum(),
                     'wait' => $waitTime,
                     'processes' => $totalProcesses,
+                    'paused' => $splitQueues
+                        ? $splitQueues->every(fn ($queue) => $queue['paused'])
+                        : $this->isPaused($connection, $queueName),
                     'split_queues' => $splitQueues,
                 ];
             })
             ->values()
             ->toArray();
+    }
+
+    /**
+     * Determine if the given queue is paused.
+     *
+     * @param  string  $connection
+     * @param  string  $queue
+     * @return bool
+     */
+    private function isPaused($connection, $queue)
+    {
+        return method_exists($this->queue, 'isPaused')
+            && $this->queue->isPaused($connection, $queue);
     }
 
     /**

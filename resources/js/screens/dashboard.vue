@@ -77,6 +77,19 @@
 
 
             /**
+             * Pause or resume the given queue.
+             */
+            toggleQueue(connection, queue) {
+                const action = queue.paused ? 'resume' : 'pause';
+
+                return this.$http.post(Horizon.basePath + '/api/queues/' + action, {
+                    connection: connection,
+                    queue: queue.name,
+                }).then(() => this.loadWorkload());
+            },
+
+
+            /**
              * Load the workload stats.
              */
             loadWorkload() {
@@ -263,6 +276,7 @@
                     <th class="text-end" style="width: 120px;">Jobs</th>
                     <th class="text-end" style="width: 120px;">Processes</th>
                     <th class="text-end" style="width: 180px;">Wait</th>
+                    <th class="text-end" style="width: 120px;"></th>
                 </tr>
                 </thead>
 
@@ -271,10 +285,16 @@
                         <tr>
                             <td :class="{ 'fw-bold': queue.split_queues }">
                                 <span>{{ queue.name.replace(/,/g, ', ') }}</span>
+                                <small v-if="queue.paused" class="ms-1 badge bg-warning badge-sm">Paused</small>
                             </td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.length ? queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ queue.processes ? queue.processes.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted" :class="{ 'fw-bold': queue.split_queues }">{{ humanTime(queue.wait) }}</td>
+                            <td class="text-end">
+                                <button v-if="! queue.split_queues" class="btn btn-outline-primary btn-sm" @click="toggleQueue(queue.connection, queue)">
+                                    {{ queue.paused ? 'Resume' : 'Pause' }}
+                                </button>
+                            </td>
                         </tr>
 
                         <tr v-for="split_queue in queue.split_queues">
@@ -284,10 +304,16 @@
                                 </svg>
 
                                 <span>{{ split_queue.name.replace(/,/g, ', ') }}</span>
+                                <small v-if="split_queue.paused" class="ms-1 badge bg-warning badge-sm">Paused</small>
                             </td>
                             <td class="text-end text-muted">{{ split_queue.length ? split_queue.length.toLocaleString() : 0 }}</td>
                             <td class="text-end text-muted">-</td>
                             <td class="text-end text-muted">{{ humanTime(split_queue.wait) }}</td>
+                            <td class="text-end">
+                                <button class="btn btn-outline-primary btn-sm" @click="toggleQueue(queue.connection, split_queue)">
+                                    {{ split_queue.paused ? 'Resume' : 'Pause' }}
+                                </button>
+                            </td>
                         </tr>
                     </template>
                 </tbody>
