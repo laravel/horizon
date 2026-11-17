@@ -10,6 +10,13 @@ use Laravel\Horizon\Tests\Feature\Jobs\FailingJob;
 
 class BulkFailedJobActionsTest extends ControllerTest
 {
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+
+        $app['config']->set('queue.failed.driver', 'null');
+    }
+
     public function test_failed_jobs_can_be_retried_in_bulk()
     {
         [$first, $second, $untouched] = $this->failJobs(3);
