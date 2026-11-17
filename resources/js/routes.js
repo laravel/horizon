@@ -12,6 +12,7 @@ import failedJobs from './screens/failedJobs/index.vue';
 import failedJobsJob from './screens/failedJobs/job.vue';
 import batches from './screens/batches/index.vue';
 import batchesPreview from './screens/batches/preview.vue';
+import uniqueLocks from './screens/uniqueLocks/index.vue';
 
 export default [
     { path: '/', redirect: '/dashboard' },
@@ -119,5 +120,11 @@ export default [
                 component: batchesPreview,
             },
         ],
+    },
+
+    {
+        path: '/unique-locks',
+        name: 'unique-locks',
+        component: uniqueLocks,
     },
 ];
