@@ -372,14 +372,26 @@ class RedisJobRepository implements JobRepository
     {
         $time = str_replace(',', '.', microtime(true));
 
-        $this->connection()->hmset(
-            $payload->id(), [
-                'status' => 'reserved',
-                'payload' => $payload->value,
-                'updated_at' => $time,
-                'reserved_at' => $time,
-            ]
-        );
+        $monitored = ! empty(array_intersect($payload->tags(), $this->connection()->smembers('monitoring')));
+
+        $this->pipeline(function ($pipe) use ($payload, $time, $monitored) {
+            $pipe->hmset(
+                $payload->id(), [
+                    'status' => 'reserved',
+                    'payload' => $payload->value,
+                    'updated_at' => $time,
+                    'reserved_at' => $time,
+                ]
+            );
+
+            // A job with a monitored tag must stay visible while it runs, even
+            // when it runs longer than the pending expiration set when pushed...
+            if ($monitored) {
+                $pipe->expireat(
+                    $payload->id(), CarbonImmutable::now()->addMinutes($this->monitoredJobExpires)->getTimestamp()
+                );
+            }
+        });
     }
 
     /**

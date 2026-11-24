@@ -3,7 +3,9 @@
 namespace Laravel\Horizon\Tests\Feature;
 
 use Exception;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Horizon\Contracts\JobRepository;
+use Laravel\Horizon\Contracts\TagRepository;
 use Laravel\Horizon\JobPayload;
 use Laravel\Horizon\Tests\IntegrationTest;
 use Throwable;
@@ -136,5 +138,34 @@ class RedisJobRepositoryTest extends IntegrationTest
 
         $this->assertSame('pending', $job->status);
         $this->assertSame('0', $job->delay);
+    }
+
+    public function test_a_reserved_job_with_a_monitored_tag_outlives_the_pending_expiration()
+    {
+        $this->app->make(TagRepository::class)->monitor('foo');
+
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo', 'tags' => ['foo']]));
+
+        $repository->pushed('redis', 'default', $payload);
+        $repository->reserved('redis', 'default', $payload);
+
+        $ttl = Redis::connection('horizon')->ttl('1');
+
+        $this->assertGreaterThan(config('horizon.trim.pending') * 60, $ttl);
+        $this->assertLessThanOrEqual(config('horizon.trim.monitored') * 60, $ttl);
+    }
+
+    public function test_a_reserved_job_without_a_monitored_tag_keeps_the_pending_expiration()
+    {
+        $this->app->make(TagRepository::class)->monitor('bar');
+
+        $repository = $this->app->make(JobRepository::class);
+        $payload = new JobPayload(json_encode(['id' => 1, 'displayName' => 'foo', 'tags' => ['foo']]));
+
+        $repository->pushed('redis', 'default', $payload);
+        $repository->reserved('redis', 'default', $payload);
+
+        $this->assertLessThanOrEqual(config('horizon.trim.pending') * 60, Redis::connection('horizon')->ttl('1'));
     }
 }
